@@ -39,6 +39,7 @@ export default function RegistrationModal({ competition, onClose }: Props) {
     whatsapp: '',
     members: '',
   });
+  const [regType, setRegType] = useState<'team' | 'individual'>('individual');
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -69,6 +70,7 @@ export default function RegistrationModal({ competition, onClose }: Props) {
         whatsapp: '',
         members: '',
       });
+      setRegType(competition.type === 'team' ? 'team' : 'individual');
       setErrors({});
       setIsSuccess(false);
       setLoading(false);
@@ -78,7 +80,8 @@ export default function RegistrationModal({ competition, onClose }: Props) {
 
   if (!competition) return null;
 
-  const isTeam = competition.type === 'team';
+  const canChooseType = competition.type === 'both';
+  const isTeam = canChooseType ? regType === 'team' : competition.type === 'team';
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
@@ -122,7 +125,7 @@ export default function RegistrationModal({ competition, onClose }: Props) {
     try {
       await apiHelpers.registrations.create({
         competitionId: competition.id,
-        type: isTeam ? 'team' : 'individual',
+        type: regType,
         fullName: formData.fullName || null,
         identityNumber: formData.identityNumber || null,
         teamName: formData.teamName || null,
@@ -198,6 +201,41 @@ Terima kasih.`;
     >
       {!isSuccess ? (
         <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+            {canChooseType && (
+              <div className="flex flex-wrap items-center gap-3">
+                <span className="text-[10px] font-black uppercase tracking-wider text-muted-foreground">
+                  Pilih Kategori:
+                </span>
+                <div className="flex overflow-hidden rounded-full border border-border bg-muted/50">
+                  {(['individual', 'team'] as const).map((t) => (
+                    <button
+                      key={t}
+                      type="button"
+                      onClick={() => {
+                        setRegType(t);
+                        setFormData((prev) => ({
+                          ...prev,
+                          fullName: '',
+                          identityNumber: '',
+                          teamName: '',
+                          leaderName: '',
+                          leaderIdentity: '',
+                          members: '',
+                        }));
+                        setErrors({});
+                      }}
+                      className={`px-4 py-1.5 text-[11px] font-black uppercase tracking-wider transition-colors ${
+                        regType === t
+                          ? 'bg-primary text-primary-foreground'
+                          : 'text-muted-foreground hover:bg-accent hover:text-foreground'
+                      }`}
+                    >
+                      {t === 'team' ? 'Tim' : 'Individu'}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
             <FieldGroup className="gap-4">
               {isTeam ? (
                 <>

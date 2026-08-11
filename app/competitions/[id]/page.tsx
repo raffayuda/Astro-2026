@@ -178,7 +178,7 @@ export default function CompetitionDetailPage() {
     },
     {
       icon: Users,
-      label: competition.type === 'team' ? 'Kuota Tim' : 'Kuota Peserta',
+      label: competition.type === 'team' ? 'Kuota Tim' : competition.type === 'both' ? 'Kuota Peserta / Tim' : 'Kuota Peserta',
       value: `${competition.filledSlots} / ${competition.maxSlots} Terisi`,
       sub: leftSlots > 0 ? `Sisa ${leftSlots} slot` : 'Penuh',
       isLow: leftSlots <= 5,
@@ -287,7 +287,7 @@ export default function CompetitionDetailPage() {
                     {competition.isFree ? 'Gratis' : 'Berbayar'}
                   </Badge>
                   <Badge variant="outline" className="clip-angled-sm border-purple-200 bg-purple-50 px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.1em] text-purple-700">
-                    {competition.type === 'team' ? 'Tim' : 'Individu'}
+                    {competition.type === 'both' ? 'Tim & Individu' : competition.type === 'team' ? 'Tim' : 'Individu'}
                   </Badge>
                 </motion.div>
 

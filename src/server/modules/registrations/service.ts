@@ -79,6 +79,21 @@ export async function createRegistration(input: RegistrationCreate, userId: stri
 
   if (!comp) return { error: 'Kompetisi tidak ditemukan' } as const;
 
+  // A competition is `individual`, `team`, or `both`. Reject a registration
+  // type the competition does not allow.
+  const compType = comp.type || 'individual';
+  if (input.type !== 'individual' && input.type !== 'team') {
+    return { error: 'Tipe pendaftaran tidak valid' } as const;
+  }
+  if (compType !== 'both' && compType !== input.type) {
+    return {
+      error:
+        compType === 'team'
+          ? 'Lomba ini hanya menerima pendaftaran tim'
+          : 'Lomba ini hanya menerima pendaftaran individu',
+    } as const;
+  }
+
   const paymentAmount = comp.isFree === '1' ? 0 : comp.fee || 0;
   const ref = `INV/ASTRO-2026/${Date.now().toString().slice(-8)}`;
 

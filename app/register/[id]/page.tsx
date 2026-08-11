@@ -89,6 +89,7 @@ export default function RegistrationPage({
   const [step, setStep] = useState<1 | 2>(1);
   const [registrationId, setRegistrationId] = useState<string | null>(null);
   const [paymentReference, setPaymentReference] = useState<string | null>(null);
+  const [regType, setRegType] = useState<'team' | 'individual'>('individual');
   const [formData, setFormData] = useState({
     fullName: "",
     teamName: "",
@@ -108,6 +109,13 @@ export default function RegistrationPage({
 
   const { data: c, isLoading: compLoading, isError: compError } = useCompetition(resolvedId ?? "");
   const { data: existingReg } = useRegistration(regIdFromQuery ?? "");
+
+  // Sync the selected registration type with what the competition allows:
+  // team-only -> team, individual-only -> individual, both -> user picks.
+  useEffect(() => {
+    if (c?.type === 'team') setRegType('team');
+    else if (c?.type === 'individual') setRegType('individual');
+  }, [c?.type]);
 
   const competition: CompetitionData | null = useMemo(() => {
     if (!c) return null;
@@ -201,7 +209,9 @@ export default function RegistrationPage({
   }
 
   const cat = categoryConfig[competition.category] || categoryConfig.akademik;
-  const isTeam = competition.type === "team";
+  // 'both' lets the participant choose; otherwise follow the competition type.
+  const isTeam = competition.type === 'both' ? regType === 'team' : competition.type === "team";
+  const canChooseType = competition.type === 'both';
 
   const handleFormSubmit = (regId: string, ref: string) => {
     setRegistrationId(regId);
@@ -380,6 +390,47 @@ export default function RegistrationPage({
                 {isTeam ? "Kategori Tim" : "Kategori Individu"}
               </motion.p>
 
+              {/* Pilihan Kategori (hanya untuk lomba yang menerima individu & tim) */}
+              {canChooseType && (
+                <motion.div
+                  initial="hidden"
+                  animate="visible"
+                  variants={fadeUp}
+                  className="mt-6 flex flex-wrap items-center gap-3"
+                >
+                  <span className="text-[10px] font-black uppercase tracking-wider text-slate-500">
+                    Pilih Kategori Pendaftaran:
+                  </span>
+                  <div className="flex overflow-hidden rounded-full border border-slate-300 bg-white/70 shadow-sm">
+                    {(['individual', 'team'] as const).map((t) => (
+                      <button
+                        key={t}
+                        type="button"
+                        onClick={() => {
+                          setRegType(t);
+                          setFormData((prev) => ({
+                            ...prev,
+                            fullName: "",
+                            identityNumber: "",
+                            teamName: "",
+                            leaderName: "",
+                            leaderIdentity: "",
+                            members: "",
+                          }));
+                        }}
+                        className={`px-5 py-2 text-xs font-black uppercase tracking-wider transition-colors ${
+                          regType === t
+                            ? "bg-astro-cyan text-slate-950"
+                            : "text-slate-500 hover:bg-slate-100"
+                        }`}
+                      >
+                        {t === 'team' ? 'Tim' : 'Individu'}
+                      </button>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+
               {/* ─── STEP INDICATOR ─── */}
               <motion.div
                 initial="hidden"
@@ -464,6 +515,7 @@ export default function RegistrationPage({
                     <FormStep
                       competition={competition as any}
                       isTeam={isTeam}
+                      regType={regType}
                       formData={formData}
                       setFormData={setFormData}
                       onContinue={handleFormSubmit}

@@ -326,6 +326,12 @@ export default function PengumumanClient() {
               const cat =
                 categoryConfig[comp.category] || categoryConfig.akademik;
               const isTeam = comp.type === "team";
+              const typeLabel =
+                comp.type === "both"
+                  ? "TIM & INDIVIDU"
+                  : comp.type === "team"
+                    ? "TIM"
+                    : "INDIVIDU";
 
               return (
                 <motion.div
@@ -363,7 +369,7 @@ export default function PengumumanClient() {
                       <span
                         className={`text-[10px] font-bold tracking-wide ${isTeam ? "text-blue-600" : "text-muted-foreground"}`}
                       >
-                        {isTeam ? "TIM" : "INDIVIDU"}
+                        {typeLabel}
                       </span>
                     </div>
 
