@@ -8,10 +8,10 @@ import { auth } from '@/src/server/auth';
 import { z } from 'zod';
 
 const userCreateSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(6),
+  email: z.string().email('Format email tidak valid'),
+  password: z.string().min(6, 'Password minimal 6 karakter'),
   name: z.string().optional(),
-  role: z.enum(['admin', 'participant']).optional().default('participant'),
+  role: z.enum(['admin', 'participant'], 'Role tidak valid').optional().default('participant'),
 });
 
 const userUpdateSchema = z.object({

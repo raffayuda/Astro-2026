@@ -6,8 +6,8 @@ import { desc, max, eq } from 'drizzle-orm';
 import { z } from 'zod';
 
 const faqSchema = z.object({
-  question: z.string().min(1),
-  answer: z.string().min(1),
+  question: z.string().min(1, 'Pertanyaan wajib diisi'),
+  answer: z.string().min(1, 'Jawaban wajib diisi'),
   sortOrder: z.number().int().optional(),
 });
 

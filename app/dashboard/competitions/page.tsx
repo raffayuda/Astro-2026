@@ -57,7 +57,7 @@ const emptyForm = {
   rulebookUrl: '',
   contactName: '',
   contactWhatsapp: '',
-  isActive: '1',
+  isActive: true,
   feeDisplay: '',
   isFree: false,
   origin: 'internal',
@@ -88,16 +88,16 @@ function FormFields({ form, setForm, isAdd, categories }: { form: any; setForm: 
     <FieldGroup className="grid grid-cols-1 gap-4 sm:grid-cols-2">
       {isAdd && (
         <Field>
-          <FieldLabel>ID (slug)</FieldLabel>
+          <FieldLabel required>ID (slug)</FieldLabel>
           <Input value={form.id} readOnly className="cursor-not-allowed bg-muted text-muted-foreground" />
         </Field>
       )}
       <Field>
-        <FieldLabel>Judul</FieldLabel>
+        <FieldLabel required>Judul</FieldLabel>
         <Input value={form.title} onChange={(e) => update('title', e.target.value)} />
       </Field>
       <Field>
-        <FieldLabel className="gap-1"><Tag className="size-3" /> Kategori</FieldLabel>
+        <FieldLabel className="gap-1" required><Tag className="size-3" /> Kategori</FieldLabel>
         <Select value={form.category} onValueChange={(v) => update('category', v)}>
           <SelectTrigger className="w-full">
             <SelectValue />
@@ -120,13 +120,13 @@ function FormFields({ form, setForm, isAdd, categories }: { form: any; setForm: 
       </Field>
       {form.type === 'team' && (
         <Field>
-          <FieldLabel className="gap-1"><Users className="size-3" /> Maksimal Anggota per Tim</FieldLabel>
+          <FieldLabel className="gap-1" required><Users className="size-3" /> Maksimal Anggota per Tim</FieldLabel>
           <Input type="number" min={1} value={form.maxTeamMembers} onChange={(e) => update('maxTeamMembers', parseInt(e.target.value) || 1)} />
         </Field>
       )}
       {form.type === 'team' && (
         <Field>
-          <FieldLabel className="gap-1"><Users className="size-3" /> Minimal Anggota per Tim (wajib diisi)</FieldLabel>
+          <FieldLabel className="gap-1" required><Users className="size-3" /> Minimal Anggota per Tim</FieldLabel>
           <Input type="number" min={1} max={form.maxTeamMembers} value={form.minTeamMembers} onChange={(e) => update('minTeamMembers', parseInt(e.target.value) || 1)} />
         </Field>
       )}
@@ -160,7 +160,7 @@ function FormFields({ form, setForm, isAdd, categories }: { form: any; setForm: 
         )}
       </Field>
       <Field>
-        <FieldLabel className="gap-1"><Users className="size-3" /> {form.type === 'team' ? 'Kuota Tim' : 'Kuota Peserta'}</FieldLabel>
+        <FieldLabel className="gap-1" required><Users className="size-3" /> {form.type === 'team' ? 'Kuota Tim' : 'Kuota Peserta'}</FieldLabel>
         <Input type="number" value={form.maxSlots} onChange={(e) => update('maxSlots', e.target.value)} />
       </Field>
       <Field>
@@ -226,11 +226,11 @@ function FormFields({ form, setForm, isAdd, categories }: { form: any; setForm: 
         <Textarea value={form.rulesSummary} onChange={(e) => update('rulesSummary', e.target.value)} rows={3} />
       </Field>
       <Field>
-        <FieldLabel className="gap-1"><User className="size-3" /> Kontak (Nama)</FieldLabel>
+        <FieldLabel className="gap-1" required><User className="size-3" /> Kontak (Nama)</FieldLabel>
         <Input value={form.contactName} onChange={(e) => update('contactName', e.target.value)} />
       </Field>
       <Field>
-        <FieldLabel className="gap-1"><Phone className="size-3" /> Kontak (WhatsApp)</FieldLabel>
+        <FieldLabel className="gap-1" required><Phone className="size-3" /> Kontak (WhatsApp)</FieldLabel>
         <Input type="tel" inputMode="numeric" value={form.contactWhatsapp} onChange={(e) => update('contactWhatsapp', e.target.value.replace(/\D/g, ''))} placeholder="62812XXXXXXXX" />
       </Field>
     </FieldGroup>
@@ -361,6 +361,7 @@ export default function KompetisiPage() {
       contactWhatsapp: comp.contactWhatsapp || '',
       feeDisplay: formatRupiah(String(comp.fee)),
       isFree: comp.isFree,
+      isActive: comp.isActive,
       origin: comp.origin || 'internal',
     });
   };
@@ -383,7 +384,7 @@ export default function KompetisiPage() {
         },
       });
       toast.success('Lomba berhasil diperbarui');
-    } catch (err) { console.error(err); toast.error('Gagal menyimpan lomba'); }
+    } catch (err) { console.error(err); toast.error(err instanceof Error ? err.message : 'Gagal menyimpan lomba'); }
     setSaving(false);
   };
 
@@ -405,7 +406,7 @@ export default function KompetisiPage() {
       setAddForm({ ...emptyForm });
       setShowAdd(false);
       toast.success('Lomba berhasil ditambahkan');
-    } catch (err) { console.error(err); toast.error('Gagal menambahkan lomba'); }
+    } catch (err) { console.error(err); toast.error(err instanceof Error ? err.message : 'Gagal menambahkan lomba'); }
     setSaving(false);
   };
 
@@ -435,7 +436,7 @@ export default function KompetisiPage() {
         },
       });
       toast.success(comp.isActive ? 'Lomba dinonaktifkan' : 'Lomba diaktifkan');
-    } catch (err) { console.error(err); toast.error('Gagal mengubah status'); }
+    } catch (err) { console.error(err); toast.error(err instanceof Error ? err.message : 'Gagal mengubah status'); }
   };
 
   /* ─── Delete Competition ─── */

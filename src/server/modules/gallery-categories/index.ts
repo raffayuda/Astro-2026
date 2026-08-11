@@ -6,8 +6,8 @@ import { asc, eq, count } from 'drizzle-orm';
 import { z } from 'zod';
 
 const categorySchema = z.object({
-  name: z.string().min(1),
-  slug: z.string().min(1),
+  name: z.string().min(1, 'Nama kategori wajib diisi'),
+  slug: z.string().min(1, 'Slug kategori wajib diisi'),
 });
 
 export const galleryCategoriesModule = new Elysia({ prefix: '/gallery-categories' })

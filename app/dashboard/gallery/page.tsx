@@ -71,13 +71,13 @@ export default function GalleryPage() {
       toast.success(editingId ? 'Foto diperbarui' : 'Foto ditambahkan');
       invalidate();
     },
-    onError: () => toast.error('Gagal menyimpan'),
+    onError: (err: Error) => toast.error(err.message),
   });
 
   const deleteMutation = useMutation({
     mutationFn: (id: number) => apiHelpers.galleryPhotos.remove(String(id)),
     onSuccess: () => { toast.success('Foto dihapus'); setDeleteModal(null); invalidate(); },
-    onError: () => toast.error('Gagal menghapus'),
+    onError: (err: Error) => toast.error(err.message),
   });
 
   const catSaveMutation = useMutation({
@@ -91,7 +91,7 @@ export default function GalleryPage() {
       toast.success(catEditingId ? 'Kategori diperbarui' : 'Kategori ditambahkan');
       invalidate();
     },
-    onError: () => toast.error('Gagal menyimpan kategori'),
+    onError: (err: Error) => toast.error(err.message),
   });
 
   const catDeleteMutation = useMutation({
@@ -102,7 +102,7 @@ export default function GalleryPage() {
       setCatForm({ name: '', slug: '' });
       invalidate();
     },
-    onError: () => toast.error('Gagal menghapus kategori'),
+    onError: (err: Error) => toast.error(err.message),
   });
 
   const handleEdit = (item: GalleryItem) => {
@@ -185,7 +185,7 @@ export default function GalleryPage() {
             </div>
             <FieldGroup className="flex items-end gap-3">
               <Field className="flex-1">
-                <FieldLabel>Nama</FieldLabel>
+                <FieldLabel required>Nama</FieldLabel>
                 <Input
                   value={catForm.name}
                   onChange={(e) => {
@@ -203,7 +203,7 @@ export default function GalleryPage() {
                 />
               </Field>
               <Field className="flex-1">
-                <FieldLabel>Slug</FieldLabel>
+                <FieldLabel required>Slug</FieldLabel>
                 <Input value={catForm.slug} onChange={(e) => setCatForm({ ...catForm, slug: e.target.value })} placeholder="competition" />
               </Field>
               <Button onClick={handleCatSave} disabled={catSaving} size="icon">
@@ -236,11 +236,11 @@ export default function GalleryPage() {
             <h2 className="text-sm font-black uppercase tracking-tight text-foreground">{editingId ? 'Edit' : 'Tambah'} Foto</h2>
             <FieldGroup className="grid grid-cols-1 gap-3 sm:grid-cols-3">
               <Field>
-                <FieldLabel>Judul <span className="text-destructive">*</span></FieldLabel>
+                <FieldLabel required>Judul</FieldLabel>
                 <Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder="Judul foto" />
               </Field>
               <Field>
-                <FieldLabel>Kategori <span className="text-destructive">*</span></FieldLabel>
+                <FieldLabel required>Kategori</FieldLabel>
                 <Select value={form.category} onValueChange={(v) => setForm({ ...form, category: v })}>
                   <SelectTrigger className="w-full">
                     <SelectValue />
@@ -267,7 +267,7 @@ export default function GalleryPage() {
               </Field>
             </FieldGroup>
             <Field>
-              <FieldLabel>Gambar <span className="text-destructive">*</span></FieldLabel>
+              <FieldLabel required>Gambar</FieldLabel>
               <div className="flex items-center gap-3">
                 <label className="cursor-pointer">
                   <span className="clip-angled-sm inline-block border border-border bg-muted px-4 py-2 text-xs font-bold uppercase tracking-wider text-muted-foreground transition-colors hover:bg-accent">

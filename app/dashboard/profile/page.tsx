@@ -114,7 +114,7 @@ export default function ProfilePage() {
           <form onSubmit={handleUpdatePassword} className="space-y-4">
             <FieldGroup className="gap-4">
               <Field>
-                <FieldLabel htmlFor="current-password">Password Saat Ini</FieldLabel>
+                <FieldLabel htmlFor="current-password" required>Password Saat Ini</FieldLabel>
                 <Input
                   id="current-password"
                   type="password"
@@ -126,7 +126,7 @@ export default function ProfilePage() {
 
               <div className={cn('grid grid-cols-1 gap-4 sm:grid-cols-2')}>
                 <Field>
-                  <FieldLabel htmlFor="new-password">Password Baru</FieldLabel>
+                  <FieldLabel htmlFor="new-password" required>Password Baru</FieldLabel>
                   <Input
                     id="new-password"
                     type="password"
@@ -137,7 +137,7 @@ export default function ProfilePage() {
                   />
                 </Field>
                 <Field>
-                  <FieldLabel htmlFor="confirm-password">Konfirmasi Password Baru</FieldLabel>
+                  <FieldLabel htmlFor="confirm-password" required>Konfirmasi Password Baru</FieldLabel>
                   <Input
                     id="confirm-password"
                     type="password"

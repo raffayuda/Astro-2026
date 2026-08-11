@@ -2,6 +2,7 @@ import { Elysia } from 'elysia';
 import { auth } from '@/src/server/auth';
 import { authRoutes } from '@/src/server/auth-routes';
 import { authPlugin } from '@/src/server/plugins/auth';
+import { formatZodError } from '@/src/server/helpers/validation';
 import { competitionsModule } from '@/src/server/modules/competitions';
 import { registrationsModule } from '@/src/server/modules/registrations';
 import { usersModule } from '@/src/server/modules/users';
@@ -24,9 +25,18 @@ import { uploadModule } from '@/src/server/modules/upload';
  * Better Auth is mounted at its default basePath `/api/auth` (the request
  * path already includes the `/api` prefix, so `.mount(auth.handler)` lines
  * up correctly).
+ *
+ * Validation errors are flattened to `{ error: "field: message" }` so clients
+ * can show exactly which field failed and why.
  */
 export const app = new Elysia({ prefix: '/api' })
   .use(authPlugin)
+  .onError(({ code, error, set }) => {
+    if (code === 'VALIDATION') {
+      set.status = 400;
+      return { error: formatZodError(error as any) };
+    }
+  })
   .use(authRoutes)
   .mount(auth.handler)
   .get('/health', () => ({ status: 'ok' }))

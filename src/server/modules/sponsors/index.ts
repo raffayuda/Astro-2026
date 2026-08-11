@@ -6,7 +6,7 @@ import { asc, eq } from 'drizzle-orm';
 import { z } from 'zod';
 
 const sponsorSchema = z.object({
-  name: z.string().min(1),
+  name: z.string().min(1, 'Nama sponsor wajib diisi'),
   tier: z.string().optional().default('gold'),
   website: z.string().nullable().optional(),
   logo: z.string().nullable().optional(),

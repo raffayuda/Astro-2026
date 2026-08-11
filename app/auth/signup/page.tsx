@@ -220,15 +220,15 @@ export default function SignupPage() {
                   <form onSubmit={handleSendOTP} className="flex flex-col gap-5">
                     <FieldGroup className="gap-5">
                       <Field>
-                        <FieldLabel htmlFor="name">Nama Lengkap</FieldLabel>
+                        <FieldLabel htmlFor="name" required>Nama Lengkap</FieldLabel>
                         <Input id="name" type="text" value={name} onChange={(e) => setName(e.target.value)} required />
                       </Field>
                       <Field>
-                        <FieldLabel htmlFor="email">Email</FieldLabel>
+                        <FieldLabel htmlFor="email" required>Email</FieldLabel>
                         <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
                       </Field>
                       <Field>
-                        <FieldLabel htmlFor="password">Password</FieldLabel>
+                        <FieldLabel htmlFor="password" required>Password</FieldLabel>
                         <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} />
                       </Field>
                     </FieldGroup>

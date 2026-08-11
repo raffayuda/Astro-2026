@@ -69,13 +69,13 @@ export default function SponsorPage() {
       toast.success(spEditingId ? 'Sponsor diperbarui' : 'Sponsor ditambahkan');
       invalidate();
     },
-    onError: () => toast.error('Gagal menyimpan sponsor'),
+    onError: (err: Error) => toast.error(err.message),
   });
 
   const spDeleteMutation = useMutation({
     mutationFn: (id: number) => apiHelpers.sponsors.remove(String(id)),
     onSuccess: () => { toast.success('Sponsor dihapus'); setDeleteModal(null); invalidate(); },
-    onError: () => toast.error('Gagal menghapus'),
+    onError: (err: Error) => toast.error(err.message),
   });
 
   const mpSaveMutation = useMutation({
@@ -89,13 +89,13 @@ export default function SponsorPage() {
       toast.success(mpEditingId ? 'Media partner diperbarui' : 'Media partner ditambahkan');
       invalidate();
     },
-    onError: () => toast.error('Gagal menyimpan media partner'),
+    onError: (err: Error) => toast.error(err.message),
   });
 
   const mpDeleteMutation = useMutation({
     mutationFn: (id: number) => apiHelpers.mediaPartners.remove(String(id)),
     onSuccess: () => { toast.success('Media partner dihapus'); setDeleteModal(null); invalidate(); },
-    onError: () => toast.error('Gagal menghapus'),
+    onError: (err: Error) => toast.error(err.message),
   });
 
   const handleSpSave = async () => {

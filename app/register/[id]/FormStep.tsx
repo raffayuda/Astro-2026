@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
+import { toast } from "sonner";
 import type { Competition } from "@/types/astro";
 import { useRegistrationApi } from "@/src/lib/hooks/use-registration";
 import {
@@ -53,16 +54,20 @@ export default function FormStep({
     onSubmit: async ({ value }) => {
       setFormData(value);
 
-      if (existingRegId) {
-        const reg = await update(existingRegId, value);
-        if (reg) onContinue(existingRegId, existingRef || "");
-      } else {
-        const reg = await create(
-          competition.id,
-          isTeam ? "team" : "individual",
-          value,
-        );
-        if (reg) onContinue(reg.id, reg.paymentReference ?? "");
+      try {
+        if (existingRegId) {
+          const reg = await update(existingRegId, value);
+          if (reg) onContinue(existingRegId, existingRef || "");
+        } else {
+          const reg = await create(
+            competition.id,
+            isTeam ? "team" : "individual",
+            value,
+          );
+          if (reg) onContinue(reg.id, reg.paymentReference ?? "");
+        }
+      } catch (err) {
+        toast.error(err instanceof Error ? err.message : "Gagal menyimpan data");
       }
     },
   });
@@ -72,7 +77,7 @@ export default function FormStep({
     label: string,
     type: string,
     placeholder: string,
-    opts?: { sanitize?: (v: string) => string; className?: string },
+    opts?: { sanitize?: (v: string) => string; className?: string; required?: boolean },
   ) => (
     <form.Field
       name={name}
@@ -83,7 +88,9 @@ export default function FormStep({
         const fieldId = `field-${String(name)}`;
         return (
           <Field data-invalid={!!err}>
-            <FieldLabel htmlFor={fieldId}>{label}</FieldLabel>
+            <FieldLabel htmlFor={fieldId} required={opts?.required}>
+              {label}
+            </FieldLabel>
             <Input
               id={fieldId}
               type={type}
@@ -143,12 +150,14 @@ export default function FormStep({
                   "Nama Tim",
                   "text",
                   "Masukkan nama tim Anda",
+                  { required: true },
                 )}
                 {renderField(
                   "leaderName",
                   "Nama Ketua Tim",
                   "text",
                   "Nama lengkap ketua tim",
+                  { required: true },
                 )}
                 {renderField(
                   "leaderIdentity",
@@ -181,6 +190,7 @@ export default function FormStep({
               "Sekolah / Instansi",
               "text",
               "Asal sekolah atau instansi",
+              { required: true },
             )}
 
             {renderField(
@@ -188,6 +198,7 @@ export default function FormStep({
               `Alamat Email${isTeam ? " Ketua" : ""}`,
               "email",
               "contoh@email.com",
+              { required: true },
             )}
 
             {renderField(
@@ -195,14 +206,14 @@ export default function FormStep({
               `Nomor WhatsApp${isTeam ? " Ketua" : ""}`,
               "tel",
               "62812XXXXXXXX",
-              { sanitize: (v) => v.replace(/\D/g, "") },
+              { sanitize: (v) => v.replace(/\D/g, ""), required: true },
             )}
           </FieldGroup>
 
           {/* Anggota Tim (team only) */}
           {isTeam && (
             <Field>
-              <FieldLabel>Anggota Tim (Min. {minTeamMembers})</FieldLabel>
+              <FieldLabel required>Anggota Tim (Min. {minTeamMembers})</FieldLabel>
               {Array.from({ length: maxTeamMembers }, (_, i) => (
                 <form.Field
                   key={i}

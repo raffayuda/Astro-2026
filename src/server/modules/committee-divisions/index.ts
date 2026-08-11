@@ -6,9 +6,9 @@ import { asc, eq } from 'drizzle-orm';
 import { z } from 'zod';
 
 const divisionSchema = z.object({
-  name: z.string().min(1),
+  name: z.string().min(1, 'Nama divisi wajib diisi'),
   shortName: z.string().nullable().optional(),
-  slug: z.string().min(1),
+  slug: z.string().min(1, 'Slug divisi wajib diisi'),
 });
 
 export const committeeDivisionsModule = new Elysia({ prefix: '/committee-divisions' })

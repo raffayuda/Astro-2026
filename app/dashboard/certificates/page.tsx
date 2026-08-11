@@ -63,7 +63,7 @@ export default function SertifikatPage() {
       toast.success(v.rank ? 'Ditandai sebagai juara ' + v.rank : 'Juara dibatalkan');
       invalidate();
     },
-    onError: () => toast.error('Gagal menyimpan'),
+    onError: (err: Error) => toast.error(err.message),
   });
 
   const sendMutation = useMutation({
@@ -74,14 +74,14 @@ export default function SertifikatPage() {
       toast.success('Sertifikat dikirim ke ' + (reg?.email ?? ''));
       invalidate();
     },
-    onError: () => toast.error('Gagal mengirim sertifikat'),
+    onError: (err: Error) => toast.error(err.message),
   });
 
   const toggleWinner = async (regId: string, rank: string | null) => {
     try {
       await winnerMutation.mutateAsync({ regId, rank });
-    } catch {
-      toast.error('Gagal menyimpan');
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Gagal menyimpan');
     }
   };
 
@@ -89,8 +89,8 @@ export default function SertifikatPage() {
     setSending(true);
     try {
       await sendMutation.mutateAsync(reg.id);
-    } catch {
-      toast.error('Gagal mengirim sertifikat');
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Gagal mengirim sertifikat');
     }
     setSending(false);
   };
@@ -119,7 +119,7 @@ export default function SertifikatPage() {
         <div className="flex items-end gap-3">
           <div className="max-w-md flex-1">
             <Field>
-              <FieldLabel className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Pilih Lomba</FieldLabel>
+              <FieldLabel className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground" required>Pilih Lomba</FieldLabel>
               <Select value={selectedComp} onValueChange={(v) => { setSelectedComp(v); setPage(1); }}>
                 <SelectTrigger className="clip-angled-sm h-10 w-full bg-background">
                   <SelectValue placeholder="-- Pilih Lomba --" />
