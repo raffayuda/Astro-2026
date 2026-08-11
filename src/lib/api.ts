@@ -33,11 +33,40 @@ export function getApiError(err: unknown, fallback = 'Request failed'): string {
             })
             .join('; ');
         }
+        
+        // Handle Elysia single validation error object
+        if (parsed.type === 'validation' && (parsed.summary || parsed.message)) {
+          const msg = parsed.summary || parsed.message;
+          if (msg.includes('Expected file size to not exceed')) {
+            return 'Ukuran file terlalu besar (maksimal 10MB)';
+          }
+          if (msg.includes('Expected File')) {
+            return 'Format file tidak didukung atau file kosong';
+          }
+          return msg;
+        }
       }
     } catch {
+      // Handle Elysia raw validation string messages
+      if (raw.includes('Expected file size to not exceed')) {
+        return 'Ukuran file terlalu besar (maksimal 10MB)';
+      }
+      if (raw.includes('Expected File')) {
+        return 'Format file tidak didukung atau file kosong';
+      }
       return raw || fallback;
     }
   }
+  
+  if (typeof raw === 'string') {
+    if (raw.includes('Expected file size to not exceed')) {
+      return 'Ukuran file terlalu besar (maksimal 10MB)';
+    }
+    if (raw.includes('Expected File')) {
+      return 'Format file tidak didukung atau file kosong';
+    }
+  }
+
   return raw || fallback;
 }
 
@@ -202,8 +231,7 @@ export const apiHelpers = {
       .post({ file } as never)
       .then((res) => {
         if (res.error) {
-          const value = res.error as { value?: { error?: string } };
-          throw new Error(value.value?.error ?? 'Upload gagal');
+          throw new Error(getApiError(res.error, 'Upload gagal'));
         }
         return res.data as { url: string };
       });
