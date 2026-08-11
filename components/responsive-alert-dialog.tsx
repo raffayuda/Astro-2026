@@ -1,11 +1,27 @@
-'use client';
+"use client";
 
-import { useIsMobile } from '@/hooks/use-mobile';
-import { cn } from '@/lib/utils';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
-import { Button } from '@/components/ui/button';
-import { Drawer, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle } from '@/components/ui/drawer';
-import { Spinner } from '@/components/ui/spinner';
+import { useIsMobile } from "@/hooks/use-mobile";
+import { cn } from "@/lib/utils";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
+import { Spinner } from "@/components/ui/spinner";
 
 interface ResponsiveAlertDialogProps {
   open: boolean;
@@ -28,8 +44,8 @@ export function ResponsiveAlertDialog({
   onOpenChange,
   title,
   description,
-  cancelText = 'Batal',
-  confirmText = 'Konfirmasi',
+  cancelText = "Batal",
+  confirmText = "Konfirmasi",
   destructive = false,
   loading = false,
   onConfirm,
@@ -42,7 +58,9 @@ export function ResponsiveAlertDialog({
         <DrawerContent>
           <DrawerHeader className="text-left">
             {title && <DrawerTitle>{title}</DrawerTitle>}
-            {description && <DrawerDescription>{description}</DrawerDescription>}
+            {description && (
+              <DrawerDescription>{description}</DrawerDescription>
+            )}
           </DrawerHeader>
           <DrawerFooter className="flex-row justify-end gap-2 pt-2">
             <Button
@@ -54,13 +72,13 @@ export function ResponsiveAlertDialog({
               {cancelText}
             </Button>
             <Button
-              variant={destructive ? 'destructive' : 'default'}
+              variant={destructive ? "destructive" : "default"}
               onClick={onConfirm}
               disabled={loading}
               className="flex-1 sm:flex-none"
             >
               {loading ? <Spinner data-icon="inline-start" /> : null}
-              {loading ? 'Memproses...' : confirmText}
+              {loading ? "Memproses..." : confirmText}
             </Button>
           </DrawerFooter>
         </DrawerContent>
@@ -70,21 +88,25 @@ export function ResponsiveAlertDialog({
 
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent className="clip-angled-lg">
+      <AlertDialogContent className="clip-angled-lg p-8">
         <AlertDialogHeader>
-          {title && <AlertDialogTitle className="uppercase">{title}</AlertDialogTitle>}
-          {description && <AlertDialogDescription>{description}</AlertDialogDescription>}
+          {title && (
+            <AlertDialogTitle className="uppercase">{title}</AlertDialogTitle>
+          )}
+          {description && (
+            <AlertDialogDescription>{description}</AlertDialogDescription>
+          )}
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel disabled={loading}>{cancelText}</AlertDialogCancel>
           <AlertDialogAction
-            variant={destructive ? 'destructive' : 'default'}
+            variant={destructive ? "destructive" : "default"}
             onClick={onConfirm}
             disabled={loading}
-            className={cn('clip-angled-sm')}
+            className={cn("clip-angled-sm")}
           >
             {loading ? <Spinner data-icon="inline-start" /> : null}
-            {loading ? 'Memproses...' : confirmText}
+            {loading ? "Memproses..." : confirmText}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
