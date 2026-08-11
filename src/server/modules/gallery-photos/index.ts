@@ -61,7 +61,6 @@ export const galleryPhotosModule = new Elysia({ prefix: '/gallery-photos' })
     if (body.year !== undefined) updates.year = body.year;
     if (body.likesCount !== undefined) updates.likesCount = body.likesCount;
     if (body.sortOrder !== undefined) updates.sortOrder = body.sortOrder;
-    if (body.sortOrder !== undefined) updates.sortOrder = body.sortOrder;
 
     const [existing] = await db.select().from(galleryPhotos).where(eq(galleryPhotos.id, Number(params.id)));
     if (!existing) return status(404, { error: 'Not found' });
@@ -70,7 +69,6 @@ export const galleryPhotosModule = new Elysia({ prefix: '/gallery-photos' })
       .update(galleryPhotos)
       .set(updates)
       .where(eq(galleryPhotos.id, Number(params.id)))
-      .returning();
       .returning();
       
     if (updates.imageUrl && existing.imageUrl !== updates.imageUrl) {

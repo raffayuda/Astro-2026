@@ -135,7 +135,6 @@ export const committeeMembersModule = new Elysia({ prefix: '/committee-members' 
     if (body.quote !== undefined) updates.quote = body.quote ?? null;
     if (body.instagram !== undefined) updates.instagram = body.instagram ?? null;
     if (body.linkedin !== undefined) updates.linkedin = body.linkedin ?? null;
-    if (body.linkedin !== undefined) updates.linkedin = body.linkedin ?? null;
     if (body.sortOrder !== undefined) updates.sortOrder = body.sortOrder;
 
     const [existing] = await db.select().from(committeeMembers).where(eq(committeeMembers.id, Number(params.id)));
@@ -145,7 +144,6 @@ export const committeeMembersModule = new Elysia({ prefix: '/committee-members' 
       .update(committeeMembers)
       .set(updates)
       .where(eq(committeeMembers.id, Number(params.id)))
-      .returning();
       .returning();
       
     if (updates.image && existing.image !== updates.image) {
