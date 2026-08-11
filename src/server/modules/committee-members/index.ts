@@ -18,11 +18,11 @@ const importRowSchema = t.Object({
 });
 
 const memberSchema = z.object({
-  name: z.string().min(1),
-  role: z.string().min(1),
-  division: z.string().min(1),
+  name: z.string().min(1, 'Nama wajib diisi'),
+  role: z.string().min(1, 'Jabatan wajib diisi'),
+  division: z.string().min(1, 'Divisi wajib diisi'),
   divisionName: z.string().optional(),
-  image: z.string().min(1),
+  image: z.string().min(1, 'Foto wajib diisi'),
   isLeader: z.boolean().optional().default(false),
   studyProgram: z.string().nullable().optional(),
   batch: z.string().nullable().optional(),

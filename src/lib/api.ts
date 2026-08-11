@@ -1,11 +1,51 @@
 import { api } from '@/src/lib/eden';
 
+/** Parse a server error payload into a clean, human-readable message. */
+export function getApiError(err: unknown, fallback = 'Request failed'): string {
+  const e = err as {
+    message?: string;
+    value?: { error?: string; message?: string };
+    name?: string;
+  };
+  const raw = e?.value?.error ?? e?.value?.message ?? e?.message;
+  if (!raw) return fallback;
+
+  // Server may return the validation error as a stringified JSON blob.
+  if (typeof raw === 'string') {
+    try {
+      const parsed = JSON.parse(raw);
+      if (parsed && typeof parsed === 'object') {
+        const issues = Array.isArray(parsed.errors)
+          ? parsed.errors
+          : Array.isArray(parsed.error)
+            ? parsed.error
+            : [];
+        if (issues.length > 0) {
+          return issues
+            .map((i: any) => {
+              const field = Array.isArray(i.path) ? i.path.join('.') : (i.path ?? '').replace(/^\//, '');
+              const msg =
+                typeof i.message === 'string' && !i.message.startsWith('Invalid input:')
+                  ? i.message
+                  : undefined;
+              const reason = msg ?? i.schema?.errorMessage ?? 'nilai tidak valid';
+              return field ? `${field}: ${reason}` : reason;
+            })
+            .join('; ');
+        }
+      }
+    } catch {
+      return raw || fallback;
+    }
+  }
+  return raw || fallback;
+}
+
 /** Await an Eden result, throw on error, return `data`. */
 export async function unwrap<T>(res: Promise<{ data: T | null; error: unknown }>): Promise<T> {
   const result = await res;
   if (result.error) {
-    const v = result.error as { value?: { error?: string; message?: string } };
-    throw new Error(v.value?.error ?? v.value?.message ?? 'Request failed');
+    throw new Error(getApiError(result.error));
   }
   if (result.data === null || result.data === undefined) {
     throw new Error('Empty response');

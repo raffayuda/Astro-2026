@@ -6,8 +6,8 @@ import { asc, eq } from 'drizzle-orm';
 import { z } from 'zod';
 
 const journeySchema = z.object({
-  year: z.string().min(1),
-  theme: z.string().min(1),
+  year: z.string().min(1, 'Tahun wajib diisi'),
+  theme: z.string().min(1, 'Tema wajib diisi'),
   participants: z.number().int().optional().default(0),
   universities: z.number().int().optional().default(0),
   competitionsCount: z.number().int().optional().default(0),

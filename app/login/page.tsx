@@ -117,7 +117,7 @@ export default function LoginPage() {
               <form onSubmit={handleLogin} className="flex flex-col gap-5">
                 <FieldGroup className="gap-5">
                   <Field>
-                    <FieldLabel htmlFor="email">Email</FieldLabel>
+                    <FieldLabel htmlFor="email" required>Email</FieldLabel>
                     <Input
                       id="email"
                       type="email"
@@ -129,7 +129,7 @@ export default function LoginPage() {
                   </Field>
 
                   <Field>
-                    <FieldLabel htmlFor="password">Password</FieldLabel>
+                    <FieldLabel htmlFor="password" required>Password</FieldLabel>
                     <InputGroup className="clip-angled-sm h-10 border-border bg-background">
                       <InputGroupInput
                         id="password"

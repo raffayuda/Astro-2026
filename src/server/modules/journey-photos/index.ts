@@ -6,8 +6,8 @@ import { asc, eq } from 'drizzle-orm';
 import { z } from 'zod';
 
 const photoSchema = z.object({
-  journeyId: z.string().min(1),
-  url: z.string().min(1),
+  journeyId: z.string().min(1, 'Perjalanan (journey) wajib dipilih'),
+  url: z.string().min(1, 'URL foto wajib diisi'),
   caption: z.string().optional().nullable(),
   sortOrder: z.number().int().optional().default(0),
 });

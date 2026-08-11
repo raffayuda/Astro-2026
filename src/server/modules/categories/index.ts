@@ -6,8 +6,8 @@ import { asc, eq, count } from 'drizzle-orm';
 import { z } from 'zod';
 
 const categorySchema = z.object({
-  id: z.string().min(1),
-  label: z.string().min(1),
+  id: z.string().min(1, 'ID kategori wajib diisi'),
+  label: z.string().min(1, 'Nama kategori wajib diisi'),
   color: z.string().optional().default('text-cyan-700 bg-cyan-50 border-cyan-200'),
   sortOrder: z.number().int().optional().default(99),
 });

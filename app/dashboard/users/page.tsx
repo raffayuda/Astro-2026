@@ -558,7 +558,7 @@ export default function UsersPage() {
         >
           <FieldGroup>
             <Field>
-              <FieldLabel htmlFor="user-name">Nama</FieldLabel>
+              <FieldLabel htmlFor="user-name" required={modal?.mode === "create"}>Nama</FieldLabel>
               <Input
                 id="user-name"
                 name="name"
@@ -568,7 +568,7 @@ export default function UsersPage() {
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="user-email">Email</FieldLabel>
+              <FieldLabel htmlFor="user-email" required>Email</FieldLabel>
               <Input
                 id="user-email"
                 name="email"
@@ -582,7 +582,7 @@ export default function UsersPage() {
 
             {modal?.mode === "create" && (
               <Field>
-                <FieldLabel htmlFor="user-password">Password</FieldLabel>
+                <FieldLabel htmlFor="user-password" required>Password</FieldLabel>
                 <Input
                   id="user-password"
                   name="password"

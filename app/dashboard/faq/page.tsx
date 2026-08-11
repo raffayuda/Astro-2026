@@ -13,6 +13,7 @@ import { Spinner } from '@/components/ui/spinner';
 import { Textarea } from '@/components/ui/textarea';
 import { useFaqs, queryKeys } from '@/src/lib/hooks/use-queries';
 import { apiHelpers } from '@/src/lib/api';
+import { toast } from 'sonner';
 
 const PAGE_SIZE = 10;
 
@@ -61,7 +62,11 @@ export default function FAQPage() {
 
   const handleSave = async (id: number) => {
     setSaving(true);
-    await saveMutation.mutateAsync({ id, body: editForm });
+    try {
+      await saveMutation.mutateAsync({ id, body: editForm });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Gagal menyimpan FAQ');
+    }
     setSaving(false);
   };
 
@@ -71,7 +76,11 @@ export default function FAQPage() {
       message: 'Yakin ingin menghapus FAQ ini? Tindakan ini tidak bisa dibatalkan.',
       onConfirm: async () => {
         setDeleteLoading(true);
-        await deleteMutation.mutateAsync(id);
+        try {
+          await deleteMutation.mutateAsync(id);
+        } catch (err) {
+          toast.error(err instanceof Error ? err.message : 'Gagal menghapus FAQ');
+        }
         setDeleteLoading(false);
       },
     });
@@ -80,7 +89,11 @@ export default function FAQPage() {
   const handleAdd = async () => {
     if (!addForm.question || !addForm.answer) return;
     setSaving(true);
-    await addMutation.mutateAsync(addForm);
+    try {
+      await addMutation.mutateAsync(addForm);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Gagal menambahkan FAQ');
+    }
     setSaving(false);
   };
 
@@ -127,7 +140,7 @@ export default function FAQPage() {
             <h2 className="text-sm font-black uppercase tracking-tight text-foreground">Tambah FAQ Baru</h2>
             <FieldGroup className="mt-4 gap-3">
               <Field>
-                <FieldLabel htmlFor="faq-question">Pertanyaan</FieldLabel>
+                <FieldLabel htmlFor="faq-question" required>Pertanyaan</FieldLabel>
                 <Input
                   id="faq-question"
                   value={addForm.question}
@@ -135,7 +148,7 @@ export default function FAQPage() {
                 />
               </Field>
               <Field>
-                <FieldLabel htmlFor="faq-answer">Jawaban</FieldLabel>
+                <FieldLabel htmlFor="faq-answer" required>Jawaban</FieldLabel>
                 <Textarea
                   id="faq-answer"
                   value={addForm.answer}

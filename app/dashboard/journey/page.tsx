@@ -72,13 +72,13 @@ export default function JourneyPage() {
       toast.success(editingId ? 'Journey diperbarui' : 'Journey ditambahkan');
       invalidate();
     },
-    onError: () => toast.error('Gagal menyimpan'),
+    onError: (err: Error) => toast.error(err.message),
   });
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => apiHelpers.journeys.remove(id),
     onSuccess: () => { toast.success('Journey dihapus'); setDeleteModal(null); invalidate(); },
-    onError: () => toast.error('Gagal menghapus'),
+    onError: (err: Error) => toast.error(err.message),
   });
 
   const handleEdit = (item: Journey) => {
@@ -148,11 +148,11 @@ export default function JourneyPage() {
             <h2 className="text-sm font-black uppercase tracking-tight text-foreground">{editingId ? 'Edit' : 'Tambah'} Journey</h2>
             <FieldGroup className="grid grid-cols-1 gap-3 sm:grid-cols-3">
               <Field>
-                <FieldLabel>Tahun <span className="text-destructive">*</span></FieldLabel>
+                <FieldLabel required>Tahun</FieldLabel>
                 <Input value={form.year} onChange={(e) => setForm({ ...form, year: e.target.value })} placeholder="2024" />
               </Field>
               <Field>
-                <FieldLabel>Tema <span className="text-destructive">*</span></FieldLabel>
+                <FieldLabel required>Tema</FieldLabel>
                 <Input value={form.theme} onChange={(e) => setForm({ ...form, theme: e.target.value })} placeholder="Tema" />
               </Field>
               <Field>

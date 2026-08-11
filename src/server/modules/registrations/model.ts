@@ -3,17 +3,17 @@ import { paginationSchema } from '@/src/server/helpers/pagination';
 
 /** Public POST body — anonymous registration (paymentAmount computed server-side). */
 export const registrationCreateSchema = z.object({
-  competitionId: z.string().min(1),
-  type: z.enum(['team', 'individual']),
+  competitionId: z.string().min(1, 'Lomba wajib dipilih'),
+  type: z.enum(['team', 'individual'], 'Tipe pendaftaran tidak valid'),
   fullName: z.string().nullable().optional(),
   identityNumber: z.string().nullable().optional(),
   teamName: z.string().nullable().optional(),
   leaderName: z.string().nullable().optional(),
   leaderIdentity: z.string().nullable().optional(),
   members: z.string().nullable().optional(),
-  institution: z.string().min(1),
-  email: z.string().email(),
-  whatsapp: z.string().min(1),
+  institution: z.string().min(1, 'Asal instansi wajib diisi'),
+  email: z.string().email('Format email tidak valid'),
+  whatsapp: z.string().min(1, 'Nomor WhatsApp wajib diisi'),
   paymentMethod: z.string().nullable().optional(),
 });
 

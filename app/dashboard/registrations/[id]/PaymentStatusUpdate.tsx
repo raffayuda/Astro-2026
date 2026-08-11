@@ -6,6 +6,7 @@ import { Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Spinner } from '@/components/ui/spinner';
+import { toast } from 'sonner';
 import { apiHelpers } from '@/src/lib/api';
 
 interface Props {
@@ -29,6 +30,7 @@ export default function PaymentStatusUpdate({ registrationId, currentStatus }: P
       setTimeout(() => setDone(false), 2000);
     } catch (err) {
       console.error(err);
+      toast.error(err instanceof Error ? err.message : 'Gagal memperbarui status');
     } finally {
       setLoading(false);
     }

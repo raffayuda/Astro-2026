@@ -7,9 +7,9 @@ import { z } from 'zod';
 import { paginationSchema, buildPaginatedResponse } from '@/src/server/helpers/pagination';
 
 const photoSchema = z.object({
-  title: z.string().min(1),
+  title: z.string().min(1, 'Judul foto wajib diisi'),
   category: z.string().optional().default('Competition'),
-  imageUrl: z.string().min(1),
+  imageUrl: z.string().min(1, 'URL gambar wajib diisi'),
   year: z.string().optional().default('ASTRO 2025'),
   likesCount: z.number().int().optional().default(0),
   sortOrder: z.number().int().optional().default(0),

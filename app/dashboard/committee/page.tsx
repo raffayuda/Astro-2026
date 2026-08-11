@@ -128,7 +128,7 @@ export default function CommitteePage() {
       toast.success(editingId ? "Anggota diperbarui" : "Anggota ditambahkan");
       invalidate();
     },
-    onError: () => toast.error("Gagal menyimpan"),
+    onError: (err: Error) => toast.error(err.message),
   });
 
   const deleteMutation = useMutation({
@@ -138,7 +138,7 @@ export default function CommitteePage() {
       setDeleteModal(null);
       invalidate();
     },
-    onError: () => toast.error("Gagal menghapus"),
+    onError: (err: Error) => toast.error(err.message),
   });
 
   const divSaveMutation = useMutation({
@@ -152,7 +152,7 @@ export default function CommitteePage() {
       toast.success(divEditingId ? "Divisi diperbarui" : "Divisi ditambahkan");
       invalidate();
     },
-    onError: () => toast.error("Gagal menyimpan divisi"),
+    onError: (err: Error) => toast.error(err.message),
   });
 
   const divDeleteMutation = useMutation({
@@ -164,7 +164,7 @@ export default function CommitteePage() {
       setDivForm({ name: "", shortName: "", slug: "" });
       invalidate();
     },
-    onError: () => toast.error("Gagal menghapus divisi"),
+    onError: (err: Error) => toast.error(err.message),
   });
 
   const handleDivisionChange = (slug: string) => {
@@ -480,7 +480,7 @@ export default function CommitteePage() {
             </div>
             <FieldGroup className="flex items-end gap-3">
               <Field className="flex-1">
-                <FieldLabel>Nama Divisi</FieldLabel>
+                <FieldLabel required>Nama Divisi</FieldLabel>
                 <Input
                   value={divForm.name}
                   onChange={(e) => {
@@ -506,7 +506,7 @@ export default function CommitteePage() {
                 />
               </Field>
               <Field className="flex-1">
-                <FieldLabel>Slug</FieldLabel>
+                <FieldLabel required>Slug</FieldLabel>
                 <Input
                   value={divForm.slug}
                   onChange={(e) => setDivForm({ ...divForm, slug: e.target.value })}
@@ -549,11 +549,11 @@ export default function CommitteePage() {
             </h2>
             <FieldGroup className="grid grid-cols-1 gap-3 sm:grid-cols-3">
               <Field>
-                <FieldLabel>Nama <span className="text-destructive">*</span></FieldLabel>
+                <FieldLabel required>Nama</FieldLabel>
                 <Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Nama" />
               </Field>
               <Field>
-                <FieldLabel>Jabatan <span className="text-destructive">*</span></FieldLabel>
+                <FieldLabel required>Jabatan</FieldLabel>
                 <Select value={form.role} onValueChange={(v) => setForm({ ...form, role: v })}>
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Pilih jabatan" />
@@ -568,7 +568,7 @@ export default function CommitteePage() {
                 </Select>
               </Field>
               <Field>
-                <FieldLabel>Divisi <span className="text-destructive">*</span></FieldLabel>
+                <FieldLabel required>Divisi</FieldLabel>
                 <Select value={form.division} onValueChange={handleDivisionChange}>
                   <SelectTrigger className="w-full">
                     <SelectValue />
@@ -611,7 +611,7 @@ export default function CommitteePage() {
                 <Input value={form.linkedin} onChange={(e) => setForm({ ...form, linkedin: e.target.value })} placeholder="URL LinkedIn" />
               </Field>
               <Field>
-                <FieldLabel>Foto <span className="text-destructive">*</span></FieldLabel>
+                <FieldLabel required>Foto</FieldLabel>
                 <div className="space-y-2">
                   <Input
                     value={form.image}

@@ -6,7 +6,7 @@ import { asc, eq } from 'drizzle-orm';
 import { z } from 'zod';
 
 const partnerSchema = z.object({
-  name: z.string().min(1),
+  name: z.string().min(1, 'Nama media partner wajib diisi'),
   website: z.string().nullable().optional(),
   logo: z.string().nullable().optional(),
   sortOrder: z.number().int().optional().default(0),
