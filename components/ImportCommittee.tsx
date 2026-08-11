@@ -45,11 +45,17 @@ export function toDriveImageUrl(value: string): string {
   return `https://lh3.googleusercontent.com/d/${id}=w1000`;
 }
 
-/** Normalisasi URL gambar: link Drive → URL gambar; selain itu dibiarkan apa adanya. */
+/** Normalisasi URL gambar: link Drive → URL gambar; legacy /uploads/ → storage; selain itu dibiarkan. */
 export function normalizeImageUrl(url: string): string {
   if (!url) return '';
   const drive = toDriveImageUrl(url);
-  return drive || url;
+  if (drive) return drive;
+  // Legacy local-fs paths (pre-Supabase) now live in the public uploads bucket.
+  if (url.startsWith('/uploads/')) {
+    const base = process.env.NEXT_PUBLIC_SUPABASE_URL ?? 'https://abhshprulipnmetfumrt.supabase.co';
+    return `${base}/storage/v1/object/public/uploads/${url.slice('/uploads/'.length)}`;
+  }
+  return url;
 }
 
 export default function ImportCommittee({ onImported }: { onImported?: () => void }) {

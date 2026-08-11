@@ -1,47 +1,91 @@
 import { Elysia, t, status } from 'elysia';
 import { authPlugin } from '@/src/server/plugins/auth';
-import { writeFile, mkdir } from 'fs/promises';
-import path from 'path';
+import { createClient } from '@supabase/supabase-js';
+import { randomUUID } from 'node:crypto';
 
-const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
+export const MAX_UPLOAD_SIZE = 10 * 1024 * 1024; // 10 MB
+
+/** File types allowed for upload, keyed by magic-byte signature. */
+const MAGIC_BYTES: { ext: string; mime: string; signature: number[]; check: (h: Uint8Array) => boolean }[] = [
+  { ext: 'png', mime: 'image/png', signature: [0x89, 0x50, 0x4e, 0x47], check: (h) => h.length >= 4 },
+  { ext: 'jpg', mime: 'image/jpeg', signature: [0xff, 0xd8, 0xff], check: (h) => h.length >= 3 },
+  {
+    // WEBP: RIFF....WEBP — verify the WEBP marker, not just RIFF (avoids AVI/WAV)
+    ext: 'webp', mime: 'image/webp', signature: [0x52, 0x49, 0x46, 0x46], check: (h) =>
+      h.length >= 12 &&
+      h[0] === 0x52 && h[1] === 0x49 && h[2] === 0x46 && h[3] === 0x46 && // RIFF
+      h[8] === 0x57 && h[9] === 0x45 && h[10] === 0x42 && h[11] === 0x50, // WEBP
+  },
+  { ext: 'gif', mime: 'image/gif', signature: [0x47, 0x49, 0x46, 0x38], check: (h) => h.length >= 4 },
+  { ext: 'pdf', mime: 'application/pdf', signature: [0x25, 0x50, 0x44, 0x46], check: (h) => h.length >= 4 },
+];
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseKey =
+  process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 /**
- * File upload (admin) — writes to public/uploads and returns a public URL.
- * NOTE: local-fs storage is not durable on Vercel; Supabase Storage swap
- * is a tracked follow-up (Phase D7 of the hardening plan).
+ * File upload (admin) — validates the real file content via magic bytes,
+ * writes to Supabase Storage (public `uploads` bucket) and returns an
+ * absolute public URL. Local-fs writes do not work on Vercel (read-only
+ * `/var/task`), so all uploads go to object storage instead.
  */
 export const uploadModule = new Elysia({ prefix: '/upload' })
   .use(authPlugin)
-  .post('/', async ({ body }) => {
+  .post('/', async ({ body, user }) => {
+    // Defense in depth: the `admin: true` macro already rejects non-admins
+    // (401 unauth / 403 forbidden), but re-verify the resolved session user.
+    if (user?.role !== 'admin') return status(403, { error: 'Forbidden' });
+
     const file = body.file;
 
     if (!file) return status(400, { error: 'File tidak ditemukan' });
 
-    if (file.size > MAX_FILE_SIZE) {
+    // Enforce the size limit both at the schema boundary and here (belt & suspenders).
+    if (file.size > MAX_UPLOAD_SIZE) {
       return status(400, { error: 'File terlalu besar (maksimal 10MB)' });
     }
-
-    const allowedTypes = ['image/', 'application/pdf'];
-    const isValid = allowedTypes.some(
-      (t) => file.type.startsWith(t) || file.name.toLowerCase().endsWith('.pdf'),
-    );
-    if (!isValid) {
-      return status(400, { error: 'Hanya file gambar (PNG/JPG) dan PDF yang diizinkan' });
+    if (file.size === 0) {
+      return status(400, { error: 'File kosong' });
     }
 
-    const ext = file.name.split('.').pop() || 'png';
-    const filename = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-    const uploadDir = path.join(process.cwd(), 'public', 'uploads');
-    const filePath = path.join(uploadDir, filename);
+    if (!supabaseUrl || !supabaseKey) {
+      console.error('Supabase env vars missing for upload');
+      return status(500, { error: 'Konfigurasi storage tidak lengkap' });
+    }
 
-    await mkdir(uploadDir, { recursive: true });
-    const bytes = await file.arrayBuffer();
-    await writeFile(filePath, Buffer.from(bytes));
+    // Sniff the real content type from the first bytes — never trust the
+    // client-supplied `Content-Type` or extension (blocks SVG/XSS payloads).
+    const bytes = new Uint8Array(await file.arrayBuffer());
+    const head = bytes.subarray(0, 12);
+    const match = MAGIC_BYTES.find((m) => m.check(head) && m.signature.every((byte, i) => head[i] === byte));
 
-    return { url: `/uploads/${filename}` };
+    if (!match) {
+      return status(400, {
+        error: 'Hanya file gambar (PNG/JPG/WEBP/GIF) dan PDF yang diizinkan',
+      });
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseKey);
+    const path = `uploads/${randomUUID()}.${match.ext}`;
+
+    const { data, error } = await supabase.storage
+      .from('uploads')
+      .upload(path, bytes, {
+        contentType: match.mime,
+        upsert: false,
+      });
+
+    if (error || !data?.path) {
+      console.error('Supabase upload failed:', error);
+      return status(500, { error: 'Gagal menyimpan file' });
+    }
+
+    const { data: publicUrl } = supabase.storage.from('uploads').getPublicUrl(data.path);
+    return { url: publicUrl.publicUrl };
   }, {
     body: t.Object({
-      file: t.File({ maxSize: MAX_FILE_SIZE }),
+      file: t.File({ maxSize: MAX_UPLOAD_SIZE }),
     }),
     admin: true,
   });

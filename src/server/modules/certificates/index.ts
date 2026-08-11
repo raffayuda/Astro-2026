@@ -39,14 +39,19 @@ export const certificatesModule = new Elysia({ prefix: '/certificates' })
 
     const certLinks = certs
       .map(
-        (c) =>
-          `<tr><td style="padding: 6px 0; color: #64748b; font-size: 13px;">${c.name}</td>
+        (c) => {
+          // Uploads now return absolute URLs (Supabase); keep relative ones working too.
+          const href = c.url?.startsWith('http')
+            ? c.url
+            : `${process.env.NEXT_PUBLIC_BASE_URL || 'https://astro2026.example.com'}${c.url}`;
+          return `<tr><td style="padding: 6px 0; color: #64748b; font-size: 13px;">${c.name}</td>
             <td style="padding: 6px 0; text-align: right;">
-              <a href="${process.env.NEXT_PUBLIC_BASE_URL || 'https://astro2026.example.com'}${c.url}"
+              <a href="${href}"
                  style="display: inline-block; padding: 8px 20px; background: #06b6d4; color: #0f172a; text-decoration: none; font-weight: 900; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; clip-path: polygon(5px 0, 100% 0, calc(100% - 5px) 100%, 0 100%);">
                 Download
               </a>
-            </td></tr>`,
+            </td></tr>`;
+        },
       )
       .join('');
 

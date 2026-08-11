@@ -55,7 +55,7 @@ export default function WinnerManager({ competitionId }: WinnerManagerProps) {
   const [draftChanges, setDraftChanges] = useState<Record<string, DraftEntry>>({});
 
   // New cert input per reg (before save)
-  const [newCert, setNewCert] = useState<Record<string, { name: string; uploading: boolean }>>({});
+  const [newCert, setNewCert] = useState<Record<string, { name: string; uploading: boolean; preview?: string }>>({});
 
   const { data: regsRaw, isLoading: loading } = useRegistrations({ competitionId, pageSize: 100 });
 
@@ -94,10 +94,13 @@ export default function WinnerManager({ competitionId }: WinnerManagerProps) {
       return;
     }
 
-    setNewCert((prev) => ({ ...prev, [regId]: { name, uploading: true } }));
+    // Local preview (object URL) shown while the file uploads
+    const preview = URL.createObjectURL(file);
+    setNewCert((prev) => ({ ...prev, [regId]: { name, uploading: true, preview } }));
     try {
       const uploadRes = await apiHelpers.upload(file);
       const url = (uploadRes as any)?.url;
+      URL.revokeObjectURL(preview);
       if (!url) { toast.error('Gagal upload'); setNewCert((prev) => ({ ...prev, [regId]: { name, uploading: false } })); return; }
 
       // Get current certs
@@ -113,6 +116,7 @@ export default function WinnerManager({ competitionId }: WinnerManagerProps) {
         return next;
       });
     } catch {
+      URL.revokeObjectURL(preview);
       toast.error('Upload gagal');
       setNewCert((prev) => ({ ...prev, [regId]: { name, uploading: false } }));
     }
@@ -326,6 +330,16 @@ export default function WinnerManager({ competitionId }: WinnerManagerProps) {
                       onChange={(e) => handleUploadCert(e, reg.id)} />
                   </label>
                 </div>
+                {newCert[reg.id]?.preview && (
+                  <div className="mt-2 flex items-center gap-2 border border-slate-100 bg-slate-50 px-2 py-1.5"
+                    style={{ clipPath: 'polygon(3px 0, 100% 0, calc(100% - 3px) 100%, 0 100%)' }}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={newCert[reg.id]?.preview} alt={newCert[reg.id]?.name || 'Preview'} className="size-7 rounded object-cover" />
+                    <span className="text-[10px] font-semibold text-slate-500">
+                      {newCert[reg.id]?.uploading ? 'Mengunggah...' : 'Preview sertifikat'}
+                    </span>
+                  </div>
+                )}
               </div>
             );
           })}
