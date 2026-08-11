@@ -19,6 +19,8 @@ import ImportCommittee, { normalizeImageUrl } from "@/components/ImportCommittee
 import Pagination from "@/components/Pagination";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import ImagePreviewModal from "@/components/ImagePreviewModal";
+import { cn } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -98,6 +100,8 @@ export default function CommitteePage() {
     instagram: "",
     linkedin: "",
   });
+  const [uploading, setUploading] = useState(false);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   const invalidate = () => {
     qc.invalidateQueries({ queryKey: queryKeys.committeeMembers.all });
@@ -622,22 +626,34 @@ export default function CommitteePage() {
                   <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
                     <span>atau</span>
                     <label className="cursor-pointer">
-                      <span className="clip-angled-sm inline-block border border-border bg-muted px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground transition-colors hover:bg-accent">
-                        Upload File
+                      <span className={cn(
+                        "clip-angled-sm inline-block border border-border px-3 py-1 text-[10px] font-bold uppercase tracking-wider transition-colors",
+                        uploading ? "bg-primary text-primary-foreground opacity-70 cursor-not-allowed" : "bg-muted text-muted-foreground hover:bg-accent"
+                      )}>
+                        {uploading ? "Mengunggah..." : "Upload File"}
                       </span>
                       <input
                         type="file"
                         accept="image/*"
                         className="hidden"
+                        disabled={uploading}
                         onChange={async (e) => {
                           const file = e.target.files?.[0];
                           if (!file) return;
+                          setUploading(true);
                           try {
                             const uploadRes = await apiHelpers.upload(file);
                             const url = (uploadRes as any)?.url;
-                            if (url) setForm({ ...form, image: url });
-                          } catch {
-                            console.error("Upload failed");
+                            if (url) {
+                              setForm({ ...form, image: url });
+                              toast.success('File berhasil diunggah');
+                            }
+                          } catch (err: any) {
+                            toast.error(err.message || 'Gagal mengunggah file');
+                            console.error("Upload failed", err);
+                          } finally {
+                            setUploading(false);
+                            e.target.value = '';
                           }
                         }}
                       />
@@ -649,7 +665,13 @@ export default function CommitteePage() {
             </FieldGroup>
             {form.image && (
               <div className="clip-angled-sm flex items-center gap-3 border border-border bg-muted/50 p-3">
-                <Image src={prepareImage(form.image)} alt="Preview" width={48} height={48} unoptimized className="size-12 rounded-full object-cover" />
+                <button
+                  type="button"
+                  onClick={() => setPreviewImage(form.image)}
+                  className="overflow-hidden rounded-full transition-opacity hover:opacity-80"
+                >
+                  <Image src={prepareImage(form.image)} alt="Preview" width={48} height={48} unoptimized className="size-12 object-cover" />
+                </button>
                 <span className="text-xs text-muted-foreground">Preview</span>
                 <Button variant="ghost" size="sm" onClick={() => setForm({ ...form, image: "" })} className="ml-auto text-xs text-destructive hover:text-destructive">Hapus</Button>
               </div>
@@ -697,7 +719,13 @@ export default function CommitteePage() {
                   className="size-4 shrink-0 accent-primary"
                 />
                 {item.image ? (
-                  <Image src={normalizeImageUrl(item.image)} alt="" width={40} height={40} unoptimized className="size-10 rounded-full object-cover" />
+                  <button
+                    type="button"
+                    onClick={() => setPreviewImage(item.image)}
+                    className="overflow-hidden rounded-full transition-opacity hover:opacity-80"
+                  >
+                    <Image src={normalizeImageUrl(item.image)} alt="" width={40} height={40} unoptimized className="size-10 object-cover" />
+                  </button>
                 ) : (
                   <div className="flex size-10 items-center justify-center rounded-full bg-muted text-[10px] font-bold uppercase text-muted-foreground">
                     {item.name.charAt(0)}
@@ -750,6 +778,7 @@ export default function CommitteePage() {
         onCancel={() => setDeleteModal(null)}
         loading={false}
       />
+      <ImagePreviewModal url={previewImage} onClose={() => setPreviewImage(null)} />
     </div>
   );
 }

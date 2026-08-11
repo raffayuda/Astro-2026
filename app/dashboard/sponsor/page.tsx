@@ -11,11 +11,13 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
+import ImagePreviewModal from '@/components/ImagePreviewModal';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Spinner } from '@/components/ui/spinner';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useSponsors, useMediaPartners, queryKeys } from '@/src/lib/hooks/use-queries';
 import { apiHelpers } from '@/src/lib/api';
+import { cn } from '@/lib/utils';
 
 interface Sponsor {
   id: number;
@@ -52,6 +54,9 @@ export default function SponsorPage() {
   const [mpSaving, setMpSaving] = useState(false);
   const [showMpAdd, setShowMpAdd] = useState(false);
   const [deleteModal, setDeleteModal] = useState<{ title: string; message: string; onConfirm: () => void } | null>(null);
+  const [spUploading, setSpUploading] = useState(false);
+  const [mpUploading, setMpUploading] = useState(false);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   const invalidate = () => {
     qc.invalidateQueries({ queryKey: queryKeys.sponsors.all });
@@ -211,18 +216,31 @@ export default function SponsorPage() {
                     <FieldLabel>Logo <span className="font-normal normal-case text-muted-foreground">(upload gambar, opsional jika ada teks nama)</span></FieldLabel>
                     <div className="flex items-center gap-3">
                       <label className="cursor-pointer">
-                        <span className="clip-angled-sm inline-block border border-border bg-muted px-4 py-2 text-xs font-bold uppercase tracking-wider text-muted-foreground transition-colors hover:bg-accent">
-                          Pilih File
+                        <span className={cn(
+                          "clip-angled-sm inline-block border border-border px-4 py-2 text-xs font-bold uppercase tracking-wider transition-colors",
+                          spUploading ? "bg-primary text-primary-foreground opacity-70 cursor-not-allowed" : "bg-muted text-muted-foreground hover:bg-accent"
+                        )}>
+                          {spUploading ? "Mengunggah..." : "Pilih File"}
                         </span>
-                        <input type="file" accept="image/*" className="hidden"
+                        <input type="file" accept="image/*" className="hidden" disabled={spUploading}
                           onChange={async (e) => {
                             const file = e.target.files?.[0];
                             if (!file) return;
+                            setSpUploading(true);
                             try {
                               const uploadRes = await apiHelpers.upload(file);
                               const url = (uploadRes as any)?.url;
-                              if (url) setSpForm({ ...spForm, logo: url });
-                            } catch { console.error('Upload failed'); }
+                              if (url) {
+                                setSpForm({ ...spForm, logo: url });
+                                toast.success('File berhasil diunggah');
+                              }
+                            } catch (err: any) {
+                              toast.error(err.message || 'Gagal mengunggah file');
+                              console.error('Upload failed', err);
+                            } finally {
+                              setSpUploading(false);
+                              e.target.value = '';
+                            }
                           }}
                         />
                       </label>
@@ -235,7 +253,9 @@ export default function SponsorPage() {
 
                 {spForm.logo && (
                   <div className="clip-angled-sm flex items-center gap-3 border border-border bg-muted/50 p-3">
-                    <Image src={spForm.logo} alt="Preview" width={40} height={40} unoptimized className="size-10 rounded object-contain" />
+                    <button type="button" onClick={() => setPreviewImage(spForm.logo)} className="overflow-hidden rounded transition-opacity hover:opacity-80">
+                      <Image src={spForm.logo} alt="Preview" width={40} height={40} unoptimized className="size-10 object-contain" />
+                    </button>
                     <span className="text-xs text-muted-foreground">Preview logo</span>
                     <Button variant="ghost" size="sm" onClick={() => setSpForm({ ...spForm, logo: '' })} className="ml-auto text-xs text-destructive hover:text-destructive">
                       Hapus
@@ -263,7 +283,9 @@ export default function SponsorPage() {
                 <CardContent className="flex items-center justify-between gap-4 p-0">
                   <div className="flex items-center gap-3">
                     {s.logo ? (
-                      <Image src={s.logo} alt="" width={32} height={32} unoptimized className="size-8 rounded object-contain" />
+                      <button type="button" onClick={() => setPreviewImage(s.logo || null)} className="overflow-hidden rounded transition-opacity hover:opacity-80">
+                        <Image src={s.logo} alt="" width={32} height={32} unoptimized className="size-8 object-contain" />
+                      </button>
                     ) : null}
                     <span className="text-sm font-bold text-foreground">{s.name || '(tanpa nama)'}</span>
                     {s.website && <span className="hidden text-[11px] text-muted-foreground sm:block">{s.website.replace(/https?:\/\//, '')}</span>}
@@ -312,18 +334,31 @@ export default function SponsorPage() {
                     <FieldLabel>Logo <span className="font-normal normal-case text-muted-foreground">(upload gambar, opsional jika ada teks nama)</span></FieldLabel>
                     <div className="flex items-center gap-3">
                       <label className="cursor-pointer">
-                        <span className="clip-angled-sm inline-block border border-border bg-muted px-4 py-2 text-xs font-bold uppercase tracking-wider text-muted-foreground transition-colors hover:bg-accent">
-                          Pilih File
+                        <span className={cn(
+                          "clip-angled-sm inline-block border border-border px-4 py-2 text-xs font-bold uppercase tracking-wider transition-colors",
+                          mpUploading ? "bg-primary text-primary-foreground opacity-70 cursor-not-allowed" : "bg-muted text-muted-foreground hover:bg-accent"
+                        )}>
+                          {mpUploading ? "Mengunggah..." : "Pilih File"}
                         </span>
-                        <input type="file" accept="image/*" className="hidden"
+                        <input type="file" accept="image/*" className="hidden" disabled={mpUploading}
                           onChange={async (e) => {
                             const file = e.target.files?.[0];
                             if (!file) return;
+                            setMpUploading(true);
                             try {
                               const uploadRes = await apiHelpers.upload(file);
                               const url = (uploadRes as any)?.url;
-                              if (url) setMpForm({ ...mpForm, logo: url });
-                            } catch { console.error('Upload failed'); }
+                              if (url) {
+                                setMpForm({ ...mpForm, logo: url });
+                                toast.success('File berhasil diunggah');
+                              }
+                            } catch (err: any) {
+                              toast.error(err.message || 'Gagal mengunggah file');
+                              console.error('Upload failed', err);
+                            } finally {
+                              setMpUploading(false);
+                              e.target.value = '';
+                            }
                           }}
                         />
                       </label>
@@ -336,7 +371,9 @@ export default function SponsorPage() {
 
                 {mpForm.logo && (
                   <div className="clip-angled-sm flex items-center gap-3 border border-border bg-muted/50 p-3">
-                    <Image src={mpForm.logo} alt="Preview" width={40} height={40} unoptimized className="size-10 rounded object-contain" />
+                    <button type="button" onClick={() => setPreviewImage(mpForm.logo)} className="overflow-hidden rounded transition-opacity hover:opacity-80">
+                      <Image src={mpForm.logo} alt="Preview" width={40} height={40} unoptimized className="size-10 object-contain" />
+                    </button>
                     <span className="text-xs text-muted-foreground">Preview logo</span>
                     <Button variant="ghost" size="sm" onClick={() => setMpForm({ ...mpForm, logo: '' })} className="ml-auto text-xs text-destructive hover:text-destructive">
                       Hapus
@@ -364,7 +401,9 @@ export default function SponsorPage() {
                 <CardContent className="flex items-center justify-between gap-4 p-0">
                   <div className="flex items-center gap-3">
                     {m.logo ? (
-                      <Image src={m.logo} alt="" width={32} height={32} unoptimized className="size-8 rounded object-contain" />
+                      <button type="button" onClick={() => setPreviewImage(m.logo || null)} className="overflow-hidden rounded transition-opacity hover:opacity-80">
+                        <Image src={m.logo} alt="" width={32} height={32} unoptimized className="size-8 object-contain" />
+                      </button>
                     ) : null}
                     <span className="text-sm font-bold text-foreground">{m.name || '(tanpa nama)'}</span>
                     {m.website && <span className="hidden text-[11px] text-muted-foreground sm:block">{m.website.replace(/https?:\/\//, '')}</span>}
@@ -390,6 +429,7 @@ export default function SponsorPage() {
         onCancel={() => setDeleteModal(null)}
         loading={false}
       />
+      <ImagePreviewModal url={previewImage} onClose={() => setPreviewImage(null)} />
     </div>
   );
 }

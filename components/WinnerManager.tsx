@@ -322,7 +322,7 @@ export default function WinnerManager({ competitionId }: WinnerManagerProps) {
                       className="clip-angled-sm gap-1 text-[9px] font-bold uppercase tracking-wider">
                       <span>
                         {newCert[reg.id]?.uploading ? <Spinner className="size-3" /> : <Upload className="size-3" />}
-                        Upload
+                        {newCert[reg.id]?.uploading ? 'Mengunggah...' : 'Upload'}
                       </span>
                     </Button>
                     <input type="file" accept="image/*,.pdf" className="hidden"

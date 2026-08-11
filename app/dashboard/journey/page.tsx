@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
+import ImagePreviewModal from '@/components/ImagePreviewModal';
 import { Spinner } from '@/components/ui/spinner';
 import { Textarea } from '@/components/ui/textarea';
 import { useJourneys, useJourneyPhotos, queryKeys } from '@/src/lib/hooks/use-queries';
@@ -234,6 +235,7 @@ function JourneyPhotoManager({ journey }: { journey: Journey }) {
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [caption, setCaption] = useState('');
   const [url, setUrl] = useState('');
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   const invalidate = () =>
     qc.invalidateQueries({ queryKey: queryKeys.journeyPhotos.list(journey.id) });
@@ -321,7 +323,7 @@ function JourneyPhotoManager({ journey }: { journey: Journey }) {
             className="clip-angled-sm gap-1 text-[10px] font-bold uppercase tracking-wider">
             <span>
               {uploading ? <Loader2 className="size-3 animate-spin" /> : <ImagePlus className="size-3" />}
-              Upload Foto
+              {uploading ? 'Mengunggah...' : 'Upload Foto'}
             </span>
           </Button>
           <input type="file" accept="image/*" className="hidden" disabled={uploading} onChange={handleUpload} />
@@ -342,12 +344,18 @@ function JourneyPhotoManager({ journey }: { journey: Journey }) {
         <div className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-5">
           {photos.map((p) => (
             <div key={p.id} className="clip-angled-sm group relative aspect-[4/3] overflow-hidden border border-border bg-muted">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={normalizeImageUrl(p.url)} alt={p.caption || 'Foto dokumentasi'} className="size-full object-cover" />
-              <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
+              <button
+                type="button"
+                onClick={() => setPreviewImage(p.url)}
+                className="size-full overflow-hidden transition-opacity hover:opacity-80"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={normalizeImageUrl(p.url)} alt={p.caption || 'Foto dokumentasi'} className="size-full object-cover" />
+              </button>
+              <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100 pointer-events-none">
                 <Button size="icon-xs" variant="outline" disabled={deletingId === p.id}
-                  onClick={() => handleDelete(p.id)} aria-label="Hapus foto"
-                  className="size-6 border-red-300 bg-white/90 text-red-600 hover:bg-red-50">
+                  onClick={(e) => { e.stopPropagation(); handleDelete(p.id); }} aria-label="Hapus foto"
+                  className="size-6 border-red-300 bg-white/90 text-red-600 hover:bg-red-50 pointer-events-auto">
                   {deletingId === p.id ? <Loader2 className="size-3 animate-spin" /> : <Trash2 className="size-3" />}
                 </Button>
               </div>
@@ -357,6 +365,7 @@ function JourneyPhotoManager({ journey }: { journey: Journey }) {
       ) : (
         <p className="mt-2 text-[11px] text-muted-foreground">Belum ada foto dokumentasi. Upload untuk menambahkan.</p>
       )}
+      <ImagePreviewModal url={previewImage} onClose={() => setPreviewImage(null)} />
     </div>
   );
 }

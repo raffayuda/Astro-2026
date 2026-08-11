@@ -12,11 +12,13 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
+import ImagePreviewModal from '@/components/ImagePreviewModal';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Spinner } from '@/components/ui/spinner';
 import { useGalleryPhotos, useGalleryCategories, queryKeys } from '@/src/lib/hooks/use-queries';
 import { apiHelpers } from '@/src/lib/api';
 import { normalizeImageUrl } from '@/components/ImportCommittee';
+import { cn } from '@/lib/utils';
 
 interface GalleryItem {
   id: number;
@@ -54,6 +56,8 @@ export default function GalleryPage() {
   const [catSaving, setCatSaving] = useState(false);
 
   const [form, setForm] = useState({ title: '', category: '', imageUrl: '', year: 'ASTRO 2025', likesCount: 0, sortOrder: 0 });
+  const [uploading, setUploading] = useState(false);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   const invalidate = () => {
     qc.invalidateQueries({ queryKey: queryKeys.galleryPhotos.all });
@@ -270,18 +274,31 @@ export default function GalleryPage() {
               <FieldLabel required>Gambar</FieldLabel>
               <div className="flex items-center gap-3">
                 <label className="cursor-pointer">
-                  <span className="clip-angled-sm inline-block border border-border bg-muted px-4 py-2 text-xs font-bold uppercase tracking-wider text-muted-foreground transition-colors hover:bg-accent">
-                    Upload File
+                  <span className={cn(
+                    "clip-angled-sm inline-block border border-border px-4 py-2 text-xs font-bold uppercase tracking-wider transition-colors",
+                    uploading ? "bg-primary text-primary-foreground opacity-70 cursor-not-allowed" : "bg-muted text-muted-foreground hover:bg-accent"
+                  )}>
+                    {uploading ? "Mengunggah..." : "Upload File"}
                   </span>
-                  <input type="file" accept="image/*" className="hidden"
+                  <input type="file" accept="image/*" className="hidden" disabled={uploading}
                     onChange={async (e) => {
                       const file = e.target.files?.[0];
                       if (!file) return;
+                      setUploading(true);
                       try {
                         const uploadRes = await apiHelpers.upload(file);
                         const url = (uploadRes as any)?.url;
-                        if (url) setForm({ ...form, imageUrl: url });
-                      } catch { console.error('Upload failed'); }
+                        if (url) {
+                          setForm({ ...form, imageUrl: url });
+                          toast.success('File berhasil diunggah');
+                        }
+                      } catch (err: any) {
+                        toast.error(err.message || 'Gagal mengunggah file');
+                        console.error('Upload failed', err);
+                      } finally {
+                        setUploading(false);
+                        e.target.value = '';
+                      }
                     }} />
                 </label>
                 <span className="text-[10px] text-muted-foreground">atau</span>
@@ -290,7 +307,13 @@ export default function GalleryPage() {
             </Field>
             {form.imageUrl && (
               <div className="clip-angled-sm flex items-center gap-3 border border-border bg-muted/50 p-3">
-                <Image src={normalizeImageUrl(form.imageUrl)} alt="Preview" width={64} height={48} unoptimized className="size-16 object-cover" />
+                <button
+                  type="button"
+                  onClick={() => setPreviewImage(form.imageUrl)}
+                  className="overflow-hidden rounded transition-opacity hover:opacity-80"
+                >
+                  <Image src={normalizeImageUrl(form.imageUrl)} alt="Preview" width={64} height={48} unoptimized className="size-16 object-cover" />
+                </button>
                 <span className="text-xs text-muted-foreground">Preview</span>
                 <Button variant="ghost" size="sm" onClick={() => setForm({ ...form, imageUrl: '' })} className="ml-auto text-xs text-destructive hover:text-destructive">Hapus</Button>
               </div>
@@ -314,7 +337,15 @@ export default function GalleryPage() {
             <div className="absolute -top-px -left-px size-6 bg-primary/20 transition-colors group-hover:bg-primary" style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }} />
             <CardContent className="flex items-center justify-between gap-4 p-0">
               <div className="flex items-center gap-3">
-                {item.imageUrl && <Image src={normalizeImageUrl(item.imageUrl)} alt="" width={48} height={36} unoptimized className="size-12 rounded object-cover" />}
+                {item.imageUrl && (
+                  <button
+                    type="button"
+                    onClick={() => setPreviewImage(item.imageUrl)}
+                    className="overflow-hidden rounded transition-opacity hover:opacity-80"
+                  >
+                    <Image src={normalizeImageUrl(item.imageUrl)} alt="" width={48} height={36} unoptimized className="size-12 object-cover" />
+                  </button>
+                )}
                 <div>
                   <span className="text-sm font-bold text-foreground">{item.title}</span>
                   <div className="mt-0.5 flex gap-2">
@@ -337,6 +368,7 @@ export default function GalleryPage() {
 
       <DeleteModal open={!!deleteModal} title={deleteModal?.title || ''} message={deleteModal?.message || ''}
         onConfirm={deleteModal?.onConfirm || (() => {})} onCancel={() => setDeleteModal(null)} loading={false} />
+      <ImagePreviewModal url={previewImage} onClose={() => setPreviewImage(null)} />
     </div>
   );
 }
