@@ -66,8 +66,8 @@ export default function CommitteePage() {
   const qc = useQueryClient();
   const { data: itemsData, isLoading: loading } = useCommitteeMembers();
   const { data: divisionsData } = useCommitteeDivisions();
-  const items = itemsData ?? [];
-  const divisions = divisionsData ?? [];
+  const items = (itemsData as unknown as CommitteeMember[]) ?? [];
+  const divisions = (divisionsData as unknown as Division[]) ?? [];
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [filterRole, setFilterRole] = useState("");
