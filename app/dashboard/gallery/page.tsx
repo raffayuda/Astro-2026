@@ -312,7 +312,7 @@ export default function GalleryPage() {
                   onClick={() => setPreviewImage(form.imageUrl)}
                   className="overflow-hidden rounded transition-opacity hover:opacity-80"
                 >
-                  <Image src={normalizeImageUrl(form.imageUrl)} alt="Preview" width={64} height={48} unoptimized className="size-16 object-cover" />
+                  <Image src={normalizeImageUrl(form.imageUrl)} alt="Preview" width={64} height={64} unoptimized className="size-16 object-cover" />
                 </button>
                 <span className="text-xs text-muted-foreground">Preview</span>
                 <Button variant="ghost" size="sm" onClick={() => setForm({ ...form, imageUrl: '' })} className="ml-auto text-xs text-destructive hover:text-destructive">Hapus</Button>
@@ -343,7 +343,7 @@ export default function GalleryPage() {
                     onClick={() => setPreviewImage(item.imageUrl)}
                     className="overflow-hidden rounded transition-opacity hover:opacity-80"
                   >
-                    <Image src={normalizeImageUrl(item.imageUrl)} alt="" width={48} height={36} unoptimized className="size-12 object-cover" />
+                    <Image src={normalizeImageUrl(item.imageUrl)} alt="" width={48} height={48} unoptimized className="size-12 object-cover" />
                   </button>
                 )}
                 <div>
