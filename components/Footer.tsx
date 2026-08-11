@@ -2,16 +2,17 @@
 
 import Image from 'next/image';
 import { motion, useReducedMotion } from 'motion/react';
-import { Heart, Camera, PlayCircle, MessageCircle } from 'lucide-react';
+import { Heart } from 'lucide-react';
+import { FaInstagram, FaTiktok, FaYoutube } from 'react-icons/fa6';
 import { Button } from '@/components/ui/button';
 
 export default function Footer() {
   const reduce = useReducedMotion();
 
   const socialLinks = [
-    { icon: Camera, label: 'Instagram', href: '#' },
-    { icon: MessageCircle, label: 'Twitter', href: '#' },
-    { icon: PlayCircle, label: 'YouTube', href: '#' },
+    { icon: FaInstagram, label: 'Instagram', href: 'https://www.instagram.com/astrosttnf/' },
+    { icon: FaTiktok, label: 'TikTok', href: 'https://www.tiktok.com/@astro.fest.competition' },
+    { icon: FaYoutube, label: 'YouTube', href: 'https://www.youtube.com/@ASTROSTTNF' },
   ];
 
   return (
@@ -54,11 +55,11 @@ export default function Footer() {
             <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4">Tautan Cepat</h3>
             <ul className="space-y-2.5">
               {[
-                { label: 'Beranda', href: '#home' },
-                { label: 'Tentang', href: '#about' },
-                { label: 'Lomba', href: '#competitions' },
-                { label: 'Timeline', href: '#timeline' },
-                { label: 'FAQ', href: '#faq' },
+                { label: 'Beranda', href: '/#home' },
+                { label: 'Tentang', href: '/#about' },
+                { label: 'Lomba', href: '/#competitions' },
+                { label: 'Timeline', href: '/#timeline' },
+                { label: 'FAQ', href: '/#faq' },
               ].map((link) => (
                 <li key={link.href}>
                   <a

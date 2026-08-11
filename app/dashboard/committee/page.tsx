@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
+import { Reorder } from "framer-motion";
 import {
   Plus,
   Pencil,
@@ -12,6 +13,8 @@ import {
   Building2,
   UploadCloud,
   Search,
+  GripVertical,
+  ArrowUpDown,
 } from "lucide-react";
 import { toast } from "sonner";
 import DeleteModal from "@/components/DeleteModal";
@@ -55,6 +58,7 @@ interface Division {
   name: string;
   slug: string;
   shortName: string | null;
+  sortOrder: number;
 }
 
 const PAGE_SIZE = 10;
@@ -83,7 +87,9 @@ export default function CommitteePage() {
   } | null>(null);
   const [showImport, setShowImport] = useState(false);
   const [showDivManager, setShowDivManager] = useState(false);
-  const [divForm, setDivForm] = useState({ name: "", shortName: "", slug: "" });
+  const [showReorderModal, setShowReorderModal] = useState(false);
+  const [reorderList, setReorderList] = useState<Division[]>([]);
+  const [divForm, setDivForm] = useState<{ name: string; shortName: string; slug: string }>({ name: "", shortName: "", slug: "" });
   const [divEditingId, setDivEditingId] = useState<number | null>(null);
   const [divSaving, setDivSaving] = useState(false);
 
@@ -171,6 +177,16 @@ export default function CommitteePage() {
     onError: (err: Error) => toast.error(err.message),
   });
 
+  const divReorderMutation = useMutation({
+    mutationFn: (ids: number[]) => apiHelpers.committeeDivisions.reorder(ids),
+    onSuccess: () => {
+      toast.success("Urutan divisi berhasil disimpan");
+      setShowReorderModal(false);
+      invalidate();
+    },
+    onError: (err: Error) => toast.error(err.message),
+  });
+
   const handleDivisionChange = (slug: string) => {
     const div = divisions.find((d) => d.slug === slug);
     setForm({ ...form, division: slug, divisionName: div?.name || slug });
@@ -243,20 +259,23 @@ export default function CommitteePage() {
     }
     setDivSaving(true);
     try {
-      await divSaveMutation.mutateAsync(divForm);
+      await divSaveMutation.mutateAsync({
+        ...divForm,
+      });
     } catch {
       toast.error("Gagal menyimpan divisi");
     }
     setDivSaving(false);
   };
 
-  const handleDivEdit = (div: Division) => {
-    setDivForm({
-      name: div.name,
-      shortName: (div as any).shortName || "",
-      slug: div.slug,
-    });
-    setDivEditingId(div.id);
+  const handleReorderSave = async () => {
+    const ids = reorderList.map((d) => d.id);
+    await divReorderMutation.mutateAsync(ids);
+  };
+
+  const handleDivEdit = (d: Division) => {
+    setDivEditingId(d.id);
+    setDivForm({ name: d.name, shortName: d.shortName || "", slug: d.slug });
   };
 
   const handleDivDelete = async (id: number) => {
@@ -318,61 +337,46 @@ export default function CommitteePage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-black uppercase tracking-tight text-foreground">
+          <h1 className="text-3xl font-black uppercase tracking-tight text-foreground">
             Committee
           </h1>
-          <p className="mt-1 text-sm font-light text-muted-foreground">
-            {items.length} anggota
+          <p className="mt-1 text-sm text-muted-foreground">
+            Kelola anggota panitia dan divisi Astro 2026
           </p>
         </div>
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            onClick={() => {
-              setShowImport(!showImport);
-              setShowDivManager(false);
-              setShowAdd(false);
-            }}
-            className="clip-angled text-xs font-bold uppercase tracking-wider"
-          >
-            <UploadCloud data-icon="inline-start" /> Import
+        <div className="flex items-center gap-2">
+          <Button variant="outline" onClick={() => setShowImport(true)} className="clip-angled-sm gap-2 font-bold uppercase tracking-wider">
+            <UploadCloud className="size-4" /> Import CSV
           </Button>
-          <Button
-            variant="outline"
-            onClick={() => {
-              setShowDivManager(!showDivManager);
-              setShowAdd(false);
-              setShowImport(false);
-            }}
-            className="clip-angled text-xs font-bold uppercase tracking-wider"
-          >
-            <Building2 data-icon="inline-start" /> Kelola Divisi
+          <Button variant="outline" onClick={() => {
+            setReorderList([...divisions]);
+            setShowReorderModal(true);
+          }} className="clip-angled-sm gap-2 font-bold uppercase tracking-wider border-amber-200 text-amber-700 bg-amber-50 hover:bg-amber-100 hover:text-amber-800">
+            <ArrowUpDown className="size-4" /> Atur Urutan
           </Button>
-          <Button
-            onClick={() => {
-              setShowAdd(!showAdd);
-              setShowDivManager(false);
-              setShowImport(false);
-              setEditingId(null);
-              setForm({
-                name: "",
-                role: "",
-                division: divisions[0]?.slug || "",
-                divisionName: divisions[0]?.name || "",
-                image: "",
-                isLeader: "0",
-                studyProgram: "",
-                batch: "",
-                quote: "",
-                instagram: "",
-                linkedin: "",
-              });
-            }}
-            className="clip-angled text-xs font-bold uppercase tracking-wider"
-          >
-            <Plus data-icon="inline-start" /> Tambah Anggota
+          <Button variant="outline" onClick={() => setShowDivManager(true)} className="clip-angled-sm gap-2 font-bold uppercase tracking-wider">
+            <Building2 className="size-4" /> Kelola Divisi
+          </Button>
+          <Button onClick={() => {
+            setEditingId(null);
+            setForm({
+              name: "",
+              role: "",
+              division: divisions[0]?.slug || "",
+              divisionName: divisions[0]?.name || "",
+              image: "",
+              isLeader: "0",
+              studyProgram: "",
+              batch: "",
+              quote: "",
+              instagram: "",
+              linkedin: "",
+            });
+            setShowAdd(true);
+          }} className="clip-angled-sm gap-2 font-bold uppercase tracking-wider">
+            <Plus className="size-4" /> Tambah
           </Button>
         </div>
       </div>
@@ -779,6 +783,56 @@ export default function CommitteePage() {
         loading={false}
       />
       <ImagePreviewModal url={previewImage} onClose={() => setPreviewImage(null)} />
+
+      {/* Modal Reorder Divisi */}
+      {showReorderModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <Card className="w-full max-w-md clip-angled relative border-border shadow-2xl">
+            <div className="absolute -top-px -left-px size-8 bg-amber-500" style={{ clipPath: "polygon(0 0, 100% 0, 0 100%)" }} />
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-black uppercase tracking-tight text-foreground">
+                  Urutkan Divisi
+                </h2>
+                <Button variant="ghost" size="icon-sm" onClick={() => setShowReorderModal(false)}><X className="size-4" /></Button>
+              </div>
+              <p className="text-xs text-muted-foreground mb-6">
+                Geser (drag & drop) item di bawah ini untuk mengatur urutan divisi. Divisi paling atas akan muncul pertama di halaman utama.
+              </p>
+
+              <div className="max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
+                <Reorder.Group axis="y" values={reorderList} onReorder={setReorderList} className="flex flex-col gap-2">
+                  {reorderList.map((div) => (
+                    <Reorder.Item
+                      key={div.id}
+                      value={div}
+                      className="flex items-center gap-3 rounded-md border border-border bg-card p-3 shadow-sm cursor-grab active:cursor-grabbing hover:border-primary/50"
+                    >
+                      <GripVertical className="size-4 text-muted-foreground" />
+                      <span className="text-sm font-bold">{div.name}</span>
+                      {div.shortName && (
+                        <Badge variant="secondary" className="ml-auto text-[10px] uppercase">
+                          {div.shortName}
+                        </Badge>
+                      )}
+                    </Reorder.Item>
+                  ))}
+                </Reorder.Group>
+              </div>
+
+              <div className="flex justify-end gap-2 mt-6">
+                <Button variant="outline" onClick={() => setShowReorderModal(false)} className="text-xs font-bold uppercase">
+                  Batal
+                </Button>
+                <Button onClick={handleReorderSave} disabled={divReorderMutation.isPending} className="bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold uppercase gap-2">
+                  {divReorderMutation.isPending ? <Spinner className="size-4 text-white" /> : <Check className="size-4" />}
+                  Simpan Urutan
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </div>
   );
 }

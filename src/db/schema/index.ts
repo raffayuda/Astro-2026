@@ -289,6 +289,7 @@ export const committeeDivisions = pgTable("committee_divisions", {
   name: text("name").notNull(),
   shortName: text("short_name"),
   slug: text("slug").notNull().unique(),
+  sortOrder: integer("sort_order").default(0),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

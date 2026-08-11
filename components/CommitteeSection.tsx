@@ -54,6 +54,7 @@ export default function CommitteeSection() {
       }
     });
 
+    // Backend already returns divisions sorted by sortOrder ASC, then id ASC
     return merged;
   }, [members, divList]);
 
@@ -61,7 +62,28 @@ export default function CommitteeSection() {
     if (divisions.length > 0 && !activeDivision) setActiveDivision(divisions[0].slug);
   }, [divisions, activeDivision]);
 
-  const filteredMembers = members.filter((m) => m.division === activeDivision);
+  const getRoleWeight = (role: string) => {
+    if (!role) return 99;
+    const r = role.toLowerCase();
+    if (r.includes('sc') || r.includes('steering')) return 1;
+    if (r.includes('po') || r.includes('project officer') || r.includes('ketua pelaksana')) return 2;
+    if (r.includes('wakil')) return 3;
+    if (r.includes('sekretaris') || r.includes('sekre')) return 4;
+    if (r.includes('bendahara') || r.includes('bendum')) return 5;
+    if (r.includes('pi') || r.includes('pengurus inti')) return 6;
+    if (r.includes('koordinator') || r.includes('co')) return 7;
+    return 99;
+  };
+
+  const filteredMembers = members
+    .filter((m) => m.division === activeDivision)
+    .sort((a, b) => {
+      const weightDiff = getRoleWeight(a.role) - getRoleWeight(b.role);
+      if (weightDiff !== 0) return weightDiff;
+      if (a.sortOrder !== b.sortOrder) return (a.sortOrder || 0) - (b.sortOrder || 0);
+      return a.name.localeCompare(b.name);
+    });
+
   const currentDivision = divisions.find((d) => d.slug === activeDivision);
 
   const toggleHover = useCallback((id: number | null) => {
@@ -162,8 +184,8 @@ export default function CommitteeSection() {
           </div>
         )}
 
-        {/* ── 3-Column Grid ── */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+        {/* ── Carousel Grid ── */}
+        <div className="flex overflow-x-auto gap-4 md:gap-6 snap-x snap-mandatory pb-8 px-4 sm:px-6 lg:px-8 -mx-4 sm:-mx-6 lg:-mx-8 scroll-smooth [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           {filteredMembers.map((member, index) => {
             const isRevealed = hoveredId === member.id;
             return (
@@ -173,7 +195,7 @@ export default function CommitteeSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: Math.min(index * 0.05, 0.3), ease: [0.16, 1, 0.3, 1] }}
-                className="group"
+                className="group flex-none w-56 md:w-64 snap-center first:ml-0 last:mr-0"
                 onMouseEnter={() => setHoveredId(member.id)}
                 onMouseLeave={() => setHoveredId(null)}
                 onClick={() => toggleHover(member.id)}
@@ -189,8 +211,8 @@ export default function CommitteeSection() {
 
                   {/* Always-visible role badge */}
                   <div className="absolute top-3 left-3 z-20">
-                    <Badge className={member.isLeader === '1' ? 'bg-amber-400 text-[10px] font-bold uppercase tracking-wider text-amber-950 shadow-sm' : 'bg-white/80 text-[10px] font-bold uppercase tracking-wider text-slate-700 ring-1 ring-white backdrop-blur-sm'}>
-                      {member.isLeader === '1' ? 'Koordinator' : 'Staf'}
+                    <Badge className={member.isLeader === '1' ? 'bg-amber-400 text-[10px] font-bold uppercase tracking-wider text-amber-950 shadow-sm max-w-[140px] truncate inline-block' : 'bg-white/80 text-[10px] font-bold uppercase tracking-wider text-slate-700 ring-1 ring-white backdrop-blur-sm max-w-[140px] truncate inline-block'}>
+                      {member.role || 'Anggota'}
                     </Badge>
                   </div>
 
@@ -205,7 +227,7 @@ export default function CommitteeSection() {
                         className="absolute inset-0 z-10 flex flex-col justify-end bg-gradient-to-t from-slate-900/70 via-slate-900/20 to-transparent backdrop-blur-[2px]"
                       >
                         <div className="p-4 md:p-5">
-                          <h3 className="text-sm md:text-base font-bold text-white leading-tight drop-shadow-sm">
+                          <h3 className="text-sm md:text-base font-bold text-white leading-tight drop-shadow-sm capitalize">
                             {member.name}
                           </h3>
                           <p className="text-xs text-white/80 mt-0.5 font-medium drop-shadow-sm">
@@ -244,7 +266,7 @@ export default function CommitteeSection() {
         </div>
 
         {/* ── Total Count ── */}
-        <div className="flex justify-center mt-12">
+        <div className="flex justify-center mt-16">
           <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/50 backdrop-blur-xl rounded-xl ring-1 ring-white/80 shadow-sm">
             <Users className="w-4 h-4 text-astro-cyan" />
             <span className="text-xs font-semibold text-slate-600">

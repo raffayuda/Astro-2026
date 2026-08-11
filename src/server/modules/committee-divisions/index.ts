@@ -9,11 +9,12 @@ const divisionSchema = z.object({
   name: z.string().min(1, 'Nama divisi wajib diisi'),
   shortName: z.string().nullable().optional(),
   slug: z.string().min(1, 'Slug divisi wajib diisi'),
+  sortOrder: z.number().optional().nullable(),
 });
 
 export const committeeDivisionsModule = new Elysia({ prefix: '/committee-divisions' })
   .use(authPlugin)
-  .get('/', () => db.select().from(committeeDivisions).orderBy(asc(committeeDivisions.id)))
+  .get('/', () => db.select().from(committeeDivisions).orderBy(asc(committeeDivisions.sortOrder), asc(committeeDivisions.id)))
   .post('/', async ({ body }) => {
     const [item] = await db
       .insert(committeeDivisions)
@@ -21,6 +22,7 @@ export const committeeDivisionsModule = new Elysia({ prefix: '/committee-divisio
         name: body.name,
         shortName: body.shortName ?? null,
         slug: body.slug,
+        sortOrder: body.sortOrder ?? 0,
       })
       .returning();
     return status(201, item);
@@ -40,10 +42,11 @@ export const committeeDivisionsModule = new Elysia({ prefix: '/committee-divisio
 
       if (!existing) return status(404, { error: 'Divisi tidak ditemukan' });
 
-      const updates: { name?: string; shortName?: string | null; slug?: string } = {};
+      const updates: { name?: string; shortName?: string | null; slug?: string; sortOrder?: number } = {};
       if (body.name !== undefined && body.name.trim() !== '') updates.name = body.name.trim();
       if (body.shortName !== undefined) updates.shortName = body.shortName ? body.shortName.trim() : null;
       if (body.slug !== undefined && body.slug.trim() !== '') updates.slug = body.slug.trim();
+      if ((body as any).sortOrder !== undefined) updates.sortOrder = (body as any).sortOrder === null ? 0 : (body as any).sortOrder;
 
       if (Object.keys(updates).length === 0) {
         return existing;
@@ -64,6 +67,7 @@ export const committeeDivisionsModule = new Elysia({ prefix: '/committee-divisio
               name: updates.name || existing.name,
               shortName: updates.shortName !== undefined ? updates.shortName : existing.shortName,
               slug: newSlug!,
+              sortOrder: updates.sortOrder !== undefined ? updates.sortOrder : existing.sortOrder,
             })
             .returning();
 
@@ -114,6 +118,7 @@ export const committeeDivisionsModule = new Elysia({ prefix: '/committee-divisio
         name: t.String(),
         shortName: t.Nullable(t.String()),
         slug: t.String(),
+        sortOrder: t.Optional(t.Union([t.Number(), t.Null()])),
       }),
     ),
     admin: true,
@@ -135,6 +140,25 @@ export const committeeDivisionsModule = new Elysia({ prefix: '/committee-divisio
     return { success: true };
   }, {
     params: t.Object({ id: t.String() }),
+    admin: true,
+  })
+  .put('/reorder', async ({ body }) => {
+    try {
+      await db.transaction(async (tx) => {
+        for (let i = 0; i < body.ids.length; i++) {
+          await tx
+            .update(committeeDivisions)
+            .set({ sortOrder: i + 1 })
+            .where(eq(committeeDivisions.id, body.ids[i]));
+        }
+      });
+      return { success: true };
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Gagal mengubah urutan';
+      return status(500, { error: message });
+    }
+  }, {
+    body: t.Object({ ids: t.Array(t.Number()) }),
     admin: true,
   });
 

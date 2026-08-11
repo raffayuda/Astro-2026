@@ -153,6 +153,8 @@ export const apiHelpers = {
     create: (body: unknown) => unwrap(api['committee-divisions'].post(body as never)),
     update: (id: string, body: unknown) =>
       unwrap(api['committee-divisions']({ id }).put(body as never)),
+    reorder: (ids: number[]) =>
+      unwrap(api['committee-divisions'].reorder.put({ ids } as never)),
     remove: (id: string) => unwrap(api['committee-divisions']({ id }).delete()),
   },
 
