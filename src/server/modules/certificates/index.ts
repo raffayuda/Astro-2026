@@ -40,10 +40,15 @@ export const certificatesModule = new Elysia({ prefix: '/certificates' })
     const certLinks = certs
       .map(
         (c) => {
-          // Uploads now return absolute URLs (Supabase); keep relative ones working too.
-          const href = c.url?.startsWith('http')
-            ? c.url
-            : `${process.env.NEXT_PUBLIC_BASE_URL || 'https://astro2026.example.com'}${c.url}`;
+          // New uploads are absolute Supabase URLs. Legacy `/uploads/...`
+          // paths now live in the public `uploads` Storage bucket.
+          const storageBase = process.env.NEXT_PUBLIC_SUPABASE_URL ||
+            'https://abhshprulipnmetfumrt.supabase.co';
+          const href = c.url?.startsWith('/uploads/')
+            ? `${storageBase}/storage/v1/object/public/uploads/${c.url.slice('/uploads/'.length)}`
+            : c.url?.startsWith('http')
+              ? c.url
+              : `${process.env.NEXT_PUBLIC_BASE_URL || 'https://astro2026.example.com'}${c.url}`;
           return `<tr><td style="padding: 6px 0; color: #64748b; font-size: 13px;">${c.name}</td>
             <td style="padding: 6px 0; text-align: right;">
               <a href="${href}"
