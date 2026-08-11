@@ -23,6 +23,7 @@ import {
 interface Props {
   competition: Competition;
   isTeam: boolean;
+  regType: 'team' | 'individual';
   formData: RegistrationFormValues;
   setFormData: (data: any) => void;
   onContinue: (registrationId: string, reference: string) => void;
@@ -35,6 +36,7 @@ interface Props {
 export default function FormStep({
   competition,
   isTeam,
+  regType,
   formData,
   setFormData,
   onContinue,
@@ -61,7 +63,7 @@ export default function FormStep({
         } else {
           const reg = await create(
             competition.id,
-            isTeam ? "team" : "individual",
+            regType,
             value,
           );
           if (reg) onContinue(reg.id, reg.paymentReference ?? "");

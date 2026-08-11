@@ -189,15 +189,23 @@ export const apiHelpers = {
     send: (body: unknown) => unwrap(api.certificates.send.post(body as never)),
   },
 
-  // Upload (multipart)
-  upload: (file: File) =>
-    api.upload
+  // Upload (multipart, admin) — fails fast on oversized files client-side too
+  upload: (file: File) => {
+    const MAX = 10 * 1024 * 1024;
+    if (file.size > MAX) {
+      return Promise.reject(new Error('File terlalu besar (maksimal 10MB)'));
+    }
+    if (file.size === 0) {
+      return Promise.reject(new Error('File kosong'));
+    }
+    return api.upload
       .post({ file } as never)
       .then((res) => {
         if (res.error) {
           const value = res.error as { value?: { error?: string } };
           throw new Error(value.value?.error ?? 'Upload gagal');
         }
-        return res.data;
-      }),
+        return res.data as { url: string };
+      });
+  },
 };

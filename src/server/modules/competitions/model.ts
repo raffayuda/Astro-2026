@@ -25,7 +25,7 @@ export const competitionInputSchema = z.object({
   rulebookUrl: z.string().optional().default(''),
   contactName: z.string().optional().default(''),
   contactWhatsapp: z.string().optional().default(''),
-  type: z.enum(['individual', 'team'], 'Tipe lomba tidak valid').optional().default('individual'),
+  type: z.enum(['individual', 'team', 'both'], 'Tipe lomba tidak valid').optional().default('individual'),
   maxTeamMembers: z.number().int().min(1, 'Maksimal anggota tim minimal 1').optional().default(1),
   minTeamMembers: z.number().int().min(1, 'Minimal anggota tim minimal 1').optional().default(1),
   membersRequired: z.enum(['optional', 'required'], 'Pilihan anggota tidak valid').optional().default('optional'),

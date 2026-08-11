@@ -116,15 +116,19 @@ function FormFields({ form, setForm, isAdd, categories }: { form: any; setForm: 
         <ToggleGroup type="single" value={form.type} onValueChange={(v) => v && update('type', v)} spacing={2} className="w-full">
           <ToggleGroupItem value="individual" className="flex-1 text-xs font-bold uppercase tracking-wider">Individu</ToggleGroupItem>
           <ToggleGroupItem value="team" className="flex-1 text-xs font-bold uppercase tracking-wider">Tim</ToggleGroupItem>
+          <ToggleGroupItem value="both" className="flex-1 text-xs font-bold uppercase tracking-wider">Keduanya</ToggleGroupItem>
         </ToggleGroup>
+        {form.type === 'both' && (
+          <p className="mt-1.5 text-[10px] text-muted-foreground">Peserta bisa memilih pendaftaran individu atau tim.</p>
+        )}
       </Field>
-      {form.type === 'team' && (
+      {form.type !== 'individual' && (
         <Field>
           <FieldLabel className="gap-1" required><Users className="size-3" /> Maksimal Anggota per Tim</FieldLabel>
           <Input type="number" min={1} value={form.maxTeamMembers} onChange={(e) => update('maxTeamMembers', parseInt(e.target.value) || 1)} />
         </Field>
       )}
-      {form.type === 'team' && (
+      {form.type !== 'individual' && (
         <Field>
           <FieldLabel className="gap-1" required><Users className="size-3" /> Minimal Anggota per Tim</FieldLabel>
           <Input type="number" min={1} max={form.maxTeamMembers} value={form.minTeamMembers} onChange={(e) => update('minTeamMembers', parseInt(e.target.value) || 1)} />
@@ -160,7 +164,7 @@ function FormFields({ form, setForm, isAdd, categories }: { form: any; setForm: 
         )}
       </Field>
       <Field>
-        <FieldLabel className="gap-1" required><Users className="size-3" /> {form.type === 'team' ? 'Kuota Tim' : 'Kuota Peserta'}</FieldLabel>
+        <FieldLabel className="gap-1" required><Users className="size-3" /> {form.type === 'team' ? 'Kuota Tim' : form.type === 'both' ? 'Kuota Peserta / Tim' : 'Kuota Peserta'}</FieldLabel>
         <Input type="number" value={form.maxSlots} onChange={(e) => update('maxSlots', e.target.value)} />
       </Field>
       <Field>
@@ -763,6 +767,13 @@ export default function KompetisiPage() {
                         <h3 className="text-base font-black uppercase tracking-tight text-foreground">{comp.title}</h3>
                         <Badge variant="outline" className={cn('clip-angled-sm border text-[10px] font-bold uppercase tracking-wider', catColor)}>
                           {cat?.label || comp.category}
+                        </Badge>
+                        <Badge variant="outline" className="clip-angled-sm border-purple-200 bg-purple-50 text-[9px] font-bold uppercase tracking-wider text-purple-700">
+                          {comp.type === 'both'
+                            ? 'Tim & Individu'
+                            : comp.type === 'team'
+                              ? 'Tim'
+                              : 'Individu'}
                         </Badge>
                         <Badge variant="outline" className={cn('clip-angled-sm border text-[9px] font-bold uppercase tracking-wider',
                           (comp as any).isFree === '1' || (comp as any).isFree === true
