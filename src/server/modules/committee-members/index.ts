@@ -4,6 +4,7 @@ import { db } from '@/src/db';
 import { committeeMembers, committeeDivisions } from '@/src/db/schema';
 import { asc, eq } from 'drizzle-orm';
 import { z } from 'zod';
+import { deleteSupabaseFile } from '@/src/server/modules/upload';
 
 /** Satu baris import (tanpa quote, tanpa instagram — diisi dari file panitia). */
 const importRowSchema = t.Object({
@@ -134,14 +135,23 @@ export const committeeMembersModule = new Elysia({ prefix: '/committee-members' 
     if (body.quote !== undefined) updates.quote = body.quote ?? null;
     if (body.instagram !== undefined) updates.instagram = body.instagram ?? null;
     if (body.linkedin !== undefined) updates.linkedin = body.linkedin ?? null;
+    if (body.linkedin !== undefined) updates.linkedin = body.linkedin ?? null;
     if (body.sortOrder !== undefined) updates.sortOrder = body.sortOrder;
+
+    const [existing] = await db.select().from(committeeMembers).where(eq(committeeMembers.id, Number(params.id)));
+    if (!existing) return status(404, { error: 'Not found' });
 
     const [item] = await db
       .update(committeeMembers)
       .set(updates)
       .where(eq(committeeMembers.id, Number(params.id)))
       .returning();
-    if (!item) return status(404, { error: 'Not found' });
+      .returning();
+      
+    if (updates.image && existing.image !== updates.image) {
+      deleteSupabaseFile(existing.image).catch(console.error);
+    }
+
     return item;
   }, {
     params: t.Object({ id: t.String() }),
@@ -154,6 +164,9 @@ export const committeeMembersModule = new Elysia({ prefix: '/committee-members' 
       .where(eq(committeeMembers.id, Number(params.id)))
       .returning();
     if (!item) return status(404, { error: 'Not found' });
+    
+    deleteSupabaseFile(item.image).catch(console.error);
+    
     return { success: true };
   }, {
     params: t.Object({ id: t.String() }),

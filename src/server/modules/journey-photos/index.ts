@@ -4,6 +4,7 @@ import { db } from '@/src/db';
 import { journeyPhotos } from '@/src/db/schema';
 import { asc, eq } from 'drizzle-orm';
 import { z } from 'zod';
+import { deleteSupabaseFile } from '@/src/server/modules/upload';
 
 const photoSchema = z.object({
   journeyId: z.string().min(1, 'Perjalanan (journey) wajib dipilih'),
@@ -46,6 +47,9 @@ export const journeyPhotosModule = new Elysia({ prefix: '/journey-photos' })
       .where(eq(journeyPhotos.id, Number(params.id)))
       .returning();
     if (!item) return status(404, { error: 'Not found' });
+    
+    deleteSupabaseFile(item.url).catch(console.error);
+    
     return { success: true };
   }, {
     params: t.Object({ id: t.String() }),

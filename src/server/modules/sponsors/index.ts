@@ -4,6 +4,7 @@ import { db } from '@/src/db';
 import { sponsors } from '@/src/db/schema';
 import { asc, eq } from 'drizzle-orm';
 import { z } from 'zod';
+import { deleteSupabaseFile } from '@/src/server/modules/upload';
 
 const sponsorSchema = z.object({
   name: z.string().min(1, 'Nama sponsor wajib diisi'),
@@ -43,12 +44,19 @@ export const sponsorsModule = new Elysia({ prefix: '/sponsors' })
     if (body.logo !== undefined) updates.logo = body.logo ?? null;
     if (body.sortOrder !== undefined) updates.sortOrder = body.sortOrder;
 
+    const [existing] = await db.select().from(sponsors).where(eq(sponsors.id, Number(params.id)));
+    if (!existing) return status(404, { error: 'Not found' });
+
     const [item] = await db
       .update(sponsors)
       .set(updates)
       .where(eq(sponsors.id, Number(params.id)))
       .returning();
-    if (!item) return status(404, { error: 'Not found' });
+      
+    if (updates.logo && existing.logo !== updates.logo) {
+      deleteSupabaseFile(existing.logo).catch(console.error);
+    }
+
     return item;
   }, {
     params: t.Object({ id: t.String() }),
@@ -61,6 +69,9 @@ export const sponsorsModule = new Elysia({ prefix: '/sponsors' })
       .where(eq(sponsors.id, Number(params.id)))
       .returning();
     if (!item) return status(404, { error: 'Not found' });
+    
+    deleteSupabaseFile(item.logo).catch(console.error);
+    
     return { success: true };
   }, {
     params: t.Object({ id: t.String() }),

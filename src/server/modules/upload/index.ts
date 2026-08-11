@@ -25,6 +25,33 @@ const supabaseKey =
   process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 /**
+ * Extract path from Supabase URL and delete the file from the 'uploads' bucket.
+ * Designed to be called safely; it ignores invalid URLs or non-Supabase URLs silently.
+ */
+export async function deleteSupabaseFile(url: string | null | undefined) {
+  if (!url || !supabaseUrl || !supabaseKey) return;
+  
+  // Example URL: https://[ID].supabase.co/storage/v1/object/public/uploads/uploads/filename.ext
+  // or legacy local path: /uploads/filename.ext (which we don't delete automatically as it's legacy)
+  const uploadsPathString = '/storage/v1/object/public/uploads/';
+  if (!url.includes(uploadsPathString)) return;
+
+  try {
+    const relativePath = url.split(uploadsPathString)[1];
+    if (!relativePath) return;
+
+    const supabase = createClient(supabaseUrl, supabaseKey);
+    const { error } = await supabase.storage.from('uploads').remove([relativePath]);
+    
+    if (error) {
+      console.error('Failed to delete file from Supabase:', error);
+    }
+  } catch (err) {
+    console.error('Error in deleteSupabaseFile:', err);
+  }
+}
+
+/**
  * File upload (admin) — validates the real file content via magic bytes,
  * writes to Supabase Storage (public `uploads` bucket) and returns an
  * absolute public URL. Local-fs writes do not work on Vercel (read-only
