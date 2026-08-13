@@ -73,4 +73,23 @@ export const mediaPartnersModule = new Elysia({ prefix: '/media-partners' })
   }, {
     params: t.Object({ id: t.String() }),
     admin: true,
+  })
+  .put('/reorder', async ({ body }) => {
+    try {
+      await db.transaction(async (tx) => {
+        for (let i = 0; i < body.ids.length; i++) {
+          await tx
+            .update(mediaPartners)
+            .set({ sortOrder: i + 1 })
+            .where(eq(mediaPartners.id, body.ids[i]));
+        }
+      });
+      return { success: true };
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Gagal mengubah urutan';
+      return status(500, { error: message });
+    }
+  }, {
+    body: t.Object({ ids: t.Array(t.Number()) }),
+    admin: true,
   });

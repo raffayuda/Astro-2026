@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import Image from 'next/image';
-import { Plus, Pencil, Check, Trash2, Star, Share2 } from 'lucide-react';
+import { Reorder } from 'framer-motion';
+import { Plus, Pencil, Check, Trash2, Star, Share2, GripVertical, ArrowUpDown, X } from 'lucide-react';
 import { toast } from 'sonner';
 import DeleteModal from '@/components/DeleteModal';
 import Pagination from '@/components/Pagination';
@@ -58,6 +59,11 @@ export default function SponsorPage() {
   const [mpUploading, setMpUploading] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
 
+  const [showSpReorderModal, setShowSpReorderModal] = useState(false);
+  const [spReorderList, setSpReorderList] = useState<Sponsor[]>([]);
+  const [showMpReorderModal, setShowMpReorderModal] = useState(false);
+  const [mpReorderList, setMpReorderList] = useState<MediaPartner[]>([]);
+
   const invalidate = () => {
     qc.invalidateQueries({ queryKey: queryKeys.sponsors.all });
     qc.invalidateQueries({ queryKey: queryKeys.mediaPartners.all });
@@ -103,6 +109,26 @@ export default function SponsorPage() {
     onError: (err: Error) => toast.error(err.message),
   });
 
+  const spReorderMutation = useMutation({
+    mutationFn: (ids: number[]) => apiHelpers.sponsors.reorder(ids),
+    onSuccess: () => {
+      toast.success("Urutan sponsor berhasil disimpan");
+      setShowSpReorderModal(false);
+      invalidate();
+    },
+    onError: (err: Error) => toast.error(err.message),
+  });
+
+  const mpReorderMutation = useMutation({
+    mutationFn: (ids: number[]) => apiHelpers.mediaPartners.reorder(ids),
+    onSuccess: () => {
+      toast.success("Urutan media partner berhasil disimpan");
+      setShowMpReorderModal(false);
+      invalidate();
+    },
+    onError: (err: Error) => toast.error(err.message),
+  });
+
   const handleSpSave = async () => {
     if (!spForm.name && !spForm.logo) { toast.error('Nama atau logo wajib diisi'); return; }
     setSpSaving(true);
@@ -110,6 +136,11 @@ export default function SponsorPage() {
       await spSaveMutation.mutateAsync(spForm);
     } catch { toast.error('Gagal menyimpan sponsor'); }
     setSpSaving(false);
+  };
+
+  const handleSpReorderSave = async () => {
+    const ids = spReorderList.map((d) => d.id);
+    await spReorderMutation.mutateAsync(ids);
   };
 
   const handleSpEdit = (s: Sponsor) => {
@@ -133,6 +164,11 @@ export default function SponsorPage() {
       await mpSaveMutation.mutateAsync(mpForm);
     } catch { toast.error('Gagal menyimpan media partner'); }
     setMpSaving(false);
+  };
+
+  const handleMpReorderSave = async () => {
+    const ids = mpReorderList.map((d) => d.id);
+    await mpReorderMutation.mutateAsync(ids);
   };
 
   const handleMpEdit = (m: MediaPartner) => {
@@ -175,12 +211,24 @@ export default function SponsorPage() {
         <div>
           <div className="mb-4 flex items-center justify-between">
             <p className="text-sm text-muted-foreground">{sponsors.length} sponsor</p>
-            <Button
-              onClick={() => { setShowSpAdd(!showSpAdd); setSpEditingId(null); setSpForm({ name: '', tier: 'gold', website: '', logo: '' }); }}
-              className="clip-angled text-xs font-bold uppercase tracking-wider"
-            >
-              <Plus data-icon="inline-start" /> Tambah Sponsor
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setSpReorderList([...sponsors]);
+                  setShowSpReorderModal(true);
+                }}
+                className="clip-angled text-xs font-bold uppercase tracking-wider border-amber-200 text-amber-700 bg-amber-50 hover:bg-amber-100 hover:text-amber-800"
+              >
+                <ArrowUpDown className="size-4 mr-2" /> Atur Urutan
+              </Button>
+              <Button
+                onClick={() => { setShowSpAdd(!showSpAdd); setSpEditingId(null); setSpForm({ name: '', tier: 'gold', website: '', logo: '' }); }}
+                className="clip-angled text-xs font-bold uppercase tracking-wider"
+              >
+                <Plus data-icon="inline-start" /> Tambah Sponsor
+              </Button>
+            </div>
           </div>
 
           {showSpAdd && (
@@ -308,12 +356,24 @@ export default function SponsorPage() {
         <div>
           <div className="mb-4 flex items-center justify-between">
             <p className="text-sm text-muted-foreground">{mediaPartners.length} media partner</p>
-            <Button
-              onClick={() => { setShowMpAdd(!showMpAdd); setMpEditingId(null); setMpForm({ name: '', website: '', logo: '' }); }}
-              className="clip-angled text-xs font-bold uppercase tracking-wider"
-            >
-              <Plus data-icon="inline-start" /> Tambah Media Partner
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setMpReorderList([...mediaPartners]);
+                  setShowMpReorderModal(true);
+                }}
+                className="clip-angled text-xs font-bold uppercase tracking-wider border-amber-200 text-amber-700 bg-amber-50 hover:bg-amber-100 hover:text-amber-800"
+              >
+                <ArrowUpDown className="size-4 mr-2" /> Atur Urutan
+              </Button>
+              <Button
+                onClick={() => { setShowMpAdd(!showMpAdd); setMpEditingId(null); setMpForm({ name: '', website: '', logo: '' }); }}
+                className="clip-angled text-xs font-bold uppercase tracking-wider"
+              >
+                <Plus data-icon="inline-start" /> Tambah Media Partner
+              </Button>
+            </div>
           </div>
 
           {showMpAdd && (
@@ -430,6 +490,102 @@ export default function SponsorPage() {
         loading={false}
       />
       <ImagePreviewModal url={previewImage} onClose={() => setPreviewImage(null)} />
+
+      {/* Modal Reorder Sponsor */}
+      {showSpReorderModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <Card className="w-full max-w-md clip-angled relative border-border shadow-2xl">
+            <div className="absolute -top-px -left-px size-8 bg-amber-500" style={{ clipPath: "polygon(0 0, 100% 0, 0 100%)" }} />
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-black uppercase tracking-tight text-foreground">
+                  Urutkan Sponsor
+                </h2>
+                <Button variant="ghost" size="icon-sm" onClick={() => setShowSpReorderModal(false)}><X className="size-4" /></Button>
+              </div>
+              <p className="text-xs text-muted-foreground mb-6">
+                Geser (drag & drop) item di bawah ini untuk mengatur urutan sponsor.
+              </p>
+
+              <div className="max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
+                <Reorder.Group axis="y" values={spReorderList} onReorder={setSpReorderList} className="flex flex-col gap-2">
+                  {spReorderList.map((s) => (
+                    <Reorder.Item
+                      key={s.id}
+                      value={s}
+                      className="flex items-center gap-3 rounded-md border border-border bg-card p-3 shadow-sm cursor-grab active:cursor-grabbing hover:border-primary/50"
+                    >
+                      <GripVertical className="size-4 text-muted-foreground" />
+                      {s.logo && (
+                        <Image src={s.logo} alt="" width={24} height={24} unoptimized className="size-6 object-contain" />
+                      )}
+                      <span className="text-sm font-bold">{s.name || '(tanpa nama)'}</span>
+                    </Reorder.Item>
+                  ))}
+                </Reorder.Group>
+              </div>
+
+              <div className="flex justify-end gap-2 mt-6">
+                <Button variant="outline" onClick={() => setShowSpReorderModal(false)} className="text-xs font-bold uppercase">
+                  Batal
+                </Button>
+                <Button onClick={handleSpReorderSave} disabled={spReorderMutation.isPending} className="bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold uppercase gap-2">
+                  {spReorderMutation.isPending ? <Spinner className="size-4 text-white" /> : <Check className="size-4" />}
+                  Simpan Urutan
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {/* Modal Reorder Media Partner */}
+      {showMpReorderModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <Card className="w-full max-w-md clip-angled relative border-border shadow-2xl">
+            <div className="absolute -top-px -left-px size-8 bg-amber-500" style={{ clipPath: "polygon(0 0, 100% 0, 0 100%)" }} />
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-black uppercase tracking-tight text-foreground">
+                  Urutkan Media Partner
+                </h2>
+                <Button variant="ghost" size="icon-sm" onClick={() => setShowMpReorderModal(false)}><X className="size-4" /></Button>
+              </div>
+              <p className="text-xs text-muted-foreground mb-6">
+                Geser (drag & drop) item di bawah ini untuk mengatur urutan media partner.
+              </p>
+
+              <div className="max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
+                <Reorder.Group axis="y" values={mpReorderList} onReorder={setMpReorderList} className="flex flex-col gap-2">
+                  {mpReorderList.map((m) => (
+                    <Reorder.Item
+                      key={m.id}
+                      value={m}
+                      className="flex items-center gap-3 rounded-md border border-border bg-card p-3 shadow-sm cursor-grab active:cursor-grabbing hover:border-primary/50"
+                    >
+                      <GripVertical className="size-4 text-muted-foreground" />
+                      {m.logo && (
+                        <Image src={m.logo} alt="" width={24} height={24} unoptimized className="size-6 object-contain" />
+                      )}
+                      <span className="text-sm font-bold">{m.name || '(tanpa nama)'}</span>
+                    </Reorder.Item>
+                  ))}
+                </Reorder.Group>
+              </div>
+
+              <div className="flex justify-end gap-2 mt-6">
+                <Button variant="outline" onClick={() => setShowMpReorderModal(false)} className="text-xs font-bold uppercase">
+                  Batal
+                </Button>
+                <Button onClick={handleMpReorderSave} disabled={mpReorderMutation.isPending} className="bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold uppercase gap-2">
+                  {mpReorderMutation.isPending ? <Spinner className="size-4 text-white" /> : <Check className="size-4" />}
+                  Simpan Urutan
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </div>
   );
 }

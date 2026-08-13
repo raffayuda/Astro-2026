@@ -197,6 +197,7 @@ export const apiHelpers = {
     list: () => unwrap(api.sponsors.get()),
     create: (body: unknown) => unwrap(api.sponsors.post(body as never)),
     update: (id: string, body: unknown) => unwrap(api.sponsors({ id }).put(body as never)),
+    reorder: (ids: number[]) => unwrap(api.sponsors.reorder.put({ ids } as never)),
     remove: (id: string) => unwrap(api.sponsors({ id }).delete()),
   },
   mediaPartners: {
@@ -204,6 +205,7 @@ export const apiHelpers = {
     create: (body: unknown) => unwrap(api['media-partners'].post(body as never)),
     update: (id: string, body: unknown) =>
       unwrap(api['media-partners']({ id }).put(body as never)),
+    reorder: (ids: number[]) => unwrap(api['media-partners'].reorder.put({ ids } as never)),
     remove: (id: string) => unwrap(api['media-partners']({ id }).delete()),
   },
 
