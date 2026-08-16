@@ -303,8 +303,10 @@ export default function CommitteeSection() {
                 </div>
               </motion.div>
             );
-         {/* ── Total Count ── */}
-        <div className="flex justify-center mt-16">��─ Total Count ── */}
+          })}
+        </div>
+
+        {/* ── Total Count ── */}
         <div className="flex justify-center mt-16">
           <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/50 backdrop-blur-xl rounded-xl ring-1 ring-white/80 shadow-sm">
             <Users className="w-4 h-4 text-astro-cyan" />
@@ -340,10 +342,13 @@ export default function CommitteeSection() {
               exit={{ scale: 0.95, opacity: 0, y: 15 }}
               transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
               onClick={(e) => e.stopPropagation()}
-              className="relative z-10 flex flex-col w-full max-w-sm sm:max-w-md max-h-[92vh] overflow-hidden rounded-3xl border border-cyan-300/30 bg-slate-900/90 p-4 sm:p-5 text-white shadow-2xl backdrop-blur-2xl"
+              className="relative z-10 flex flex-col w-full max-w-sm sm:max-w-md max-h-[92vh] overflow-hidden rounded-3xl border border-white/20 bg-white/10 p-3 sm:p-4 text-white shadow-2xl shadow-slate-950/40 backdrop-blur-2xl backdrop-saturate-150"
             >
+              {/* Glass Sheen */}
+              <div className="pointer-events-none absolute inset-0 z-0 bg-gradient-to-br from-white/20 via-white/5 to-transparent" />
+
               {/* Header inside Card */}
-              <div className="flex items-center justify-between pb-3">
+              <div className="relative z-10 flex items-center justify-between pb-2.5">
                 <div className="flex items-center gap-2">
                   {isMemberReady ? (
                     <Badge className="clip-angled-sm bg-astro-cyan text-[11px] font-black uppercase tracking-wider text-slate-950 shadow-sm">
@@ -365,14 +370,17 @@ export default function CommitteeSection() {
               </div>
 
               {/* Image Stage inside Portrait Card */}
-              <div className="relative w-full aspect-[3/4] max-h-[46vh] sm:max-h-[50vh] overflow-hidden rounded-2xl border border-white/10 bg-slate-950/80 shadow-inner">
+              <div className="relative z-10">
                 <SkeletonImage
                   key={viewerMember.id}
                   src={normalizeImageUrl(viewerMember.image) || '/assets/users.png'}
                   alt={viewerMember.name}
                   imgKey={viewerMember.id}
-                  className="h-full w-full"
-                  objectFit="cover"
+                  fill={false}
+                  width={600}
+                  height={800}
+                  className="mx-auto w-fit max-w-full overflow-hidden rounded-2xl ring-1 ring-white/25 shadow-lg shadow-slate-950/40"
+                  imgClassName="h-auto w-auto max-h-[46vh] sm:max-h-[50vh] max-w-full"
                   priority
                   sizes="(max-width: 640px) 100vw, 420px"
                   onReady={() => setLoadedMemberId(viewerMember.id)}
@@ -400,7 +408,7 @@ export default function CommitteeSection() {
               </div>
 
               {/* Footer Info inside Portrait Card */}
-              <div className="pt-3 text-center overflow-y-auto max-h-[25vh] no-scrollbar">
+              <div className="relative z-10 pt-2.5 text-center overflow-y-auto max-h-[25vh] no-scrollbar">
                 {isMemberReady ? (
                   <>
                     <h3 className="text-lg sm:text-xl font-black text-white capitalize leading-tight">
