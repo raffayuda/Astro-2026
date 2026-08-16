@@ -299,7 +299,7 @@ export const journeys = pgTable("journeys", {
   year: text("year"), // tahun penyelenggaraan (diinput admin, e.g. '2024')
   theme: text("theme").notNull(),
   participants: integer("participants").default(0),
-  universities: integer("universities").default(0),
+  date: text("date"), // tanggal/hari pelaksanaan (e.g. '22 - 24 Agustus 2026')
   competitionsCount: integer("competitions_count").default(0),
   achievement: text("achievement"),
   description: text("description"),

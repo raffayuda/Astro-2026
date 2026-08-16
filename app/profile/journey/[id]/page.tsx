@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { notFound, useParams } from 'next/navigation';
 import Image from 'next/image';
 import { motion, useReducedMotion } from 'motion/react';
-import { ArrowLeft, Users, Award, Target, ArrowRight, Camera, X } from 'lucide-react';
+import { ArrowLeft, Users, Award, Target, ArrowRight, Camera, X, Calendar } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { useJourneys, useJourneyPhotos } from '@/src/lib/hooks/use-queries';
@@ -38,7 +38,7 @@ export default function JourneyDetailPage() {
       year: row.year || row.id,
       theme: row.theme,
       participants: row.participants || 0,
-      universities: row.universities || 0,
+      date: row.date || '',
       competitions: row.competitionsCount || 0,
       achievement: row.achievement || '',
       description: row.description || '',
@@ -149,12 +149,12 @@ export default function JourneyDetailPage() {
                     <div className="text-[9px] font-bold text-white/60 uppercase tracking-wider mt-1">Peserta</div>
                   </div>
                 )}
-                {data.universities > 0 && (
+                {data.date && (
                   <div className="flex-1 min-w-[100px] bg-white/10 backdrop-blur-sm border border-white/15 p-4 text-center"
                     style={{ clipPath: 'polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%)' }}
                   >
-                    <div className="text-2xl md:text-3xl font-black text-white font-space-grotesk">{data.universities}+</div>
-                    <div className="text-[9px] font-bold text-white/60 uppercase tracking-wider mt-1">Universitas</div>
+                    <div className="text-sm md:text-base font-black text-white font-space-grotesk leading-tight">{data.date}</div>
+                    <div className="text-[9px] font-bold text-white/60 uppercase tracking-wider mt-1">Hari Pelaksanaan</div>
                   </div>
                 )}
                 <div className="flex-1 min-w-[100px] bg-white/10 backdrop-blur-sm border border-white/15 p-4 text-center"
@@ -258,9 +258,9 @@ export default function JourneyDetailPage() {
                     <div className="bg-white/80 border border-cyan-100/70 p-4 text-center"
                       style={{ clipPath: 'polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%)' }}
                     >
-                      <Award className="w-4 h-4 text-astro-cyan mx-auto mb-1" />
-                      <p className="text-lg font-black text-slate-900">{data.universities > 0 ? `${data.universities}+` : '-'}</p>
-                      <p className="text-[8px] font-bold text-slate-500 uppercase tracking-wider">Universitas</p>
+                      <Calendar className="w-4 h-4 text-astro-cyan mx-auto mb-1" />
+                      <p className="text-sm font-black text-slate-900 leading-tight">{data.date || '-'}</p>
+                      <p className="text-[8px] font-bold text-slate-500 uppercase tracking-wider">Hari Pelaksanaan</p>
                     </div>
                     <div className="bg-white/80 border border-cyan-100/70 p-4 text-center"
                       style={{ clipPath: 'polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%)' }}

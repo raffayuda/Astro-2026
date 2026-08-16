@@ -1,14 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
-import { motion, useReducedMotion } from 'motion/react';
+import { motion, useReducedMotion, AnimatePresence } from 'motion/react';
 import { Camera, ChevronLeft, ChevronRight, Heart, X, ZoomIn } from 'lucide-react';
-import { ResponsiveModal } from '@/components/responsive-modal';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import SkeletonImage from '@/components/SkeletonImage';
 import { cn } from '@/lib/utils';
 import { normalizeImageUrl } from '@/components/ImportCommittee';
 import { useGalleryPhotos, useGalleryCategories } from '@/src/lib/hooks/use-queries';
@@ -36,7 +35,6 @@ export default function EventGallerySection() {
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(null);
   const [likedPhotos, setLikedPhotos] = useState<Record<string, boolean>>({});
   const [isMarqueeHovered, setIsMarqueeHovered] = useState(false);
-  const [imageLoaded, setImageLoaded] = useState(false);
 
   const { data: gData } = useGalleryPhotos({ page: 1, pageSize: 1000 });
   const { data: categories = [] } = useGalleryCategories() as { data: GalleryCategory[] };
@@ -69,11 +67,6 @@ export default function EventGallerySection() {
   };
 
   const photo = selectedPhotoIndex !== null ? filteredPhotos[selectedPhotoIndex] : null;
-
-  // Reset skeleton state when the lightbox photo changes
-  useEffect(() => {
-    setImageLoaded(false);
-  }, [photo?.imageUrl]);
 
   return (
     <section id="gallery" className="relative overflow-hidden bg-gradient-to-b from-sky-200 via-sky-100 to-sky-100 py-24 text-slate-900 md:py-32">
@@ -178,12 +171,14 @@ export default function EventGallerySection() {
                         className="relative h-full w-full overflow-hidden border border-white/60 bg-slate-900 transition-colors group-hover:border-astro-cyan"
                         style={{ clipPath: 'polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%)' }}
                       >
-                        <Image
+                        {/* Shimmer skeleton while thumbnail loads */}
+                        <SkeletonImage
                           src={normalizeImageUrl(photoItem.imageUrl)}
                           alt={photoItem.title}
-                          fill
-                          className="object-cover transition-all duration-700 ease-out group-hover:scale-115 group-hover:rotate-1 group-hover:brightness-105"
+                          imgKey={photoItem.id}
+                          className="absolute inset-0 h-full w-full"
                           sizes="380px"
+                          imgClassName="transition-all duration-700 ease-out group-hover:scale-115 group-hover:rotate-1 group-hover:brightness-105"
                         />
 
                         {/* Dark Gradient Legibility Overlay */}
@@ -215,94 +210,108 @@ export default function EventGallerySection() {
         </div>
       </div>
 
-      {/* ═══ LIGHTBOX ═══ */}
-      <ResponsiveModal
-        open={selectedPhotoIndex !== null}
-        onOpenChange={(next) => !next && setSelectedPhotoIndex(null)}
-        title={photo?.title}
-        titleClassName="sr-only"
-        contentClassName="max-w-5xl overflow-hidden p-4 md:p-6"
-      >
+      {/* ═══ FULLSCREEN LIGHTBOX ═══ */}
+      <AnimatePresence>
         {photo && (
-          <>
-            {/* Modal Header */}
-            <div className="mb-4 flex items-center justify-between border-b border-border pb-4">
+          <motion.div
+            key="lightbox"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-[100] flex flex-col bg-slate-950/95 backdrop-blur-md"
+            role="dialog"
+            aria-modal="true"
+            aria-label={photo.title}
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between px-5 py-4 md:px-8 md:py-5">
               <div className="flex items-center gap-3">
                 <Badge className="clip-angled-sm bg-astro-cyan text-[11px] font-black uppercase tracking-wider text-slate-950 shadow-sm">
                   {photo.year}
                 </Badge>
-                <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+                <span className="text-xs font-bold uppercase tracking-widest text-slate-300">
                   {photo.category}
                 </span>
               </div>
 
               <div className="flex items-center gap-2">
                 <Button
-                  variant={likedPhotos[photo.id] ? 'default' : 'outline'}
+                  variant="ghost"
                   size="icon"
                   onClick={(e) => toggleLike(photo.id, e)}
-                  className={cn(likedPhotos[photo.id] && 'scale-110 border-rose-500 bg-rose-500 text-white shadow-md hover:bg-rose-500')}
+                  className={cn(
+                    'border border-white/15 bg-white/5 text-slate-200 hover:bg-white/15 hover:text-white',
+                    likedPhotos[photo.id] && 'scale-110 border-rose-500 bg-rose-500 text-white shadow-md hover:bg-rose-500',
+                  )}
                   aria-label="Suka foto ini"
                 >
                   <Heart className={cn(likedPhotos[photo.id] && 'fill-current')} />
                 </Button>
-                <Button variant="outline" size="icon" aria-label="Tutup" onClick={() => setSelectedPhotoIndex(null)}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  aria-label="Tutup"
+                  onClick={() => setSelectedPhotoIndex(null)}
+                  className="border border-white/15 bg-white/5 text-slate-200 hover:bg-white/15 hover:text-white"
+                >
                   <X />
                 </Button>
               </div>
             </div>
 
-            {/* Main Lightbox Image View */}
-            <div className="relative aspect-[16/9] w-full overflow-hidden border border-border bg-muted sm:aspect-[16/10]">
-              {!imageLoaded && <Skeleton className="absolute inset-0 z-10" />}
-              <Image
-                key={photo.imageUrl}
-                src={normalizeImageUrl(photo.imageUrl)}
-                alt={photo.title}
-                fill
-                className="relative z-20 object-cover"
-                priority
-                sizes="(max-width: 1280px) 100vw, 1200px"
-                onLoad={() => setImageLoaded(true)}
-              />
+            {/* Main fullscreen image stage */}
+            <div className="relative flex-1 min-h-0 px-4 pb-2 md:px-12">
+              <div className="relative h-full w-full overflow-hidden bg-slate-900/60">
+                {/* Animated shimmer skeleton while loading */}
+                <SkeletonImage
+                  src={normalizeImageUrl(photo.imageUrl)}
+                  alt={photo.title}
+                  imgKey={photo.id}
+                  className="h-full w-full"
+                  objectFit="contain"
+                  priority
+                  sizes="(max-width: 1280px) 100vw, 1280px"
+                />
 
-              {/* Lightbox Navigation Arrows */}
-              <Button
-                variant="ghost"
-                size="icon-lg"
-                onClick={handlePrevPhoto}
-                className="absolute top-1/2 left-3 z-30 -translate-y-1/2 border border-white/20 bg-slate-950/70 text-white shadow-lg hover:bg-astro-cyan hover:text-slate-950"
-                aria-label="Foto sebelumnya"
-              >
-                <ChevronLeft />
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon-lg"
-                onClick={handleNextPhoto}
-                className="absolute top-1/2 right-3 z-30 -translate-y-1/2 border border-white/20 bg-slate-950/70 text-white shadow-lg hover:bg-astro-cyan hover:text-slate-950"
-                aria-label="Foto berikutnya"
-              >
-                <ChevronRight />
-              </Button>
+                {/* Navigation arrows */}
+                <Button
+                  variant="ghost"
+                  size="icon-lg"
+                  onClick={handlePrevPhoto}
+                  className="absolute top-1/2 left-3 z-30 -translate-y-1/2 border border-white/20 bg-slate-950/70 text-white shadow-lg hover:bg-astro-cyan hover:text-slate-950 md:left-6"
+                  aria-label="Foto sebelumnya"
+                >
+                  <ChevronLeft />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon-lg"
+                  onClick={handleNextPhoto}
+                  className="absolute top-1/2 right-3 z-30 -translate-y-1/2 border border-white/20 bg-slate-950/70 text-white shadow-lg hover:bg-astro-cyan hover:text-slate-950 md:right-6"
+                  aria-label="Foto berikutnya"
+                >
+                  <ChevronRight />
+                </Button>
+              </div>
             </div>
 
-            {/* Lightbox Footer Info */}
-            <div className="flex items-center justify-between pt-4">
+            {/* Footer info */}
+            <div className="flex items-center justify-between px-5 py-4 md:px-8 md:py-5">
               <div>
-                <h3 className="text-lg font-black text-foreground md:text-xl">{photo.title}</h3>
-                <p className="mt-0.5 text-xs font-semibold text-muted-foreground">
+                <h3 className="text-base font-black text-white md:text-lg">{photo.title}</h3>
+                <p className="mt-0.5 text-xs font-semibold text-slate-400">
                   Foto {selectedPhotoIndex! + 1} dari {filteredPhotos.length} dokumentasi resmi
                 </p>
               </div>
 
-              <div className="flex items-center gap-1.5 border border-sky-200 bg-sky-50 px-3 py-1.5 text-xs font-bold text-slate-600">
-                <ZoomIn className="size-3.5 text-astro-cyan" /> HD Documentation
+              <div className="hidden items-center gap-1.5 border border-sky-400/30 bg-sky-500/10 px-3 py-1.5 text-xs font-bold text-sky-200 sm:flex">
+                <ZoomIn className="size-3.5 text-sky-300" /> HD Documentation
               </div>
             </div>
-          </>
+          </motion.div>
         )}
-      </ResponsiveModal>
+      </AnimatePresence>
     </section>
   );
 }

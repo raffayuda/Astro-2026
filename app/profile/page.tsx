@@ -44,7 +44,7 @@ export default function ProfilePage() {
         year: j.year || j.id,
         theme: j.theme,
         participants: j.participants || 0,
-        universities: j.universities || 0,
+        date: j.date || "",
         competitions: j.competitionsCount || 0,
         achievement: j.achievement || "",
         description: j.description || "",
@@ -204,11 +204,17 @@ export default function ProfilePage() {
                   transition={{ duration: 0.5, delay: 0.1 }}
                   className="text-sm md:text-base text-slate-650 mt-6 leading-relaxed font-normal max-w-2xl"
                 >
-                  ASTRO 2026 adalah ajang kompetisi dan kreativitas tahunan
-                  terbesar yang dirancang khusus untuk mewadahi minat, bakat,
-                  serta potensi generasi muda. Kami menyatukan tiga pilar utama
-                  yaitu kompetisi akademik, ketangkasan olahraga, dan ketajaman
-                  esports di bawah satu payung sportivitas yang kokoh.
+                  ASTRO adalah program kerja tahunan BEM STT-NF yang telah
+                  berlangsung sejak BEM dibentuk, yang awalnya hanya sebatas
+                  classmeet dan berkembang hingga seperti sekarang. Dengan
+                  target partisipan yang lebih luas, baik dari internal hingga
+                  eksternal kampus.
+                  <br />
+                  <br />
+                  ASTRO 2026 menghadirkan kompetisi dan festival pendidikan,
+                  seni dan olahraga bagi pelajar SMA/SMK serta mahasiswa/i.
+                  Acara ini menjadi wadah pengembangan kreativitas,
+                  keterampilan, dan sportivitas generasi muda.
                 </motion.p>
               </div>
 
@@ -286,9 +292,10 @@ export default function ProfilePage() {
                     </h3>
                   </div>
                   <p className="text-sm md:text-base text-slate-600 leading-relaxed">
-                    Menjadi wadah kolaboratif terbesar bagi generasi muda untuk
-                    mengeksplorasi potensi terbaik, menyatukan sportivitas
-                    kompetisi, kreativitas tanpa batas, dan keunggulan akademik.
+                    Menjadikan ASTRO 2026 sebagai festival mahasiswa yang
+                    mengintegrasikan olahraga, pendidikan, dan kesenian dalam
+                    semangat pelestarian budaya Nusantara guna menciptakan
+                    generasi yang berprestasi, kreatif, dan berkarakter.
                   </p>
                 </div>
               </motion.div>
@@ -311,9 +318,11 @@ export default function ProfilePage() {
                   </div>
                   <ol className="space-y-4">
                     {[
-                      "Menyelenggarakan kompetisi berkualitas tinggi yang adil, menantang, dan profesional.",
-                      "Mendorong kolaborasi lintas bakat antara sains, olahraga, dan esports.",
-                      "Mengembangkan karakter yang tangguh, berjiwa sportif, dan berorientasi pada prestasi.",
+                      "Menghadirkan rangkaian kegiatan yang inovatif, kompetitif, dan edukatif sebagai wadah pengembangan potensi mahasiswa.",
+                      "Meningkatkan apresiasi terhadap budaya dan kesenian Nusantara melalui konsep acara yang relevan dengan generasi muda.",
+                      "Membangun kolaborasi dan kebersamaan antar mahasiswa melalui kegiatan yang menjunjung sportivitas, kreativitas, dan rasa kekeluargaan.",
+                      "Menciptakan pengalaman acara yang profesional, berkesan, dan berdampak positif bagi seluruh partisipan.",
+                      "Menjadikan ASTRO 2026 sebagai wadah untuk mengembangkan potensi, kreativitas, dan prestasi mahasiswa secara berkelanjutan.",
                     ].map((item, i) => (
                       <li
                         key={i}
@@ -589,9 +598,8 @@ export default function ProfilePage() {
                       Peserta
                     </span>
                     <span className="flex items-center gap-1">
-                      <Award className="size-3.5 text-primary" />
-                      {j.universities > 0 ? `${j.universities}+` : "-"}{" "}
-                      Universitas
+                      <Calendar className="size-3.5 text-primary" />
+                      {j.date || "-"}
                     </span>
                     <span className="flex items-center gap-1">
                       <Target className="size-3.5 text-primary" />

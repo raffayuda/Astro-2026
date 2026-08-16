@@ -1,6 +1,6 @@
 {
-  "id": "fb6566c5-cc56-4970-a994-20c28cc1bd24",
-  "prevId": "1e888bd9-5e37-4156-99c5-50e9d676ceef",
+  "id": "a0fb1c6b-33a6-4b85-849f-18e0049c898e",
+  "prevId": "fb6566c5-cc56-4970-a994-20c28cc1bd24",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -367,6 +367,13 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true
+        },
+        "sort_order": {
+          "name": "sort_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
         },
         "created_at": {
           "name": "created_at",
@@ -1016,7 +1023,7 @@
             "slug"
           ],
           "onDelete": "restrict",
-          "onUpdate": "no action"
+          "onUpdate": "cascade"
         }
       },
       "compositePrimaryKeys": {},
@@ -1135,12 +1142,11 @@
           "notNull": false,
           "default": 0
         },
-        "universities": {
-          "name": "universities",
-          "type": "integer",
+        "date": {
+          "name": "date",
+          "type": "text",
           "primaryKey": false,
-          "notNull": false,
-          "default": 0
+          "notNull": false
         },
         "competitions_count": {
           "name": "competitions_count",

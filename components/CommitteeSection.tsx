@@ -3,11 +3,13 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import Image from 'next/image';
 import { motion, useReducedMotion, AnimatePresence } from 'motion/react';
-import { Users } from 'lucide-react';
+import { Users, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { cn } from '@/lib/utils';
 import { normalizeImageUrl } from '@/components/ImportCommittee';
+import SkeletonImage from '@/components/SkeletonImage';
 import { useCommitteeMembers, useCommitteeDivisions } from '@/src/lib/hooks/use-queries';
 
 const MotionImage = motion.create(Image);
@@ -16,6 +18,7 @@ export default function CommitteeSection() {
   const reduce = useReducedMotion();
   const [activeDivision, setActiveDivision] = useState<string>('');
   const [hoveredId, setHoveredId] = useState<number | null>(null);
+  const [viewerId, setViewerId] = useState<number | null>(null);
   const { data: members = [] } = useCommitteeMembers();
   const { data: divList = [] } = useCommitteeDivisions();
 
@@ -89,6 +92,28 @@ export default function CommitteeSection() {
   const toggleHover = useCallback((id: number | null) => {
     setHoveredId((prev) => (prev === id ? null : id));
   }, []);
+
+  // Track the selected member by its id (stable across divisions/filter changes)
+  const viewerIndex = viewerId !== null
+    ? filteredMembers.findIndex((m) => m.id === viewerId)
+    : -1;
+  const viewerMember = viewerIndex >= 0 ? filteredMembers[viewerIndex] : null;
+
+  const openViewer = (id: number) => {
+    setViewerId(id);
+  };
+
+  const handlePrevMember = () => {
+    if (viewerIndex < 0 || filteredMembers.length === 0) return;
+    const prev = viewerIndex === 0 ? filteredMembers.length - 1 : viewerIndex - 1;
+    setViewerId(filteredMembers[prev].id);
+  };
+
+  const handleNextMember = () => {
+    if (viewerIndex < 0 || filteredMembers.length === 0) return;
+    const next = viewerIndex === filteredMembers.length - 1 ? 0 : viewerIndex + 1;
+    setViewerId(filteredMembers[next].id);
+  };
 
   return (
     <section id="committee" className="relative py-20 md:py-28 overflow-hidden bg-gradient-to-b from-sky-100 via-sky-100 to-sky-200 text-slate-900">
@@ -184,8 +209,8 @@ export default function CommitteeSection() {
           </div>
         )}
 
-        {/* ── Carousel Grid ── */}
-        <div className="flex overflow-x-auto gap-4 md:gap-6 snap-x snap-mandatory pb-8 px-4 sm:px-6 lg:px-8 -mx-4 sm:-mx-6 lg:-mx-8 scroll-smooth [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+        {/* ── Centered Member Grid ── */}
+        <div className="flex flex-wrap justify-center gap-4 md:gap-6 pb-8 px-4 sm:px-6 lg:px-8">
           {filteredMembers.map((member, index) => {
             const isRevealed = hoveredId === member.id;
             return (
@@ -195,10 +220,13 @@ export default function CommitteeSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: Math.min(index * 0.05, 0.3), ease: [0.16, 1, 0.3, 1] }}
-                className="group flex-none w-56 md:w-64 snap-center first:ml-0 last:mr-0"
+                className="group w-56 md:w-64"
                 onMouseEnter={() => setHoveredId(member.id)}
                 onMouseLeave={() => setHoveredId(null)}
-                onClick={() => toggleHover(member.id)}
+                onClick={() => {
+                  toggleHover(member.id);
+                  openViewer(member.id);
+                }}
               >
                 <div className="relative w-full aspect-[3/4] rounded-2xl overflow-hidden bg-slate-100 shadow-sm hover:shadow-md transition-all duration-300 ring-1 ring-white/80 cursor-pointer">
                   <Image
@@ -275,6 +303,86 @@ export default function CommitteeSection() {
           </div>
         </div>
       </div>
+
+      {/* ═══ FULLSCREEN MEMBER VIEWER ═══ */}
+      {viewerMember && (
+        <div
+          className="fixed inset-0 z-[100] flex flex-col bg-slate-950/95 backdrop-blur-md"
+          role="dialog"
+          aria-modal="true"
+          aria-label={viewerMember.name}
+        >
+          {/* Header */}
+          <div className="flex items-center justify-between px-5 py-4 md:px-8 md:py-5">
+            <div className="flex items-center gap-3">
+              <Badge className="clip-angled-sm bg-astro-cyan text-[11px] font-black uppercase tracking-wider text-slate-950 shadow-sm">
+                {currentDivision?.shortDisplay || currentDivision?.name || activeDivision}
+              </Badge>
+            </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label="Tutup"
+              onClick={() => setViewerId(null)}
+              className="border border-white/15 bg-white/5 text-slate-200 hover:bg-white/15 hover:text-white"
+            >
+              <X />
+            </Button>
+          </div>
+
+          {/* Image stage — data (name/role) switches instantly; image shows skeleton until ready */}
+          <div className="relative flex-1 min-h-0 px-4 pb-2 md:px-12">
+            <SkeletonImage
+              src={normalizeImageUrl(viewerMember.image) || '/assets/users.png'}
+              alt={viewerMember.name}
+              imgKey={viewerMember.id}
+              className="h-full w-full"
+              objectFit="contain"
+              priority
+              sizes="(max-width: 1280px) 100vw, 1280px"
+            />
+
+            {/* Navigation */}
+            <Button
+              variant="ghost"
+              size="icon-lg"
+              onClick={handlePrevMember}
+              className="absolute top-1/2 left-3 z-30 -translate-y-1/2 border border-white/20 bg-slate-950/70 text-white shadow-lg hover:bg-astro-cyan hover:text-slate-950 md:left-6"
+              aria-label="Anggota sebelumnya"
+            >
+              <ChevronLeft />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon-lg"
+              onClick={handleNextMember}
+              className="absolute top-1/2 right-3 z-30 -translate-y-1/2 border border-white/20 bg-slate-950/70 text-white shadow-lg hover:bg-astro-cyan hover:text-slate-950 md:right-6"
+              aria-label="Anggota berikutnya"
+            >
+              <ChevronRight />
+            </Button>
+          </div>
+
+          {/* Footer info */}
+          <div className="px-5 py-4 md:px-8 md:py-5 text-center">
+            <h3 className="text-lg font-black text-white md:text-xl capitalize">{viewerMember.name}</h3>
+            <p className="mt-0.5 text-sm font-semibold text-slate-300">{viewerMember.role}</p>
+            {(viewerMember.studyProgram || viewerMember.batch) && (
+              <p className="mt-1 text-[10px] font-semibold uppercase tracking-wider text-cyan-200/90">
+                {[viewerMember.studyProgram, viewerMember.batch].filter(Boolean).join(' ')}
+              </p>
+            )}
+            {viewerMember.quote && (
+              <p className="mx-auto mt-2 max-w-xl text-sm text-white/60 italic leading-relaxed">
+                &ldquo;{viewerMember.quote}&rdquo;
+              </p>
+            )}
+            <p className="mt-2 text-xs text-slate-500">
+              {viewerIndex + 1} dari {filteredMembers.length} anggota
+            </p>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

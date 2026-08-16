@@ -9,7 +9,7 @@ const journeySchema = z.object({
   year: z.string().min(1, 'Tahun wajib diisi'),
   theme: z.string().min(1, 'Tema wajib diisi'),
   participants: z.number().int().optional().default(0),
-  universities: z.number().int().optional().default(0),
+  date: z.string().nullable().optional(),
   competitionsCount: z.number().int().optional().default(0),
   achievement: z.string().nullable().optional(),
   description: z.string().nullable().optional(),
@@ -39,7 +39,7 @@ export const journeysModule = new Elysia({ prefix: '/journeys' })
         year: body.year,
         theme: body.theme,
         participants: body.participants,
-        universities: body.universities,
+        date: body.date ?? null,
         competitionsCount: body.competitionsCount,
         achievement: body.achievement ?? null,
         description: body.description ?? null,
@@ -62,7 +62,7 @@ export const journeysModule = new Elysia({ prefix: '/journeys' })
     }
     if (body.theme !== undefined) updates.theme = body.theme;
     if (body.participants !== undefined) updates.participants = body.participants;
-    if (body.universities !== undefined) updates.universities = body.universities;
+    if (body.date !== undefined) updates.date = body.date ?? null;
     if (body.competitionsCount !== undefined) updates.competitionsCount = body.competitionsCount;
     if (body.achievement !== undefined) updates.achievement = body.achievement ?? null;
     if (body.description !== undefined) updates.description = body.description ?? null;

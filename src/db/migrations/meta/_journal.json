@@ -134,6 +134,13 @@
       "when": 1786420000000,
       "tag": "0018_journeys_year",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1786875617114,
+      "tag": "0019_wise_black_knight",
+      "breakpoints": true
     }
   ]
 }

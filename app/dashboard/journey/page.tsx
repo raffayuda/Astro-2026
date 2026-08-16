@@ -23,7 +23,7 @@ interface Journey {
   year: string | null;
   theme: string;
   participants: number | null;
-  universities: number | null;
+  date: string | null;
   competitionsCount: number | null;
   achievement: string | null;
   description: string | null;
@@ -55,7 +55,7 @@ export default function JourneyPage() {
   const [deleteModal, setDeleteModal] = useState<{ title: string; message: string; onConfirm: () => void } | null>(null);
 
   const [form, setForm] = useState({
-    year: '', theme: '', participants: 0, universities: 0,
+    year: '', theme: '', participants: 0, date: '',
     competitionsCount: 0, achievement: '', description: '', highlights: '',
     sortOrder: 0,
   });
@@ -68,7 +68,7 @@ export default function JourneyPage() {
         ? apiHelpers.journeys.update(editingId, body)
         : apiHelpers.journeys.create(body),
     onSuccess: () => {
-      setForm({ year: '', theme: '', participants: 0, universities: 0, competitionsCount: 0, achievement: '', description: '', highlights: '', sortOrder: 0 });
+      setForm({ year: '', theme: '', participants: 0, date: '', competitionsCount: 0, achievement: '', description: '', highlights: '', sortOrder: 0 });
       setEditingId(null); setShowAdd(false);
       toast.success(editingId ? 'Journey diperbarui' : 'Journey ditambahkan');
       invalidate();
@@ -87,7 +87,7 @@ export default function JourneyPage() {
       year: item.year || item.id,
       theme: item.theme,
       participants: item.participants || 0,
-      universities: item.universities || 0,
+      date: item.date || '',
       competitionsCount: item.competitionsCount || 0,
       achievement: item.achievement || '',
       description: item.description || '',
@@ -106,8 +106,10 @@ export default function JourneyPage() {
         year: form.year,
         theme: form.theme,
         participants: Number(form.participants),
-        universities: Number(form.universities),
+        date: form.date,
         competitionsCount: Number(form.competitionsCount),
+        achievement: form.achievement,
+        description: form.description,
         sortOrder: Number(form.sortOrder),
         highlights: form.highlights.split('\n').filter(s => s.trim()),
       };
@@ -136,7 +138,7 @@ export default function JourneyPage() {
           <h1 className="text-2xl font-black uppercase tracking-tight text-foreground">Journey</h1>
           <p className="mt-1 text-sm font-light text-muted-foreground">{items.length} perjalanan</p>
         </div>
-        <Button onClick={() => { setShowAdd(!showAdd); setEditingId(null); setForm({ year: '', theme: '', participants: 0, universities: 0, competitionsCount: 0, achievement: '', description: '', highlights: '', sortOrder: 0 }); }}
+        <Button onClick={() => { setShowAdd(!showAdd); setEditingId(null); setForm({ year: '', theme: '', participants: 0, date: '', competitionsCount: 0, achievement: '', description: '', highlights: '', sortOrder: 0 }); }}
           className="clip-angled text-xs font-bold uppercase tracking-wider">
           <Plus data-icon="inline-start" /> Tambah Journey
         </Button>
@@ -165,8 +167,8 @@ export default function JourneyPage() {
                 <Input type="number" value={form.participants} onChange={(e) => setForm({ ...form, participants: Number(e.target.value) })} />
               </Field>
               <Field>
-                <FieldLabel>Universitas</FieldLabel>
-                <Input type="number" value={form.universities} onChange={(e) => setForm({ ...form, universities: Number(e.target.value) })} />
+                <FieldLabel>Hari Pelaksanaan</FieldLabel>
+                <Input value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} placeholder="22 - 24 Agustus 2026" />
               </Field>
               <Field>
                 <FieldLabel>Cabang Lomba</FieldLabel>
@@ -190,7 +192,7 @@ export default function JourneyPage() {
                 {saving ? <Spinner data-icon="inline-start" /> : <Check data-icon="inline-start" />} Simpan
               </Button>
               <Button variant="outline" className="clip-angled-sm gap-1 text-xs font-bold uppercase tracking-wider"
-                onClick={() => { setShowAdd(false); setEditingId(null); setForm({ year: '', theme: '', participants: 0, universities: 0, competitionsCount: 0, achievement: '', description: '', highlights: '', sortOrder: 0 }); }}>
+                onClick={() => { setShowAdd(false); setEditingId(null); setForm({ year: '', theme: '', participants: 0, date: '', competitionsCount: 0, achievement: '', description: '', highlights: '', sortOrder: 0 }); }}>
                 <X data-icon="inline-start" /> Batal
               </Button>
             </div>
