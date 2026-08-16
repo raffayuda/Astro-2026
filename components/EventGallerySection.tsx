@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { motion, useReducedMotion, AnimatePresence } from 'motion/react';
 import { Camera, ChevronLeft, ChevronRight, Heart, X, ZoomIn } from 'lucide-react';
@@ -33,6 +33,7 @@ export default function EventGallerySection() {
   const reduce = useReducedMotion();
   const [activeCategory, setActiveCategory] = useState<string>('ALL');
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(null);
+  const [loadedPhotoId, setLoadedPhotoId] = useState<string | null>(null);
   const [likedPhotos, setLikedPhotos] = useState<Record<string, boolean>>({});
   const [isMarqueeHovered, setIsMarqueeHovered] = useState(false);
 
@@ -67,6 +68,23 @@ export default function EventGallerySection() {
   };
 
   const photo = selectedPhotoIndex !== null ? filteredPhotos[selectedPhotoIndex] : null;
+  const isPhotoReady = photo ? loadedPhotoId === photo.id : false;
+
+  useEffect(() => {
+    if (selectedPhotoIndex !== null) {
+      document.body.style.overflow = 'hidden';
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') setSelectedPhotoIndex(null);
+        if (e.key === 'ArrowLeft') handlePrevPhoto();
+        if (e.key === 'ArrowRight') handleNextPhoto();
+      };
+      window.addEventListener('keydown', handleKeyDown);
+      return () => {
+        document.body.style.overflow = '';
+        window.removeEventListener('keydown', handleKeyDown);
+      };
+    }
+  }, [selectedPhotoIndex, filteredPhotos.length]);
 
   return (
     <section id="gallery" className="relative overflow-hidden bg-gradient-to-b from-sky-200 via-sky-100 to-sky-100 py-24 text-slate-900 md:py-32">
@@ -219,20 +237,32 @@ export default function EventGallerySection() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-[100] flex flex-col bg-slate-950/95 backdrop-blur-md"
+            className="fixed inset-0 z-[100] flex flex-col bg-[#0d172a]/95 backdrop-blur-xl text-white"
             role="dialog"
             aria-modal="true"
             aria-label={photo.title}
           >
+            {/* Ambient Cyan Glow */}
+            <div className="pointer-events-none absolute top-1/2 left-1/2 z-0 size-[700px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-400/10 blur-[140px]" />
+
             {/* Header */}
-            <div className="flex items-center justify-between px-5 py-4 md:px-8 md:py-5">
+            <div className="relative z-10 flex items-center justify-between px-5 py-4 md:px-8 md:py-5">
               <div className="flex items-center gap-3">
-                <Badge className="clip-angled-sm bg-astro-cyan text-[11px] font-black uppercase tracking-wider text-slate-950 shadow-sm">
-                  {photo.year}
-                </Badge>
-                <span className="text-xs font-bold uppercase tracking-widest text-slate-300">
-                  {photo.category}
-                </span>
+                {isPhotoReady ? (
+                  <>
+                    <Badge className="clip-angled-sm bg-astro-cyan text-[11px] font-black uppercase tracking-wider text-slate-950 shadow-sm">
+                      {photo.year}
+                    </Badge>
+                    <span className="text-xs font-bold uppercase tracking-widest text-slate-300">
+                      {photo.category}
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <div className="h-5 w-14 rounded bg-slate-800/80 shimmer clip-angled-sm" />
+                    <div className="h-4 w-24 rounded bg-slate-800/80 shimmer" />
+                  </>
+                )}
               </div>
 
               <div className="flex items-center gap-2">
@@ -241,7 +271,7 @@ export default function EventGallerySection() {
                   size="icon"
                   onClick={(e) => toggleLike(photo.id, e)}
                   className={cn(
-                    'border border-white/15 bg-white/5 text-slate-200 hover:bg-white/15 hover:text-white',
+                    'border border-white/20 bg-white/10 text-white hover:bg-white/20 shadow-sm',
                     likedPhotos[photo.id] && 'scale-110 border-rose-500 bg-rose-500 text-white shadow-md hover:bg-rose-500',
                   )}
                   aria-label="Suka foto ini"
@@ -253,18 +283,19 @@ export default function EventGallerySection() {
                   size="icon"
                   aria-label="Tutup"
                   onClick={() => setSelectedPhotoIndex(null)}
-                  className="border border-white/15 bg-white/5 text-slate-200 hover:bg-white/15 hover:text-white"
+                  className="border border-white/20 bg-white/10 text-white hover:bg-white/20 shadow-sm rounded-full"
                 >
                   <X />
                 </Button>
               </div>
             </div>
 
-            {/* Main fullscreen image stage */}
-            <div className="relative flex-1 min-h-0 px-4 pb-2 md:px-12">
-              <div className="relative h-full w-full overflow-hidden bg-slate-900/60">
+            {/* Main fullscreen image stage (landscape) */}
+            <div className="relative z-10 flex-1 min-h-0 px-4 pb-2 md:px-12">
+              <div className="relative h-full w-full overflow-hidden rounded-2xl border border-white/10 bg-slate-950 shadow-2xl">
                 {/* Animated shimmer skeleton while loading */}
                 <SkeletonImage
+                  key={photo.id}
                   src={normalizeImageUrl(photo.imageUrl)}
                   alt={photo.title}
                   imgKey={photo.id}
@@ -272,42 +303,56 @@ export default function EventGallerySection() {
                   objectFit="contain"
                   priority
                   sizes="(max-width: 1280px) 100vw, 1280px"
+                  onReady={() => setLoadedPhotoId(photo.id)}
                 />
 
-                {/* Navigation arrows */}
+                {/* White Circular Navigation Arrows */}
                 <Button
                   variant="ghost"
                   size="icon-lg"
                   onClick={handlePrevPhoto}
-                  className="absolute top-1/2 left-3 z-30 -translate-y-1/2 border border-white/20 bg-slate-950/70 text-white shadow-lg hover:bg-astro-cyan hover:text-slate-950 md:left-6"
+                  className="absolute top-1/2 left-3 z-30 -translate-y-1/2 size-10 rounded-full bg-white text-slate-950 shadow-lg hover:bg-astro-cyan hover:scale-105 transition-all md:left-6"
                   aria-label="Foto sebelumnya"
                 >
-                  <ChevronLeft />
+                  <ChevronLeft className="size-6" />
                 </Button>
                 <Button
                   variant="ghost"
                   size="icon-lg"
                   onClick={handleNextPhoto}
-                  className="absolute top-1/2 right-3 z-30 -translate-y-1/2 border border-white/20 bg-slate-950/70 text-white shadow-lg hover:bg-astro-cyan hover:text-slate-950 md:right-6"
+                  className="absolute top-1/2 right-3 z-30 -translate-y-1/2 size-10 rounded-full bg-white text-slate-950 shadow-lg hover:bg-astro-cyan hover:scale-105 transition-all md:right-6"
                   aria-label="Foto berikutnya"
                 >
-                  <ChevronRight />
+                  <ChevronRight className="size-6" />
                 </Button>
               </div>
             </div>
 
             {/* Footer info */}
-            <div className="flex items-center justify-between px-5 py-4 md:px-8 md:py-5">
+            <div className="relative z-10 flex items-center justify-between px-5 py-4 md:px-8 md:py-5">
               <div>
-                <h3 className="text-base font-black text-white md:text-lg">{photo.title}</h3>
-                <p className="mt-0.5 text-xs font-semibold text-slate-400">
-                  Foto {selectedPhotoIndex! + 1} dari {filteredPhotos.length} dokumentasi resmi
-                </p>
+                {isPhotoReady ? (
+                  <>
+                    <h3 className="text-base font-black text-white md:text-lg">{photo.title}</h3>
+                    <p className="mt-0.5 text-xs font-semibold text-slate-300">
+                      Foto {selectedPhotoIndex! + 1} dari {filteredPhotos.length} dokumentasi resmi
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <div className="h-6 w-48 sm:w-72 rounded bg-slate-800/80 shimmer mb-1.5" />
+                    <div className="h-4 w-36 sm:w-48 rounded bg-slate-800/80 shimmer" />
+                  </>
+                )}
               </div>
 
-              <div className="hidden items-center gap-1.5 border border-sky-400/30 bg-sky-500/10 px-3 py-1.5 text-xs font-bold text-sky-200 sm:flex">
-                <ZoomIn className="size-3.5 text-sky-300" /> HD Documentation
-              </div>
+              {isPhotoReady ? (
+                <div className="hidden items-center gap-1.5 border border-sky-400/30 bg-sky-500/10 px-3 py-1.5 text-xs font-bold text-sky-200 rounded-lg shadow-sm sm:flex">
+                  <ZoomIn className="size-3.5 text-sky-300" /> HD Documentation
+                </div>
+              ) : (
+                <div className="hidden sm:block h-7 w-32 rounded bg-slate-800/80 shimmer" />
+              )}
             </div>
           </motion.div>
         )}
@@ -315,3 +360,4 @@ export default function EventGallerySection() {
     </section>
   );
 }
+

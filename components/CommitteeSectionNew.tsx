@@ -42,7 +42,6 @@ export default function CommitteeSection() {
       id: d.slug,
     }));
 
-    // Add any divisions from members not in divList
     members.forEach((m: any) => {
       if (!merged.find((d: any) => d.slug === m.division)) {
         merged.push({
@@ -58,7 +57,6 @@ export default function CommitteeSection() {
       }
     });
 
-    // Backend already returns divisions sorted by sortOrder ASC, then id ASC
     return merged;
   }, [members, divList]);
 
@@ -125,11 +123,9 @@ export default function CommitteeSection() {
 
   return (
     <section id="committee" className="relative py-20 md:py-28 overflow-hidden bg-gradient-to-b from-sky-100 via-sky-100 to-sky-200 text-slate-900">
-      {/* Ambient Sky Glows */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[750px] h-[750px] bg-cyan-300/30 rounded-full blur-[130px] pointer-events-none z-0" />
       <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-sky-300/40 blur-[120px] rounded-full pointer-events-none z-0" />
 
-      {/* Floating Decorative Clouds */}
       <MotionImage
         src="/assets/cloud.png"
         alt=""
@@ -168,7 +164,6 @@ export default function CommitteeSection() {
       />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* ── Section Header ── */}
         <div className="text-center mb-12">
           <div className="flex justify-center mb-3">
             <div className="accent-line" />
@@ -181,7 +176,6 @@ export default function CommitteeSection() {
           </p>
         </div>
 
-        {/* ── Filter Pills ── */}
         <div className="mb-12 flex flex-wrap justify-center gap-2">
           <ToggleGroup
             type="single"
@@ -211,7 +205,6 @@ export default function CommitteeSection() {
           </ToggleGroup>
         </div>
 
-        {/* ── Division Label ── */}
         {currentDivision && (
           <div className="flex items-center justify-center gap-3 mb-10">
             <div className="h-px bg-slate-200/60 flex-1 max-w-24" />
@@ -222,7 +215,6 @@ export default function CommitteeSection() {
           </div>
         )}
 
-        {/* ── Centered Member Grid ── */}
         <div className="flex flex-wrap justify-center gap-4 md:gap-6 pb-8 px-4 sm:px-6 lg:px-8">
           {filteredMembers.map((member, index) => {
             const isRevealed = hoveredId === member.id;
@@ -250,14 +242,12 @@ export default function CommitteeSection() {
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   />
 
-                  {/* Always-visible role badge */}
                   <div className="absolute top-3 left-3 z-20">
                     <Badge className={member.isLeader === '1' ? 'bg-amber-400 text-[10px] font-bold uppercase tracking-wider text-amber-950 shadow-sm max-w-[140px] truncate inline-block' : 'bg-white/80 text-[10px] font-bold uppercase tracking-wider text-slate-700 ring-1 ring-white backdrop-blur-sm max-w-[140px] truncate inline-block'}>
                       {member.role || 'Anggota'}
                     </Badge>
                   </div>
 
-                  {/* Overlay on hover/tap */}
                   <AnimatePresence>
                     {isRevealed && (
                       <motion.div
@@ -283,7 +273,7 @@ export default function CommitteeSection() {
 
                           {member.quote && (
                             <p className="text-xs text-white/60 italic mt-2 leading-relaxed line-clamp-2 drop-shadow-sm">
-                              &ldquo;{member.quote}&rdquo;
+                              "{member.quote}"
                             </p>
                           )}
 
@@ -303,13 +293,14 @@ export default function CommitteeSection() {
                 </div>
               </motion.div>
             );
-         {/* ── Total Count ── */}
-        <div className="flex justify-center mt-16">��─ Total Count ── */}
+          })}
+        </div>
+
         <div className="flex justify-center mt-16">
           <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/50 backdrop-blur-xl rounded-xl ring-1 ring-white/80 shadow-sm">
             <Users className="w-4 h-4 text-astro-cyan" />
             <span className="text-xs font-semibold text-slate-600">
-              {filteredMembers.length} Anggota — {currentDivision?.name || activeDivision}
+              {filteredMembers.length} Anggota - {currentDivision?.name || activeDivision}
             </span>
           </div>
         </div>
@@ -324,23 +315,23 @@ export default function CommitteeSection() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-sky-950/75 p-4 backdrop-blur-xl"
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-xl"
             role="dialog"
             aria-modal="true"
             aria-label={viewerMember.name}
             onClick={() => setSelectedMemberIndex(null)}
           >
             {/* Sky Glow Backdrop */}
-            <div className="pointer-events-none absolute top-1/2 left-1/2 z-0 size-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-400/20 blur-[130px]" />
+            <div className="pointer-events-none absolute top-1/2 left-1/2 z-0 size-[550px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-400/10 blur-[140px]" />
 
-            {/* Centered Portrait Card */}
+            {/* Centered Dark Navy Portrait Card */}
             <motion.div
               initial={{ scale: 0.95, opacity: 0, y: 15 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.95, opacity: 0, y: 15 }}
               transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
               onClick={(e) => e.stopPropagation()}
-              className="relative z-10 flex flex-col w-full max-w-sm sm:max-w-md max-h-[92vh] overflow-hidden rounded-3xl border border-cyan-300/30 bg-slate-900/90 p-4 sm:p-5 text-white shadow-2xl backdrop-blur-2xl"
+              className="relative z-10 flex flex-col w-full max-w-sm sm:max-w-md max-h-[92vh] overflow-hidden rounded-3xl border border-sky-400/30 bg-[#0d172a]/95 p-4 sm:p-5 text-white shadow-2xl backdrop-blur-2xl"
             >
               {/* Header inside Card */}
               <div className="flex items-center justify-between pb-3">
@@ -365,7 +356,7 @@ export default function CommitteeSection() {
               </div>
 
               {/* Image Stage inside Portrait Card */}
-              <div className="relative w-full aspect-[3/4] max-h-[46vh] sm:max-h-[50vh] overflow-hidden rounded-2xl border border-white/10 bg-slate-950/80 shadow-inner">
+              <div className="relative w-full aspect-[3/4] max-h-[46vh] sm:max-h-[50vh] overflow-hidden rounded-2xl border border-white/10 bg-slate-950 shadow-inner">
                 <SkeletonImage
                   key={viewerMember.id}
                   src={normalizeImageUrl(viewerMember.image) || '/assets/users.png'}
@@ -378,12 +369,12 @@ export default function CommitteeSection() {
                   onReady={() => setLoadedMemberId(viewerMember.id)}
                 />
 
-                {/* Navigation Arrows */}
+                {/* White Circular Navigation Arrows */}
                 <Button
                   variant="ghost"
                   size="icon"
                   onClick={handlePrevMember}
-                  className="absolute top-1/2 left-2 z-30 -translate-y-1/2 border border-white/20 bg-slate-950/75 text-white shadow-lg hover:bg-astro-cyan hover:text-slate-950 rounded-full size-9"
+                  className="absolute top-1/2 left-2.5 z-30 -translate-y-1/2 size-9 rounded-full bg-white text-slate-950 shadow-lg hover:bg-astro-cyan hover:scale-105 transition-all"
                   aria-label="Anggota sebelumnya"
                 >
                   <ChevronLeft className="size-5" />
@@ -392,7 +383,7 @@ export default function CommitteeSection() {
                   variant="ghost"
                   size="icon"
                   onClick={handleNextMember}
-                  className="absolute top-1/2 right-2 z-30 -translate-y-1/2 border border-white/20 bg-slate-950/75 text-white shadow-lg hover:bg-astro-cyan hover:text-slate-950 rounded-full size-9"
+                  className="absolute top-1/2 right-2.5 z-30 -translate-y-1/2 size-9 rounded-full bg-white text-slate-950 shadow-lg hover:bg-astro-cyan hover:scale-105 transition-all"
                   aria-label="Anggota berikutnya"
                 >
                   <ChevronRight className="size-5" />
@@ -406,28 +397,28 @@ export default function CommitteeSection() {
                     <h3 className="text-lg sm:text-xl font-black text-white capitalize leading-tight">
                       {viewerMember.name}
                     </h3>
-                    <p className="mt-0.5 text-xs sm:text-sm font-bold text-sky-300">
+                    <p className="mt-0.5 text-xs sm:text-sm font-bold text-astro-cyan">
                       {viewerMember.role}
                     </p>
                     {(viewerMember.studyProgram || viewerMember.batch) && (
-                      <p className="mt-1 text-[10px] font-bold uppercase tracking-wider text-cyan-200/80">
+                      <p className="mt-1 text-[10px] font-bold uppercase tracking-wider text-cyan-200/90">
                         {[viewerMember.studyProgram, viewerMember.batch].filter(Boolean).join(' ')}
                       </p>
                     )}
                     {viewerMember.quote && (
-                      <p className="mt-2 px-2 text-xs text-slate-300/90 italic leading-relaxed">
-                        &ldquo;{viewerMember.quote}&rdquo;
+                      <p className="mt-2 px-2 text-xs text-slate-300 italic leading-relaxed">
+                        "{viewerMember.quote}"
                       </p>
                     )}
                     <p className="mt-2 text-[11px] font-semibold text-slate-400">
-                      {selectedMemberIndex !== null ? selectedMemberIndex + 1 : 0} dari {filteredMembers.length} anggota
+                      {selectedMemberIndex! + 1} dari {filteredMembers.length} anggota
                     </p>
                   </>
                 ) : (
                   <div className="flex flex-col items-center justify-center py-1">
                     <div className="h-5 w-44 rounded bg-slate-800/80 shimmer mb-2" />
                     <div className="h-4 w-28 rounded bg-slate-800/80 shimmer mb-2" />
-                    <div className="h-3 w-36 rounded bg-slate-800/80 shimmer mb-2" />
+                    <div className="h-3 w-40 rounded bg-slate-800/80 shimmer mb-2" />
                     <div className="h-4 w-60 rounded bg-slate-800/80 shimmer mb-2" />
                     <div className="h-3 w-24 rounded bg-slate-800/80 shimmer" />
                   </div>

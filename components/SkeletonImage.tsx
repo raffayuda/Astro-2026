@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 
@@ -18,6 +18,8 @@ interface SkeletonImageProps {
   priority?: boolean;
   skeletonClassName?: string;
   objectFit?: 'cover' | 'contain';
+  onReady?: () => void;
+  onError?: () => void;
 }
 
 /**
@@ -39,8 +41,29 @@ export default function SkeletonImage({
   priority,
   skeletonClassName,
   objectFit = 'cover',
+  onReady,
+  onError,
 }: SkeletonImageProps) {
   const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    setLoaded(false);
+  }, [imgKey, src]);
+
+  const handleSuccess = useCallback(() => {
+    setLoaded(true);
+  }, []);
+
+  const handleError = useCallback(() => {
+    setLoaded(true);
+    onError?.();
+  }, [onError]);
+
+  useEffect(() => {
+    if (loaded) {
+      onReady?.();
+    }
+  }, [loaded, onReady]);
 
   return (
     <div className={cn('relative overflow-hidden bg-slate-900/60', className)}>
@@ -62,9 +85,12 @@ export default function SkeletonImage({
             imgClassName,
           )}
           ref={(img) => {
-            if (img?.complete && img.naturalWidth > 0) setLoaded(true);
+            if (img?.complete && img.naturalWidth > 0) {
+              handleSuccess();
+            }
           }}
-          onLoad={() => setLoaded(true)}
+          onLoad={handleSuccess}
+          onError={handleError}
         />
       ) : (
         <Image
@@ -81,11 +107,15 @@ export default function SkeletonImage({
             imgClassName,
           )}
           ref={(img) => {
-            if (img?.complete && img.naturalWidth > 0) setLoaded(true);
+            if (img?.complete && img.naturalWidth > 0) {
+              handleSuccess();
+            }
           }}
-          onLoad={() => setLoaded(true)}
+          onLoad={handleSuccess}
+          onError={handleError}
         />
       )}
     </div>
   );
 }
+

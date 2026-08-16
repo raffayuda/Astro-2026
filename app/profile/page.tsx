@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import CommitteeSection from "@/components/CommitteeSection";
+import CommitteeSection from "@/components/CommitteeSectionNew";
 import EventGallerySection from "@/components/EventGallerySection";
 import SocialMediaSection from "@/components/SocialMediaSection";
 import ProfileHero from "@/components/ProfileHero";
