@@ -26,13 +26,19 @@ interface ImportResult {
 }
 
 /** Ambil file ID dari berbagai bentuk link Google Drive. */
-function extractDriveId(value: string): string | null {
+export function extractDriveId(value: string): string | null {
   const v = value.trim();
-  // drive.google.com/file/d/<ID>/view | drive.google.com/open?id=<ID>
+  // drive.google.com/file/d/<ID>/view?usp=sharing | drive.google.com/open?id=<ID> | drive.google.com/uc?id=<ID>
   const fileMatch = v.match(/\/file\/d\/([A-Za-z0-9_-]{10,})/);
   if (fileMatch) return fileMatch[1];
   const idMatch = v.match(/[?&]id=([A-Za-z0-9_-]{10,})/);
   if (idMatch) return idMatch[1];
+  // drive.google.com/drive/folders/<ID>
+  const folderMatch = v.match(/\/drive\/folders\/([A-Za-z0-9_-]{10,})/);
+  if (folderMatch) return folderMatch[1];
+  // docs.google.com/…/d/<ID>/…
+  const docMatch = v.match(/docs\.google\.com\/\w+\/d\/([A-Za-z0-9_-]{10,})/);
+  if (docMatch) return docMatch[1];
   // String {id} mentah
   if (/^[A-Za-z0-9_-]{10,}$/.test(v)) return v;
   return null;
@@ -48,6 +54,8 @@ export function toDriveImageUrl(value: string): string {
 /** Normalisasi URL gambar: link Drive → URL gambar; legacy /uploads/ → storage; selain itu dibiarkan. */
 export function normalizeImageUrl(url: string): string {
   if (!url) return '';
+  // Idempotent: URL lh3 yang sudah dikonversi sebelumnya tidak dikonversi ulang.
+  if (url.startsWith('https://lh3.googleusercontent.com/d/')) return url;
   const drive = toDriveImageUrl(url);
   if (drive) return drive;
   // Legacy local-fs paths (pre-Supabase) now live in the public uploads bucket.

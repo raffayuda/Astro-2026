@@ -9,3 +9,10 @@ Rules:
 - If graphify-out/wiki/index.md exists, use it for broad navigation instead of raw source browsing.
 - Read graphify-out/GRAPH_REPORT.md only for broad architecture review or when query/path/explain do not surface enough context.
 - After modifying code, run `graphify update .` to keep the graph current (AST-only, no API cost).
+
+## graphify setup & refresh
+- Install: `pip install --user graphifyy` (also pulls tree-sitter grammars + networkx). For SQL/migration parsing, install with `pip install --user "graphifyy[sql]"`.
+- If `graphify` is not on your PATH, call the binary directly, e.g. `"$env:APPDATA\Python\Python314\Scripts\graphify.exe" ...`. The graph is already generated at `graphify-out/graph.json`.
+- Re-generate (no API key, AST-only): `graphify extract . --code-only --no-cluster` (add `--force` to ignore the incremental cache). Enrich communities/local report with `graphify cluster-only . --no-label`.
+- For richer, LLM-inferred edges (INFERRED) and AI-named communities, run a non-`--code-only` extraction with a backend key set (e.g. `OPENAI_API_KEY`, `GEMINI_API_KEY`); output lands in the same `graphify-out/`.
+- Read `graphify-out/GRAPH_REPORT.md` for an architecture overview; use `graphify query "…"` before reaching for raw Grep/Glob.

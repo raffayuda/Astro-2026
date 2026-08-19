@@ -624,9 +624,21 @@ export default function CommitteePage() {
                   <Input
                     value={form.image}
                     onChange={(e) => setForm({ ...form, image: e.target.value })}
-                    placeholder="URL Google Drive / link gambar langsung..."
+                    placeholder="URL Google Drive / link gambar langsung (PNG, JPG, WEBP)..."
                     className="flex-1"
                   />
+                  {form.image && (
+                    <p className={cn(
+                      "text-[10px] font-semibold",
+                      normalizeImageUrl(form.image) !== form.image || form.image.startsWith('https://lh3.googleusercontent.com/d/')
+                        ? "text-emerald-600"
+                        : "text-muted-foreground"
+                    )}>
+                      {form.image.startsWith('https://drive.google.com/') || form.image.startsWith('https://docs.google.com/')
+                        ? "Link Google Drive terdeteksi — akan dikonversi otomatis menjadi URL gambar."
+                        : "Foto akan disimpan sebagai URL gambar."}
+                    </p>
+                  )}
                   <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
                     <span>atau</span>
                     <label className="cursor-pointer">
