@@ -17,6 +17,7 @@ import { journeyPhotosModule } from '@/src/server/modules/journey-photos';
 import { sponsorsModule } from '@/src/server/modules/sponsors';
 import { mediaPartnersModule } from '@/src/server/modules/media-partners';
 import { certificatesModule } from '@/src/server/modules/certificates';
+import { certificateTemplatesModule } from '@/src/server/modules/certificate-templates';
 import { uploadModule } from '@/src/server/modules/upload';
 
 /**
@@ -54,6 +55,7 @@ export const app = new Elysia({ prefix: '/api' })
   .use(sponsorsModule)
   .use(mediaPartnersModule)
   .use(certificatesModule)
+  .use(certificateTemplatesModule)
   .use(uploadModule);
 
 export type App = typeof app;

@@ -8,3 +8,4 @@ export const DELETE = app.fetch;
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
+export const maxDuration = 300; // 5 min — certificate PDF generation can be slow

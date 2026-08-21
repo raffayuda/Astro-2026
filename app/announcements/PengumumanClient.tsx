@@ -366,9 +366,7 @@ export default function PengumumanClient() {
                       >
                         {cat.label}
                       </Badge>
-                      <span
-                        className={`text-[10px] font-bold tracking-wide ${isTeam ? "text-blue-600" : "text-muted-foreground"}`}
-                      >
+                      <span className="text-[10px] font-bold tracking-wide text-astro-cyan">
                         {typeLabel}
                       </span>
                     </div>
@@ -386,7 +384,7 @@ export default function PengumumanClient() {
                       {comp.hasWinners ? (
                         <Button
                           onClick={() => openModal(comp)}
-                          className="clip-angled-sm w-full py-2.5 text-[10px] font-black tracking-[0.1em] uppercase"
+                          className="clip-angled-sm w-full py-2.5 text-[10px] font-black tracking-[0.1em] uppercase bg-astro-cyan text-white hover:bg-astro-cyan/80"
                         >
                           <Eye data-icon="inline-start" />
                           Lihat Juara
@@ -423,6 +421,7 @@ export default function PengumumanClient() {
             isOpen={!!modalOpen}
             onClose={closeModal}
             competitionTitle={modalData?.competition.title || ""}
+            competitionId={modalData?.competition.id || ""}
             category={modalData?.competition.category || ""}
             type={modalData?.competition.type || null}
             winners={modalData?.winners || []}

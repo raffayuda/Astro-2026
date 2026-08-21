@@ -2,6 +2,7 @@ import { db } from '@/src/db';
 import { registrations, competitions } from '@/src/db/schema';
 import { eq, desc, sql, count, and } from 'drizzle-orm';
 import { Resend } from 'resend';
+import { deleteSupabaseFile } from '@/src/server/modules/upload';
 import type { RegistrationCreate, RegistrationListQuery } from './model';
 import { SELF_SERVICE_FIELDS, ADMIN_FIELDS } from './model';
 
@@ -153,6 +154,20 @@ export async function updateRegistration(
     .set({ ...updates, updatedAt: new Date() })
     .where(eq(registrations.id, id))
     .returning();
+
+  // When the admin replaces the `certificates` array, delete the Supabase
+  // files whose URLs were dropped from the list (cascade delete to storage).
+  if (isAdmin && updates.certificates !== undefined) {
+    const oldUrls = (current.certificates || []).map((c) => c.url);
+    const newUrls = new Set(
+      ((updates.certificates as { url: string }[]) || []).map((c) => c.url),
+    );
+    for (const url of oldUrls) {
+      if (url && !newUrls.has(url)) {
+        deleteSupabaseFile(url).catch(console.error);
+      }
+    }
+  }
 
   // Auto-update filledSlots when paymentStatus changes to/from 'paid' (admin-only path)
   if (updates.paymentStatus && updates.paymentStatus !== current.paymentStatus) {

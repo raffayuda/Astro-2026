@@ -2,12 +2,13 @@
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { Trophy, Heart, FileText, ExternalLink, Medal, Download, ChevronRight } from 'lucide-react';
+import { Trophy, Heart, FileText, ExternalLink, Medal, Download, Printer, Check } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { ResponsiveModal } from '@/components/responsive-modal';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
+import { useCertificateGenerateSingle } from '@/src/lib/hooks/use-queries';
 
 interface CertItem {
   name: string;
@@ -29,6 +30,7 @@ interface Props {
   isOpen: boolean;
   onClose: () => void;
   competitionTitle: string;
+  competitionId: string;
   category: string;
   type: string | null;
   winners: RegistrationWinner[];
@@ -103,6 +105,7 @@ export default function WinnersModal({
   isOpen,
   onClose,
   competitionTitle,
+  competitionId,
   category,
   winners,
   certHolders,
@@ -110,6 +113,51 @@ export default function WinnersModal({
   loading = false,
 }: Props) {
   const [showCertModal, setShowCertModal] = useState(false);
+  const [generatingIds, setGeneratingIds] = useState<Set<string>>(new Set());
+  const [localCerts, setLocalCerts] = useState<Record<string, CertItem[]>>({});
+  const generateSingle = useCertificateGenerateSingle();
+
+  useEffect(() => {
+    if (!isOpen) return;
+    setGeneratingIds(new Set());
+    setLocalCerts({});
+  }, [isOpen]);
+
+  function getCertsFor(regId: string): CertItem[] {
+    const winner = winners.find((w) => w.id === regId);
+    if (winner && winner.certificates && winner.certificates.length > 0) {
+      return winner.certificates;
+    }
+    return localCerts[regId] || [];
+  }
+
+  async function handlePrintCertificate(regId: string) {
+    setGeneratingIds((prev) => new Set(prev).add(regId));
+    try {
+      const result = await generateSingle.mutateAsync({
+        competitionId,
+        registrationId: regId,
+      });
+      if (result && Array.isArray(result)) {
+        setLocalCerts((prev) => ({
+          ...prev,
+          [regId]: result.map((r: { name: string; url: string }) => ({
+            name: r.name,
+            url: r.url,
+          })),
+        }));
+      }
+    } catch (err) {
+      console.error('Generate certificate failed:', err);
+    } finally {
+      setGeneratingIds((prev) => {
+        const next = new Set(prev);
+        next.delete(regId);
+        return next;
+      });
+    }
+  }
+
 
   useEffect(() => {
     if (isOpen) {
@@ -162,6 +210,13 @@ export default function WinnersModal({
   const getWinnerName = (w: RegistrationWinner) =>
     w.fullName || w.teamName || w.leaderName || 'Peserta';
 
+  /** Split a prize value string into a clean list of items. */
+  const splitPrizeItems = (value: string) =>
+    value
+      .split(/[;\n]/)
+      .map((s) => s.trim())
+      .filter(Boolean);
+
   const categoryFormatted =
     category === 'akademik' ? 'Akademik & Sains' :
     category === 'olahraga' ? 'Olahraga' :
@@ -169,9 +224,9 @@ export default function WinnersModal({
 
   // Collect all certificates for the cert modal
   const allCertGroups = [
-    ...(grouped['1'].length > 0 ? [{ name: 'Juara 1', certs: grouped['1'].flatMap((w) => w.certificates || []), rank: '🥇 Juara 1' }] : []),
-    ...(grouped['2'].length > 0 ? [{ name: 'Juara 2', certs: grouped['2'].flatMap((w) => w.certificates || []), rank: '🥈 Juara 2' }] : []),
-    ...(grouped['3'].length > 0 ? [{ name: 'Juara 3', certs: grouped['3'].flatMap((w) => w.certificates || []), rank: '🥉 Juara 3' }] : []),
+    ...(grouped['1'].length > 0 ? [{ name: 'Juara 1', certs: grouped['1'].flatMap((w) => getCertsFor(w.id)), rank: '🥇 Juara 1' }] : []),
+    ...(grouped['2'].length > 0 ? [{ name: 'Juara 2', certs: grouped['2'].flatMap((w) => getCertsFor(w.id)), rank: '🥈 Juara 2' }] : []),
+    ...(grouped['3'].length > 0 ? [{ name: 'Juara 3', certs: grouped['3'].flatMap((w) => getCertsFor(w.id)), rank: '🥉 Juara 3' }] : []),
     ...certHolders.map((ch) => ({
       name: getWinnerName(ch),
       certs: ch.certificates || [],
@@ -180,6 +235,12 @@ export default function WinnersModal({
   ].filter((g) => g.certs.length > 0);
 
   const totalCerts = allCertGroups.reduce((sum, g) => sum + g.certs.length, 0);
+
+  // Winners that don't yet have certificates — eligible for on-demand generate
+  const winnersWithoutCerts = winners.filter(
+    (w) => getCertsFor(w.id).length === 0 && !generatingIds.has(w.id),
+  );
+  const anyGenerating = winnersWithoutCerts.length === 0 && winners.some((w) => generatingIds.has(w.id));
 
   return (
     <>
@@ -204,12 +265,12 @@ export default function WinnersModal({
         {/* Header & Trophy */}
         <div className="mb-6 flex flex-col items-center justify-between gap-6 md:flex-row">
           <div className="flex-1 text-left">
-            <Badge variant="outline" className="mb-3 gap-2 border-blue-100 bg-blue-50 px-3.5 py-1.5 text-xs font-black uppercase tracking-wider text-blue-600">
+            <Badge variant="outline" className="mb-3 gap-2 border-astro-cyan/20 bg-astro-cyan/10 px-3.5 py-1.5 text-xs font-black uppercase tracking-wider text-astro-cyan">
               <span className="text-sm">📢</span> PENGUMUMAN JUARA
             </Badge>
             <h2 className="text-3xl font-black leading-[1.1] tracking-tight text-foreground sm:text-4xl md:text-5xl">
               Selamat kepada <br className="hidden sm:inline" />
-              <span className="text-blue-600">Para Pemenang!</span>
+              <span className="text-astro-cyan">Para Pemenang!</span>
             </h2>
             <p className="mt-2.5 max-w-xl text-xs leading-relaxed text-muted-foreground sm:text-sm md:text-base">
               Terima kasih kepada seluruh peserta yang telah berpartisipasi dan menunjukkan karya terbaiknya.
@@ -224,9 +285,9 @@ export default function WinnersModal({
         </div>
 
         {/* Info Bar */}
-        <div className="mb-8 grid grid-cols-1 gap-3 rounded-2xl border border-blue-100/60 bg-blue-50/40 p-3.5 sm:grid-cols-2 md:p-4">
+        <div className="mb-8 grid grid-cols-1 gap-3 rounded-2xl border border-astro-cyan/20 bg-astro-cyan/5 p-3.5 sm:grid-cols-2 md:p-4">
           <div className="flex items-center gap-3 px-2">
-            <div className="flex size-10 flex-shrink-0 items-center justify-center rounded-xl bg-blue-100/80 text-blue-600 shadow-xs">
+            <div className="flex size-10 flex-shrink-0 items-center justify-center rounded-xl bg-astro-cyan/10 text-astro-cyan shadow-xs">
               <Trophy />
             </div>
             <div className="min-w-0">
@@ -235,7 +296,7 @@ export default function WinnersModal({
             </div>
           </div>
           <div className="flex items-center gap-3 px-2">
-            <div className="flex size-10 flex-shrink-0 items-center justify-center rounded-xl bg-blue-100/80 text-blue-600 shadow-xs">
+            <div className="flex size-10 flex-shrink-0 items-center justify-center rounded-xl bg-astro-cyan/10 text-astro-cyan shadow-xs">
               <Medal />
             </div>
             <div className="min-w-0">
@@ -249,7 +310,7 @@ export default function WinnersModal({
         {winners.length > 0 && (
           <div className="mb-6 grid grid-cols-1 items-end gap-6 pt-4 md:grid-cols-3 md:gap-4">
             {grouped['2'].length > 0 && (
-              <div className="relative flex h-full min-h-[200px] flex-col justify-between rounded-2xl border border-blue-100/80 bg-muted/40 px-4 pt-10 pb-5 text-center shadow-xs">
+              <div className="relative flex h-full min-h-[200px] flex-col justify-between rounded-2xl border border-astro-cyan/20 bg-muted/40 px-4 pt-10 pb-5 text-center shadow-xs">
                 <div className="absolute -top-7 left-1/2 size-14 -translate-x-1/2 drop-shadow-md">
                   <Image src="/assets/medali2.png" alt="Medali Juara 2" fill className="object-contain" />
                 </div>
@@ -261,10 +322,15 @@ export default function WinnersModal({
                 </div>
                 {prizes.find((p) => p.label.toLowerCase().includes('2') || p.label === 'Juara 2') && (
                   <div className="mt-3 border-t border-slate-200/60 pt-3">
-                    <span className="mb-0.5 block text-[9px] font-bold uppercase tracking-wider text-muted-foreground">Hadiah</span>
-                    <span className="text-xs font-black text-blue-600">
-                      {prizes.find((p) => p.label.toLowerCase().includes('2') || p.label === 'Juara 2')?.value}
-                    </span>
+                    <span className="mb-1.5 block text-[9px] font-bold uppercase tracking-wider text-muted-foreground">Hadiah</span>
+                    <ul className="space-y-1">
+                      {splitPrizeItems(prizes.find((p) => p.label.toLowerCase().includes('2') || p.label === 'Juara 2')?.value || '').map((item, i) => (
+                        <li key={i} className="flex items-start justify-center gap-1.5 text-left">
+                          <Check className="mt-0.5 size-3 flex-shrink-0 text-astro-cyan" />
+                          <span className="text-[11px] font-bold leading-snug text-slate-700">{item}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
                 )}
               </div>
@@ -283,10 +349,15 @@ export default function WinnersModal({
                 </div>
                 {prizes.find((p) => p.label.toLowerCase().includes('1') || p.label === 'Juara 1') && (
                   <div className="mt-3 border-t border-amber-200/80 pt-3">
-                    <span className="mb-0.5 block text-[9px] font-bold uppercase tracking-wider text-muted-foreground">Hadiah</span>
-                    <span className="text-sm font-black text-amber-700">
-                      {prizes.find((p) => p.label.toLowerCase().includes('1') || p.label === 'Juara 1')?.value}
-                    </span>
+                    <span className="mb-1.5 block text-[9px] font-bold uppercase tracking-wider text-muted-foreground">Hadiah</span>
+                    <ul className="space-y-1">
+                      {splitPrizeItems(prizes.find((p) => p.label.toLowerCase().includes('1') || p.label === 'Juara 1')?.value || '').map((item, i) => (
+                        <li key={i} className="flex items-start justify-center gap-1.5 text-left">
+                          <Check className="mt-0.5 size-3 flex-shrink-0 text-amber-600" />
+                          <span className="text-xs font-bold leading-snug text-amber-900">{item}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
                 )}
               </div>
@@ -305,10 +376,15 @@ export default function WinnersModal({
                 </div>
                 {prizes.find((p) => p.label.toLowerCase().includes('3') || p.label === 'Juara 3') && (
                   <div className="mt-3 border-t border-orange-200/60 pt-3">
-                    <span className="mb-0.5 block text-[9px] font-bold uppercase tracking-wider text-muted-foreground">Hadiah</span>
-                    <span className="text-xs font-black text-amber-800">
-                      {prizes.find((p) => p.label.toLowerCase().includes('3') || p.label === 'Juara 3')?.value}
-                    </span>
+                    <span className="mb-1.5 block text-[9px] font-bold uppercase tracking-wider text-muted-foreground">Hadiah</span>
+                    <ul className="space-y-1">
+                      {splitPrizeItems(prizes.find((p) => p.label.toLowerCase().includes('3') || p.label === 'Juara 3')?.value || '').map((item, i) => (
+                        <li key={i} className="flex items-start justify-center gap-1.5 text-left">
+                          <Check className="mt-0.5 size-3 flex-shrink-0 text-orange-500" />
+                          <span className="text-[11px] font-bold leading-snug text-orange-900">{item}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
                 )}
               </div>
@@ -316,30 +392,38 @@ export default function WinnersModal({
           </div>
         )}
 
-        {/* Tombol Dapatkan Sertifikat */}
-        {totalCerts > 0 && (
+        {/* Tombol: Dapatkan / Cetak Sertifikat */}
+        {(totalCerts > 0 || winnersWithoutCerts.length > 0 || anyGenerating) && (
           <div className="border-t border-border pt-4 pb-2">
-            <Button
-              onClick={() => setShowCertModal(true)}
-              className="group w-full justify-between gap-3 border border-cyan-200/60 bg-gradient-to-r from-primary/10 to-blue-500/10 px-6 py-4 hover:border-cyan-300"
-            >
-              <div className="flex items-center gap-3">
-                <div className="flex size-10 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:bg-primary/20">
-                  <Download />
-                </div>
-                <div className="text-left">
-                  <span className="block text-sm font-black uppercase tracking-tight text-foreground">Dapatkan Sertifikat</span>
-                  <span className="text-[11px] text-muted-foreground">{totalCerts} sertifikat tersedia</span>
-                </div>
-              </div>
-              <ChevronRight className="size-5 text-muted-foreground transition-all group-hover:translate-x-0.5 group-hover:text-primary" />
-            </Button>
+            {totalCerts > 0 ? (
+              <Button
+                onClick={() => setShowCertModal(true)}
+                className="h-11 w-full gap-2 text-sm font-semibold"
+              >
+                <Download className="size-4" />
+                Dapatkan Sertifikat
+                <span className="ml-auto rounded-full bg-primary-foreground/15 px-2 py-0.5 text-xs font-medium">
+                  {totalCerts}
+                </span>
+              </Button>
+            ) : (
+              <Button
+                onClick={() => {
+                  winnersWithoutCerts.forEach((w) => handlePrintCertificate(w.id));
+                }}
+                disabled={generateSingle.isPending}
+                className="h-11 w-full gap-2 text-sm font-semibold"
+              >
+                {generateSingle.isPending ? <Spinner className="size-4" /> : <Printer className="size-4" />}
+                Cetak Sertifikat
+              </Button>
+            )}
           </div>
         )}
 
         {/* Footer */}
         <div className="flex items-center justify-center gap-1.5 pt-4 text-xs font-semibold text-muted-foreground sm:text-sm">
-          <Heart className="size-4 fill-blue-500 text-blue-500" />
+          <Heart className="size-4 fill-astro-cyan text-astro-cyan" />
           <span>Teruslah berkarya dan sampai jumpa di kompetisi berikutnya!</span>
         </div>
           </>

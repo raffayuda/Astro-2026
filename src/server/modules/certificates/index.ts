@@ -3,14 +3,25 @@ import { authPlugin } from '@/src/server/plugins/auth';
 import { db } from '@/src/db';
 import { registrations, competitions } from '@/src/db/schema';
 import { eq } from 'drizzle-orm';
-import { Resend } from 'resend';
 import { z } from 'zod';
+import { Resend } from 'resend';
+import * as certService from './service';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 const sendSchema = z.object({
   registrationId: z.string().min(1),
   competitionId: z.string().min(1),
+});
+
+const generateSchema = z.object({
+  competitionId: z.string().min(1),
+  ranks: z.array(z.string()).optional(),
+});
+
+const generateSingleSchema = z.object({
+  competitionId: z.string().min(1),
+  registrationId: z.string().min(1),
 });
 
 /** Send certificate download links to a participant's email (admin). */
@@ -110,4 +121,48 @@ export const certificatesModule = new Elysia({ prefix: '/certificates' })
   }, {
     body: sendSchema,
     admin: true,
+  })
+
+  /** Generate semua sertifikat untuk semua pemenang (admin). */
+  .post('/generate', async ({ body }) => {
+    try {
+      const result = await certService.generateAllWinnerCertificates(
+        body.competitionId,
+        body.ranks,
+      );
+      return result;
+    } catch (err) {
+      console.error('Certificate batch generate failed:', err);
+      return status(500, {
+        error: 'Gagal generate sertifikat',
+        details: err instanceof Error ? err.message : String(err),
+      });
+    }
+  }, {
+    body: generateSchema,
+    admin: true,
+  })
+
+  /** Generate on-demand untuk satu pemenang (user-side). */
+  .post('/generate-single', async ({ body }) => {
+    try {
+      const result = await certService.generateSingleCertificate(
+        body.registrationId,
+        body.competitionId,
+      );
+      if (!result) {
+        return status(404, {
+          error: 'Sertifikat tidak tersedia. Anda belum memenangkan lomba ini.',
+        });
+      }
+      return result;
+    } catch (err) {
+      console.error('Single certificate generate failed:', err);
+      return status(500, {
+        error: 'Gagal generate sertifikat',
+        details: err instanceof Error ? err.message : String(err),
+      });
+    }
+  }, {
+    body: generateSingleSchema,
   });

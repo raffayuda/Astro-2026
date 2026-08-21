@@ -35,6 +35,11 @@ export const queryKeys = {
   sponsors: { all: ['sponsors'] as const },
   mediaPartners: { all: ['media-partners'] as const },
   users: { all: ['users'] as const },
+  certificateTemplates: {
+    all: ['certificate-templates'] as const,
+    list: (competitionId: string) =>
+      ['certificate-templates', competitionId] as const,
+  },
 };
 
 /* ─── Competitions ─── */
@@ -222,4 +227,55 @@ export function useMediaPartners() {
 
 export function useUsers() {
   return useQuery({ queryKey: queryKeys.users.all, queryFn: apiHelpers.users.list });
+}
+
+/* ─── Certificate Templates ─── */
+
+export function useCertificateTemplates(competitionId: string) {
+  return useQuery({
+    queryKey: queryKeys.certificateTemplates.list(competitionId),
+    queryFn: () => apiHelpers.certificateTemplates.list(competitionId),
+    enabled: !!competitionId,
+  });
+}
+
+export function useCertificateTemplateMutations(competitionId: string) {
+  const qc = useQueryClient();
+  const invalidate = () =>
+    qc.invalidateQueries({
+      queryKey: queryKeys.certificateTemplates.list(competitionId),
+    });
+  return {
+    create: useMutation({
+      mutationFn: apiHelpers.certificateTemplates.create,
+      onSuccess: invalidate,
+    }),
+    remove: useMutation({
+      mutationFn: apiHelpers.certificateTemplates.remove,
+      onSuccess: invalidate,
+    }),
+  };
+}
+
+/* ─── Certificate Generation ─── */
+
+export function useCertificateGenerate(competitionId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: apiHelpers.certificates.generate,
+    onSuccess: () => {
+      qc.invalidateQueries({
+        queryKey: queryKeys.certificateTemplates.list(competitionId),
+      });
+      qc.invalidateQueries({
+        queryKey: queryKeys.registrations.winners(competitionId),
+      });
+    },
+  });
+}
+
+export function useCertificateGenerateSingle() {
+  return useMutation({
+    mutationFn: apiHelpers.certificates.generateSingle,
+  });
 }

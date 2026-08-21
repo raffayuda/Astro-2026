@@ -220,6 +220,22 @@ export const apiHelpers = {
   // Certificates
   certificates: {
     send: (body: unknown) => unwrap(api.certificates.send.post(body as never)),
+    generate: (body: unknown) => unwrap(api.certificates.generate.post(body as never)),
+    generateSingle: (body: unknown) => unwrap(api.certificates['generate-single'].post(body as never)),
+  },
+
+  // Certificate Templates
+  certificateTemplates: {
+    list: async (competitionId: string) => {
+      const res = await fetch(
+        `/api/certificate-templates?competitionId=${encodeURIComponent(competitionId)}`,
+        { credentials: 'include' },
+      );
+      if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+      return res.json();
+    },
+    create: (body: unknown) => unwrap(api['certificate-templates'].post(body as never)),
+    remove: (id: number) => unwrap(api['certificate-templates']({ id }).delete()),
   },
 
   // Upload (multipart, admin) — fails fast on oversized files client-side too

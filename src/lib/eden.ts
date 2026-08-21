@@ -18,6 +18,8 @@ function kyFetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response
   return ky(input as any, {
     ...(init as any),
     throwHttpErrors: false,
+    // Certificate PDF generation can take a while (many winners + uploads).
+    timeout: 5 * 60 * 1000, // 5 minutes
   });
 }
 

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Trophy, Check, Mail } from 'lucide-react';
+import { Trophy, Check, Mail, Download } from 'lucide-react';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -12,7 +12,7 @@ import { Field, FieldLabel } from '@/components/ui/field';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Spinner } from '@/components/ui/spinner';
 import Pagination from '@/components/Pagination';
-import { useCompetitions, useRegistrations, queryKeys } from '@/src/lib/hooks/use-queries';
+import { useCompetitions, useRegistrations, useCertificateGenerate, queryKeys } from '@/src/lib/hooks/use-queries';
 import { apiHelpers } from '@/src/lib/api';
 import { cn } from '@/lib/utils';
 
@@ -40,6 +40,8 @@ export default function SertifikatPage() {
   const competitions = (compsData ?? []).filter(
     (c: any) => c.certificateEnabled === '1' || c.certificateEnabled === true,
   );
+
+  const generateAllMut = useCertificateGenerate(selectedComp);
 
   const { data: regPage } = useRegistrations(
     selectedComp ? { competitionId: selectedComp, pageSize: 100 } : {},
@@ -95,6 +97,22 @@ export default function SertifikatPage() {
     setSending(false);
   };
 
+  const handleGenerateAll = async () => {
+    if (!window.confirm('Generate otomatis semua sertifikat untuk juara 1/2/3?')) return;
+    try {
+      const result = await generateAllMut.mutateAsync({ competitionId: selectedComp });
+      toast.success(
+        `${result.generated} sertifikat berhasil digenerate, ${result.skipped} dilewati`,
+      );
+      if (result.errors?.length) {
+        toast.error(`${result.errors.length} error`, { description: result.errors.join(', ') });
+      }
+      qc.invalidateQueries({ queryKey: ['registrations'] });
+    } catch (err: any) {
+      toast.error('Generate gagal: ' + (err?.message || 'unknown error'));
+    }
+  };
+
   const paginated = registrations.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   if (loading) return <div className="flex justify-center py-20"><Spinner className="size-6 text-primary" /></div>;
@@ -140,6 +158,24 @@ export default function SertifikatPage() {
 
       {selectedComp && (
         <>
+          {/* Generate Otomatis */}
+          <div className="flex items-center justify-between rounded-xl border border-cyan-100 bg-cyan-50/60 px-4 py-3">
+            <div>
+              <p className="text-xs font-black uppercase tracking-wider text-cyan-800">Generate Otomatis</p>
+              <p className="text-[10px] text-cyan-700/80">
+                Hasilkan PDF sertifikat dari gambar template untuk semua pemenang.
+              </p>
+            </div>
+            <Button
+              onClick={handleGenerateAll}
+              disabled={generateAllMut.isPending}
+              className="clip-angled-sm gap-1.5 bg-cyan-500 px-4 py-2 text-[10px] font-black uppercase tracking-wider text-cyan-950 hover:bg-cyan-400"
+            >
+              {generateAllMut.isPending ? <Spinner className="size-3.5" /> : <Download className="size-3.5" />}
+              {generateAllMut.isPending ? 'Menggenerate...' : 'Generate Semua'}
+            </Button>
+          </div>
+
           <div className="flex items-center justify-between">
             <p className="text-sm text-muted-foreground">{registrations.length} peserta (lunas)</p>
             <span className="text-[10px] font-bold uppercase text-muted-foreground">

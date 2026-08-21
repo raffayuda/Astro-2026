@@ -4,7 +4,7 @@ import { useState, useMemo } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   Trophy, Award, Check, X, Send, Users, Mail,
-  Upload, ExternalLink, Save, FileText,
+  Upload, ExternalLink, Save, FileText, Download,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import Pagination from '@/components/Pagination';
@@ -14,7 +14,11 @@ import { Input } from '@/components/ui/input';
 import { Spinner } from '@/components/ui/spinner';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { apiHelpers } from '@/src/lib/api';
-import { useRegistrations } from '@/src/lib/hooks/use-queries';
+import {
+  useRegistrations,
+  useCertificateGenerate,
+} from '@/src/lib/hooks/use-queries';
+import TemplateManagement from '@/components/TemplateManagement';
 import { cn } from '@/lib/utils';
 
 const PAGE_SIZE = 5;
@@ -51,11 +55,13 @@ interface WinnerManagerProps {
 export default function WinnerManager({ competitionId }: WinnerManagerProps) {
   const qc = useQueryClient();
   const [page, setPage] = useState(1);
-
   const [draftChanges, setDraftChanges] = useState<Record<string, DraftEntry>>({});
 
-  // New cert input per reg (before save)
   const [newCert, setNewCert] = useState<Record<string, { name: string; uploading: boolean; preview?: string }>>({});
+  const [deletingCerts, setDeletingCerts] = useState<Set<string>>(new Set());
+
+  const [activeTab, setActiveTab] = useState<'winners' | 'templates'>('winners');
+  const generateAllMut = useCertificateGenerate(competitionId);
 
   const { data: regsRaw, isLoading: loading } = useRegistrations({ competitionId, pageSize: 100 });
 
@@ -125,12 +131,19 @@ export default function WinnerManager({ competitionId }: WinnerManagerProps) {
   const handleDeleteCert = async (regId: string, certUrl: string) => {
     const reg = registrations.find((r) => r.id === regId);
     if (!reg) return;
+    setDeletingCerts((prev) => new Set(prev).add(certUrl));
     const updated = reg.certificates.filter((c) => c.url !== certUrl);
     try {
       await updateRegistrationMutation.mutateAsync({ regId, body: { certificates: updated } });
       toast.success('Sertifikat dihapus');
     } catch {
       toast.error('Gagal menghapus');
+    } finally {
+      setDeletingCerts((prev) => {
+        const next = new Set(prev);
+        next.delete(certUrl);
+        return next;
+      });
     }
   };
 
@@ -191,6 +204,23 @@ export default function WinnerManager({ competitionId }: WinnerManagerProps) {
     }
   };
 
+  // ─── Generate Otomatis (admin) ───
+  const handleGenerateAll = async () => {
+    if (!window.confirm('Generate otomatis semua sertifikat untuk juara 1/2/3?')) return;
+    try {
+      const result = await generateAllMut.mutateAsync({ competitionId });
+      toast.success(
+        `${result.generated} sertifikat berhasil digenerate, ${result.skipped} dilewati`,
+      );
+      if (result.errors?.length) {
+        toast.error(`${result.errors.length} error`, { description: result.errors.join(', ') });
+      }
+      qc.invalidateQueries({ queryKey: ['registrations'] });
+    } catch (err: any) {
+      toast.error('Generate gagal: ' + (err?.message || 'unknown error'));
+    }
+  };
+
   const paginated = registrations.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   if (loading) {
@@ -199,16 +229,38 @@ export default function WinnerManager({ competitionId }: WinnerManagerProps) {
 
   return (
     <div className="space-y-5 text-left text-foreground">
-      <div className="flex flex-col justify-between gap-3 border-b border-border pb-3 md:flex-row md:items-center">
-        <div>
-          <h4 className="flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-foreground">
-            <Award className="size-4 text-primary" /> Kelola Juara & Sertifikat
-          </h4>
-          <p className="mt-0.5 text-[10px] text-muted-foreground">
-            Tentukan juara dan upload sertifikat per anggota tim/peserta.
-          </p>
-        </div>
-      </div>
+     <div className="flex flex-col justify-between gap-3 border-b border-border pb-3 md:flex-row md:items-center">
+       <div>
+         <h4 className="flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-foreground">
+           <Award className="size-4 text-primary" /> Kelola Juara & Sertifikat
+         </h4>
+         <p className="mt-0.5 text-[10px] text-muted-foreground">
+           Tentukan juara dan kelola template sertifikat untuk kompetisi ini.
+         </p>
+       </div>
+       <div className="flex gap-1 overflow-x-auto">
+         <Button
+           size="sm"
+           variant={activeTab === 'winners' ? 'default' : 'outline'}
+           className="clip-angled-sm text-[10px] font-black uppercase tracking-wider"
+           onClick={() => setActiveTab('winners')}
+         >
+           <Users className="size-3.5" /> Juara & Peserta
+         </Button>
+         <Button
+           size="sm"
+           variant={activeTab === 'templates' ? 'default' : 'outline'}
+           className="clip-angled-sm text-[10px] font-black uppercase tracking-wider"
+           onClick={() => setActiveTab('templates')}
+         >
+           <FileText className="size-3.5" /> Template Sertifikat
+         </Button>
+       </div>
+     </div>
+
+     {activeTab === 'templates' && (
+       <TemplateManagement competitionId={competitionId} />
+     )}
 
       {/* Registrations List */}
       <div className="space-y-2">
@@ -301,8 +353,9 @@ export default function WinnerManager({ competitionId }: WinnerManagerProps) {
                           </a>
                         </div>
                         <button onClick={() => handleDeleteCert(reg.id, c.url)}
-                          className="p-0.5 text-slate-400 hover:text-red-500 transition-colors cursor-pointer flex-shrink-0">
-                          <X className="w-3 h-3" />
+                          disabled={deletingCerts.has(c.url)}
+                          className="p-0.5 text-slate-400 hover:text-red-500 transition-colors cursor-pointer flex-shrink-0 disabled:opacity-60 disabled:cursor-not-allowed">
+                          {deletingCerts.has(c.url) ? <Spinner className="w-3 h-3" /> : <X className="w-3 h-3" />}
                         </button>
                       </div>
                     ))}
@@ -378,6 +431,23 @@ export default function WinnerManager({ competitionId }: WinnerManagerProps) {
               </Button>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Generate Otomatis (admin) — hanya di tab winners */}
+      {activeTab === 'winners' && hasChanges === false && (
+        <div className="border-t border-border pt-4 pb-2">
+          <Button
+            onClick={handleGenerateAll}
+            disabled={generateAllMut.isPending}
+            className="clip-angled-sm w-full gap-2 bg-cyan-500 px-6 py-4 text-xs font-black uppercase tracking-wider text-cyan-950 hover:bg-cyan-400"
+          >
+            {generateAllMut.isPending ? <Spinner className="size-4" /> : <Download className="size-4" />}
+            Generate Otomatis untuk Semua Juara
+          </Button>
+          <p className="mt-1.5 text-[10px] text-muted-foreground">
+            Hasilkan PDF sertifikat otomatis dari template untuk semua pemenang Juara 1/2/3.
+          </p>
         </div>
       )}
     </div>

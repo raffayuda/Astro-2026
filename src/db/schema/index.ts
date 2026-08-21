@@ -12,6 +12,18 @@ import {
   unique,
 } from "drizzle-orm/pg-core";
 
+/** Configurasi posisi & styling teks overlay di atas gambar template sertifikat. */
+export interface TextOverlayField {
+  field: string;
+  x: number;
+  y: number;
+  fontSize?: number;
+  fontFamily?: string;
+  color?: string;
+  align?: "left" | "center" | "right";
+  maxWidth?: number;
+}
+
 /* ─── Categories ─── */
 export const categories = pgTable("categories", {
   id: text("id").primaryKey(), // 'akademik' | 'olahraga' | 'esports' | custom
@@ -111,6 +123,8 @@ export const registrations = pgTable(
     isWinner: text("is_winner").default("0"), // '0' | '1'
     winnerRank: text("winner_rank"), // '1' | '2' | '3' | null
     certificateSent: text("certificate_sent").default("0"), // '0' | '1'
+    certificateGeneratedAt: timestamp("certificate_generated_at"),
+    certificateTemplateVersion: integer("certificate_template_version"),
     certificates: jsonb("certificates")
       .$type<{ name: string; url: string }[]>()
       .default([])
@@ -164,6 +178,43 @@ export const competitionTimelineRelations = relations(
   ({ one }) => ({
     competition: one(competitions, {
       fields: [competitionTimeline.competitionId],
+      references: [competitions.id],
+    }),
+  }),
+);
+
+/* ─── Certificate Templates ─── */
+export const certificateTemplates = pgTable(
+  "certificate_templates",
+  {
+    id: serial("id").primaryKey(),
+    competitionId: text("competition_id")
+      .notNull()
+      .references(() => competitions.id, { onDelete: "cascade" }),
+    rank: text("rank").notNull(), // '1' | '2' | '3' | 'participant'
+    templateImageUrl: text("template_image_url").notNull(),
+    textOverlays: jsonb("text_overlays")
+      .$type<TextOverlayField[]>()
+      .default([])
+      .notNull(),
+    is_active: text("is_active").default("1"), // '1' = active, '0' = inactive
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  },
+  (table) => [
+    index("certificate_templates_competition_id_idx").on(table.competitionId),
+    unique("certificate_templates_competition_rank_unique").on(
+      table.competitionId,
+      table.rank,
+    ),
+  ],
+);
+
+export const certificateTemplatesRelations = relations(
+  certificateTemplates,
+  ({ one }) => ({
+    competition: one(competitions, {
+      fields: [certificateTemplates.competitionId],
       references: [competitions.id],
     }),
   }),
