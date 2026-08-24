@@ -53,12 +53,14 @@ export default function FormStep({
   const { create, update } = useRegistrationApi();
 
   // The leader occupies one slot, so the roster holds the remaining players.
+  // Clamp the minimum to the available slots — some competitions are configured
+  // with minTeamMembers > maxTeamMembers, which would make the form unsubmittable.
   const memberSlots = Math.max(maxTeamMembers - 1, 1);
-  const requiredMembers = Math.max(minTeamMembers - 1, 0);
+  const requiredMembers = Math.min(Math.max(minTeamMembers - 1, 0), memberSlots);
 
   const schema = useMemo(
-    () => buildRegistrationSchema({ isTeam, photoRequired, minTeamMembers }),
-    [isTeam, photoRequired, minTeamMembers],
+    () => buildRegistrationSchema({ isTeam, photoRequired, requiredMembers }),
+    [isTeam, photoRequired, requiredMembers],
   );
 
   // tanstack-form reads defaultValues once, so pre-create every roster slot.

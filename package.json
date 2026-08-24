@@ -10,6 +10,7 @@
     "format": "oxfmt",
     "db:generate": "bun drizzle-kit generate",
     "db:push": "bun drizzle-kit push",
+    "db:migrate": "bun src/db/migrate.ts",
     "db:seed": "bun src/db/seed.ts",
     "db:studio": "bun drizzle-kit studio"
   },

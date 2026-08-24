@@ -35,12 +35,12 @@ export type RegistrationFormValues = z.infer<typeof registrationFormSchema>;
 export function buildRegistrationSchema(opts: {
   isTeam: boolean;
   photoRequired: boolean;
-  minTeamMembers?: number;
+  /** Roster rows that must be filled, excluding the leader. */
+  requiredMembers?: number;
 }) {
   if (!opts.photoRequired) return registrationFormSchema;
 
-  // The leader counts as one player, so the roster needs minTeamMembers - 1 rows.
-  const minMembers = Math.max((opts.minTeamMembers ?? 1) - 1, 0);
+  const minMembers = Math.max(opts.requiredMembers ?? 0, 0);
 
   return registrationFormSchema.superRefine((values, ctx) => {
     if (!values.leaderPhotoUrl) {

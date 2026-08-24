@@ -29,7 +29,9 @@ function validatePlayerPhotos(
   if (!input.leaderPhotoUrl) return 'Foto ketua tim wajib diunggah';
 
   const players = (input.memberDetails ?? []).filter((m) => m.name?.trim());
-  const minMembers = Math.max((comp.minTeamMembers || 1) - 1, 0);
+  // Clamp to the roster size — some competitions have min > max configured.
+  const slots = Math.max((comp.maxTeamMembers || 1) - 1, 1);
+  const minMembers = Math.min(Math.max((comp.minTeamMembers || 1) - 1, 0), slots);
   if (players.length < minMembers) {
     return `Minimal ${minMembers} anggota (selain ketua) wajib diisi`;
   }
