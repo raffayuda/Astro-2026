@@ -4,6 +4,7 @@ import { eq } from 'drizzle-orm';
 import { notFound } from 'next/navigation';
 import { CalendarDays, Coins, Mail, Phone, Building2, User, CheckCircle2, XCircle, Tag, Globe } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import PaymentStatusUpdate from './PaymentStatusUpdate';
 
 const statusConfig: Record<string, { label: string; color: string; icon: any }> = {
@@ -31,7 +32,9 @@ export default async function RegistrationDetailPage({
       teamName: registrations.teamName,
       leaderName: registrations.leaderName,
       leaderIdentity: registrations.leaderIdentity,
+      leaderPhotoUrl: registrations.leaderPhotoUrl,
       members: registrations.members,
+      memberDetails: registrations.memberDetails,
       institution: registrations.institution,
       email: registrations.email,
       whatsapp: registrations.whatsapp,
@@ -115,12 +118,57 @@ export default async function RegistrationDetailPage({
                       <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Identitas Ketua</span>
                       <p className="text-sm text-slate-700 mt-0.5">{reg.leaderIdentity}</p>
                     </div>
-                    {reg.members && (
+                    {reg.leaderPhotoUrl && (
+                      <div>
+                        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Foto Ketua</span>
+                        <a
+                          href={reg.leaderPhotoUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="mt-1 block w-20 overflow-hidden rounded-md border border-slate-200"
+                        >
+                          <Image
+                            src={reg.leaderPhotoUrl}
+                            alt={reg.leaderName || 'Foto ketua'}
+                            width={80}
+                            height={80}
+                            className="h-20 w-20 object-cover"
+                          />
+                        </a>
+                      </div>
+                    )}
+                    {reg.memberDetails?.length ? (
+                      <div className="sm:col-span-2">
+                        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Anggota Tim</span>
+                        <div className="mt-2 flex flex-wrap gap-3">
+                          {reg.memberDetails.map((m, i) => (
+                            <div key={`${m.name}-${i}`} className="w-20">
+                              {m.photoUrl ? (
+                                <a href={m.photoUrl} target="_blank" rel="noreferrer">
+                                  <Image
+                                    src={m.photoUrl}
+                                    alt={m.name}
+                                    width={80}
+                                    height={80}
+                                    className="h-20 w-20 rounded-md border border-slate-200 object-cover"
+                                  />
+                                </a>
+                              ) : (
+                                <div className="flex h-20 w-20 items-center justify-center rounded-md border border-dashed border-slate-200 text-[10px] text-slate-400">
+                                  Tanpa foto
+                                </div>
+                              )}
+                              <p className="mt-1 text-[11px] leading-tight text-slate-700">{m.name}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ) : reg.members ? (
                       <div className="sm:col-span-2">
                         <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Anggota Tim</span>
                         <p className="text-sm text-slate-700 mt-0.5 whitespace-pre-line">{reg.members}</p>
                       </div>
-                    )}
+                    ) : null}
                   </>
                 ) : (
                   <>

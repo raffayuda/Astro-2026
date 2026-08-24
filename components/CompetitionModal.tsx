@@ -19,6 +19,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
+import { formatDateLong } from '@/lib/date';
 import type { Competition } from '@/types/astro';
 
 type Tab = 'overview' | 'prizes' | 'rules';
@@ -108,7 +109,7 @@ export default function CompetitionModal({ competition, onClose }: Props) {
                   <CalendarDays className="size-3.5 text-primary" /> Jadwal
                 </div>
                 <div className="font-semibold text-foreground">
-                  {new Date(competition.scheduleDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
+                  {formatDateLong(competition.scheduleDate) || 'Segera diumumkan'}
                 </div>
               </CardContent>
             </Card>

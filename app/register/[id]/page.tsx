@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { useCompetition, useRegistration } from "@/src/lib/hooks/use-queries";
+import { toIsoString } from "@/lib/date";
 
 const MotionImage = motion.create(Image);
 
@@ -35,6 +36,7 @@ interface CompetitionData {
   type?: string;
   maxTeamMembers?: number;
   minTeamMembers?: number;
+  playerPhotoRequired?: boolean;
 }
 
 const categoryConfig: Record<
@@ -97,9 +99,11 @@ export default function RegistrationPage({
     identityNumber: "",
     leaderName: "",
     leaderIdentity: "",
+    leaderPhotoUrl: "",
     email: "",
     whatsapp: "",
     members: "",
+    memberDetails: [] as { name: string; photoUrl: string }[],
   });
 
   useEffect(() => {
@@ -128,9 +132,7 @@ export default function RegistrationPage({
       fee: c.fee,
       maxSlots: c.maxSlots,
       filledSlots: c.filledSlots,
-      scheduleDate: new Date(
-        c.scheduleDate || c.scheduleDate || "",
-      ).toISOString?.(),
+      scheduleDate: toIsoString(c.scheduleDate),
       location: c.location || "",
       prizes: c.prizes?.length
         ? c.prizes
@@ -155,6 +157,7 @@ export default function RegistrationPage({
       type: c.type || "individual",
       maxTeamMembers: c.maxTeamMembers || 1,
       minTeamMembers: c.minTeamMembers || 1,
+      playerPhotoRequired: !!c.playerPhotoRequired,
     };
   }, [c]);
 
@@ -170,9 +173,16 @@ export default function RegistrationPage({
       identityNumber: r.identityNumber || "",
       leaderName: r.leaderName || "",
       leaderIdentity: r.leaderIdentity || "",
+      leaderPhotoUrl: r.leaderPhotoUrl || "",
       email: r.email || "",
       whatsapp: r.whatsapp || "",
       members: r.members || "",
+      memberDetails: (r.memberDetails || []).map(
+        (m: { name?: string; photoUrl?: string | null }) => ({
+          name: m.name || "",
+          photoUrl: m.photoUrl || "",
+        }),
+      ),
     });
     setStep(1); // Stay on form step with pre-filled data
   }, [existingReg]);
@@ -415,7 +425,9 @@ export default function RegistrationPage({
                             teamName: "",
                             leaderName: "",
                             leaderIdentity: "",
+                            leaderPhotoUrl: "",
                             members: "",
+                            memberDetails: [],
                           }));
                         }}
                         className={`px-5 py-2 text-xs font-black uppercase tracking-wider transition-colors ${
@@ -513,6 +525,9 @@ export default function RegistrationPage({
                     exit="exit"
                   >
                     <FormStep
+                      // Remount once an existing registration is hydrated so the
+                      // form picks up the prefilled values (incl. player photos).
+                      key={registrationId ?? "new"}
                       competition={competition as any}
                       isTeam={isTeam}
                       regType={regType}
@@ -523,6 +538,7 @@ export default function RegistrationPage({
                       existingRef={paymentReference}
                       maxTeamMembers={competition.maxTeamMembers || 5}
                       minTeamMembers={competition.minTeamMembers || 1}
+                      photoRequired={!!competition.playerPhotoRequired}
                     />
                   </motion.div>
                 ) : (

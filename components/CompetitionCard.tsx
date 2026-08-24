@@ -10,6 +10,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { cn } from '@/lib/utils';
 import type { Competition, CategoryType } from '@/types/astro';
+import { formatDateShort } from '@/lib/date';
 
 const categoryConfig: Record<CategoryType, { accent: string; label: string; badgeClass: string }> = {
   akademik: { accent: 'bg-emerald-500', label: 'AKADEMIK', badgeClass: 'border-emerald-200 bg-emerald-50 text-emerald-700' },
@@ -19,10 +20,6 @@ const categoryConfig: Record<CategoryType, { accent: string; label: string; badg
 
 function toIdr(n: number) {
   return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(n);
-}
-
-function formatDate(d: string) {
-  return new Date(d).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
 }
 
 interface Props {
@@ -89,7 +86,7 @@ export default function CompetitionCard({ competition, index }: Props) {
             </span>
             <span className="flex items-center gap-1.5">
               <CalendarDays className="size-3 text-primary" />
-              {formatDate(competition.scheduleDate)}
+              {formatDateShort(competition.scheduleDate) || 'TBA'}
             </span>
             <span className="flex items-center gap-1.5">
               <Users className="size-3 text-primary" />

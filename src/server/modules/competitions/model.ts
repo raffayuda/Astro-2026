@@ -29,6 +29,7 @@ export const competitionInputSchema = z.object({
   maxTeamMembers: z.number().int().min(1, 'Maksimal anggota tim minimal 1').optional().default(1),
   minTeamMembers: z.number().int().min(1, 'Minimal anggota tim minimal 1').optional().default(1),
   membersRequired: z.enum(['optional', 'required'], 'Pilihan anggota tidak valid').optional().default('optional'),
+  playerPhotoRequired: z.boolean().optional().default(false),
   isFree: z.boolean().optional().default(false),
   origin: z.enum(['internal', 'external'], 'Asal lomba tidak valid').optional().default('internal'),
   certificateEnabled: z.boolean().optional().default(false),

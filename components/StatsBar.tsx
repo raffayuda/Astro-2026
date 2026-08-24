@@ -3,6 +3,7 @@
 import { motion, useReducedMotion } from 'motion/react';
 import { Trophy, Users, Gamepad2, CalendarCheck } from 'lucide-react';
 import type { AstroData } from '@/types/astro';
+import { toDate } from '@/lib/date';
 
 interface Props {
   data: AstroData;
@@ -10,13 +11,9 @@ interface Props {
 
 function calcEventDays(data: AstroData) {
   const dates = data.competitions
-    .map((c) => c.scheduleDate)
-    .filter(Boolean)
-    .map((d) => {
-      const date = new Date(d);
-      return isNaN(date.getTime()) ? null : date.toISOString().split('T')[0];
-    })
-    .filter(Boolean) as string[];
+    .map((c) => toDate(c.scheduleDate))
+    .filter((d): d is Date => d !== null)
+    .map((d) => d.toISOString().split('T')[0]);
 
   if (dates.length === 0) return '0';
 

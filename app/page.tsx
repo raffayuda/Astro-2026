@@ -4,6 +4,7 @@ import { competitions, faqs as faqsTable } from '@/src/db/schema';
 import { desc } from 'drizzle-orm';
 import dynamic from 'next/dynamic';
 import type { AstroData } from '@/types/astro';
+import { toIsoString } from '@/lib/date';
 import Navbar from '@/components/Navbar';
 import HeroSection from '@/components/HeroSection';
 import StatsBar from '@/components/StatsBar';
@@ -47,7 +48,7 @@ export default async function Home() {
       fee: c.fee,
       maxSlots: c.maxSlots,
       filledSlots: c.filledSlots,
-      scheduleDate: c.scheduleDate?.toISOString?.() || c.scheduleDate || '',
+      scheduleDate: toIsoString(c.scheduleDate),
       location: c.location || '',
       prizes: c.prizes?.length
         ? c.prizes

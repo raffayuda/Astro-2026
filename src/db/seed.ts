@@ -56,6 +56,8 @@ async function seedCompetitions() {
     rulebookUrl: comp.rulebookUrl,
     contactName: comp.contactPerson.name,
     contactWhatsapp: comp.contactPerson.whatsapp,
+    playerPhotoRequired:
+      (comp as { playerPhotoRequired?: boolean }).playerPhotoRequired ? '1' : '0',
   }));
 
   await db.insert(competitions).values(rows).onConflictDoNothing({ target: competitions.id });

@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import { useForm } from "@tanstack/react-form";
 import { ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -16,9 +17,10 @@ import { toast } from "sonner";
 import type { Competition } from "@/types/astro";
 import { useRegistrationApi } from "@/src/lib/hooks/use-registration";
 import {
-  registrationFormSchema,
+  buildRegistrationSchema,
   type RegistrationFormValues,
 } from "@/src/lib/forms/registration";
+import PlayerPhotoField from "./PlayerPhotoField";
 
 interface Props {
   competition: Competition;
@@ -31,6 +33,8 @@ interface Props {
   existingRef?: string | null;
   maxTeamMembers?: number;
   minTeamMembers?: number;
+  /** Competition requires a photo for every player (esports, e.g. MLBB). */
+  photoRequired?: boolean;
 }
 
 export default function FormStep({
@@ -44,14 +48,37 @@ export default function FormStep({
   existingRef,
   maxTeamMembers = 5,
   minTeamMembers = 1,
+  photoRequired = false,
 }: Props) {
   const { create, update } = useRegistrationApi();
 
+  // The leader occupies one slot, so the roster holds the remaining players.
+  const memberSlots = Math.max(maxTeamMembers - 1, 1);
+  const requiredMembers = Math.max(minTeamMembers - 1, 0);
+
+  const schema = useMemo(
+    () => buildRegistrationSchema({ isTeam, photoRequired, minTeamMembers }),
+    [isTeam, photoRequired, minTeamMembers],
+  );
+
+  // tanstack-form reads defaultValues once, so pre-create every roster slot.
+  const defaultValues = useMemo<RegistrationFormValues>(
+    () => ({
+      ...formData,
+      memberDetails: Array.from({ length: memberSlots }, (_, i) => ({
+        name: formData.memberDetails?.[i]?.name ?? "",
+        photoUrl: formData.memberDetails?.[i]?.photoUrl ?? "",
+      })),
+    }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
+
   const form = useForm({
-    defaultValues: formData as RegistrationFormValues,
+    defaultValues,
     validators: {
-      onChange: registrationFormSchema,
-      onSubmit: registrationFormSchema,
+      onChange: schema,
+      onSubmit: schema,
     },
     onSubmit: async ({ value }) => {
       setFormData(value);
@@ -75,7 +102,7 @@ export default function FormStep({
   });
 
   const renderField = (
-    name: keyof RegistrationFormValues,
+    name: Exclude<keyof RegistrationFormValues, "memberDetails">,
     label: string,
     type: string,
     placeholder: string,
@@ -112,6 +139,26 @@ export default function FormStep({
               <FieldError>{err.message ?? "Field wajib diisi"}</FieldError>
             ) : null}
           </Field>
+        );
+      }}
+    />
+  );
+
+  const renderPhotoField = (name: "leaderPhotoUrl", label: string) => (
+    <form.Field
+      name={name}
+      children={(field) => {
+        const err = field.state.meta.errors?.[0] as
+          | { message?: string }
+          | undefined;
+        return (
+          <PlayerPhotoField
+            label={label}
+            required
+            value={field.state.value ?? ""}
+            onChange={(url) => field.handleChange(url)}
+            error={err?.message}
+          />
         );
       }}
     />
@@ -168,6 +215,8 @@ export default function FormStep({
                   "Nomor identitas ketua",
                   { sanitize: (v) => v.replace(/\D/g, "") },
                 )}
+                {photoRequired &&
+                  renderPhotoField("leaderPhotoUrl", "Foto Ketua Tim")}
               </>
             ) : (
               <>
@@ -184,6 +233,8 @@ export default function FormStep({
                   "Nomor identitas pendaftar",
                   { sanitize: (v) => v.replace(/\D/g, "") },
                 )}
+                {photoRequired &&
+                  renderPhotoField("leaderPhotoUrl", "Foto Pemain")}
               </>
             )}
 
@@ -215,30 +266,81 @@ export default function FormStep({
           {/* Anggota Tim (team only) */}
           {isTeam && (
             <Field>
-              <FieldLabel required>Anggota Tim (Min. {minTeamMembers})</FieldLabel>
-              {Array.from({ length: maxTeamMembers }, (_, i) => (
-                <form.Field
+              <FieldLabel required>
+                Anggota Tim (Min. {requiredMembers} selain ketua)
+              </FieldLabel>
+              {photoRequired && (
+                <p className="text-[11px] font-light text-muted-foreground">
+                  Setiap pemain wajib melampirkan foto — formal atau non-formal
+                  keduanya diterima.
+                </p>
+              )}
+              {Array.from({ length: memberSlots }, (_, i) => (
+                <div
                   key={i}
-                  name="members"
-                  children={(field) => {
-                    const arr = (field.state.value ?? "")
-                      .split("\n")
-                      .filter(Boolean);
-                    return (
-                      <Input
-                        type="text"
-                        value={arr[i] || ""}
-                        onBlur={field.handleBlur}
-                        onChange={(e) => {
-                          arr[i] = e.target.value;
-                          field.handleChange(arr.filter(Boolean).join("\n"));
-                        }}
-                        placeholder={`Anggota ${i + 1}${i < minTeamMembers ? " (wajib)" : " (opsional)"}`}
-                      />
-                    );
-                  }}
-                />
+                  className={
+                    photoRequired
+                      ? "space-y-2 rounded-md border border-border/70 p-3"
+                      : undefined
+                  }
+                >
+                  <form.Field
+                    name={`memberDetails[${i}].name` as never}
+                    children={(field) => {
+                      const err = field.state.meta.errors?.[0] as
+                        | { message?: string }
+                        | undefined;
+                      return (
+                        <>
+                          <Input
+                            type="text"
+                            value={(field.state.value as string) ?? ""}
+                            onBlur={field.handleBlur}
+                            onChange={(e) =>
+                              field.handleChange(e.target.value as never)
+                            }
+                            placeholder={`Anggota ${i + 1}${i < requiredMembers ? " (wajib)" : " (opsional)"}`}
+                            aria-invalid={!!err}
+                          />
+                          {err ? (
+                            <p className="text-xs font-medium text-destructive">
+                              {err.message}
+                            </p>
+                          ) : null}
+                        </>
+                      );
+                    }}
+                  />
+                  {photoRequired && (
+                    <form.Field
+                      name={`memberDetails[${i}].photoUrl` as never}
+                      children={(field) => {
+                        const err = field.state.meta.errors?.[0] as
+                          | { message?: string }
+                          | undefined;
+                        return (
+                          <PlayerPhotoField
+                            compact
+                            label={`Foto anggota ${i + 1}`}
+                            value={(field.state.value as string) ?? ""}
+                            onChange={(url) => field.handleChange(url as never)}
+                            error={err?.message}
+                          />
+                        );
+                      }}
+                    />
+                  )}
+                </div>
               ))}
+              <form.Field
+                name="memberDetails"
+                children={(field) => {
+                  const err = field.state.meta.errors?.[0] as
+                    | { message?: string }
+                    | undefined;
+                  return err ? <FieldError>{err.message}</FieldError> : null;
+                }}
+              />
             </Field>
           )}
         </CardContent>

@@ -25,6 +25,7 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
+import { formatDateLong, toIsoString } from '@/lib/date';
 import { useCompetition, useCompetitionTimeline } from '@/src/lib/hooks/use-queries';
 
 const MotionImage = motion.create(Image);
@@ -39,7 +40,7 @@ function toCompetition(c: any) {
     fee: c.fee,
     maxSlots: c.maxSlots,
     filledSlots: c.filledSlots,
-    scheduleDate: c.scheduleDate?.toISOString?.() || c.scheduleDate || '',
+    scheduleDate: toIsoString(c.scheduleDate),
     location: c.location || '',
     prizes: c.prizes?.length
       ? c.prizes
@@ -165,11 +166,7 @@ export default function CompetitionDetailPage() {
     {
       icon: CalendarDays,
       label: 'Jadwal Pelaksanaan',
-      value: new Date(competition.scheduleDate).toLocaleDateString('id-ID', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-      }),
+      value: formatDateLong(competition.scheduleDate) || 'Segera diumumkan',
     },
     {
       icon: MapPin,

@@ -3,10 +3,47 @@ import { registrations, competitions } from '@/src/db/schema';
 import { eq, desc, sql, count, and } from 'drizzle-orm';
 import { Resend } from 'resend';
 import { deleteSupabaseFile } from '@/src/server/modules/upload';
-import type { RegistrationCreate, RegistrationListQuery } from './model';
+import type { MemberDetail, RegistrationCreate, RegistrationListQuery } from './model';
 import { SELF_SERVICE_FIELDS, ADMIN_FIELDS } from './model';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
+
+/**
+ * Competitions with `playerPhotoRequired` (esports, e.g. Mobile Legends) need a
+ * photo for every player — the leader plus each listed member. Returns an error
+ * message when the submitted roster is incomplete, or null when it is valid.
+ */
+function validatePlayerPhotos(
+  comp: typeof competitions.$inferSelect,
+  input: {
+    type?: string;
+    leaderPhotoUrl?: string | null;
+    memberDetails?: MemberDetail[] | null;
+  },
+): string | null {
+  if (comp.playerPhotoRequired !== '1') return null;
+  if (input.type === 'individual') {
+    return input.leaderPhotoUrl ? null : 'Foto pemain wajib diunggah';
+  }
+
+  if (!input.leaderPhotoUrl) return 'Foto ketua tim wajib diunggah';
+
+  const players = (input.memberDetails ?? []).filter((m) => m.name?.trim());
+  const minMembers = Math.max((comp.minTeamMembers || 1) - 1, 0);
+  if (players.length < minMembers) {
+    return `Minimal ${minMembers} anggota (selain ketua) wajib diisi`;
+  }
+  if (players.some((m) => !m.photoUrl)) {
+    return 'Setiap anggota tim wajib mengunggah foto pemain';
+  }
+  return null;
+}
+
+/** Names of the listed players, one per line — kept for CSV/email compatibility. */
+function membersText(memberDetails: MemberDetail[] | null | undefined, fallback?: string | null) {
+  const names = (memberDetails ?? []).map((m) => m.name?.trim()).filter(Boolean);
+  return names.length > 0 ? names.join('\n') : (fallback ?? null);
+}
 
 /** Build the `where` clause from list filters. */
 function buildWhere(q: RegistrationListQuery, forceUserId?: string) {
@@ -78,13 +115,13 @@ export async function createRegistration(input: RegistrationCreate, userId: stri
     .from(competitions)
     .where(eq(competitions.id, input.competitionId));
 
-  if (!comp) return { error: 'Kompetisi tidak ditemukan' } as const;
+  if (!comp) return { error: 'Kompetisi tidak ditemukan', status: 404 } as const;
 
   // A competition is `individual`, `team`, or `both`. Reject a registration
   // type the competition does not allow.
   const compType = comp.type || 'individual';
   if (input.type !== 'individual' && input.type !== 'team') {
-    return { error: 'Tipe pendaftaran tidak valid' } as const;
+    return { error: 'Tipe pendaftaran tidak valid', status: 400 } as const;
   }
   if (compType !== 'both' && compType !== input.type) {
     return {
@@ -92,8 +129,12 @@ export async function createRegistration(input: RegistrationCreate, userId: stri
         compType === 'team'
           ? 'Lomba ini hanya menerima pendaftaran tim'
           : 'Lomba ini hanya menerima pendaftaran individu',
+      status: 400,
     } as const;
   }
+
+  const photoError = validatePlayerPhotos(comp, input);
+  if (photoError) return { error: photoError, status: 400 } as const;
 
   const paymentAmount = comp.isFree === '1' ? 0 : comp.fee || 0;
   const ref = `INV/ASTRO-2026/${Date.now().toString().slice(-8)}`;
@@ -108,7 +149,9 @@ export async function createRegistration(input: RegistrationCreate, userId: stri
       teamName: input.teamName ?? null,
       leaderName: input.leaderName ?? null,
       leaderIdentity: input.leaderIdentity ?? null,
-      members: input.members ?? null,
+      leaderPhotoUrl: input.leaderPhotoUrl ?? null,
+      members: membersText(input.memberDetails, input.members),
+      memberDetails: input.memberDetails ?? [],
       institution: input.institution,
       email: input.email,
       whatsapp: input.whatsapp,
@@ -148,6 +191,29 @@ export async function updateRegistration(
     return { kind: 'locked' } as const;
   }
   if (Object.keys(updates).length === 0) return { kind: 'empty' } as const;
+
+  // Keep the newline-joined `members` text in sync with the roster, and re-check
+  // the photo requirement whenever the roster or the leader photo changes.
+  if (updates.memberDetails !== undefined) {
+    updates.members = membersText(updates.memberDetails as MemberDetail[]);
+  }
+  if (updates.memberDetails !== undefined || updates.leaderPhotoUrl !== undefined) {
+    const [comp] = await db
+      .select()
+      .from(competitions)
+      .where(eq(competitions.id, current.competitionId));
+
+    if (comp) {
+      const photoError = validatePlayerPhotos(comp, {
+        type: current.type,
+        leaderPhotoUrl:
+          (updates.leaderPhotoUrl as string | null | undefined) ?? current.leaderPhotoUrl,
+        memberDetails:
+          (updates.memberDetails as MemberDetail[] | undefined) ?? current.memberDetails,
+      });
+      if (photoError) return { kind: 'invalid', error: photoError } as const;
+    }
+  }
 
   const [updated] = await db
     .update(registrations)
@@ -329,7 +395,9 @@ export async function getExportRows() {
       teamName: registrations.teamName,
       leaderName: registrations.leaderName,
       leaderIdentity: registrations.leaderIdentity,
+      leaderPhotoUrl: registrations.leaderPhotoUrl,
       members: registrations.members,
+      memberDetails: registrations.memberDetails,
       institution: registrations.institution,
       email: registrations.email,
       whatsapp: registrations.whatsapp,
@@ -346,7 +414,7 @@ export async function getExportRows() {
 
   const headers = [
     'Referensi', 'Tipe', 'Nama Lengkap', 'No Identitas',
-    'Nama Tim', 'Nama Ketua', 'Identitas Ketua', 'Anggota',
+    'Nama Tim', 'Nama Ketua', 'Identitas Ketua', 'Foto Ketua', 'Anggota', 'Foto Anggota',
     'Instansi', 'Email', 'WhatsApp', 'Lomba', 'Kategori',
     'Status Bayar', 'Metode Bayar', 'Jumlah', 'Tanggal Daftar',
   ];

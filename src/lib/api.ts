@@ -256,4 +256,23 @@ export const apiHelpers = {
         return res.data as { url: string };
       });
   },
+
+  // Player photo (multipart, anonymous) — images only, 5MB cap
+  uploadPlayerPhoto: (file: File) => {
+    const MAX = 5 * 1024 * 1024;
+    if (file.size > MAX) {
+      return Promise.reject(new Error('Foto terlalu besar (maksimal 5MB)'));
+    }
+    if (file.size === 0) {
+      return Promise.reject(new Error('File kosong'));
+    }
+    return api.upload['player-photo']
+      .post({ file } as never)
+      .then((res) => {
+        if (res.error) {
+          throw new Error(getApiError(res.error, 'Upload foto gagal'));
+        }
+        return res.data as { url: string };
+      });
+  },
 };

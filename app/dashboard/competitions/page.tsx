@@ -23,6 +23,7 @@ import WinnerManager from '@/components/WinnerManager';
 import { useCompetitions, useCategories, queryKeys } from '@/src/lib/hooks/use-queries';
 import { apiHelpers } from '@/src/lib/api';
 import { cn } from '@/lib/utils';
+import { formatDateNumeric, toDateInputValue, toIsoOrNull } from '@/lib/date';
 
 const PAGE_SIZE = 10;
 
@@ -61,6 +62,7 @@ const emptyForm = {
   feeDisplay: '',
   isFree: false,
   origin: 'internal',
+  playerPhotoRequired: false,
 };
 
 /* ─── Form Fields Sub-component ─── */
@@ -141,6 +143,16 @@ function FormFields({ form, setForm, isAdd, categories }: { form: any; setForm: 
       <Field className="sm:col-span-2">
         <FieldLabel>Deskripsi</FieldLabel>
         <Textarea value={form.description} onChange={(e) => update('description', e.target.value)} rows={3} />
+      </Field>
+      <Field>
+        <FieldLabel className="gap-1"><Users className="size-3" /> Foto Pemain</FieldLabel>
+        <ToggleGroup type="single" value={form.playerPhotoRequired ? 'required' : 'optional'} onValueChange={(v) => v && update('playerPhotoRequired', v === 'required')} spacing={2} className="w-full">
+          <ToggleGroupItem value="optional" className="flex-1 text-xs font-bold uppercase tracking-wider">Tidak Perlu</ToggleGroupItem>
+          <ToggleGroupItem value="required" className="flex-1 text-xs font-bold uppercase tracking-wider">Wajib</ToggleGroupItem>
+        </ToggleGroup>
+        {form.playerPhotoRequired && (
+          <p className="mt-1.5 text-[10px] text-muted-foreground">Setiap pemain (ketua + anggota) wajib mengunggah foto saat mendaftar.</p>
+        )}
       </Field>
       <Field>
         <FieldLabel className="gap-1"><Tag className="size-3" /> Tipe Lomba</FieldLabel>
@@ -343,14 +355,13 @@ export default function KompetisiPage() {
       maxTeamMembers: comp.maxTeamMembers || 5,
       minTeamMembers: comp.minTeamMembers || 1,
       membersRequired: comp.membersRequired || 'optional',
+      playerPhotoRequired: !!comp.playerPhotoRequired,
       tagline: comp.tagline || '',
       description: comp.description || '',
       fee: comp.fee,
       maxSlots: comp.maxSlots,
       filledSlots: comp.filledSlots,
-      scheduleDate: comp.scheduleDate
-        ? new Date(comp.scheduleDate).toISOString().split('T')[0]
-        : '',
+      scheduleDate: toDateInputValue(comp.scheduleDate),
       location: comp.location || '',
       prizes: (comp as any).prizes?.length
         ? (comp as any).prizes
@@ -384,7 +395,7 @@ export default function KompetisiPage() {
           maxSlots: parseInt(editForm.maxSlots) || 0,
           filledSlots: parseInt(editForm.filledSlots) || 0,
           rulesSummary: editForm.rulesSummary.split('\n').filter((s: string) => s.trim()),
-          scheduleDate: editForm.scheduleDate ? new Date(editForm.scheduleDate).toISOString() : null,
+          scheduleDate: toIsoOrNull(editForm.scheduleDate),
         },
       });
       toast.success('Lomba berhasil diperbarui');
@@ -404,7 +415,7 @@ export default function KompetisiPage() {
           maxSlots: parseInt(addForm.maxSlots) || 0,
           filledSlots: parseInt(addForm.filledSlots) || 0,
           rulesSummary: addForm.rulesSummary.split('\n').filter((s: string) => s.trim()),
-          scheduleDate: addForm.scheduleDate ? new Date(addForm.scheduleDate).toISOString() : null,
+          scheduleDate: toIsoOrNull(addForm.scheduleDate),
         },
       });
       setAddForm({ ...emptyForm });
@@ -794,7 +805,7 @@ export default function KompetisiPage() {
                         <span className="flex items-center gap-1"><Users className="w-3 h-3" /> {comp.filledSlots}/{comp.maxSlots} terisi</span>
                         {comp.location && <span className="flex items-center gap-1"><MapPin className="w-3 h-3" /> {comp.location}</span>}
                         {comp.scheduleDate && (
-                          <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> {new Date(comp.scheduleDate).toLocaleDateString('id-ID')}</span>
+                          <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> {formatDateNumeric(comp.scheduleDate)}</span>
                         )}
                       </div>
                     </div>

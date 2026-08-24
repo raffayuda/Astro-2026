@@ -71,6 +71,8 @@ export const competitions = pgTable(
     maxTeamMembers: integer("max_team_members").default(1),
     minTeamMembers: integer("min_team_members").default(1),
     membersRequired: text("members_required").default("optional"), // 'optional' | 'required'
+    // '1' = setiap pemain (ketua + anggota) wajib mengunggah foto, mis. esports
+    playerPhotoRequired: text("player_photo_required").default("0"), // '0' | '1'
     isFree: text("is_free").default("0"), // '0' = bayar, '1' = gratis
     origin: text("origin").default("internal"), // 'internal' | 'external'
     certificateEnabled: text("certificate_enabled").default("0"), // '0' = tidak ada, '1' = ada
@@ -109,7 +111,13 @@ export const registrations = pgTable(
     teamName: text("team_name"),
     leaderName: text("leader_name"),
     leaderIdentity: text("leader_identity"),
-    members: text("members"),
+    leaderPhotoUrl: text("leader_photo_url"),
+    members: text("members"), // nama anggota, satu per baris (kompatibilitas ekspor)
+    // Detail per anggota — dipakai saat lomba mewajibkan foto pemain
+    memberDetails: jsonb("member_details")
+      .$type<{ name: string; photoUrl: string | null }[]>()
+      .default([])
+      .notNull(),
     // Common fields
     institution: text("institution").notNull(),
     email: text("email").notNull(),

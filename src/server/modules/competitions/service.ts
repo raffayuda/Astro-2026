@@ -13,6 +13,7 @@ function toApiCompetition(row: typeof competitions.$inferSelect) {
   return {
     ...row,
     isFree: toBool(row.isFree),
+    playerPhotoRequired: toBool(row.playerPhotoRequired),
     isActive: toBool(row.isActive),
     certificateEnabled: toBool(row.certificateEnabled),
   };
@@ -60,6 +61,7 @@ export async function createCompetition(input: CompetitionInput) {
       maxTeamMembers: input.maxTeamMembers,
       minTeamMembers: input.minTeamMembers,
       membersRequired: input.membersRequired,
+      playerPhotoRequired: input.playerPhotoRequired ? '1' : '0',
       isFree: input.isFree ? '1' : '0',
       origin: input.origin,
       certificateEnabled: input.certificateEnabled ? '1' : '0',
@@ -95,6 +97,8 @@ export async function updateCompetition(id: string, input: Partial<CompetitionIn
   if (input.maxTeamMembers !== undefined) updates.maxTeamMembers = input.maxTeamMembers;
   if (input.minTeamMembers !== undefined) updates.minTeamMembers = input.minTeamMembers;
   if (input.membersRequired !== undefined) updates.membersRequired = input.membersRequired;
+  if (input.playerPhotoRequired !== undefined)
+    updates.playerPhotoRequired = input.playerPhotoRequired ? '1' : '0';
   if (input.isFree !== undefined) updates.isFree = input.isFree ? '1' : '0';
   if (input.origin !== undefined) updates.origin = input.origin;
   if (input.certificateEnabled !== undefined)

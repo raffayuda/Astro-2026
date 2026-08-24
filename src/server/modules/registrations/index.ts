@@ -48,7 +48,11 @@ export const registrationsModule = new Elysia({ prefix: '/registrations' })
 
   .post('/', async ({ body, user }) => {
     const result = await service.createRegistration(body, user?.id ?? null);
-    if ('error' in result) return status(404, { error: result.error });
+    if ('error' in result) {
+      return result.status === 404
+        ? status(404, { error: result.error })
+        : status(400, { error: result.error });
+    }
     return status(201, result.reg);
   }, {
     body: registrationCreateSchema,
@@ -89,6 +93,8 @@ export const registrationsModule = new Elysia({ prefix: '/registrations' })
         return status(403, { error: 'Pendaftaran sudah tidak bisa diubah' });
       case 'empty':
         return status(400, { error: 'Tidak ada field yang valid untuk diupdate' });
+      case 'invalid':
+        return status(400, { error: result.error });
       default:
         return result.reg;
     }

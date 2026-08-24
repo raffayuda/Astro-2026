@@ -4,6 +4,8 @@ import { createClient } from '@supabase/supabase-js';
 import { randomUUID } from 'node:crypto';
 
 export const MAX_UPLOAD_SIZE = 10 * 1024 * 1024; // 10 MB
+/** Anonymous uploads (player photos) get a tighter cap than admin uploads. */
+export const MAX_PUBLIC_UPLOAD_SIZE = 5 * 1024 * 1024; // 5 MB
 
 /** File types allowed for upload, keyed by magic-byte signature. */
 const MAGIC_BYTES: { ext: string; mime: string; signature: number[]; check: (h: Uint8Array) => boolean }[] = [
@@ -52,6 +54,61 @@ export async function deleteSupabaseFile(url: string | null | undefined) {
 }
 
 /**
+ * Validate a file by magic bytes and store it in the public `uploads` bucket.
+ * Returns the public URL, or an error message safe to show the client.
+ */
+async function storeUpload(
+  file: File,
+  opts: { maxSize: number; imagesOnly?: boolean },
+): Promise<{ url: string } | { error: string; status: 400 | 500 }> {
+  if (file.size > opts.maxSize) {
+    const mb = Math.round(opts.maxSize / (1024 * 1024));
+    return { error: `File terlalu besar (maksimal ${mb}MB)`, status: 400 };
+  }
+  if (file.size === 0) return { error: 'File kosong', status: 400 };
+
+  if (!supabaseUrl || !supabaseKey) {
+    console.error('Supabase env vars missing for upload');
+    return { error: 'Konfigurasi storage tidak lengkap', status: 500 };
+  }
+
+  // Sniff the real content type from the first bytes — never trust the
+  // client-supplied `Content-Type` or extension (blocks SVG/XSS payloads).
+  const bytes = new Uint8Array(await file.arrayBuffer());
+  const head = bytes.subarray(0, 12);
+  const allowed = opts.imagesOnly
+    ? MAGIC_BYTES.filter((m) => m.mime.startsWith('image/'))
+    : MAGIC_BYTES;
+  const match = allowed.find(
+    (m) => m.check(head) && m.signature.every((byte, i) => head[i] === byte),
+  );
+
+  if (!match) {
+    return {
+      error: opts.imagesOnly
+        ? 'Hanya file gambar (PNG/JPG/WEBP/GIF) yang diizinkan'
+        : 'Hanya file gambar (PNG/JPG/WEBP/GIF) dan PDF yang diizinkan',
+      status: 400,
+    };
+  }
+
+  const supabase = createClient(supabaseUrl, supabaseKey);
+  const path = `uploads/${randomUUID()}.${match.ext}`;
+
+  const { data, error } = await supabase.storage
+    .from('uploads')
+    .upload(path, bytes, { contentType: match.mime, upsert: false });
+
+  if (error || !data?.path) {
+    console.error('Supabase upload failed:', error);
+    return { error: 'Gagal menyimpan file', status: 500 };
+  }
+
+  const { data: publicUrl } = supabase.storage.from('uploads').getPublicUrl(data.path);
+  return { url: publicUrl.publicUrl };
+}
+
+/**
  * File upload (admin) — validates the real file content via magic bytes,
  * writes to Supabase Storage (public `uploads` bucket) and returns an
  * absolute public URL. Local-fs writes do not work on Vercel (read-only
@@ -65,54 +122,35 @@ export const uploadModule = new Elysia({ prefix: '/upload' })
     if (user?.role !== 'admin') return status(403, { error: 'Forbidden' });
 
     const file = body.file;
-
     if (!file) return status(400, { error: 'File tidak ditemukan' });
 
-    // Enforce the size limit both at the schema boundary and here (belt & suspenders).
-    if (file.size > MAX_UPLOAD_SIZE) {
-      return status(400, { error: 'File terlalu besar (maksimal 10MB)' });
-    }
-    if (file.size === 0) {
-      return status(400, { error: 'File kosong' });
-    }
-
-    if (!supabaseUrl || !supabaseKey) {
-      console.error('Supabase env vars missing for upload');
-      return status(500, { error: 'Konfigurasi storage tidak lengkap' });
-    }
-
-    // Sniff the real content type from the first bytes — never trust the
-    // client-supplied `Content-Type` or extension (blocks SVG/XSS payloads).
-    const bytes = new Uint8Array(await file.arrayBuffer());
-    const head = bytes.subarray(0, 12);
-    const match = MAGIC_BYTES.find((m) => m.check(head) && m.signature.every((byte, i) => head[i] === byte));
-
-    if (!match) {
-      return status(400, {
-        error: 'Hanya file gambar (PNG/JPG/WEBP/GIF) dan PDF yang diizinkan',
-      });
-    }
-
-    const supabase = createClient(supabaseUrl, supabaseKey);
-    const path = `uploads/${randomUUID()}.${match.ext}`;
-
-    const { data, error } = await supabase.storage
-      .from('uploads')
-      .upload(path, bytes, {
-        contentType: match.mime,
-        upsert: false,
-      });
-
-    if (error || !data?.path) {
-      console.error('Supabase upload failed:', error);
-      return status(500, { error: 'Gagal menyimpan file' });
-    }
-
-    const { data: publicUrl } = supabase.storage.from('uploads').getPublicUrl(data.path);
-    return { url: publicUrl.publicUrl };
+    const result = await storeUpload(file, { maxSize: MAX_UPLOAD_SIZE });
+    if ('error' in result) return status(result.status, { error: result.error });
+    return result;
   }, {
     body: t.Object({
       file: t.File({ maxSize: MAX_UPLOAD_SIZE }),
     }),
     admin: true,
+  })
+
+  /**
+   * Player-photo upload (anonymous) — registration happens without an account,
+   * so participants must be able to attach their own photo. Images only, 5 MB
+   * cap, content sniffed by magic bytes.
+   */
+  .post('/player-photo', async ({ body }) => {
+    const file = body.file;
+    if (!file) return status(400, { error: 'File tidak ditemukan' });
+
+    const result = await storeUpload(file, {
+      maxSize: MAX_PUBLIC_UPLOAD_SIZE,
+      imagesOnly: true,
+    });
+    if ('error' in result) return status(result.status, { error: result.error });
+    return result;
+  }, {
+    body: t.Object({
+      file: t.File({ maxSize: MAX_PUBLIC_UPLOAD_SIZE }),
+    }),
   });

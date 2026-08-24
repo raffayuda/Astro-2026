@@ -51,7 +51,9 @@ interface RegDetail {
   teamName: string | null;
   leaderName: string | null;
   leaderIdentity: string | null;
+  leaderPhotoUrl: string | null;
   members: string | null;
+  memberDetails: { name: string; photoUrl: string | null }[] | null;
   institution: string;
   email: string;
   whatsapp: string;
@@ -501,7 +503,49 @@ export default function CekPendaftaranPage() {
                         {selectedReg.leaderName}
                       </p>
                     </div>
-                    {selectedReg.members && (
+                    {selectedReg.leaderPhotoUrl && (
+                      <div>
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                          Foto Ketua
+                        </span>
+                        <Image
+                          src={selectedReg.leaderPhotoUrl}
+                          alt={selectedReg.leaderName || "Foto ketua"}
+                          width={72}
+                          height={72}
+                          className="mt-1 size-18 rounded-md border border-border object-cover"
+                        />
+                      </div>
+                    )}
+                    {selectedReg.memberDetails?.length ? (
+                      <div className="sm:col-span-2">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                          Anggota
+                        </span>
+                        <div className="mt-2 flex flex-wrap gap-3">
+                          {selectedReg.memberDetails.map((m, i) => (
+                            <div key={`${m.name}-${i}`} className="w-18">
+                              {m.photoUrl ? (
+                                <Image
+                                  src={m.photoUrl}
+                                  alt={m.name}
+                                  width={72}
+                                  height={72}
+                                  className="size-18 rounded-md border border-border object-cover"
+                                />
+                              ) : (
+                                <div className="flex size-18 items-center justify-center rounded-md border border-dashed border-border text-[10px] text-muted-foreground">
+                                  Tanpa foto
+                                </div>
+                              )}
+                              <p className="mt-1 text-[11px] leading-tight text-muted-foreground">
+                                {m.name}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ) : selectedReg.members ? (
                       <div className="sm:col-span-2">
                         <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
                           Anggota
@@ -510,7 +554,7 @@ export default function CekPendaftaranPage() {
                           {selectedReg.members}
                         </p>
                       </div>
-                    )}
+                    ) : null}
                   </>
                 ) : (
                   <>

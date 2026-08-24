@@ -3,7 +3,7 @@
 import { api } from '@/src/lib/eden';
 import { getApiError } from '@/src/lib/api';
 import type { RegistrationFormValues } from '@/src/lib/forms/registration';
-import { toRegistrationBody } from '@/src/lib/forms/registration';
+import { toRegistrationBody, toSelfServiceBody } from '@/src/lib/forms/registration';
 
 /**
  * Registration API helpers via the typed Eden client (ky-backed).
@@ -27,7 +27,7 @@ export function useRegistrationApi() {
     values: RegistrationFormValues,
   ) {
     const res = await api.registrations({ id: registrationId }).patch({
-      ...values,
+      ...toSelfServiceBody(values),
     });
     if (res.error) throw new Error(getApiError(res.error, 'Gagal memperbarui'));
     return res.data;

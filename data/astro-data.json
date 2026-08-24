@@ -438,6 +438,7 @@
       "id": "mlbb-tournament",
       "title": "Mobile Legends Tournament",
       "category": "esports",
+      "playerPhotoRequired": true,
       "tagline": "Battle of the strongest squad",
       "description": "Turnamen Mobile Legends: Bang Bang yang mempertemukan tim-tim terbaik. Pertandingan menggunakan sistem bracket ganda, dengan mode draft pick dan larangan hero. Bersainglah untuk menjadi yang terkuat di Land of Dawn!",
       "fee": 100000,
