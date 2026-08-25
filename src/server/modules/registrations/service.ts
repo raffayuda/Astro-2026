@@ -119,6 +119,14 @@ export async function createRegistration(input: RegistrationCreate, userId: stri
 
   if (!comp) return { error: 'Kompetisi tidak ditemukan', status: 404 } as const;
 
+  if (comp.isActive !== '1') {
+    return { error: 'Pendaftaran untuk lomba ini sedang ditutup', status: 400 } as const;
+  }
+
+  if (comp.maxSlots > 0 && (comp.filledSlots ?? 0) >= comp.maxSlots) {
+    return { error: 'Kuota pendaftaran untuk lomba ini sudah penuh', status: 400 } as const;
+  }
+
   // A competition is `individual`, `team`, or `both`. Reject a registration
   // type the competition does not allow.
   const compType = comp.type || 'individual';

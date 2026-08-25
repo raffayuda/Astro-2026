@@ -66,6 +66,7 @@ export default async function Home() {
       },
       isFree: c.isFree === '1',
       origin: c.origin || 'internal',
+      isActive: c.isActive === '1',
     })),
     faqs: dbFaqs.map((f: any) => ({
       q: f.question,

@@ -59,6 +59,7 @@ function toCompetition(c: any) {
     timeline: c.timeline || [],
     isFree: c.isFree === '1' || c.isFree === true,
     origin: c.origin || 'internal',
+    isActive: c.isActive !== undefined ? (c.isActive === '1' || c.isActive === true) : true,
   };
 }
 
@@ -157,29 +158,30 @@ export default function CompetitionDetailPage() {
     { src: '/assets/blob-round.png', w: 128, h: 128, className: 'absolute bottom-[8%] right-[3%] w-16 h-16 md:w-32 md:h-32 object-contain pointer-events-none select-none z-0', dur: 10, delay: 0.1 },
   ];
 
+  const hasSlots = competition.maxSlots > 0;
   const infoCards = [
     {
       icon: Coins,
       label: 'Biaya Pendaftaran',
-      value: competition.isFree ? 'Gratis' : 'Rp ' + competition.fee.toLocaleString('id-ID'),
+      value: competition.isFree ? 'Gratis' : competition.fee > 0 ? 'Rp ' + competition.fee.toLocaleString('id-ID') : 'TBA',
     },
     {
       icon: CalendarDays,
       label: 'Jadwal Pelaksanaan',
-      value: formatDateLong(competition.scheduleDate) || 'Segera diumumkan',
+      value: formatDateLong(competition.scheduleDate) || 'TBA (Segera Diumumkan)',
     },
     {
       icon: MapPin,
       label: 'Lokasi Venue',
-      value: competition.location,
+      value: competition.location || 'TBA (Segera Diumumkan)',
     },
     {
       icon: Users,
       label: competition.type === 'team' ? 'Kuota Tim' : competition.type === 'both' ? 'Kuota Peserta / Tim' : 'Kuota Peserta',
-      value: `${competition.filledSlots} / ${competition.maxSlots} Terisi`,
-      sub: leftSlots > 0 ? `Sisa ${leftSlots} slot` : 'Penuh',
-      isLow: leftSlots <= 5,
-      ratio,
+      value: hasSlots ? `${competition.filledSlots} / ${competition.maxSlots} Terisi` : 'TBA (Segera Diumumkan)',
+      sub: hasSlots ? (leftSlots > 0 ? `Sisa ${leftSlots} slot` : 'Penuh') : undefined,
+      isLow: hasSlots && leftSlots <= 5,
+      ratio: hasSlots ? ratio : 0,
     },
   ];
 
@@ -286,6 +288,11 @@ export default function CompetitionDetailPage() {
                   <Badge variant="outline" className="clip-angled-sm border-purple-200 bg-purple-50 px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.1em] text-purple-700">
                     {competition.type === 'both' ? 'Tim & Individu' : competition.type === 'team' ? 'Tim' : 'Individu'}
                   </Badge>
+                  {competition.isActive === false && (
+                    <Badge variant="outline" className="clip-angled-sm border-red-200 bg-red-50 px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.1em] text-red-600">
+                      Pendaftaran Ditutup
+                    </Badge>
+                  )}
                 </motion.div>
 
                 {/* Title */}
@@ -333,7 +340,7 @@ export default function CompetitionDetailPage() {
                   transition={{ delay: 0.25 }}
                   className="text-sm md:text-base text-slate-600 leading-relaxed"
                 >
-                  <p>{competition.description}</p>
+                  <p>{competition.description || 'Deskripsi lengkap perlombaan akan segera diumumkan (TBA).'}</p>
                 </motion.div>
               </div>
             </div>
@@ -440,56 +447,67 @@ export default function CompetitionDetailPage() {
                       </h2>
                     </motion.div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                      {prizes.map((item: { rank: string; prize: string; style: string; accentLine: string; iconColor: string }, idx: number) => (
-                        <motion.div
-                          key={item.rank}
-                          initial={
-                            reduce ? false : { opacity: 0, y: 20 }
-                          }
-                          whileInView={{ opacity: 1, y: 0 }}
-                          viewport={{ once: true }}
-                          transition={{
-                            delay: idx * 0.1,
-                            duration: 0.5,
-                            ease: [0.16, 1, 0.3, 1] as const,
-                          }}
-                          className="bg-white border border-slate-200 p-5 transition-all hover:border-slate-300 group"
-                          style={{
-                            clipPath:
-                              'polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%)',
-                          }}
-                        >
-                          {/* Top accent */}
-                          <div
-                            className={`h-1 w-8 ${item.accentLine} mb-4`}
+                    {prizes.length === 0 ? (
+                      <div
+                        className="bg-white border border-dashed border-slate-300 p-8 text-center"
+                        style={{ clipPath: 'polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%)' }}
+                      >
+                        <Trophy className="w-8 h-8 mx-auto mb-2 text-slate-400" />
+                        <p className="font-black uppercase tracking-wider text-xs text-slate-700">Hadiah Pemenang Segera Diumumkan (TBA)</p>
+                        <p className="text-xs text-slate-500 mt-1">Detail hadiah dan apresiasi pemenang sedang dipersiapkan panitia.</p>
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        {prizes.map((item: { rank: string; prize: string; style: string; accentLine: string; iconColor: string }, idx: number) => (
+                          <motion.div
+                            key={item.rank}
+                            initial={
+                              reduce ? false : { opacity: 0, y: 20 }
+                            }
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{
+                              delay: idx * 0.1,
+                              duration: 0.5,
+                              ease: [0.16, 1, 0.3, 1] as const,
+                            }}
+                            className="bg-white border border-slate-200 p-5 transition-all hover:border-slate-300 group"
                             style={{
                               clipPath:
-                                'polygon(2px 0, 100% 0, calc(100% - 2px) 100%, 0 100%)',
+                                'polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%)',
                             }}
-                          />
-                          <div className="flex items-center gap-3">
+                          >
+                            {/* Top accent */}
                             <div
-                              className={`p-2 border ${item.iconColor}`}
+                              className={`h-1 w-8 ${item.accentLine} mb-4`}
                               style={{
                                 clipPath:
-                                  'polygon(3px 0, 100% 0, calc(100% - 3px) 100%, 0 100%)',
+                                  'polygon(2px 0, 100% 0, calc(100% - 2px) 100%, 0 100%)',
                               }}
-                            >
-                              <Trophy className="w-4 h-4" />
-                            </div>
-                            <div>
-                              <div className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.15em]">
-                                {item.rank}
+                            />
+                            <div className="flex items-center gap-3">
+                              <div
+                                className={`p-2 border ${item.iconColor}`}
+                                style={{
+                                  clipPath:
+                                    'polygon(3px 0, 100% 0, calc(100% - 3px) 100%, 0 100%)',
+                                }}
+                              >
+                                <Trophy className="w-4 h-4" />
                               </div>
-                              <div className="text-sm font-black text-slate-900 mt-0.5">
-                                {item.prize}
+                              <div>
+                                <div className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.15em]">
+                                  {item.rank}
+                                </div>
+                                <div className="text-sm font-black text-slate-900 mt-0.5">
+                                  {item.prize || 'TBA'}
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        </motion.div>
-                      ))}
-                    </div>
+                          </motion.div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -508,35 +526,46 @@ export default function CompetitionDetailPage() {
                     </h2>
                   </motion.div>
 
-                  <ul className="space-y-4">
-                    {competition.rulesSummary.map((rule: string, idx: number) => (
-                      <motion.li
-                        key={idx}
-                        initial={reduce ? false : { opacity: 0, x: 16 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                        transition={{
-                          delay: idx * 0.06,
-                          duration: 0.4,
-                          ease: [0.16, 1, 0.3, 1] as const,
-                        }}
-                        className="flex items-start gap-4 text-sm md:text-base"
-                      >
-                        <span
-                          className={`flex-shrink-0 w-7 h-7 text-xs flex items-center justify-center font-black ${cat.iconBg} ${cat.iconBorder} border`}
-                          style={{
-                            clipPath:
-                              'polygon(3px 0, 100% 0, calc(100% - 3px) 100%, 0 100%)',
+                  {competition.rulesSummary.length === 0 ? (
+                    <div
+                      className="bg-white border border-dashed border-slate-300 p-8 text-center"
+                      style={{ clipPath: 'polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%)' }}
+                    >
+                      <FileText className="w-8 h-8 mx-auto mb-2 text-slate-400" />
+                      <p className="font-black uppercase tracking-wider text-xs text-slate-700">Peraturan Lomba Segera Diumumkan (TBA)</p>
+                      <p className="text-xs text-slate-500 mt-1">Petunjuk teknis dan peraturan resmi lomba sedang disusun oleh panitia.</p>
+                    </div>
+                  ) : (
+                    <ul className="space-y-4">
+                      {competition.rulesSummary.map((rule: string, idx: number) => (
+                        <motion.li
+                          key={idx}
+                          initial={reduce ? false : { opacity: 0, x: 16 }}
+                          whileInView={{ opacity: 1, x: 0 }}
+                          viewport={{ once: true }}
+                          transition={{
+                            delay: idx * 0.06,
+                            duration: 0.4,
+                            ease: [0.16, 1, 0.3, 1] as const,
                           }}
+                          className="flex items-start gap-4 text-sm md:text-base"
                         >
-                          {String(idx + 1).padStart(2, '0')}
-                        </span>
-                        <span className="leading-relaxed text-slate-600">
-                          {rule}
-                        </span>
-                      </motion.li>
-                    ))}
-                  </ul>
+                          <span
+                            className={`flex-shrink-0 w-7 h-7 text-xs flex items-center justify-center font-black ${cat.iconBg} ${cat.iconBorder} border`}
+                            style={{
+                              clipPath:
+                                'polygon(3px 0, 100% 0, calc(100% - 3px) 100%, 0 100%)',
+                            }}
+                          >
+                            {String(idx + 1).padStart(2, '0')}
+                          </span>
+                          <span className="leading-relaxed text-slate-600">
+                            {rule}
+                          </span>
+                        </motion.li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
               </div>
             </div>
@@ -618,16 +647,28 @@ export default function CompetitionDetailPage() {
                 <RegisterSection competition={competition} />
 
                 <div className="flex w-full max-w-md flex-col justify-center gap-3 sm:flex-row">
-                  <Button asChild variant="outline" className="clip-angled w-full text-xs font-bold uppercase tracking-wider sm:w-1/2">
-                    <a href={competition.rulebookUrl} target="_blank" rel="noopener noreferrer">
-                      <FileText data-icon="inline-start" /> Baca Rulebook
-                    </a>
-                  </Button>
-                  <Button asChild variant="outline" className="clip-angled w-full text-xs font-bold uppercase tracking-wider hover:border-emerald-500 hover:text-emerald-700 sm:w-1/2">
-                    <a href={`https://wa.me/${competition.contactPerson.whatsapp}`} target="_blank" rel="noopener noreferrer">
-                      <MessageCircle data-icon="inline-start" /> Hubungi CP
-                    </a>
-                  </Button>
+                  {competition.rulebookUrl ? (
+                    <Button asChild variant="outline" className="clip-angled w-full text-xs font-bold uppercase tracking-wider sm:w-1/2">
+                      <a href={competition.rulebookUrl} target="_blank" rel="noopener noreferrer">
+                        <FileText data-icon="inline-start" /> Baca Rulebook
+                      </a>
+                    </Button>
+                  ) : (
+                    <Button disabled variant="outline" className="clip-angled w-full text-xs font-bold uppercase tracking-wider opacity-60 cursor-not-allowed sm:w-1/2">
+                      <FileText data-icon="inline-start" /> Rulebook (TBA)
+                    </Button>
+                  )}
+                  {competition.contactPerson?.whatsapp ? (
+                    <Button asChild variant="outline" className="clip-angled w-full text-xs font-bold uppercase tracking-wider hover:border-emerald-500 hover:text-emerald-700 sm:w-1/2">
+                      <a href={`https://wa.me/${competition.contactPerson.whatsapp}`} target="_blank" rel="noopener noreferrer">
+                        <MessageCircle data-icon="inline-start" /> Hubungi CP
+                      </a>
+                    </Button>
+                  ) : (
+                    <Button disabled variant="outline" className="clip-angled w-full text-xs font-bold uppercase tracking-wider opacity-60 cursor-not-allowed sm:w-1/2">
+                      <MessageCircle data-icon="inline-start" /> CP (TBA)
+                    </Button>
+                  )}
                 </div>
               </motion.div>
             </div>

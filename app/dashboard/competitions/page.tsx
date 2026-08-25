@@ -161,6 +161,20 @@ function FormFields({ form, setForm, isAdd, categories }: { form: any; setForm: 
           <ToggleGroupItem value="external" className="flex-1 text-xs font-bold uppercase tracking-wider">Eksternal</ToggleGroupItem>
         </ToggleGroup>
       </Field>
+      <Field className="sm:col-span-2">
+        <FieldLabel className="gap-1"><Eye className="size-3" /> Status Pendaftaran</FieldLabel>
+        <ToggleGroup type="single" value={form.isActive ? 'active' : 'inactive'} onValueChange={(v) => v && update('isActive', v === 'active')} spacing={2} className="w-full">
+          <ToggleGroupItem value="active" className="flex-1 text-xs font-bold uppercase tracking-wider text-emerald-700 data-[state=on]:bg-emerald-100 data-[state=on]:border-emerald-300">
+            Buka Pendaftaran (Aktif)
+          </ToggleGroupItem>
+          <ToggleGroupItem value="inactive" className="flex-1 text-xs font-bold uppercase tracking-wider text-red-700 data-[state=on]:bg-red-100 data-[state=on]:border-red-300">
+            Tutup Pendaftaran (Nonaktif / Draft)
+          </ToggleGroupItem>
+        </ToggleGroup>
+        <p className="mt-1 text-[10px] text-muted-foreground">
+          {form.isActive ? 'Pendaftaran lomba ini dibuka untuk umum.' : 'Pendaftaran ditutup/dikunci di halaman publik, formulir pendaftaran tidak dapat diakses.'}
+        </p>
+      </Field>
       <Field>
         <FieldLabel className="gap-1"><Coins className="size-3" /> Biaya</FieldLabel>
         <ToggleGroup type="single" value={form.isFree ? 'free' : 'paid'} onValueChange={(v) => v && update('isFree', v === 'free')} spacing={2} className="w-full">
@@ -796,6 +810,13 @@ export default function KompetisiPage() {
                         <Badge variant="outline" className="clip-angled-sm border-sky-200 bg-sky-50 text-[9px] font-bold uppercase tracking-wider text-sky-700">
                           {(comp as any).origin === 'external' ? 'Eksternal' : 'Internal'}
                         </Badge>
+                        <Badge variant="outline" className={cn('clip-angled-sm border text-[9px] font-bold uppercase tracking-wider',
+                          comp.isActive
+                            ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
+                            : 'border-red-200 bg-red-50 text-red-600')}
+                        >
+                          {comp.isActive ? 'Pendaftaran Dibuka' : 'Pendaftaran Ditutup'}
+                        </Badge>
                       </div>
                       {comp.tagline && (
                         <p className="text-sm text-slate-500 font-light mb-2">{comp.tagline}</p>
@@ -810,13 +831,8 @@ export default function KompetisiPage() {
                       </div>
                     </div>
                     <div className="flex flex-shrink-0 gap-1">
-                      {!comp.isActive && (
-                        <Badge variant="outline" className="clip-angled-sm mr-1 self-center border-red-200 bg-red-50 text-[10px] font-bold uppercase tracking-wider text-red-600">
-                          Nonaktif
-                        </Badge>
-                      )}
-                      <Button variant="ghost" size="icon-sm" onClick={() => handleToggleActive(comp)} title={comp.isActive ? 'Nonaktifkan' : 'Aktifkan'} aria-label={comp.isActive ? 'Nonaktifkan' : 'Aktifkan'}
-                        className={comp.isActive ? 'text-muted-foreground hover:text-amber-600' : 'text-amber-500 hover:text-green-600'}>
+                      <Button variant="ghost" size="icon-sm" onClick={() => handleToggleActive(comp)} title={comp.isActive ? 'Tutup Pendaftaran' : 'Buka Pendaftaran'} aria-label={comp.isActive ? 'Tutup Pendaftaran' : 'Buka Pendaftaran'}
+                        className={comp.isActive ? 'text-emerald-600 hover:text-red-600' : 'text-red-500 hover:text-emerald-600'}>
                         {comp.isActive ? <EyeOff /> : <Eye />}
                       </Button>
                       <Button variant="ghost" size="icon-sm" onClick={() => handleEdit(comp)} title="Edit" aria-label="Edit" className="text-muted-foreground hover:text-primary">

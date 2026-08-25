@@ -27,6 +27,7 @@ export interface Competition {
     name: string;
     whatsapp: string;
   };
+  isActive?: boolean;
   timeline?: TimelineItem[];
 }
 

@@ -7,7 +7,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import FormStep from "./FormStep";
 import PaymentStep from "./PaymentStep";
-import { ArrowLeft, Trophy } from "lucide-react";
+import { ArrowLeft, Trophy, Lock } from "lucide-react";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -37,6 +37,7 @@ interface CompetitionData {
   maxTeamMembers?: number;
   minTeamMembers?: number;
   playerPhotoRequired?: boolean;
+  isActive?: boolean;
 }
 
 const categoryConfig: Record<
@@ -158,6 +159,7 @@ export default function RegistrationPage({
       maxTeamMembers: c.maxTeamMembers || 1,
       minTeamMembers: c.minTeamMembers || 1,
       playerPhotoRequired: !!c.playerPhotoRequired,
+      isActive: c.isActive !== undefined ? (c.isActive === true || (c.isActive as any) === '1') : true,
     };
   }, [c]);
 
@@ -211,6 +213,45 @@ export default function RegistrationPage({
                 <ArrowLeft data-icon="inline-start" /> Kembali ke Lomba
               </Link>
             </Button>
+          </div>
+        </div>
+        <Footer />
+      </>
+    );
+  }
+
+  if (competition.isActive === false) {
+    return (
+      <>
+        <Navbar />
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-sky-100/60 via-background to-background px-4 py-20">
+          <div className="clip-angled border border-border bg-card/90 backdrop-blur-md p-8 sm:p-12 max-w-lg w-full text-center space-y-6 shadow-lg">
+            <div className="size-16 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto ring-8 ring-red-50">
+              <Lock className="size-8" />
+            </div>
+            <div className="space-y-2">
+              <Badge variant="outline" className="clip-angled-sm border-red-200 bg-red-50 text-[10px] font-bold uppercase tracking-wider text-red-600">
+                Pendaftaran Ditutup
+              </Badge>
+              <h1 className="text-2xl font-black uppercase tracking-tight text-foreground">
+                {competition.title}
+              </h1>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Mohon maaf, pendaftaran untuk kompetisi ini sedang tidak dibuka atau telah berakhir.
+              </p>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
+              <Button asChild variant="outline" className="clip-angled text-xs font-bold uppercase tracking-wider flex-1">
+                <Link href={`/competitions/${competition.id}`}>
+                  Detail Lomba
+                </Link>
+              </Button>
+              <Button asChild className="clip-angled text-xs font-bold uppercase tracking-wider flex-1">
+                <Link href="/#competitions">
+                  <ArrowLeft data-icon="inline-start" /> Lomba Lainnya
+                </Link>
+              </Button>
+            </div>
           </div>
         </div>
         <Footer />

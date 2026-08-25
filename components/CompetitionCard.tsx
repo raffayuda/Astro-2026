@@ -34,6 +34,9 @@ export default function CompetitionCard({ competition, index }: Props) {
   const ratio = Math.min((competition.filledSlots / competition.maxSlots) * 100, 100);
   const left = competition.maxSlots - competition.filledSlots;
 
+  const isOpen = competition.isActive !== false;
+  const isFull = left <= 0;
+
   return (
     <motion.div
       initial={reduce ? false : { opacity: 0, y: 30 }}
@@ -43,11 +46,14 @@ export default function CompetitionCard({ competition, index }: Props) {
       whileHover={reduce ? {} : { y: -4 }}
     >
       <Card
-        className="group clip-angled overflow-hidden border-slate-200/80 shadow-sm transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md"
+        className={cn(
+          "group clip-angled overflow-hidden border-slate-200/80 shadow-sm transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md",
+          !isOpen && "bg-slate-50/50 opacity-90"
+        )}
       >
         {/* Top angular corner accent per category */}
         <div className="relative">
-          <div className={cn('absolute -top-px -left-px size-8', cat.accent)} style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }} />
+          <div className={cn('absolute -top-px -left-px size-8', isOpen ? cat.accent : 'bg-slate-400')} style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }} />
         </div>
 
         <CardContent className="flex flex-col gap-3 p-5 md:p-6">
@@ -60,9 +66,14 @@ export default function CompetitionCard({ competition, index }: Props) {
               <Badge variant="outline" className="clip-angled-sm border-sky-200 bg-sky-50 text-[9px] font-bold uppercase tracking-[0.1em] text-sky-700">
                 {competition.origin === 'external' ? 'Eksternal' : 'Internal'}
               </Badge>
+              {!isOpen && (
+                <Badge variant="outline" className="clip-angled-sm border-red-200 bg-red-50 text-[9px] font-bold uppercase tracking-[0.1em] text-red-600">
+                  Ditutup
+                </Badge>
+              )}
             </div>
-            <span className={cn('flex-shrink-0 text-[10px] font-bold tracking-wide', left <= 5 ? 'text-destructive' : 'text-muted-foreground')}>
-              {left > 0 ? `SISA ${left} SLOT` : 'PENUH'}
+            <span className={cn('flex-shrink-0 text-[10px] font-bold tracking-wide', !isOpen ? 'text-red-600' : left <= 5 ? 'text-destructive' : 'text-muted-foreground')}>
+              {!isOpen ? 'DITUTUP' : left > 0 ? `SISA ${left} SLOT` : 'PENUH'}
             </span>
           </div>
 
@@ -71,32 +82,34 @@ export default function CompetitionCard({ competition, index }: Props) {
             {competition.title}
           </h3>
           <p className="-mt-1 text-xs leading-relaxed text-muted-foreground md:text-sm">
-            {competition.tagline}
+            {competition.tagline || 'Informasi lomba segera diumumkan (TBA)'}
           </p>
 
           {/* Metadata grid */}
           <div className="mt-1 grid grid-cols-2 gap-2 text-[11px] text-muted-foreground">
             <span className="flex items-center gap-1.5">
-              <Coins className="size-3 text-primary" />
-              {toIdr(competition.fee)}
+              <Coins className="size-3 text-primary flex-shrink-0" />
+              <span className="truncate">{competition.isFree ? 'Gratis' : competition.fee > 0 ? toIdr(competition.fee) : 'TBA'}</span>
             </span>
             <span className="flex items-center gap-1.5">
-              <MapPin className="size-3 text-primary" />
-              {competition.location}
+              <MapPin className="size-3 text-primary flex-shrink-0" />
+              <span className="truncate">{competition.location || 'TBA'}</span>
             </span>
             <span className="flex items-center gap-1.5">
-              <CalendarDays className="size-3 text-primary" />
-              {formatDateShort(competition.scheduleDate) || 'TBA'}
+              <CalendarDays className="size-3 text-primary flex-shrink-0" />
+              <span className="truncate">{formatDateShort(competition.scheduleDate) || 'TBA'}</span>
             </span>
             <span className="flex items-center gap-1.5">
-              <Users className="size-3 text-primary" />
-              {competition.filledSlots}/{competition.maxSlots}
+              <Users className="size-3 text-primary flex-shrink-0" />
+              <span className="truncate">
+                {competition.maxSlots > 0 ? `${competition.filledSlots}/${competition.maxSlots}` : 'Kuota TBA'}
+              </span>
             </span>
           </div>
 
           {/* Progress bar */}
           <Progress
-            value={ratio}
+            value={competition.maxSlots > 0 ? ratio : 0}
             aria-label={`Kuota ${competition.title}`}
             className="h-1.5 bg-muted [&>div]:rounded-full"
           />
@@ -106,14 +119,34 @@ export default function CompetitionCard({ competition, index }: Props) {
             <Button asChild variant="outline" size="sm" className="clip-angled-sm flex-1 text-[10px] font-bold uppercase tracking-[0.1em]">
               <Link href={`/competitions/${competition.id}`} aria-label={`Detail ${competition.title}`}>Detail</Link>
             </Button>
-            <Button
-              onClick={() => router.push(`/register/${competition.id}`)}
-              size="sm"
-              aria-label={`Daftar ${competition.title}`}
-              className="clip-angled-sm flex-1 text-[10px] font-black uppercase tracking-[0.1em]"
-            >
-              Daftar
-            </Button>
+            {!isOpen ? (
+              <Button
+                disabled
+                size="sm"
+                aria-label={`Pendaftaran ${competition.title} Ditutup`}
+                className="clip-angled-sm flex-1 text-[10px] font-bold uppercase tracking-[0.1em] opacity-60 cursor-not-allowed bg-muted text-muted-foreground hover:bg-muted"
+              >
+                Ditutup
+              </Button>
+            ) : isFull ? (
+              <Button
+                disabled
+                size="sm"
+                aria-label={`Kuota ${competition.title} Penuh`}
+                className="clip-angled-sm flex-1 text-[10px] font-bold uppercase tracking-[0.1em] opacity-60 cursor-not-allowed bg-muted text-muted-foreground hover:bg-muted"
+              >
+                Penuh
+              </Button>
+            ) : (
+              <Button
+                onClick={() => router.push(`/register/${competition.id}`)}
+                size="sm"
+                aria-label={`Daftar ${competition.title}`}
+                className="clip-angled-sm flex-1 text-[10px] font-black uppercase tracking-[0.1em]"
+              >
+                Daftar
+              </Button>
+            )}
           </div>
         </CardContent>
       </Card>
