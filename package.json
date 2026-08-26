@@ -12,6 +12,7 @@
     "db:push": "bun drizzle-kit push",
     "db:migrate": "bun src/db/migrate.ts",
     "db:seed": "bun src/db/seed.ts",
+    "db:seed-admin": "bun src/db/seed-admin.ts",
     "db:studio": "bun drizzle-kit studio"
   },
   "dependencies": {
