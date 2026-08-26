@@ -17,6 +17,7 @@ const userCreateSchema = z.object({
 const userUpdateSchema = z.object({
   name: z.string().optional(),
   role: z.enum(['admin', 'participant']).optional(),
+  emailVerified: z.boolean().optional(),
 });
 
 /**
@@ -35,11 +36,12 @@ export const usersModule = new Elysia({ prefix: '/users' })
   }, { admin: true })
 
   .post('/', async ({ body }) => {
+    const normalizedEmail = body.email.toLowerCase().trim();
     const result = await auth.api.createUser({
       body: {
-        email: body.email,
+        email: normalizedEmail,
         password: body.password,
-        name: body.name || body.email.split('@')[0],
+        name: body.name || normalizedEmail.split('@')[0],
         role: body.role as 'admin' | 'user',
       },
       headers: await headers(),
@@ -50,6 +52,12 @@ export const usersModule = new Elysia({ prefix: '/users' })
       return status(400, { error: err.message ?? 'Gagal membuat user' });
     }
 
+    // Automatically mark dashboard-created users as verified so they can log in without OTP
+    await db
+      .update(users)
+      .set({ emailVerified: true })
+      .where(eq(users.email, normalizedEmail));
+
     return status(201, { data: result });
   }, {
     body: userCreateSchema,
@@ -57,9 +65,10 @@ export const usersModule = new Elysia({ prefix: '/users' })
   })
 
   .put('/:id', async ({ params, body }) => {
-    const updates: { name?: string; role?: string } = {};
+    const updates: { name?: string; role?: string; emailVerified?: boolean } = {};
     if (body.name !== undefined) updates.name = body.name;
     if (body.role !== undefined) updates.role = body.role;
+    if (body.emailVerified !== undefined) updates.emailVerified = body.emailVerified;
 
     const [updated] = await db
       .update(users)

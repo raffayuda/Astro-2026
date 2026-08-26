@@ -50,11 +50,12 @@ export default function RegistrationsPage() {
 
   const userEmail = session?.user?.email ?? '';
   const registrations = Array.isArray(regPage) ? regPage : (regPage as any)?.data ?? [];
-  const myRegistrations = userEmail
+  const userId = session?.user?.id;
+  const myRegistrations = (userEmail || userId)
     ? registrations.filter(
         (r: any) =>
-          r.email?.toLowerCase() === userEmail.toLowerCase() ||
-          (r as any).userId,
+          (userEmail && r.email?.toLowerCase() === userEmail.toLowerCase()) ||
+          (userId && r.userId === userId),
       )
     : [];
 

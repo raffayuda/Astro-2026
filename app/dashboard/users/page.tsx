@@ -51,6 +51,7 @@ interface User {
   email: string;
   name: string | null;
   role: string;
+  emailVerified?: boolean;
   createdAt: string;
 }
 
@@ -62,7 +63,7 @@ function UserDetailModal({
   onClose: () => void;
 }) {
   const { data: regData, isLoading: loadingReg } = useRegistrations(
-    user ? { search: user.email } : {},
+    user ? { userId: user.id, search: user.email } : {},
     { enabled: !!user },
   );
 
@@ -116,6 +117,17 @@ function UserDetailModal({
               >
                 <Shield className="mr-1 size-3" />
                 {user.role}
+              </Badge>
+              <Badge
+                variant="outline"
+                className={cn(
+                  "clip-angled-sm border text-[10px] font-bold uppercase tracking-wider",
+                  user.emailVerified
+                    ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+                    : "border-amber-200 bg-amber-50 text-amber-700",
+                )}
+              >
+                {user.emailVerified ? "Terverifikasi" : "Belum Verifikasi"}
               </Badge>
               <div className="flex items-center gap-1 text-[11px] text-muted-foreground">
                 <Calendar className="size-3" />
@@ -366,12 +378,16 @@ export default function UsersPage() {
     if (!modal?.user) return;
     setSaving(true);
     const form = new FormData(e.currentTarget);
+    const verifiedValue = form.get("emailVerified");
     try {
       await updateMutation.mutateAsync({
         id: modal.user.id,
         body: {
           name: String(form.get("name")),
           role: String(form.get("role")),
+          ...(verifiedValue !== null
+            ? { emailVerified: verifiedValue === "true" }
+            : {}),
         },
       });
     } catch {
@@ -471,6 +487,17 @@ export default function UsersPage() {
                       >
                         {u.role}
                       </Badge>
+                      <Badge
+                        variant="outline"
+                        className={cn(
+                          "clip-angled-sm border text-[9px] font-bold uppercase tracking-wider",
+                          u.emailVerified
+                            ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+                            : "border-amber-200 bg-amber-50 text-amber-700",
+                        )}
+                      >
+                        {u.emailVerified ? "Verified" : "Unverified"}
+                      </Badge>
                     </div>
                     <p className="mt-0.5 text-xs text-muted-foreground">
                       {u.email}
@@ -546,7 +573,7 @@ export default function UsersPage() {
         title={modal?.mode === "create" ? "Tambah User" : "Edit User"}
         description={
           modal?.mode === "create"
-            ? "Buat akun user baru."
+            ? "Buat akun user baru (langsung terverifikasi)."
             : `Edit akun ${modal?.user?.email}`
         }
         titleClassName="text-sm font-black uppercase tracking-tight"
@@ -611,6 +638,26 @@ export default function UsersPage() {
                 </SelectContent>
               </Select>
             </Field>
+
+            {modal?.mode === "edit" && (
+              <Field>
+                <FieldLabel htmlFor="user-verified">Status Verifikasi</FieldLabel>
+                <Select
+                  name="emailVerified"
+                  defaultValue={modal?.user?.emailVerified ? "true" : "false"}
+                >
+                  <SelectTrigger id="user-verified" className="w-full">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem value="true">Terverifikasi (Aktif)</SelectItem>
+                      <SelectItem value="false">Belum Verifikasi (Perlu OTP)</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </Field>
+            )}
           </FieldGroup>
 
           <div className="flex justify-end gap-2 pt-2">

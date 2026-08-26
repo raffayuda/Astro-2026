@@ -1,5 +1,5 @@
 import { db } from '@/src/db';
-import { registrations, competitions } from '@/src/db/schema';
+import { registrations, competitions, users } from '@/src/db/schema';
 import { eq, desc, sql, count, and } from 'drizzle-orm';
 import { Resend } from 'resend';
 import { deleteSupabaseFile } from '@/src/server/modules/upload';
@@ -48,7 +48,7 @@ function membersText(memberDetails: MemberDetail[] | null | undefined, fallback?
 }
 
 /** Build the `where` clause from list filters. */
-function buildWhere(q: RegistrationListQuery, forceUserId?: string) {
+function buildWhere(q: RegistrationListQuery, forceUserId?: string, forceUserEmail?: string) {
   const conditions: import('drizzle-orm').SQL[] = [];
   if (q.search) {
     conditions.push(
@@ -57,9 +57,23 @@ function buildWhere(q: RegistrationListQuery, forceUserId?: string) {
   }
   if (q.status) conditions.push(eq(registrations.paymentStatus, q.status));
   if (q.competitionId) conditions.push(eq(registrations.competitionId, q.competitionId));
-  if (q.userId && !forceUserId) conditions.push(eq(registrations.userId, q.userId));
-  // Non-admin callers are always forced to their own identity
-  if (forceUserId) conditions.push(eq(registrations.userId, forceUserId));
+  
+  if (q.userId && !forceUserId) {
+    conditions.push(
+      sql`(${registrations.userId} = ${q.userId} OR lower(${registrations.email}) = (SELECT lower(email) FROM ${users} WHERE id = ${q.userId} LIMIT 1))`
+    );
+  }
+
+  // Non-admin callers are always scoped to their own identity (by userId OR by matching email)
+  if (forceUserId) {
+    if (forceUserEmail) {
+      conditions.push(
+        sql`(${registrations.userId} = ${forceUserId} OR lower(${registrations.email}) = lower(${forceUserEmail.trim()}))`
+      );
+    } else {
+      conditions.push(eq(registrations.userId, forceUserId));
+    }
+  }
 
   return conditions.length > 0
     ? sql`${conditions.reduce((a, b) => sql`${a} AND ${b}`)}`
@@ -68,7 +82,31 @@ function buildWhere(q: RegistrationListQuery, forceUserId?: string) {
 
 export async function listRegistrations(q: RegistrationListQuery, role: string, sessionUserId?: string) {
   const isAdmin = role === 'admin';
-  const where = buildWhere(q, isAdmin ? undefined : sessionUserId);
+  let userEmail: string | undefined;
+
+  if (!isAdmin && sessionUserId) {
+    const [u] = await db
+      .select({ id: users.id, email: users.email })
+      .from(users)
+      .where(eq(users.id, sessionUserId))
+      .limit(1);
+
+    if (u) {
+      userEmail = u.email;
+      // Auto-link any registrations created with this email that have null userId
+      await db
+        .update(registrations)
+        .set({ userId: u.id })
+        .where(
+          and(
+            sql`lower(${registrations.email}) = lower(${u.email.trim()})`,
+            sql`${registrations.userId} IS NULL`
+          )
+        );
+    }
+  }
+
+  const where = buildWhere(q, isAdmin ? undefined : sessionUserId, userEmail);
 
   const [total] = await db
     .select({ total: count() })
@@ -83,16 +121,25 @@ export async function listRegistrations(q: RegistrationListQuery, role: string, 
       fullName: registrations.fullName,
       teamName: registrations.teamName,
       leaderName: registrations.leaderName,
-      email: registrations.email,
+      leaderIdentity: registrations.leaderIdentity,
+      leaderPhotoUrl: registrations.leaderPhotoUrl,
+      identityNumber: registrations.identityNumber,
+      members: registrations.members,
+      memberDetails: registrations.memberDetails,
       institution: registrations.institution,
+      email: registrations.email,
+      whatsapp: registrations.whatsapp,
       paymentStatus: registrations.paymentStatus,
+      paymentMethod: registrations.paymentMethod,
       paymentAmount: registrations.paymentAmount,
       paymentReference: registrations.paymentReference,
       isWinner: registrations.isWinner,
       winnerRank: registrations.winnerRank,
       certificateSent: registrations.certificateSent,
       certificates: registrations.certificates,
+      userId: registrations.userId,
       createdAt: registrations.createdAt,
+      updatedAt: registrations.updatedAt,
       competitionName: competitions.title,
     })
     .from(registrations)
@@ -146,6 +193,18 @@ export async function createRegistration(input: RegistrationCreate, userId: stri
   const photoError = validatePlayerPhotos(comp, input);
   if (photoError) return { error: photoError, status: 400 } as const;
 
+  let resolvedUserId = userId;
+  if (!resolvedUserId && input.email) {
+    const [existingUser] = await db
+      .select({ id: users.id })
+      .from(users)
+      .where(sql`lower(${users.email}) = lower(${input.email.trim()})`)
+      .limit(1);
+    if (existingUser) {
+      resolvedUserId = existingUser.id;
+    }
+  }
+
   const paymentAmount = comp.isFree === '1' ? 0 : comp.fee || 0;
   const ref = `INV/ASTRO-2026/${Date.now().toString().slice(-8)}`;
 
@@ -163,13 +222,13 @@ export async function createRegistration(input: RegistrationCreate, userId: stri
       members: membersText(input.memberDetails, input.members),
       memberDetails: input.memberDetails ?? [],
       institution: input.institution,
-      email: input.email,
+      email: input.email.trim(),
       whatsapp: input.whatsapp,
       paymentStatus: 'pending',
       paymentMethod: input.paymentMethod ?? null,
       paymentAmount,
       paymentReference: ref,
-      userId,
+      userId: resolvedUserId,
     })
     .returning();
 

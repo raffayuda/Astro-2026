@@ -34,11 +34,21 @@ export default function LoginPage() {
     });
 
     if (authError) {
-      setError(
+      if (
+        authError.code === 'EMAIL_NOT_VERIFIED' ||
+        authError.message?.toLowerCase().includes('not verified')
+      ) {
+        setError(
+          'Email belum diverifikasi. Silakan cek inbox email Anda untuk memasukkan kode OTP verifikasi akun.',
+        );
+      } else if (
+        authError.code === 'INVALID_EMAIL_OR_PASSWORD' ||
         authError.message?.toLowerCase().includes('invalid')
-          ? 'Email atau password salah'
-          : authError.message || 'Terjadi kesalahan',
-      );
+      ) {
+        setError('Email atau password salah');
+      } else {
+        setError(authError.message || 'Terjadi kesalahan saat masuk');
+      }
       setLoading(false);
       return;
     }
