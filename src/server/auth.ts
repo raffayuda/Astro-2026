@@ -10,6 +10,20 @@ import { users, authSessions, authAccounts, authVerifications } from '@/src/db/s
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const auth = betterAuth({
+  baseURL:
+    process.env.BETTER_AUTH_URL ||
+    process.env.NEXT_PUBLIC_BASE_URL ||
+    'https://astro.nurulfikri.ac.id',
+  trustedOrigins: [
+    'https://astro.nurulfikri.ac.id',
+    'http://localhost:3000',
+    'http://localhost:3001',
+    ...(process.env.BETTER_AUTH_TRUSTED_ORIGINS
+      ? process.env.BETTER_AUTH_TRUSTED_ORIGINS.split(',').map((s) => s.trim())
+      : []),
+    ...(process.env.BETTER_AUTH_URL ? [process.env.BETTER_AUTH_URL] : []),
+    ...(process.env.NEXT_PUBLIC_BASE_URL ? [process.env.NEXT_PUBLIC_BASE_URL] : []),
+  ],
   database: drizzleAdapter(db, {
     provider: 'pg',
     usePlural: true,
