@@ -42,32 +42,59 @@ export class SumoPodError extends Error {
 export async function createPayment(input: CreatePaymentInput): Promise<SumoPodPayment> {
   if (!SUMOPOD_API_KEY) throw new Error('SUMOPOD_API_KEY tidak dikonfigurasi');
 
+  // SumoPod regex requires order_id to match ^[a-zA-Z0-9-_]+$
+  const safeOrderId = input.orderId.replace(/[^a-zA-Z0-9-_]/g, '-');
+
+  // SumoPod validates return URLs with /^https:\/\//; omit when running locally on http://
+  const successUrl =
+    input.successReturnUrl && input.successReturnUrl.startsWith('https://')
+      ? input.successReturnUrl
+      : undefined;
+  const cancelUrl =
+    input.cancelReturnUrl && input.cancelReturnUrl.startsWith('https://')
+      ? input.cancelReturnUrl
+      : undefined;
+
+  const payload: Record<string, unknown> = {
+    order_id: safeOrderId,
+    amount: Math.round(input.amount),
+    currency: input.currency ?? 'IDR',
+    expires_in_hours: input.expiresInHours ?? 24,
+  };
+
+  if (successUrl) payload.success_return_url = successUrl;
+  if (cancelUrl) payload.cancel_return_url = cancelUrl;
+  if (input.paymentMethodTypeCode) payload.payment_method_type_code = input.paymentMethodTypeCode;
+
   try {
     return await ky
       .post(`${SUMOPOD_BASE_URL}/payments`, {
         headers: { 'X-Api-Key': SUMOPOD_API_KEY },
-        json: {
-          order_id: input.orderId,
-          amount: input.amount,
-          currency: input.currency ?? 'IDR',
-          expires_in_hours: input.expiresInHours,
-          success_return_url: input.successReturnUrl,
-          cancel_return_url: input.cancelReturnUrl,
-          payment_method_type_code: input.paymentMethodTypeCode,
-        },
+        json: payload,
         timeout: 15_000,
         retry: 0,
       })
       .json<SumoPodPayment>();
   } catch (err) {
     if (err instanceof HTTPError) {
-      const body = await err.response.json().catch(() => null);
-      throw new SumoPodError(
-        (body && typeof body === 'object' && 'message' in body && String(body.message)) ||
-          `SumoPod create payment failed (${err.response.status})`,
-        err.response.status,
+      const rawText = await err.response.text().catch(() => '');
+      let body: any = null;
+      try {
+        body = JSON.parse(rawText);
+      } catch {
+        body = rawText;
+      }
+      console.error('SumoPod API error detail:', {
+        status: err.response.status,
         body,
-      );
+        raw: rawText,
+        payload,
+      });
+      const message =
+        (body && typeof body === 'object' && ('message' in body || 'error' in body) && (body.message || body.error)) ||
+        rawText ||
+        `SumoPod create payment failed (${err.response.status})`;
+      throw new SumoPodError(String(message), err.response.status, body);
     }
     throw err;
   }

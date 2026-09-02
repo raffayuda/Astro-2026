@@ -12,11 +12,18 @@ import * as service from './service';
 export const competitionsModule = new Elysia({ prefix: '/competitions' })
   .use(authPlugin)
 
-  .get('/', () => service.listCompetitions())
+  .get('/', ({ set }) => {
+    set.headers['cache-control'] = 'no-store, no-cache, must-revalidate';
+    return service.listCompetitions();
+  })
 
-  .get('/with-winners', () => service.listCompetitionsWithWinners())
+  .get('/with-winners', ({ set }) => {
+    set.headers['cache-control'] = 'no-store, no-cache, must-revalidate';
+    return service.listCompetitionsWithWinners();
+  })
 
-  .get('/:id', async ({ params }) => {
+  .get('/:id', async ({ params, set }) => {
+    set.headers['cache-control'] = 'no-store, no-cache, must-revalidate';
     const comp = await service.getCompetition(params.id);
     if (!comp) return status(404, { error: 'Not found' });
     return comp;
@@ -53,7 +60,10 @@ export const competitionsModule = new Elysia({ prefix: '/competitions' })
   })
 
   /* ─── Timeline ─── */
-  .get('/:id/timeline', async ({ params }) => service.listTimeline(params.id), {
+  .get('/:id/timeline', async ({ params, set }) => {
+    set.headers['cache-control'] = 'no-store, no-cache, must-revalidate';
+    return service.listTimeline(params.id);
+  }, {
     params: t.Object({ id: t.String() }),
   })
 

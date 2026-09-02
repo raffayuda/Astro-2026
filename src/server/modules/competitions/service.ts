@@ -2,6 +2,21 @@ import { db } from '@/src/db';
 import { competitions, registrations, competitionTimeline } from '@/src/db/schema';
 import { eq, desc, asc, count } from 'drizzle-orm';
 import type { CompetitionInput, TimelineItem } from './model';
+import { revalidatePath } from 'next/cache';
+
+/** Safely revalidate public web portal paths when competitions change. */
+export function revalidateCompetitionPaths(id?: string) {
+  try {
+    revalidatePath('/');
+    revalidatePath('/competitions');
+    if (id) {
+      revalidatePath(`/competitions/${id}`);
+      revalidatePath(`/register/${id}`);
+    }
+  } catch {
+    // Non-fatal if invoked outside a Next.js request context
+  }
+}
 
 /** Convert a Drizzle text-boolean ('1'/'0') to a real boolean. */
 function toBool(value: string | null | undefined): boolean {
@@ -36,6 +51,7 @@ export async function getCompetition(id: string) {
 }
 
 export async function createCompetition(input: CompetitionInput) {
+  const isFree = !!input.isFree;
   const [row] = await db
     .insert(competitions)
     .values({
@@ -44,7 +60,7 @@ export async function createCompetition(input: CompetitionInput) {
       category: input.category,
       tagline: input.tagline,
       description: input.description,
-      fee: input.fee,
+      fee: isFree ? 0 : (input.fee ?? 0),
       maxSlots: input.maxSlots,
       filledSlots: input.filledSlots,
       scheduleDate: input.scheduleDate ? new Date(input.scheduleDate) : null,
@@ -62,7 +78,7 @@ export async function createCompetition(input: CompetitionInput) {
       minTeamMembers: input.minTeamMembers,
       membersRequired: input.membersRequired,
       playerPhotoRequired: input.playerPhotoRequired ? '1' : '0',
-      isFree: input.isFree ? '1' : '0',
+      isFree: isFree ? '1' : '0',
       origin: input.origin,
       certificateEnabled: input.certificateEnabled ? '1' : '0',
       certificateType: input.certificateType,
@@ -70,6 +86,7 @@ export async function createCompetition(input: CompetitionInput) {
       isActive: input.isActive ? '1' : '0',
     })
     .returning();
+  revalidateCompetitionPaths(input.id);
   return toApiCompetition(row);
 }
 
@@ -79,7 +96,17 @@ export async function updateCompetition(id: string, input: Partial<CompetitionIn
   if (input.category !== undefined) updates.category = input.category;
   if (input.tagline !== undefined) updates.tagline = input.tagline;
   if (input.description !== undefined) updates.description = input.description;
-  if (input.fee !== undefined) updates.fee = input.isFree ? 0 : input.fee;
+
+  if (input.isFree !== undefined) {
+    updates.isFree = input.isFree ? '1' : '0';
+    if (input.isFree) {
+      updates.fee = 0;
+    }
+  }
+  if (input.fee !== undefined && !input.isFree) {
+    updates.fee = input.fee;
+  }
+
   if (input.maxSlots !== undefined) updates.maxSlots = input.maxSlots;
   if (input.filledSlots !== undefined) updates.filledSlots = input.filledSlots;
   if (input.scheduleDate !== undefined)
@@ -99,7 +126,6 @@ export async function updateCompetition(id: string, input: Partial<CompetitionIn
   if (input.membersRequired !== undefined) updates.membersRequired = input.membersRequired;
   if (input.playerPhotoRequired !== undefined)
     updates.playerPhotoRequired = input.playerPhotoRequired ? '1' : '0';
-  if (input.isFree !== undefined) updates.isFree = input.isFree ? '1' : '0';
   if (input.origin !== undefined) updates.origin = input.origin;
   if (input.certificateEnabled !== undefined)
     updates.certificateEnabled = input.certificateEnabled ? '1' : '0';
@@ -113,6 +139,8 @@ export async function updateCompetition(id: string, input: Partial<CompetitionIn
     .set(updates)
     .where(eq(competitions.id, id))
     .returning();
+
+  revalidateCompetitionPaths(id);
   return row ? toApiCompetition(row) : null;
 }
 
@@ -128,6 +156,7 @@ export async function deleteCompetition(id: string) {
   }
 
   await db.delete(competitions).where(eq(competitions.id, id));
+  revalidateCompetitionPaths(id);
   return { blocked: false, count: 0 };
 }
 
@@ -191,6 +220,7 @@ export async function createTimelineItem(competitionId: string, input: TimelineI
       sortOrder: input.sortOrder ?? nextOrder,
     })
     .returning();
+  revalidateCompetitionPaths(competitionId);
   return row;
 }
 
@@ -206,6 +236,9 @@ export async function updateTimelineItem(itemId: number, input: Partial<Timeline
     .set(updates)
     .where(eq(competitionTimeline.id, itemId))
     .returning();
+  if (row) {
+    revalidateCompetitionPaths(row.competitionId);
+  }
   return row || null;
 }
 
@@ -214,5 +247,8 @@ export async function deleteTimelineItem(itemId: number) {
     .delete(competitionTimeline)
     .where(eq(competitionTimeline.id, itemId))
     .returning();
+  if (row) {
+    revalidateCompetitionPaths(row.competitionId);
+  }
   return row || null;
 }

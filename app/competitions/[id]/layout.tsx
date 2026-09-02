@@ -3,6 +3,9 @@ import { db } from '@/src/db';
 import { competitions } from '@/src/db/schema';
 import { eq } from 'drizzle-orm';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function generateMetadata({
   params,
 }: {

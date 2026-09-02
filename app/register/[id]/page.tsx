@@ -37,6 +37,7 @@ interface CompetitionData {
   maxTeamMembers?: number;
   minTeamMembers?: number;
   playerPhotoRequired?: boolean;
+  isFree?: boolean;
   isActive?: boolean;
 }
 
@@ -161,6 +162,7 @@ export default function RegistrationPage({
       maxTeamMembers: c.maxTeamMembers || 1,
       minTeamMembers: c.minTeamMembers || 1,
       playerPhotoRequired: !!c.playerPhotoRequired,
+      isFree: c.isFree === true || c.isFree === '1' || (c as any).isFree === 'true',
       isActive: c.isActive !== undefined ? (c.isActive === true || (c.isActive as any) === '1') : true,
     };
   }, [c]);
@@ -446,7 +448,7 @@ export default function RegistrationPage({
                 <Trophy className="w-4 h-4 text-astro-cyan" />
                 Biaya Pendaftaran:{" "}
                 <span className="font-bold text-slate-900">
-                  Rp {competition.fee.toLocaleString("id-ID")}
+                  {competition.isFree ? "Gratis" : competition.fee > 0 ? `Rp ${competition.fee.toLocaleString("id-ID")}` : "Gratis"}
                 </span>
                 <span className="text-slate-300 mx-1">|</span>
                 {isTeam ? "Kategori Tim" : "Kategori Individu"}

@@ -207,8 +207,9 @@ export async function createRegistration(input: RegistrationCreate, userId: stri
     }
   }
 
-  const paymentAmount = comp.isFree === '1' ? 0 : comp.fee || 0;
-  const ref = `INV/ASTRO-2026/${Date.now().toString().slice(-8)}`;
+  const isFree = comp.isFree === '1' || comp.isFree === true || (comp as any).isFree === 'true';
+  const paymentAmount = isFree ? 0 : comp.fee || 0;
+  const ref = `INV-ASTRO-2026-${Date.now().toString().slice(-8)}`;
 
   const [reg] = await db
     .insert(registrations)

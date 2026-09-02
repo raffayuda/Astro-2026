@@ -2,7 +2,7 @@ import { Suspense } from 'react';
 import { db } from '@/src/db';
 import { competitions, faqs as faqsTable } from '@/src/db/schema';
 import { desc } from 'drizzle-orm';
-import dynamic from 'next/dynamic';
+import nextDynamic from 'next/dynamic';
 import type { AstroData } from '@/types/astro';
 import { toIsoString } from '@/lib/date';
 import Navbar from '@/components/Navbar';
@@ -11,12 +11,15 @@ import StatsBar from '@/components/StatsBar';
 import Footer from '@/components/Footer';
 import astroData from '@/data/astro-data.json';
 
-const AboutSection = dynamic(() => import('@/components/AboutSection'), { ssr: true });
-const TimelineSection = dynamic(() => import('@/components/TimelineSection'), { ssr: true });
-const SponsorSection = dynamic(() => import('@/components/SponsorSection'), { ssr: true });
-const FAQSection = dynamic(() => import('@/components/FAQSection'), { ssr: true });
+const AboutSection = nextDynamic(() => import('@/components/AboutSection'), { ssr: true });
+const TimelineSection = nextDynamic(() => import('@/components/TimelineSection'), { ssr: true });
+const SponsorSection = nextDynamic(() => import('@/components/SponsorSection'), { ssr: true });
+const FAQSection = nextDynamic(() => import('@/components/FAQSection'), { ssr: true });
 
 const fallbackData = astroData as AstroData;
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 function SectionFallback({ className }: { className: string }) {
   return <div className={className} aria-hidden="true" />;
@@ -64,9 +67,9 @@ export default async function Home() {
         name: c.contactName || '',
         whatsapp: c.contactWhatsapp || '',
       },
-      isFree: c.isFree === '1',
+      isFree: c.isFree === '1' || c.isFree === true || (c as any).isFree === 'true',
       origin: c.origin || 'internal',
-      isActive: c.isActive === '1',
+      isActive: c.isActive === '1' || c.isActive === true || (c as any).isActive === 'true' || c.isActive === undefined,
     })),
     faqs: dbFaqs.map((f: any) => ({
       q: f.question,

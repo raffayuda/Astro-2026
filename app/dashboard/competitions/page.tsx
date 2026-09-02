@@ -66,24 +66,30 @@ const emptyForm = {
 };
 
 /* ─── Form Fields Sub-component ─── */
-function formatRupiah(val: string) {
-  const num = val.replace(/\D/g, '');
+function formatRupiah(val: string | number) {
+  const num = String(val ?? '').replace(/\D/g, '');
   if (!num) return '';
   return new Intl.NumberFormat('id-ID').format(Number(num));
 }
 
-function parseRupiah(val: string) {
-  return Number(val.replace(/\D/g, '')) || 0;
+function parseRupiah(val: string | number) {
+  return Number(String(val ?? '').replace(/\D/g, '')) || 0;
 }
 
 function FormFields({ form, setForm, isAdd, categories }: { form: any; setForm: (f: any) => void; isAdd?: boolean; categories: Category[] }) {
-  const update = (field: string, value: any) => {
-    const updated = { ...form, [field]: value };
-    // Auto-generate slug from title when adding
-    if (isAdd && field === 'title') {
-      updated.id = value.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
-    }
-    setForm(updated);
+  const update = (fieldOrObj: string | Record<string, any>, value?: any) => {
+    setForm((prev: any) => {
+      const updates = typeof fieldOrObj === 'string' ? { [fieldOrObj]: value } : fieldOrObj;
+      const next = { ...prev, ...updates };
+      // Auto-generate slug from title when adding
+      if (isAdd && ('title' in updates)) {
+        next.id = String(updates.title || '')
+          .toLowerCase()
+          .replace(/\s+/g, '-')
+          .replace(/[^a-z0-9-]/g, '');
+      }
+      return next;
+    });
   };
 
   return (
@@ -177,15 +183,46 @@ function FormFields({ form, setForm, isAdd, categories }: { form: any; setForm: 
       </Field>
       <Field>
         <FieldLabel className="gap-1"><Coins className="size-3" /> Biaya</FieldLabel>
-        <ToggleGroup type="single" value={form.isFree ? 'free' : 'paid'} onValueChange={(v) => v && update('isFree', v === 'free')} spacing={2} className="w-full">
+        <ToggleGroup
+          type="single"
+          value={form.isFree ? 'free' : 'paid'}
+          onValueChange={(v) => {
+            if (!v) return;
+            const isFree = v === 'free';
+            if (isFree) {
+              update({ isFree: true, fee: 0, feeDisplay: '0' });
+            } else {
+              update({
+                isFree: false,
+                fee: form.fee || 0,
+                feeDisplay: form.fee ? formatRupiah(String(form.fee)) : '',
+              });
+            }
+          }}
+          spacing={2}
+          className="w-full"
+        >
           <ToggleGroupItem value="paid" className="flex-1 text-xs font-bold uppercase tracking-wider">Berbayar</ToggleGroupItem>
           <ToggleGroupItem value="free" className="flex-1 text-xs font-bold uppercase tracking-wider">Gratis</ToggleGroupItem>
         </ToggleGroup>
         {!form.isFree && (
           <InputGroup className="clip-angled-sm mt-2 h-10 border-border bg-background">
             <InputGroupAddon align="inline-start"><span className="text-sm font-bold text-muted-foreground">Rp</span></InputGroupAddon>
-            <InputGroupInput type="text" inputMode="numeric" value={form.feeDisplay || formatRupiah(String(form.fee))}
-              onChange={(e) => { update('feeDisplay', formatRupiah(e.target.value)); update('fee', parseRupiah(e.target.value)); }} />
+            <InputGroupInput
+              type="text"
+              inputMode="numeric"
+              value={form.feeDisplay !== undefined && form.feeDisplay !== null ? form.feeDisplay : (form.fee ? formatRupiah(String(form.fee)) : '')}
+              onChange={(e) => {
+                const raw = e.target.value.replace(/\D/g, '');
+                if (!raw) {
+                  update({ fee: 0, feeDisplay: '' });
+                } else {
+                  const num = parseInt(raw, 10);
+                  update({ fee: num, feeDisplay: formatRupiah(raw) });
+                }
+              }}
+              placeholder="0"
+            />
           </InputGroup>
         )}
       </Field>
@@ -310,8 +347,13 @@ export default function KompetisiPage() {
   const [tlSaving, setTlSaving] = useState(false);
   const [tlDateRange, setTlDateRange] = useState({ start: '', end: '' });
 
-  const invalidate = () => {
+  const invalidate = (id?: string) => {
     qc.invalidateQueries({ queryKey: queryKeys.competitions.all });
+    qc.invalidateQueries({ queryKey: ['competitions'] });
+    if (id) {
+      qc.invalidateQueries({ queryKey: queryKeys.competitions.detail(id) });
+      qc.invalidateQueries({ queryKey: queryKeys.competitions.timeline(id) });
+    }
     qc.invalidateQueries({ queryKey: queryKeys.categories.all });
   };
 
@@ -320,23 +362,23 @@ export default function KompetisiPage() {
       id
         ? apiHelpers.competitions.update(id, body)
         : apiHelpers.competitions.create(body),
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
       setEditingId(null);
-      invalidate();
+      invalidate(variables.id);
     },
   });
 
   const toggleActiveMutation = useMutation({
     mutationFn: ({ id, body }: { id: string; body: Record<string, unknown> }) =>
       apiHelpers.competitions.update(id, body),
-    onSuccess: () => invalidate(),
+    onSuccess: (_data, variables) => invalidate(variables.id),
   });
 
   const deleteCompMutation = useMutation({
     mutationFn: (id: string) => apiHelpers.competitions.remove(id),
-    onSuccess: () => {
+    onSuccess: (_data, id) => {
       toast.success('Lomba berhasil dihapus');
-      invalidate();
+      invalidate(id);
     },
     onError: () => toast.error('Gagal menghapus lomba'),
   });
@@ -362,6 +404,7 @@ export default function KompetisiPage() {
   const handleEdit = (comp: Competition) => {
     setShowAdd(false);
     setEditingId(comp.id);
+    const isFreeBool = comp.isFree === true || (comp as any).isFree === '1';
     setEditForm({
       title: comp.title,
       category: comp.category,
@@ -369,12 +412,12 @@ export default function KompetisiPage() {
       maxTeamMembers: comp.maxTeamMembers || 5,
       minTeamMembers: comp.minTeamMembers || 1,
       membersRequired: comp.membersRequired || 'optional',
-      playerPhotoRequired: !!comp.playerPhotoRequired,
+      playerPhotoRequired: comp.playerPhotoRequired === true || (comp as any).playerPhotoRequired === '1',
       tagline: comp.tagline || '',
       description: comp.description || '',
-      fee: comp.fee,
-      maxSlots: comp.maxSlots,
-      filledSlots: comp.filledSlots,
+      fee: isFreeBool ? 0 : (comp.fee || 0),
+      maxSlots: comp.maxSlots || 0,
+      filledSlots: comp.filledSlots || 0,
       scheduleDate: toDateInputValue(comp.scheduleDate),
       location: comp.location || '',
       prizes: (comp as any).prizes?.length
@@ -384,13 +427,13 @@ export default function KompetisiPage() {
             ...(comp.prizesSecond ? [{ label: 'Juara 2', value: comp.prizesSecond }] : []),
             ...(comp.prizesThird ? [{ label: 'Juara 3', value: comp.prizesThird }] : []),
           ],
-      rulesSummary: comp.rulesSummary?.join('\n') || '',
+      rulesSummary: Array.isArray(comp.rulesSummary) ? comp.rulesSummary.join('\n') : (comp.rulesSummary || ''),
       rulebookUrl: comp.rulebookUrl || '',
       contactName: comp.contactName || '',
       contactWhatsapp: comp.contactWhatsapp || '',
-      feeDisplay: formatRupiah(String(comp.fee)),
-      isFree: comp.isFree,
-      isActive: comp.isActive,
+      feeDisplay: isFreeBool ? '0' : (comp.fee ? formatRupiah(String(comp.fee)) : ''),
+      isFree: isFreeBool,
+      isActive: comp.isActive === true || (comp as any).isActive === '1' || comp.isActive === undefined,
       origin: comp.origin || 'internal',
     });
   };
@@ -401,15 +444,29 @@ export default function KompetisiPage() {
     setSaving(true);
     try {
       const { feeDisplay: _feeDisplay, ...submitData } = editForm;
+      const isFree = !!editForm.isFree;
+      const feeNum = isFree ? 0 : (parseRupiah(String(editForm.feeDisplay ?? editForm.fee)) || 0);
+      const rules = typeof editForm.rulesSummary === 'string'
+        ? editForm.rulesSummary.split('\n').filter((s: string) => s.trim())
+        : Array.isArray(editForm.rulesSummary)
+          ? editForm.rulesSummary
+          : [];
+
       await saveMutation.mutateAsync({
         id,
         body: {
           ...submitData,
-          fee: parseRupiah(String(editForm.fee)) || 0,
-          maxSlots: parseInt(editForm.maxSlots) || 0,
-          filledSlots: parseInt(editForm.filledSlots) || 0,
-          rulesSummary: editForm.rulesSummary.split('\n').filter((s: string) => s.trim()),
+          fee: feeNum,
+          isFree,
+          maxSlots: parseInt(String(editForm.maxSlots), 10) || 0,
+          filledSlots: parseInt(String(editForm.filledSlots), 10) || 0,
+          maxTeamMembers: parseInt(String(editForm.maxTeamMembers), 10) || 1,
+          minTeamMembers: parseInt(String(editForm.minTeamMembers), 10) || 1,
+          rulesSummary: rules,
           scheduleDate: toIsoOrNull(editForm.scheduleDate),
+          prizes: Array.isArray(editForm.prizes)
+            ? editForm.prizes.filter((p: any) => p && p.label && p.value)
+            : [],
         },
       });
       toast.success('Lomba berhasil diperbarui');
@@ -422,14 +479,28 @@ export default function KompetisiPage() {
     setSaving(true);
     try {
       const { feeDisplay: _feeDisplay, ...submitData } = addForm;
+      const isFree = !!addForm.isFree;
+      const feeNum = isFree ? 0 : (parseRupiah(String(addForm.feeDisplay ?? addForm.fee)) || 0);
+      const rules = typeof addForm.rulesSummary === 'string'
+        ? addForm.rulesSummary.split('\n').filter((s: string) => s.trim())
+        : Array.isArray(addForm.rulesSummary)
+          ? addForm.rulesSummary
+          : [];
+
       await saveMutation.mutateAsync({
         body: {
           ...submitData,
-          fee: parseRupiah(String(addForm.fee)) || 0,
-          maxSlots: parseInt(addForm.maxSlots) || 0,
-          filledSlots: parseInt(addForm.filledSlots) || 0,
-          rulesSummary: addForm.rulesSummary.split('\n').filter((s: string) => s.trim()),
+          fee: feeNum,
+          isFree,
+          maxSlots: parseInt(String(addForm.maxSlots), 10) || 0,
+          filledSlots: parseInt(String(addForm.filledSlots), 10) || 0,
+          maxTeamMembers: parseInt(String(addForm.maxTeamMembers), 10) || 1,
+          minTeamMembers: parseInt(String(addForm.minTeamMembers), 10) || 1,
+          rulesSummary: rules,
           scheduleDate: toIsoOrNull(addForm.scheduleDate),
+          prizes: Array.isArray(addForm.prizes)
+            ? addForm.prizes.filter((p: any) => p && p.label && p.value)
+            : [],
         },
       });
       setAddForm({ ...emptyForm });
@@ -442,29 +513,14 @@ export default function KompetisiPage() {
   /* ─── Toggle Active ─── */
   const handleToggleActive = async (comp: Competition) => {
     try {
+      const newStatus = !comp.isActive;
       await toggleActiveMutation.mutateAsync({
         id: comp.id,
         body: {
-          title: comp.title,
-          category: comp.category,
-          tagline: comp.tagline,
-          description: comp.description,
-          fee: comp.fee,
-          maxSlots: comp.maxSlots,
-          filledSlots: comp.filledSlots,
-          scheduleDate: comp.scheduleDate,
-          location: comp.location,
-          prizesFirst: comp.prizesFirst,
-          prizesSecond: comp.prizesSecond,
-          prizesThird: comp.prizesThird,
-          rulesSummary: comp.rulesSummary,
-          rulebookUrl: comp.rulebookUrl,
-          contactName: comp.contactName,
-          contactWhatsapp: comp.contactWhatsapp,
-          isActive: !comp.isActive,
+          isActive: newStatus,
         },
       });
-      toast.success(comp.isActive ? 'Lomba dinonaktifkan' : 'Lomba diaktifkan');
+      toast.success(newStatus ? 'Lomba diaktifkan' : 'Lomba dinonaktifkan');
     } catch (err) { console.error(err); toast.error(err instanceof Error ? err.message : 'Gagal mengubah status'); }
   };
 
@@ -822,7 +878,12 @@ export default function KompetisiPage() {
                         <p className="text-sm text-slate-500 font-light mb-2">{comp.tagline}</p>
                       )}
                       <div className="flex flex-wrap gap-x-5 gap-y-1.5 text-xs text-slate-600">
-                        <span className="flex items-center gap-1"><Coins className="w-3 h-3" /> Rp {comp.fee.toLocaleString('id-ID')}</span>
+                        <span className="flex items-center gap-1">
+                          <Coins className="w-3 h-3" />
+                          {(comp as any).isFree === '1' || (comp as any).isFree === true || comp.isFree
+                            ? 'Gratis'
+                            : `Rp ${comp.fee.toLocaleString('id-ID')}`}
+                        </span>
                         <span className="flex items-center gap-1"><Users className="w-3 h-3" /> {comp.filledSlots}/{comp.maxSlots} terisi</span>
                         {comp.location && <span className="flex items-center gap-1"><MapPin className="w-3 h-3" /> {comp.location}</span>}
                         {comp.scheduleDate && (
