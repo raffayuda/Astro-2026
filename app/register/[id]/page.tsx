@@ -162,7 +162,7 @@ export default function RegistrationPage({
       maxTeamMembers: c.maxTeamMembers || 1,
       minTeamMembers: c.minTeamMembers || 1,
       playerPhotoRequired: !!c.playerPhotoRequired,
-      isFree: c.isFree === true || c.isFree === '1' || (c as any).isFree === 'true',
+      isFree: Boolean(c.isFree) || (c as any).isFree === '1' || (c as any).isFree === 'true',
       isActive: c.isActive !== undefined ? (c.isActive === true || (c.isActive as any) === '1') : true,
     };
   }, [c]);

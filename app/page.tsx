@@ -67,9 +67,9 @@ export default async function Home() {
         name: c.contactName || '',
         whatsapp: c.contactWhatsapp || '',
       },
-      isFree: c.isFree === '1' || c.isFree === true || (c as any).isFree === 'true',
+      isFree: (c as any).isFree === '1' || (c as any).isFree === true || (c as any).isFree === 'true',
       origin: c.origin || 'internal',
-      isActive: c.isActive === '1' || c.isActive === true || (c as any).isActive === 'true' || c.isActive === undefined,
+      isActive: (c as any).isActive === '1' || (c as any).isActive === true || (c as any).isActive === 'true' || c.isActive === undefined,
     })),
     faqs: dbFaqs.map((f: any) => ({
       q: f.question,
