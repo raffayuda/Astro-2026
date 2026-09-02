@@ -126,7 +126,11 @@ export const registrations = pgTable(
     paymentStatus: text("payment_status").notNull().default("pending"), // 'pending' | 'detecting' | 'paid' | 'failed'
     paymentMethod: text("payment_method"), // 'qris' | 'transfer'
     paymentAmount: integer("payment_amount").notNull(),
-    paymentReference: text("payment_reference"),
+    paymentReference: text("payment_reference"), // also used as SumoPod `order_id`
+    // SumoPod payment link (populated once created; null for free/manual registrations)
+    paymentLinkId: uuid("payment_link_id"),
+    paymentLinkUrl: text("payment_link_url"),
+    paymentExpiresAt: timestamp("payment_expires_at"),
     // Winner
     isWinner: text("is_winner").default("0"), // '0' | '1'
     winnerRank: text("winner_rank"), // '1' | '2' | '3' | null

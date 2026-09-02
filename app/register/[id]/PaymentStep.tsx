@@ -1,126 +1,66 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { QRCodeSVG } from 'qrcode.react';
 import { useRouter } from 'next/navigation';
 import {
   CheckCircle2,
-  Copy,
-  Check,
   ArrowLeft,
-  Building2,
   Receipt,
   Clock,
-  Smartphone,
+  ExternalLink,
   AlertCircle,
+  XCircle,
+  MessageCircle,
 } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
 import { Spinner } from '@/components/ui/spinner';
 import type { Competition } from '@/types/astro';
+import { useRegistration } from '@/src/lib/hooks/use-queries';
 
 interface Props {
   competition: Competition;
-  formData: {
-    fullName: string;
-    teamName: string;
-    institution: string;
-    identityNumber: string;
-    leaderName: string;
-    leaderIdentity: string;
-    email: string;
-    whatsapp: string;
-    members: string;
-  };
-  isTeam: boolean;
   registrationId: string;
   paymentReference: string;
+  paymentLinkUrl: string | null;
+  paymentExpiresAt: string | null;
   onBack: () => void;
 }
-
-const bankInfo = {
-  bankName: 'Bank Central Asia (BCA)',
-  accountNumber: '1234567890',
-  accountHolder: 'Panitia ASTRO 2026',
-};
 
 function formatCurrency(n: number) {
   return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(n);
 }
 
-// QRIS payload format (EMVCo standard) — static QRIS for simulation
-function generateQrisPayload(reference: string, amount: number) {
-  const merchantPan = '9360021188000002'; // mock merchant ID
-  const merchantName = 'PANITIA ASTRO 2026';
-  const city = 'BANDUNG';
-  const postal = '40100';
+// Poll while the outcome is still undecided — the actual status change is
+// driven server-side by the SumoPod webhook, this just picks it up.
+const POLL_INTERVAL_MS = 4000;
 
-  const payload = [
-    '000201',                          // Payload Format Indicator
-    '010211',                          // Point of Initiation Method: Static
-    `2620${String(merchantPan.length).padStart(2, '0')}${merchantPan}`, // Merchant Account Info
-    `52040000`,                        // Merchant Category Code
-    `5303360`,                         // Transaction Currency (IDR)
-    `54${String(String(amount).length).padStart(2, '0')}${amount}`, // Transaction Amount
-    `5802ID`,                          // Country Code
-    `59${String(merchantName.length).padStart(2, '0')}${merchantName}`, // Merchant Name
-    `60${String(city.length).padStart(2, '0')}${city}`, // Merchant City
-    `61${String(postal.length).padStart(2, '0')}${postal}`, // Postal Code
-    `6304`,                            // CRC (placeholder)
-  ].join('');
-
-  return `${reference}|${payload}`;
-}
-
-const SIMULATION_DURATION = 18; // seconds before auto-detect paid
-
-export default function PaymentStep({ competition, paymentReference, onBack }: Props) {
+export default function PaymentStep({ competition, registrationId, paymentReference, paymentLinkUrl, paymentExpiresAt, onBack }: Props) {
   const router = useRouter();
-  const [copied, setCopied] = useState(false);
-  const [paymentStatus, setPaymentStatus] = useState<'pending' | 'detecting' | 'paid'>('pending');
-  const [elapsed, setElapsed] = useState(0);
-  const reference = paymentReference;
 
-  // ─── Simulation: timer → detecting → paid ───
-  useEffect(() => {
-    if (paymentStatus === 'paid') return;
+  const { data: reg } = useRegistration(registrationId, { refetchInterval: POLL_INTERVAL_MS });
+  const paymentStatus: string = (reg as any)?.paymentStatus ?? 'pending';
+  const resolvedLinkUrl = (reg as any)?.paymentLinkUrl ?? paymentLinkUrl;
+  const resolvedExpiresAt = (reg as any)?.paymentExpiresAt ?? paymentExpiresAt;
 
-    const interval = setInterval(() => {
-      setElapsed((prev) => {
-        const next = prev + 1;
-        if (next >= 3 && paymentStatus === 'pending') {
-          setPaymentStatus('detecting');
-        }
-        if (next >= SIMULATION_DURATION) {
-          setPaymentStatus('paid');
-          clearInterval(interval);
-        }
-        return next;
-      });
-    }, 1000);
+  const expiresLabel = useMemo(() => {
+    if (!resolvedExpiresAt) return null;
+    const d = new Date(resolvedExpiresAt);
+    if (Number.isNaN(d.getTime())) return null;
+    return d.toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' });
+  }, [resolvedExpiresAt]);
 
-    return () => clearInterval(interval);
-  }, [paymentStatus]);
-
-  const handleCopy = () => {
-    navigator.clipboard.writeText(bankInfo.accountNumber);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  const qrisValue = generateQrisPayload(reference, competition.fee);
-  const progress = Math.min((elapsed / SIMULATION_DURATION) * 100, 100);
-
-  const remaining = Math.max(SIMULATION_DURATION - elapsed, 0);
+  const waNumber = (competition.contactPerson?.whatsapp || '').replace(/\D/g, '');
+  const waHref = waNumber
+    ? `https://wa.me/${waNumber}?text=${encodeURIComponent(`Halo, saya butuh bantuan pembayaran pendaftaran ${competition.title} dengan referensi ${paymentReference}.`)}`
+    : undefined;
 
   return (
     <div className="space-y-8">
-      {/* ─── PAID STATE ─── */}
       <AnimatePresence mode="wait">
         {paymentStatus === 'paid' ? (
+          /* ─── PAID STATE ─── */
           <motion.div
             key="paid"
             initial={{ opacity: 0, scale: 0.95 }}
@@ -128,7 +68,6 @@ export default function PaymentStep({ competition, paymentReference, onBack }: P
             transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
             className="space-y-8"
           >
-            {/* Success header */}
             <div className="text-center space-y-3">
               <motion.div
                 className="flex justify-center"
@@ -142,51 +81,62 @@ export default function PaymentStep({ competition, paymentReference, onBack }: P
                   <CheckCircle2 className="w-12 h-12 text-emerald-500" />
                 </div>
               </motion.div>
-              <motion.h2
-                className="text-xl md:text-2xl font-black text-slate-900 uppercase tracking-tight"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.25 }}
-              >
+              <h2 className="text-xl md:text-2xl font-black text-slate-900 uppercase tracking-tight">
                 Pembayaran Berhasil!
-              </motion.h2>
-              <motion.p
-                className="text-sm text-slate-600 max-w-md mx-auto font-light"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.35 }}
-              >
+              </h2>
+              <p className="text-sm text-slate-600 max-w-md mx-auto font-light">
                 Pendaftaran dan pembayaran kamu telah diterima.
-              </motion.p>
-              <motion.div
-                className="flex justify-center"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.45 }}
-              >
+              </p>
+              <div className="flex justify-center">
                 <div className="accent-line" />
-              </motion.div>
+              </div>
             </div>
 
-            {/* Go to status page */}
-            <motion.div
-              className="space-y-3"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 }}
+            <Button
+              onClick={() => router.push('/check-registration')}
+              size="lg"
+              className="clip-angled w-full text-sm font-black uppercase tracking-wider active:scale-95"
             >
-              <Button
-                onClick={() => router.push('/check-registration')}
-                size="lg"
-                className="clip-angled w-full text-sm font-black uppercase tracking-wider active:scale-95"
+              <CheckCircle2 data-icon="inline-start" />
+              Lihat Status Pendaftaran
+            </Button>
+          </motion.div>
+        ) : paymentStatus === 'failed' || paymentStatus === 'expired' ? (
+          /* ─── FAILED / EXPIRED STATE ─── */
+          <motion.div
+            key="failed"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="space-y-6 text-center"
+          >
+            <div className="flex justify-center">
+              <div className="p-4 bg-red-50 border border-red-200"
+                style={{ clipPath: 'polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%)' }}
               >
-                <CheckCircle2 data-icon="inline-start" />
-                Lihat Status Pendaftaran
+                <XCircle className="w-12 h-12 text-red-500" />
+              </div>
+            </div>
+            <h2 className="text-xl md:text-2xl font-black text-slate-900 uppercase tracking-tight">
+              {paymentStatus === 'expired' ? 'Link Pembayaran Kadaluarsa' : 'Pembayaran Gagal'}
+            </h2>
+            <p className="text-sm text-slate-600 max-w-md mx-auto font-light">
+              Hubungi panitia melalui WhatsApp untuk mendapatkan link pembayaran baru.
+            </p>
+            {waHref && (
+              <Button asChild size="lg" className="clip-angled w-full text-sm font-black uppercase tracking-wider">
+                <a href={waHref} target="_blank" rel="noopener noreferrer">
+                  <MessageCircle data-icon="inline-start" />
+                  Hubungi Panitia
+                </a>
               </Button>
-            </motion.div>
+            )}
+            <Button variant="outline" size="lg" onClick={onBack} className="clip-angled w-full text-xs font-bold uppercase tracking-wider">
+              <ArrowLeft data-icon="inline-start" />
+              Kembali ke Form Pendaftaran
+            </Button>
           </motion.div>
         ) : (
-          /* ─── QRIS + BANK TRANSFER STATE (pending / detecting) ─── */
+          /* ─── PENDING STATE ─── */
           <motion.div
             key="payment-flow"
             initial={{ opacity: 0 }}
@@ -194,7 +144,6 @@ export default function PaymentStep({ competition, paymentReference, onBack }: P
             exit={{ opacity: 0 }}
             className="space-y-8"
           >
-            {/* Header */}
             <div className="text-center space-y-4">
               <div className="flex justify-center">
                 <div className="p-4 bg-white border border-slate-200"
@@ -209,196 +158,70 @@ export default function PaymentStep({ competition, paymentReference, onBack }: P
               <p className="text-sm text-slate-600 max-w-lg mx-auto font-light">
                 Lakukan pembayaran sebesar{' '}
                 <strong className="text-slate-900">{formatCurrency(competition.fee)}</strong>{' '}
-                melalui QRIS atau transfer bank untuk mengamankan slot di{' '}
-                <strong>{competition.title}</strong>.
+                untuk mengamankan slot di <strong>{competition.title}</strong>.
               </p>
               <div className="flex justify-center">
                 <div className="accent-line" />
               </div>
             </div>
 
-            {/* ─── TWO-COLUMN: QRIS + BANK TRANSFER ─── */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
-
-              {/* ─── QRIS ─── */}
+            <div
+              className="bg-white border border-slate-200 relative max-w-lg mx-auto"
+              style={{ clipPath: 'polygon(14px 0, 100% 0, calc(100% - 14px) 100%, 0 100%)' }}
+            >
               <div
-                className="bg-white border border-slate-200 relative"
-                style={{ clipPath: 'polygon(14px 0, 100% 0, calc(100% - 14px) 100%, 0 100%)' }}
-              >
-                <div
-                  className="absolute -top-[1px] -left-[1px] w-8 h-8 bg-astro-cyan"
-                  style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }}
-                />
+                className="absolute -top-[1px] -left-[1px] w-8 h-8 bg-astro-cyan"
+                style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }}
+              />
 
-                <div className="p-6 md:p-8 space-y-6">
-                  <div className="flex items-center gap-2">
-                    <Smartphone className="w-4 h-4 text-astro-cyan" />
-                    <h3 className="text-xs font-bold text-slate-700 uppercase tracking-[0.15em]">
-                      Pembayaran QRIS
-                    </h3>
-                  </div>
-
-                  <div className="flex flex-col items-center gap-5">
-                    {/* QR Code */}
-                    <div className="bg-white p-3 border-2 border-slate-200"
-                      style={{ clipPath: 'polygon(12px 0, 100% 0, calc(100% - 12px) 100%, 0 100%)' }}
-                    >
-                      <QRCodeSVG
-                        value={qrisValue}
-                        size={220}
-                        bgColor="#ffffff"
-                        fgColor="#0f172a"
-                        level="M"
-                        includeMargin={false}
-                      />
-                    </div>
-
-                    {/* Amount */}
-                    <div className="text-center">
-                      <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
-                        Total Pembayaran
-                      </span>
-                      <p className="text-2xl font-black text-slate-900 mt-1">
-                        {formatCurrency(competition.fee)}
-                      </p>
-                    </div>
-
-                    {/* Reference */}
-                    <div className="text-center">
-                      <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
-                        Referensi
-                      </span>
-                      <p className="text-xs font-mono font-bold text-slate-700 mt-0.5 tracking-wide">
-                        {reference}
-                      </p>
-                    </div>
-
-                    {/* Instructions */}
-                    <div className="text-center">
-                      <p className="text-[11px] text-slate-600 leading-relaxed">
-                        Scan QRIS di samping menggunakan aplikasi{' '}
-                        <strong>GoPay, OVO, DANA, ShopeePay,</strong> atau{' '}
-                        <strong>Mobile Banking</strong> yang mendukung QRIS.
-                      </p>
-                    </div>
-
-                    {/* Payment status timer */}
-                    <div className="w-full space-y-3">
-                      <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider">
-                        <span className={
-                          paymentStatus === 'detecting' ? 'text-amber-600' : 'text-muted-foreground'
-                        }>
-                          {paymentStatus === 'detecting' ? (
-                            <span className="flex items-center gap-1.5">
-                              <Spinner className="size-3" />
-                              Mendeteksi Pembayaran...
-                            </span>
-                          ) : (
-                            <span className="flex items-center gap-1.5">
-                              <Clock className="size-3" />
-                              Menunggu Pembayaran
-                            </span>
-                          )}
-                        </span>
-                        <span className="text-muted-foreground">
-                          {remaining > 0 ? `${remaining}s` : '—'}
-                        </span>
-                      </div>
-
-                      {/* Progress bar */}
-                      <Progress value={progress} className={paymentStatus === 'detecting' ? 'h-1.5 bg-muted [&>div]:bg-amber-400' : 'h-1.5 bg-muted'} />
-
-                      {paymentStatus === 'detecting' && (
-                        <Alert className="clip-angled border-amber-200 bg-amber-50/40 text-amber-800">
-                          <AlertDescription className="flex items-center gap-1.5 text-[11px] font-medium">
-                            <AlertCircle className="size-3.5" />
-                            Pembayaran terdeteksi, menunggu konfirmasi...
-                          </AlertDescription>
-                        </Alert>
-                      )}
-                    </div>
-                  </div>
+              <div className="p-6 md:p-8 space-y-6">
+                <div className="text-center">
+                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                    Referensi
+                  </span>
+                  <p className="text-xs font-mono font-bold text-slate-700 mt-0.5 tracking-wide">
+                    {paymentReference}
+                  </p>
                 </div>
-              </div>
 
-              {/* ─── BANK TRANSFER ─── */}
-              <div
-                className="bg-white border border-slate-200 relative"
-                style={{ clipPath: 'polygon(14px 0, 100% 0, calc(100% - 14px) 100%, 0 100%)' }}
-              >
-                <div
-                  className="absolute -top-[1px] -left-[1px] w-8 h-8 bg-astro-cyan"
-                  style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }}
-                />
+                {resolvedLinkUrl ? (
+                  <>
+                    <Button asChild size="lg" className="clip-angled w-full text-sm font-black uppercase tracking-wider active:scale-95">
+                      <a href={resolvedLinkUrl} target="_blank" rel="noopener noreferrer">
+                        Bayar Sekarang
+                        <ExternalLink data-icon="inline-end" />
+                      </a>
+                    </Button>
 
-                <div className="p-6 md:p-8 space-y-6">
-                  <div className="flex items-center gap-2">
-                    <Building2 className="w-4 h-4 text-astro-cyan" />
-                    <h3 className="text-xs font-bold text-slate-700 uppercase tracking-[0.15em]">
-                      Transfer Bank Manual
-                    </h3>
-                  </div>
-
-                  <div className="space-y-5 text-sm">
-                    {/* Bank */}
-                    <div>
-                      <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Bank Penerima</span>
-                      <p className="text-slate-900 font-bold mt-1">{bankInfo.bankName}</p>
-                    </div>
-
-                    {/* Atas Nama */}
-                    <div>
-                      <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Atas Nama</span>
-                      <p className="text-slate-900 font-bold mt-1">{bankInfo.accountHolder}</p>
-                    </div>
-
-                    {/* Nomor Rekening */}
-                    <div>
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Nomor Rekening</span>
-                      <div className="mt-1.5 flex items-center gap-2">
-                        <span className="font-mono text-xl font-black tracking-[0.1em] text-foreground">
-                          {bankInfo.accountNumber}
-                        </span>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="icon-sm"
-                          onClick={handleCopy}
-                          aria-label="Salin nomor rekening"
-                        >
-                          {copied ? <Check className="text-emerald-500" /> : <Copy />}
-                        </Button>
-                        {copied && (
-                          <Badge variant="outline" className="clip-angled-sm border-emerald-200 bg-emerald-50 text-[10px] font-bold text-emerald-600">
-                            Tersalin
-                          </Badge>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Jumlah */}
-                    <div>
-                      <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Jumlah Transfer</span>
-                      <p className="text-xl text-astro-cyan font-black mt-1">
-                        {formatCurrency(competition.fee)}
+                    {expiresLabel && (
+                      <p className="text-center text-[11px] text-slate-500">
+                        Link berlaku sampai <strong>{expiresLabel}</strong>
                       </p>
-                    </div>
-                  </div>
+                    )}
 
-                  {/* Important note */}
-                  <div className="border border-amber-200 bg-amber-50/40 p-4"
-                    style={{ clipPath: 'polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%)' }}
-                  >
-                    <p className="text-xs text-amber-800 leading-relaxed">
-                      <span className="font-black uppercase tracking-wider">Penting:</span>{' '}
-                      Simpan bukti transfer dan konfirmasi ke CP melalui WhatsApp.
-                    </p>
-                  </div>
+                    <Alert className="clip-angled border-sky-200 bg-sky-50/40 text-sky-800">
+                      <AlertDescription className="flex items-center gap-1.5 text-[11px] font-medium">
+                        <Spinner className="size-3" />
+                        Halaman ini akan otomatis memperbarui status setelah pembayaran diterima.
+                      </AlertDescription>
+                    </Alert>
+                  </>
+                ) : (
+                  <Alert className="clip-angled border-amber-200 bg-amber-50/40 text-amber-800">
+                    <AlertDescription className="flex items-center gap-1.5 text-[11px] font-medium">
+                      <AlertCircle className="size-3.5" />
+                      Pendaftaran tercatat, menunggu konfirmasi panitia.
+                    </AlertDescription>
+                  </Alert>
+                )}
+
+                <div className="flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                  <Clock className="size-3" />
+                  Menunggu Pembayaran
                 </div>
               </div>
             </div>
 
-            {/* Back button */}
             <Button
               variant="outline"
               size="lg"

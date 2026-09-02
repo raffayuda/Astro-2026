@@ -49,9 +49,14 @@ export const registrationsModule = new Elysia({ prefix: '/registrations' })
   .post('/', async ({ body, user }) => {
     const result = await service.createRegistration(body, user?.id ?? null);
     if ('error' in result) {
-      return result.status === 404
-        ? status(404, { error: result.error })
-        : status(400, { error: result.error });
+      switch (result.status) {
+        case 404:
+          return status(404, { error: result.error });
+        case 502:
+          return status(502, { error: result.error });
+        default:
+          return status(400, { error: result.error });
+      }
     }
     return status(201, result.reg);
   }, {

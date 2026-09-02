@@ -28,9 +28,16 @@ interface Props {
   regType: 'team' | 'individual';
   formData: RegistrationFormValues;
   setFormData: (data: any) => void;
-  onContinue: (registrationId: string, reference: string) => void;
+  onContinue: (
+    registrationId: string,
+    reference: string,
+    paymentLinkUrl?: string | null,
+    paymentExpiresAt?: string | null,
+  ) => void;
   existingRegId?: string | null;
   existingRef?: string | null;
+  existingPaymentLinkUrl?: string | null;
+  existingPaymentExpiresAt?: string | null;
   maxTeamMembers?: number;
   minTeamMembers?: number;
   /** Competition requires a photo for every player (esports, e.g. MLBB). */
@@ -46,6 +53,8 @@ export default function FormStep({
   onContinue,
   existingRegId,
   existingRef,
+  existingPaymentLinkUrl,
+  existingPaymentExpiresAt,
   maxTeamMembers = 5,
   minTeamMembers = 1,
   photoRequired = false,
@@ -88,14 +97,28 @@ export default function FormStep({
       try {
         if (existingRegId) {
           const reg = await update(existingRegId, value);
-          if (reg) onContinue(existingRegId, existingRef || "");
+          if (reg) {
+            onContinue(
+              existingRegId,
+              existingRef || "",
+              existingPaymentLinkUrl,
+              existingPaymentExpiresAt,
+            );
+          }
         } else {
           const reg = await create(
             competition.id,
             regType,
             value,
           );
-          if (reg) onContinue(reg.id, reg.paymentReference ?? "");
+          if (reg) {
+            onContinue(
+              reg.id,
+              reg.paymentReference ?? "",
+              reg.paymentLinkUrl,
+              reg.paymentExpiresAt as unknown as string | null,
+            );
+          }
         }
       } catch (err) {
         toast.error(err instanceof Error ? err.message : "Gagal menyimpan data");

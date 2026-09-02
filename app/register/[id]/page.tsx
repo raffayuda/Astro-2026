@@ -92,6 +92,8 @@ export default function RegistrationPage({
   const [step, setStep] = useState<1 | 2>(1);
   const [registrationId, setRegistrationId] = useState<string | null>(null);
   const [paymentReference, setPaymentReference] = useState<string | null>(null);
+  const [paymentLinkUrl, setPaymentLinkUrl] = useState<string | null>(null);
+  const [paymentExpiresAt, setPaymentExpiresAt] = useState<string | null>(null);
   const [regType, setRegType] = useState<'team' | 'individual'>('individual');
   const [formData, setFormData] = useState({
     fullName: "",
@@ -168,6 +170,8 @@ export default function RegistrationPage({
     const r = existingReg as any;
     setRegistrationId(r.id);
     setPaymentReference(r.paymentReference);
+    setPaymentLinkUrl(r.paymentLinkUrl ?? null);
+    setPaymentExpiresAt(r.paymentExpiresAt ?? null);
     setFormData({
       fullName: r.fullName || "",
       teamName: r.teamName || "",
@@ -264,9 +268,16 @@ export default function RegistrationPage({
   const isTeam = competition.type === 'both' ? regType === 'team' : competition.type === "team";
   const canChooseType = competition.type === 'both';
 
-  const handleFormSubmit = (regId: string, ref: string) => {
+  const handleFormSubmit = (
+    regId: string,
+    ref: string,
+    linkUrl?: string | null,
+    expiresAt?: string | null,
+  ) => {
     setRegistrationId(regId);
     setPaymentReference(ref);
+    setPaymentLinkUrl(linkUrl ?? null);
+    setPaymentExpiresAt(expiresAt ?? null);
     setStep(2);
   };
 
@@ -577,6 +588,8 @@ export default function RegistrationPage({
                       onContinue={handleFormSubmit}
                       existingRegId={registrationId}
                       existingRef={paymentReference}
+                      existingPaymentLinkUrl={paymentLinkUrl}
+                      existingPaymentExpiresAt={paymentExpiresAt}
                       maxTeamMembers={competition.maxTeamMembers || 5}
                       minTeamMembers={competition.minTeamMembers || 1}
                       photoRequired={!!competition.playerPhotoRequired}
@@ -592,10 +605,10 @@ export default function RegistrationPage({
                   >
                     <PaymentStep
                       competition={competition as any}
-                      formData={formData}
-                      isTeam={isTeam}
                       registrationId={registrationId || ""}
                       paymentReference={paymentReference || ""}
+                      paymentLinkUrl={paymentLinkUrl}
+                      paymentExpiresAt={paymentExpiresAt}
                       onBack={() => setStep(1)}
                     />
                   </motion.div>

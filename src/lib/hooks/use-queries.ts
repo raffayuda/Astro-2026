@@ -117,11 +117,15 @@ export function useRegistrations(
   });
 }
 
-export function useRegistration(id: string) {
+export function useRegistration(
+  id: string,
+  options: { refetchInterval?: number | false } = {},
+) {
   return useQuery({
     queryKey: queryKeys.registrations.detail(id),
     queryFn: () => apiHelpers.registrations.get(id),
     enabled: !!id,
+    refetchInterval: options.refetchInterval,
   });
 }
 

@@ -3,10 +3,12 @@ import { registrations, competitions, users } from '@/src/db/schema';
 import { eq, desc, sql, count, and } from 'drizzle-orm';
 import { Resend } from 'resend';
 import { deleteSupabaseFile } from '@/src/server/modules/upload';
+import { createPayment, SumoPodError } from '@/src/server/modules/payments/sumopod';
 import type { MemberDetail, RegistrationCreate, RegistrationListQuery } from './model';
 import { SELF_SERVICE_FIELDS, ADMIN_FIELDS } from './model';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
 
 /**
  * Competitions with `playerPhotoRequired` (esports, e.g. Mobile Legends) need a
@@ -232,6 +234,39 @@ export async function createRegistration(input: RegistrationCreate, userId: stri
     })
     .returning();
 
+  // Paid registrations get a real SumoPod payment link. If SumoPod can't be
+  // reached, roll back the insert rather than leaving an unpayable row behind.
+  if (paymentAmount > 0) {
+    try {
+      const payment = await createPayment({
+        orderId: ref,
+        amount: paymentAmount,
+        successReturnUrl: `${baseUrl}/check-registration?regId=${reg.id}`,
+        cancelReturnUrl: `${baseUrl}/register/${comp.id}?regId=${reg.id}`,
+      });
+
+      const [withPayment] = await db
+        .update(registrations)
+        .set({
+          paymentLinkId: payment.payment_id,
+          paymentLinkUrl: payment.payment_link_url,
+          paymentExpiresAt: new Date(payment.expires_at),
+        })
+        .where(eq(registrations.id, reg.id))
+        .returning();
+
+      return { reg: withPayment };
+    } catch (err) {
+      await db.delete(registrations).where(eq(registrations.id, reg.id));
+      console.error('SumoPod create payment failed:', err);
+      const message =
+        err instanceof SumoPodError
+          ? 'Gagal membuat link pembayaran, silakan coba lagi'
+          : 'Gagal terhubung ke layanan pembayaran, silakan coba lagi';
+      return { error: message, status: 502 } as const;
+    }
+  }
+
   return { reg };
 }
 
@@ -306,79 +341,117 @@ export async function updateRegistration(
 
   // Auto-update filledSlots when paymentStatus changes to/from 'paid' (admin-only path)
   if (updates.paymentStatus && updates.paymentStatus !== current.paymentStatus) {
-    const wasPaid = current.paymentStatus === 'paid';
-    const nowPaid = updates.paymentStatus === 'paid';
-    const delta = 1; // each approved registration = 1 slot
-
-    if (!wasPaid && nowPaid) {
-      await db
-        .update(competitions)
-        .set({ filledSlots: sql`${competitions.filledSlots} + ${delta}` })
-        .where(eq(competitions.id, current.competitionId));
-
-      const [comp] = await db
-        .select({ title: competitions.title })
-        .from(competitions)
-        .where(eq(competitions.id, current.competitionId));
-
-      const participantName =
-        current.fullName || current.teamName || current.leaderName || 'Peserta';
-      const regType = current.type === 'team' ? 'Tim' : 'Individu';
-      const reference = current.paymentReference || '-';
-
-      try {
-        await resend.emails.send({
-          from: 'ASTRO 2026 <noreply@mailer.kta.blue>',
-          to: current.email,
-          subject: `Pembayaran Dikonfirmasi - ${comp?.title || 'ASTRO 2026'}`,
-          html: `
-            <div style="font-family: Arial, sans-serif; max-width: 480px; margin: 0 auto; padding: 32px 24px; background: #f8fafc; border-radius: 16px;">
-              <div style="text-align: center; margin-bottom: 24px;">
-                <img src="https://abhshprulipnmetfumrt.supabase.co/storage/v1/object/public/assets/logo-astro.png" alt="ASTRO" style="height: 48px;" />
-              </div>
-              <h1 style="font-size: 20px; font-weight: 900; color: #0f172a; text-align: center; text-transform: uppercase; letter-spacing: 0.02em; margin-bottom: 8px;">
-                Pembayaran Dikonfirmasi
-              </h1>
-              <p style="font-size: 14px; color: #64748b; text-align: center; margin-bottom: 24px;">
-                Pendaftaran kamu telah berhasil dikonfirmasi
-              </p>
-              <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px; margin-bottom: 24px;">
-                <p style="font-size: 12px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; margin-bottom: 12px;">Detail Pendaftaran</p>
-                <table style="width: 100%; font-size: 14px; color: #0f172a;">
-                  <tr><td style="padding: 4px 0; color: #64748b;">Nama</td><td style="padding: 4px 0; font-weight: 700;">${participantName}</td></tr>
-                  <tr><td style="padding: 4px 0; color: #64748b;">Tipe</td><td style="padding: 4px 0; font-weight: 700;">${regType}</td></tr>
-                  <tr><td style="padding: 4px 0; color: #64748b;">Lomba</td><td style="padding: 4px 0; font-weight: 700;">${comp?.title || '-'}</td></tr>
-                  <tr><td style="padding: 4px 0; color: #64748b;">Referensi</td><td style="padding: 4px 0; font-weight: 700;">${reference}</td></tr>
-                  <tr><td style="padding: 4px 0; color: #64748b;">Status</td><td style="padding: 4px 0; font-weight: 700; color: #10b981;">LUNAS</td></tr>
-                </table>
-              </div>
-              <p style="font-size: 14px; color: #64748b; text-align: center; margin-bottom: 24px;">
-                Kamu bisa cek status pendaftaran kapan saja melalui halaman Cek Pendaftaran di website ASTRO 2026.
-              </p>
-              <div style="text-align: center; margin-bottom: 24px;">
-                <a href="${process.env.NEXT_PUBLIC_BASE_URL || 'https://astro2026.example.com'}/check-registration" style="display: inline-block; padding: 12px 32px; background: #06b6d4; color: #0f172a; text-decoration: none; font-weight: 900; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);">
-                  Cek Pendaftaran
-                </a>
-              </div>
-              <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 24px 0;" />
-              <p style="font-size: 11px; color: #cbd5e1; text-align: center;">
-                ASTRO 2026 — Ajang Lomba Pelajar Tingkat Nasional
-              </p>
-            </div>
-          `,
-        });
-      } catch (emailErr) {
-        console.error('Failed to send confirmation email:', emailErr);
-      }
-    } else if (wasPaid && !nowPaid) {
-      await db
-        .update(competitions)
-        .set({ filledSlots: sql`GREATEST(${competitions.filledSlots} - ${delta}, 0)` })
-        .where(eq(competitions.id, current.competitionId));
-    }
+    await applyPaymentStatusSideEffects(current, updates.paymentStatus as string);
   }
 
   return { kind: 'ok', reg: updated };
+}
+
+/**
+ * Slot count + confirmation email side effects that must run whenever a
+ * registration's `paymentStatus` transitions to/from 'paid' — shared by the
+ * admin PATCH path and the SumoPod webhook handler.
+ */
+async function applyPaymentStatusSideEffects(
+  current: typeof registrations.$inferSelect,
+  newStatus: string,
+) {
+  const wasPaid = current.paymentStatus === 'paid';
+  const nowPaid = newStatus === 'paid';
+  const delta = 1; // each approved registration = 1 slot
+
+  if (!wasPaid && nowPaid) {
+    await db
+      .update(competitions)
+      .set({ filledSlots: sql`${competitions.filledSlots} + ${delta}` })
+      .where(eq(competitions.id, current.competitionId));
+
+    const [comp] = await db
+      .select({ title: competitions.title })
+      .from(competitions)
+      .where(eq(competitions.id, current.competitionId));
+
+    const participantName =
+      current.fullName || current.teamName || current.leaderName || 'Peserta';
+    const regType = current.type === 'team' ? 'Tim' : 'Individu';
+    const reference = current.paymentReference || '-';
+
+    try {
+      await resend.emails.send({
+        from: 'ASTRO 2026 <noreply@mailer.kta.blue>',
+        to: current.email,
+        subject: `Pembayaran Dikonfirmasi - ${comp?.title || 'ASTRO 2026'}`,
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 480px; margin: 0 auto; padding: 32px 24px; background: #f8fafc; border-radius: 16px;">
+            <div style="text-align: center; margin-bottom: 24px;">
+              <img src="https://abhshprulipnmetfumrt.supabase.co/storage/v1/object/public/assets/logo-astro.png" alt="ASTRO" style="height: 48px;" />
+            </div>
+            <h1 style="font-size: 20px; font-weight: 900; color: #0f172a; text-align: center; text-transform: uppercase; letter-spacing: 0.02em; margin-bottom: 8px;">
+              Pembayaran Dikonfirmasi
+            </h1>
+            <p style="font-size: 14px; color: #64748b; text-align: center; margin-bottom: 24px;">
+              Pendaftaran kamu telah berhasil dikonfirmasi
+            </p>
+            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px; margin-bottom: 24px;">
+              <p style="font-size: 12px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; margin-bottom: 12px;">Detail Pendaftaran</p>
+              <table style="width: 100%; font-size: 14px; color: #0f172a;">
+                <tr><td style="padding: 4px 0; color: #64748b;">Nama</td><td style="padding: 4px 0; font-weight: 700;">${participantName}</td></tr>
+                <tr><td style="padding: 4px 0; color: #64748b;">Tipe</td><td style="padding: 4px 0; font-weight: 700;">${regType}</td></tr>
+                <tr><td style="padding: 4px 0; color: #64748b;">Lomba</td><td style="padding: 4px 0; font-weight: 700;">${comp?.title || '-'}</td></tr>
+                <tr><td style="padding: 4px 0; color: #64748b;">Referensi</td><td style="padding: 4px 0; font-weight: 700;">${reference}</td></tr>
+                <tr><td style="padding: 4px 0; color: #64748b;">Status</td><td style="padding: 4px 0; font-weight: 700; color: #10b981;">LUNAS</td></tr>
+              </table>
+            </div>
+            <p style="font-size: 14px; color: #64748b; text-align: center; margin-bottom: 24px;">
+              Kamu bisa cek status pendaftaran kapan saja melalui halaman Cek Pendaftaran di website ASTRO 2026.
+            </p>
+            <div style="text-align: center; margin-bottom: 24px;">
+              <a href="${baseUrl}/check-registration" style="display: inline-block; padding: 12px 32px; background: #06b6d4; color: #0f172a; text-decoration: none; font-weight: 900; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);">
+                Cek Pendaftaran
+              </a>
+            </div>
+            <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 24px 0;" />
+            <p style="font-size: 11px; color: #cbd5e1; text-align: center;">
+              ASTRO 2026 — Ajang Lomba Pelajar Tingkat Nasional
+            </p>
+          </div>
+        `,
+      });
+    } catch (emailErr) {
+      console.error('Failed to send confirmation email:', emailErr);
+    }
+  } else if (wasPaid && !nowPaid) {
+    await db
+      .update(competitions)
+      .set({ filledSlots: sql`GREATEST(${competitions.filledSlots} - ${delta}, 0)` })
+      .where(eq(competitions.id, current.competitionId));
+  }
+}
+
+/**
+ * Apply a payment-status transition coming from the SumoPod webhook.
+ * Trusted, server-to-server — bypasses the admin-only field whitelist but
+ * only ever writes `paymentStatus`. Idempotent: replays of the same event
+ * (or an out-of-order one) that don't actually change the status are no-ops.
+ */
+export async function setPaymentStatusByReference(orderId: string, newStatus: string) {
+  const [current] = await db
+    .select()
+    .from(registrations)
+    .where(eq(registrations.paymentReference, orderId));
+
+  if (!current) return { kind: 'notfound' } as const;
+  if (current.paymentStatus === newStatus) return { kind: 'ok', reg: current } as const;
+
+  const [updated] = await db
+    .update(registrations)
+    .set({ paymentStatus: newStatus, updatedAt: new Date() })
+    .where(eq(registrations.id, current.id))
+    .returning();
+
+  await applyPaymentStatusSideEffects(current, newStatus);
+
+  return { kind: 'ok', reg: updated } as const;
 }
 
 /* ─── Stats (admin) ─── */
@@ -407,6 +480,7 @@ export async function getStats() {
     detecting: '#3b82f6',
     paid: '#10b981',
     failed: '#ef4444',
+    expired: '#94a3b8',
   };
 
   const statusDistribution = statusRows.map((r) => ({
