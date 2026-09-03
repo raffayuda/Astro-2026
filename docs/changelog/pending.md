@@ -17,3 +17,9 @@
 [22:23] - [app/profile/page.tsx] - [UPDATE] - Pass variant="profile" to SponsorSection
 [22:30] - [components/SponsorSection.tsx] - [UPDATE] - Integrate official Contact Persons for sponsorship (Muhammad Syafiq Arrafif, email) and media partners (Resna, Audy)
 [22:34] - [components/FAQSection.tsx] - [UPDATE] - Point "Masih punya pertanyaan?" CTA directly to Instagram @astrosttnf
+[22:41] - [components/TimelineSection.tsx] - [UPDATE] - Apply tentative badge, TBA styling, and notice card with Instagram CTA
+[22:41] - [data/astro-data.json] - [UPDATE] - Set event timeline dates to TBA (Segera Diumumkan) with phase structure
+[22:44] - [components/HeroSection.tsx] - [UPDATE] - Replace countdown timer with Option A glass announcement card (Segera Dibuka, Prize Pool, 3 Kategori, Venue)
+[22:47] - [components/HeroSection.tsx] - [UPDATE] - Calibrate Hero typography clamp, container vertical centering, and compact card padding so entire hero fits above the fold on laptop screens
+[22:50] - [components/HeroSection.tsx] - [UPDATE] - Redesign Hero announcement card to match ASTRO signature theme (angled polygon clip, corner cyan accent, 3-column metric blocks)
+[22:53] - [components/HeroSection.tsx] - [UPDATE] - Replace heavy announcement card with ultra-clean Parallelogram Status Badge (Opsi 3): "ASTRO 2026 • PENDAFTARAN SEGERA DIBUKA (TBA)" matching button skew

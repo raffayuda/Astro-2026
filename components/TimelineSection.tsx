@@ -3,7 +3,9 @@
 import Image from 'next/image';
 import { Fragment } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
-import { CalendarDays } from 'lucide-react';
+import { CalendarDays, Clock, Sparkles } from 'lucide-react';
+import { FaInstagram } from 'react-icons/fa';
+import { Badge } from '@/components/ui/badge';
 import type { TimelineItem } from '@/types/astro';
 
 const MotionImage = motion.create(Image);
@@ -44,11 +46,20 @@ export default function TimelineSection({ timeline }: Props) {
           <div className="flex justify-center mb-3">
             <div className="accent-line" />
           </div>
+          <div className="flex justify-center mb-3">
+            <Badge
+              variant="outline"
+              className="border-amber-400/60 bg-amber-50/90 text-amber-900 text-[11px] font-bold uppercase tracking-wider px-3.5 py-1 gap-1.5 shadow-2xs backdrop-blur-xs"
+            >
+              <Clock className="size-3 text-amber-600" />
+              Jadwal Bersifat Tentatif
+            </Badge>
+          </div>
           <h2 className="font-masterpiece text-5xl md:text-6xl lg:text-7xl text-slate-900 mb-3 leading-tight">
             Timeline <span className="text-astro-cyan">Event</span>
           </h2>
-          <p className="text-sm md:text-base text-slate-600 font-black leading-relaxed">
-            Catat tanggal penting ASTRO 2026 agar tidak terlewat!
+          <p className="text-sm md:text-base text-slate-600 font-semibold leading-relaxed max-w-xl mx-auto">
+            Gambaran alur rangkaian kegiatan ASTRO 2026. Tanggal pasti setiap agenda akan dirilis secara bertahap.
           </p>
         </motion.div>
 
@@ -161,6 +172,31 @@ export default function TimelineSection({ timeline }: Props) {
             </div>
           </div>
         </div>
+
+        {/* Tentative Notice / Disclaimer Card */}
+        <motion.div
+          initial={reduce ? false : { opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="mt-14 max-w-2xl mx-auto rounded-2xl border border-amber-200/80 bg-gradient-to-r from-amber-50/90 via-sky-50/90 to-amber-50/90 p-5 sm:p-6 text-center shadow-xs backdrop-blur-xs relative z-10"
+        >
+          <div className="flex items-center justify-center gap-2 mb-2 text-amber-900 font-bold text-xs uppercase tracking-wider">
+            <Sparkles className="size-3.5 text-amber-600" />
+            <span>Pemberitahuan Jadwal Resmi</span>
+          </div>
+          <p className="text-xs md:text-sm text-slate-700 leading-relaxed mb-4">
+            Rangkaian jadwal di atas merupakan estimasi alur kegiatan dan dapat disesuaikan oleh panitia. Pantau terus Instagram resmi kami untuk pengumuman tanggal pasti pembukaan pendaftaran dan technical meeting.
+          </p>
+          <a
+            href="https://instagram.com/astrosttnf"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-4 py-2 text-xs font-bold uppercase tracking-wider text-white bg-gradient-to-r from-purple-600 via-pink-600 to-rose-500 rounded-lg shadow-sm hover:opacity-95 transition-opacity active:scale-95"
+          >
+            <FaInstagram className="size-3.5" /> Ikuti Info Terkini @astrosttnf
+          </a>
+        </motion.div>
       </div>
 
       {/* ─── AWAN DECORATIVE ─── */}
@@ -188,8 +224,8 @@ export default function TimelineSection({ timeline }: Props) {
         width={140}
         height={140}
         animate={{ x: [0, 18, 0] }}
-        transition={{ duration: 11, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute top-[45%] left-[1%] w-20 h-20 md:w-[140px] md:h-[140px] object-contain pointer-events-none select-none z-0"
+        transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut' }}
+        className="absolute top-[35%] left-[1%] w-20 h-20 md:w-[140px] md:h-[140px] object-contain pointer-events-none select-none z-0"
       />
       <MotionImage
         src="/assets/awan2.png"
@@ -249,6 +285,8 @@ export default function TimelineSection({ timeline }: Props) {
 
 /* ── Card Content Sub-component ── */
 function CardContent({ item, align }: { item: TimelineItem; align: 'left' | 'right' }) {
+  const isTba = item.date.includes('TBA') || item.date.toLowerCase().includes('segera');
+
   return (
     <div
       className={`bg-white border border-slate-200 hover:border-cyan-500/40 transition-all duration-200 w-full max-w-md relative ${
@@ -266,10 +304,18 @@ function CardContent({ item, align }: { item: TimelineItem; align: 'left' | 'rig
         <div
           className={`inline-flex items-center gap-1.5 px-3 py-1 text-[10px] font-bold uppercase tracking-wider border ${
             align === 'right' ? 'float-right ml-auto' : ''
-          } bg-cyan-50 border-cyan-200 text-cyan-700`}
+          } ${
+            isTba
+              ? 'bg-amber-50/90 border-amber-300/80 text-amber-800'
+              : 'bg-cyan-50 border-cyan-200 text-cyan-700'
+          }`}
           style={{ clipPath: 'polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%)' }}
         >
-          <CalendarDays className="w-3 h-3" />
+          {isTba ? (
+            <Clock className="w-3 h-3 text-amber-600" />
+          ) : (
+            <CalendarDays className="w-3 h-3" />
+          )}
           {item.date}
         </div>
 

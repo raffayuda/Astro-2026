@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button';
 import type { EventConfig } from '@/types/astro';
 
 const MotionImage = motion.create(Image);
-import CountdownTimer from './CountdownTimer';
 
 interface Props {
   eventConfig: EventConfig;
@@ -18,7 +17,7 @@ export default function HeroSection({ eventConfig }: Props) {
   return (
     <section
       id="home"
-      className="relative min-h-[100svh] flex flex-col items-center justify-start overflow-hidden pt-[18svh] md:pt-[15svh]"
+      className="relative min-h-[100svh] flex flex-col items-center justify-center overflow-hidden pt-20 pb-12 sm:pt-24 sm:pb-16 md:pt-20 md:pb-14"
     >
       {/* ─── SKY BACKGROUND ─── */}
       <div className="absolute inset-0 -z-10 bg-gradient-to-b from-sky-400 via-sky-300 to-sky-100" />
@@ -145,10 +144,10 @@ export default function HeroSection({ eventConfig }: Props) {
         className="absolute bottom-[15%] right-[4%] w-28 h-28 md:w-40 md:h-40 object-contain pointer-events-none select-none z-0"
       />
 
-      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 text-center animate-hero-rise">
-        {/* ─── MAIN TITLE (paints immediately, no JS gate) ─── */}
-        <div className="mb-6 md:mb-0 md:-mt-6">
-          <h1 className="text-massive mb-0">
+      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 text-center animate-hero-rise">
+        {/* ─── MAIN TITLE ─── */}
+        <div className="mb-2 sm:mb-3">
+          <h1 className="font-masterpiece font-black tracking-tight leading-[0.82] uppercase mb-0 text-[clamp(3.5rem,7.5vw,7.5rem)]">
             <span
               className="block bg-gradient-to-b from-slate-300 via-slate-400 to-slate-600 bg-clip-text text-transparent drop-shadow-[0_4px_30px_rgba(0,0,0,0.15)]"
               style={{
@@ -158,7 +157,7 @@ export default function HeroSection({ eventConfig }: Props) {
               ASTRO
             </span>
             <span
-              className="block bg-gradient-to-b from-slate-200 via-slate-500 to-slate-800 bg-clip-text text-transparent"
+              className="block bg-gradient-to-b from-slate-200 via-slate-500 to-slate-800 bg-clip-text text-transparent -mt-1 sm:-mt-2"
               style={{
                 textShadow: '0 2px 0 #e2e8f0, 0 4px 0 #94a3b8, 0 6px 0 #475569, 0 8px 0 #1e293b, 0 12px 30px rgba(0,0,0,0.35)',
               }}
@@ -168,52 +167,54 @@ export default function HeroSection({ eventConfig }: Props) {
           </h1>
 
           {/* Tagline - Split Creative */}
-          <p className="mt-6 font-masterpiece leading-snug drop-shadow-[0_2px_12px_rgba(0,0,0,0.08)]">
-            <span className="text-3xl sm:text-4xl md:text-5xl text-white/95 block">
+          <p className="mt-2 sm:mt-3 font-masterpiece leading-snug drop-shadow-[0_2px_12px_rgba(0,0,0,0.08)]">
+            <span className="text-xl sm:text-2xl md:text-3xl text-white/95 block">
               Where Innovation
             </span>
-            <span className="text-4xl sm:text-5xl md:text-6xl bg-gradient-to-r from-yellow-200 via-orange-200 to-pink-200 bg-clip-text text-transparent block -mt-1">
+            <span className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl bg-gradient-to-r from-yellow-200 via-orange-200 to-pink-200 bg-clip-text text-transparent block -mt-0.5 sm:-mt-1">
               Meets the Stars
             </span>
           </p>
         </div>
 
         {/* Accent line */}
-        <div className="flex justify-center mb-8 md:mb-10">
-          <div className="w-24 h-[3px] bg-white/40 rounded-full" />
+        <div className="flex justify-center mb-4 sm:mb-5">
+          <div className="w-16 sm:w-20 h-[2px] bg-white/40 rounded-full" />
         </div>
 
-        {/* Countdown - Glass Dashboard */}
+        {/* Parallelogram Status Badge (Opsi 3) */}
         <motion.div
-          initial={reduce ? false : { opacity: 0, y: 30 }}
+          initial={reduce ? false : { opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] as const }}
-          className="mb-8 md:mb-10"
+          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] as const }}
+          className="mb-8 md:mb-10 inline-flex"
         >
-          <p className="text-[10px] md:text-xs uppercase tracking-[0.25em] text-white/80 mb-4 font-bold drop-shadow-[0_2px_4px_rgba(0,0,0,0.05)]">
-            Pendaftaran Ditutup Dalam
-          </p>
-          <CountdownTimer deadline={eventConfig.registrationDeadline} />
+          <div className="skew-x-[-8deg] border border-white/50 bg-slate-900/75 backdrop-blur-md px-5 py-2 sm:px-6 sm:py-2.5 shadow-[0_8px_30px_rgba(0,0,0,0.2)]">
+            <div className="skew-x-[8deg] flex items-center gap-2 sm:gap-2.5 text-xs sm:text-sm font-black uppercase tracking-[0.2em] text-white">
+              <span className="size-2 rounded-full bg-cyan-400 animate-pulse" />
+              <span>ASTRO 2026 • PENDAFTARAN SEGERA DIBUKA (TBA)</span>
+            </div>
+          </div>
         </motion.div>
 
         {/* CTA - Solid Parallelogram Buttons */}
         <motion.div
-          initial={reduce ? false : { opacity: 0, y: 30 }}
+          initial={reduce ? false : { opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] as const }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-4"
+          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] as const }}
+          className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4"
         >
           <Button
             onClick={() => document.querySelector('#competitions')?.scrollIntoView({ behavior: 'smooth' })}
             size="lg"
-            className="skew-x-[-8deg] rounded-none border-2 border-sky-300 bg-sky-700 px-8 py-4 text-sm font-black uppercase tracking-wider text-white shadow-[0_8px_30px_rgba(2,132,199,0.4)] hover:-translate-y-0.5 hover:bg-sky-600 hover:shadow-[0_12px_40px_rgba(2,132,199,0.5)] active:scale-95"
+            className="skew-x-[-8deg] rounded-none border-2 border-sky-300 bg-sky-700 px-6 py-3 sm:px-8 sm:py-3.5 text-xs sm:text-sm font-black uppercase tracking-wider text-white shadow-[0_8px_30px_rgba(2,132,199,0.4)] hover:-translate-y-0.5 hover:bg-sky-600 hover:shadow-[0_12px_40px_rgba(2,132,199,0.5)] active:scale-95"
           >
             <span className="block skew-x-[8deg]">Lihat Lomba & Daftar</span>
           </Button>
           <Button
             asChild
             size="lg"
-            className="skew-x-[-8deg] rounded-none border-2 border-slate-400 bg-slate-700 px-8 py-4 text-sm font-bold uppercase tracking-wider text-white shadow-[0_8px_30px_rgba(0,0,0,0.3)] hover:-translate-y-0.5 hover:bg-slate-600 hover:shadow-[0_12px_40px_rgba(0,0,0,0.35)] active:scale-95"
+            className="skew-x-[-8deg] rounded-none border-2 border-slate-400 bg-slate-700 px-6 py-3 sm:px-8 sm:py-3.5 text-xs sm:text-sm font-bold uppercase tracking-wider text-white shadow-[0_8px_30px_rgba(0,0,0,0.3)] hover:-translate-y-0.5 hover:bg-slate-600 hover:shadow-[0_12px_40px_rgba(0,0,0,0.35)] active:scale-95"
           >
             <a href={eventConfig.generalJuknisUrl} target="_blank" rel="noopener noreferrer">
               <span className="block skew-x-[8deg]">Unduh Juknis</span>
@@ -223,8 +224,7 @@ export default function HeroSection({ eventConfig }: Props) {
       </div>
 
       {/* Bottom gradient fade to white */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 z-20 pointer-events-none bg-gradient-to-b from-transparent to-white" />
-
+      <div className="absolute bottom-0 left-0 right-0 h-24 sm:h-32 z-20 pointer-events-none bg-gradient-to-b from-transparent to-white" />
     </section>
   );
 }
