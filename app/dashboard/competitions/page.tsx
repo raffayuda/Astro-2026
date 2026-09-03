@@ -206,24 +206,29 @@ function FormFields({ form, setForm, isAdd, categories }: { form: any; setForm: 
           <ToggleGroupItem value="free" className="flex-1 text-xs font-bold uppercase tracking-wider">Gratis</ToggleGroupItem>
         </ToggleGroup>
         {!form.isFree && (
-          <InputGroup className="clip-angled-sm mt-2 h-10 border-border bg-background">
-            <InputGroupAddon align="inline-start"><span className="text-sm font-bold text-muted-foreground">Rp</span></InputGroupAddon>
-            <InputGroupInput
-              type="text"
-              inputMode="numeric"
-              value={form.feeDisplay !== undefined && form.feeDisplay !== null ? form.feeDisplay : (form.fee ? formatRupiah(String(form.fee)) : '')}
-              onChange={(e) => {
-                const raw = e.target.value.replace(/\D/g, '');
-                if (!raw) {
-                  update({ fee: 0, feeDisplay: '' });
-                } else {
-                  const num = parseInt(raw, 10);
-                  update({ fee: num, feeDisplay: formatRupiah(raw) });
-                }
-              }}
-              placeholder="0"
-            />
-          </InputGroup>
+          <>
+            <InputGroup className="clip-angled-sm mt-2 h-10 border-border bg-background">
+              <InputGroupAddon align="inline-start"><span className="text-sm font-bold text-muted-foreground">Rp</span></InputGroupAddon>
+              <InputGroupInput
+                type="text"
+                inputMode="numeric"
+                value={form.feeDisplay !== undefined && form.feeDisplay !== null ? form.feeDisplay : (form.fee ? formatRupiah(String(form.fee)) : '')}
+                onChange={(e) => {
+                  const raw = e.target.value.replace(/\D/g, '');
+                  if (!raw) {
+                    update({ fee: 0, feeDisplay: '' });
+                  } else {
+                    const num = parseInt(raw, 10);
+                    update({ fee: num, feeDisplay: formatRupiah(raw) });
+                  }
+                }}
+                placeholder="50.000"
+              />
+            </InputGroup>
+            <p className="mt-1 text-[10px] text-muted-foreground">
+              Minimal Rp 1.000 untuk gateway pembayaran. Jika gratis, pilih opsi &quot;Gratis&quot;.
+            </p>
+          </>
         )}
       </Field>
       <Field>
@@ -446,6 +451,11 @@ export default function KompetisiPage() {
       const { feeDisplay: _feeDisplay, ...submitData } = editForm;
       const isFree = !!editForm.isFree;
       const feeNum = isFree ? 0 : (parseRupiah(String(editForm.feeDisplay ?? editForm.fee)) || 0);
+
+      if (!isFree && feeNum > 0 && feeNum < 1000) {
+        toast.error('Biaya berbayar minimal Rp 1.000 untuk gateway pembayaran. Jika lomba gratis, pilih opsi Gratis.');
+        return;
+      }
       const rules = typeof editForm.rulesSummary === 'string'
         ? editForm.rulesSummary.split('\n').filter((s: string) => s.trim())
         : Array.isArray(editForm.rulesSummary)
@@ -481,6 +491,11 @@ export default function KompetisiPage() {
       const { feeDisplay: _feeDisplay, ...submitData } = addForm;
       const isFree = !!addForm.isFree;
       const feeNum = isFree ? 0 : (parseRupiah(String(addForm.feeDisplay ?? addForm.fee)) || 0);
+
+      if (!isFree && feeNum > 0 && feeNum < 1000) {
+        toast.error('Biaya berbayar minimal Rp 1.000 untuk gateway pembayaran. Jika lomba gratis, pilih opsi Gratis.');
+        return;
+      }
       const rules = typeof addForm.rulesSummary === 'string'
         ? addForm.rulesSummary.split('\n').filter((s: string) => s.trim())
         : Array.isArray(addForm.rulesSummary)

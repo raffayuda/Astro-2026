@@ -262,8 +262,8 @@ export async function createRegistration(input: RegistrationCreate, userId: stri
       console.error('SumoPod create payment failed:', err);
       const message =
         err instanceof SumoPodError
-          ? 'Gagal membuat link pembayaran, silakan coba lagi'
-          : 'Gagal terhubung ke layanan pembayaran, silakan coba lagi';
+          ? err.message
+          : (err instanceof Error ? err.message : 'Gagal terhubung ke layanan pembayaran, silakan coba lagi');
       return { error: message, status: 502 } as const;
     }
   }

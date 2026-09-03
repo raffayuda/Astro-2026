@@ -279,7 +279,7 @@ Terima kasih.`;
                   </Field>
 
                   <Field data-invalid={!!errors.leaderIdentity}>
-                    <FieldLabel htmlFor="leaderIdentity">Nomor Identitas Ketua (NISN / KTP / Kartu Pelajar)</FieldLabel>
+                    <FieldLabel htmlFor="leaderIdentity">Nomor Identitas Ketua (NIM / Kartu Pelajar)</FieldLabel>
                     <Input
                       id="leaderIdentity"
                       value={formData.leaderIdentity}
@@ -307,7 +307,7 @@ Terima kasih.`;
                   </Field>
 
                   <Field data-invalid={!!errors.identityNumber}>
-                    <FieldLabel htmlFor="identityNumber">Nomor Identitas (NISN / KTP / Kartu Pelajar)</FieldLabel>
+                    <FieldLabel htmlFor="identityNumber">Nomor Identitas (NIM / Kartu Pelajar)</FieldLabel>
                     <Input
                       id="identityNumber"
                       value={formData.identityNumber}

@@ -235,7 +235,7 @@ export default function FormStep({
                 )}
                 {renderField(
                   "leaderIdentity",
-                  "Nomor Identitas Ketua (NISN / KTP / Kartu Pelajar)",
+                  "Nomor Identitas Ketua (NIM / Kartu Pelajar)",
                   "text",
                   "Nomor identitas ketua",
                   { sanitize: (v) => v.replace(/\D/g, "") },
@@ -253,7 +253,7 @@ export default function FormStep({
                 )}
                 {renderField(
                   "identityNumber",
-                  "Nomor Identitas (NISN / KTP / Kartu Pelajar)",
+                  "Nomor Identitas (NIM / Kartu Pelajar)",
                   "text",
                   "Nomor identitas pendaftar",
                   { sanitize: (v) => v.replace(/\D/g, "") },

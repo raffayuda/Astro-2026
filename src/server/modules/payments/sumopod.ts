@@ -66,6 +66,14 @@ export async function createPayment(input: CreatePaymentInput): Promise<SumoPodP
   if (cancelUrl) payload.cancel_return_url = cancelUrl;
   if (input.paymentMethodTypeCode) payload.payment_method_type_code = input.paymentMethodTypeCode;
 
+  if (input.amount < 1000) {
+    throw new SumoPodError(
+      `Nominal pembayaran (Rp ${input.amount.toLocaleString('id-ID')}) di bawah batas minimum transaksi gateway pembayaran (minimal Rp 1.000). Jika lomba ini gratis, silakan atur status biaya menjadi 'Gratis' di dashboard admin.`,
+      400,
+      null,
+    );
+  }
+
   try {
     return await ky
       .post(`${SUMOPOD_BASE_URL}/payments`, {
@@ -88,7 +96,7 @@ export async function createPayment(input: CreatePaymentInput): Promise<SumoPodP
         status: err.response.status,
         body,
         raw: rawText,
-        payload,
+        payload: JSON.stringify(payload),
       });
       const message =
         (body && typeof body === 'object' && ('message' in body || 'error' in body) && (body.message || body.error)) ||
