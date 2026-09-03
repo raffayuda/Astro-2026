@@ -16,3 +16,4 @@
 [22:23] - [components/SponsorSection.tsx] - [UPDATE] - Differentiate home variant (current sponsors & medpart or partnership CTA) and profile variant (track record)
 [22:23] - [app/profile/page.tsx] - [UPDATE] - Pass variant="profile" to SponsorSection
 [22:30] - [components/SponsorSection.tsx] - [UPDATE] - Integrate official Contact Persons for sponsorship (Muhammad Syafiq Arrafif, email) and media partners (Resna, Audy)
+[22:34] - [components/FAQSection.tsx] - [UPDATE] - Point "Masih punya pertanyaan?" CTA directly to Instagram @astrosttnf

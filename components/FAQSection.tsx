@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { motion, useReducedMotion } from 'motion/react';
-import { MessageCircle } from 'lucide-react';
+import { FaInstagram } from 'react-icons/fa';
 import {
   Accordion,
   AccordionContent,
@@ -141,17 +141,17 @@ export default function FAQSection({ faqs }: Props) {
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          <Card className="clip-angled-lg inline-flex flex-col items-center gap-3 border border-border bg-white p-8">
-            <div className="clip-angled-sm border border-sky-200 bg-sky-50 p-3">
-              <MessageCircle className="size-6 text-sky-500" />
+          <Card className="clip-angled-lg inline-flex flex-col items-center gap-3 border border-border bg-white p-8 shadow-sm">
+            <div className="clip-angled-sm border border-pink-200 bg-gradient-to-tr from-amber-50 via-rose-50 to-purple-50 p-3">
+              <FaInstagram className="size-6 text-pink-600" />
             </div>
             <div>
               <p className="text-sm font-black uppercase tracking-wider text-foreground">Masih punya pertanyaan?</p>
-              <p className="mt-1 text-sm font-light text-muted-foreground">Hubungi kami via WhatsApp untuk respon yang lebih cepat.</p>
+              <p className="mt-1 text-sm font-light text-muted-foreground">Hubungi kami langsung melalui Direct Message Instagram.</p>
             </div>
-            <Button asChild variant="default" className="clip-angled bg-sky-400 text-slate-950 text-xs font-black uppercase tracking-wider hover:bg-sky-300 active:scale-95">
-              <a href="https://wa.me/628123456789" target="_blank" rel="noopener noreferrer">
-                Hubungi Kami
+            <Button asChild variant="default" className="clip-angled bg-gradient-to-r from-purple-600 via-pink-600 to-rose-500 text-white text-xs font-black uppercase tracking-wider hover:opacity-90 active:scale-95 shadow-md">
+              <a href="https://instagram.com/astrosttnf" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
+                <FaInstagram className="size-4" /> Hubungi @astrosttnf
               </a>
             </Button>
           </Card>
