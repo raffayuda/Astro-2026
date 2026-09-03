@@ -5,6 +5,16 @@ export const prizeSchema = z.object({
   value: z.string().min(1, 'Nilai hadiah wajib diisi'),
 });
 
+export const competitionBatchSchema = z.object({
+  id: z.string().optional().default(() => crypto.randomUUID()),
+  name: z.string().min(1, 'Nama batch wajib diisi'),
+  startDate: z.string().min(1, 'Tanggal mulai wajib diisi'),
+  endDate: z.string().min(1, 'Tanggal selesai wajib diisi'),
+  fee: z.number().int().min(0, 'Biaya batch tidak boleh negatif'),
+});
+
+export type CompetitionBatchInput = z.infer<typeof competitionBatchSchema>;
+
 /** Body for creating/updating a competition (admin). */
 export const competitionInputSchema = z.object({
   id: z.string().min(1, 'ID (slug) wajib diisi').optional(),
@@ -13,6 +23,8 @@ export const competitionInputSchema = z.object({
   tagline: z.string().optional().default(''),
   description: z.string().optional().default(''),
   fee: z.number().int().min(0, 'Biaya tidak boleh negatif').optional().default(0),
+  hasBatches: z.boolean().optional().default(false),
+  batches: z.array(competitionBatchSchema).optional().default([]),
   maxSlots: z.number().int().min(0, 'Kuota tidak boleh negatif').optional().default(0),
   filledSlots: z.number().int().min(0, 'Jumlah terisi tidak boleh negatif').optional().default(0),
   scheduleDate: z.string().datetime('Format tanggal tidak valid').optional().nullable(),

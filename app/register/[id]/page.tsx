@@ -17,6 +17,8 @@ import { toIsoString } from "@/lib/date";
 
 const MotionImage = motion.create(Image);
 
+import { getEffectiveCompetitionFee } from "@/src/lib/competitions";
+
 interface CompetitionData {
   id: string;
   title: string;
@@ -24,6 +26,9 @@ interface CompetitionData {
   tagline: string;
   description: string;
   fee: number;
+  batchName?: string | null;
+  hasBatches?: boolean;
+  batches?: any[];
   maxSlots: number;
   filledSlots: number;
   scheduleDate: string;
@@ -127,13 +132,18 @@ export default function RegistrationPage({
 
   const competition: CompetitionData | null = useMemo(() => {
     if (!c) return null;
+    const isFree = Boolean(c.isFree) || (c as any).isFree === '1' || (c as any).isFree === 'true';
+    const effective = getEffectiveCompetitionFee(c);
     return {
       id: c.id,
       title: c.title,
       category: c.category,
       tagline: c.tagline || "",
       description: c.description || "",
-      fee: c.fee,
+      fee: effective.fee,
+      batchName: effective.batchName,
+      hasBatches: c.hasBatches === true || (c as any).hasBatches === '1',
+      batches: c.batches || [],
       maxSlots: c.maxSlots,
       filledSlots: c.filledSlots,
       scheduleDate: toIsoString(c.scheduleDate),
@@ -162,7 +172,7 @@ export default function RegistrationPage({
       maxTeamMembers: c.maxTeamMembers || 1,
       minTeamMembers: c.minTeamMembers || 1,
       playerPhotoRequired: !!c.playerPhotoRequired,
-      isFree: Boolean(c.isFree) || (c as any).isFree === '1' || (c as any).isFree === 'true',
+      isFree,
       isActive: c.isActive !== undefined ? (c.isActive === true || (c.isActive as any) === '1') : true,
     };
   }, [c]);
@@ -450,6 +460,11 @@ export default function RegistrationPage({
                 <span className="font-bold text-slate-900">
                   {competition.isFree ? "Gratis" : competition.fee > 0 ? `Rp ${competition.fee.toLocaleString("id-ID")}` : "Gratis"}
                 </span>
+                {competition.batchName && (
+                  <span className="ml-1.5 inline-flex items-center rounded-full bg-cyan-100 px-2 py-0.5 text-[10px] font-extrabold uppercase text-cyan-800">
+                    {competition.batchName}
+                  </span>
+                )}
                 <span className="text-slate-300 mx-1">|</span>
                 {isTeam ? "Kategori Tim" : "Kategori Individu"}
               </motion.p>

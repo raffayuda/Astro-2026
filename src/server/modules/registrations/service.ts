@@ -4,6 +4,7 @@ import { eq, desc, sql, count, and } from 'drizzle-orm';
 import { Resend } from 'resend';
 import { deleteSupabaseFile } from '@/src/server/modules/upload';
 import { createPayment, SumoPodError } from '@/src/server/modules/payments/sumopod';
+import { getEffectiveFee } from '@/src/server/modules/competitions/service';
 import type { MemberDetail, RegistrationCreate, RegistrationListQuery } from './model';
 import { SELF_SERVICE_FIELDS, ADMIN_FIELDS } from './model';
 
@@ -208,7 +209,8 @@ export async function createRegistration(input: RegistrationCreate, userId: stri
   }
 
   const isFree = comp.isFree === '1' || comp.isFree === 'true' || (comp as any).isFree === true;
-  const paymentAmount = isFree ? 0 : comp.fee || 0;
+  const { fee: effectiveFee, batchName } = getEffectiveFee(comp);
+  const paymentAmount = isFree ? 0 : effectiveFee;
   const ref = `INV-ASTRO-2026-${Date.now().toString().slice(-8)}`;
 
   const [reg] = await db
@@ -230,6 +232,7 @@ export async function createRegistration(input: RegistrationCreate, userId: stri
       paymentStatus: 'pending',
       paymentMethod: input.paymentMethod ?? null,
       paymentAmount,
+      batchName: batchName ?? null,
       paymentReference: ref,
       userId: resolvedUserId,
     })

@@ -19,6 +19,8 @@ import {
   ArrowLeft,
   FileText,
   MessageCircle,
+  Layers,
+  Clock,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -27,17 +29,23 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import { formatDateLong, toIsoString } from '@/lib/date';
 import { useCompetition, useCompetitionTimeline } from '@/src/lib/hooks/use-queries';
+import { getEffectiveCompetitionFee } from '@/src/lib/competitions';
 
 const MotionImage = motion.create(Image);
 
 function toCompetition(c: any) {
+  const isFree = c.isFree === '1' || c.isFree === true;
+  const effective = getEffectiveCompetitionFee(c);
   return {
     id: c.id,
     title: c.title,
     category: c.category as 'akademik' | 'olahraga' | 'esports',
     tagline: c.tagline || '',
     description: c.description || '',
-    fee: c.fee,
+    fee: effective.fee,
+    batchName: effective.batchName,
+    hasBatches: c.hasBatches === '1' || c.hasBatches === true,
+    batches: c.batches || [],
     maxSlots: c.maxSlots,
     filledSlots: c.filledSlots,
     scheduleDate: toIsoString(c.scheduleDate),
@@ -57,7 +65,7 @@ function toCompetition(c: any) {
     minTeamMembers: c.minTeamMembers || 1,
     contactPerson: { name: c.contactName || '', whatsapp: c.contactWhatsapp || '' },
     timeline: c.timeline || [],
-    isFree: c.isFree === '1' || c.isFree === true,
+    isFree,
     origin: c.origin || 'internal',
     isActive: c.isActive !== undefined ? (c.isActive === '1' || c.isActive === true) : true,
   };
@@ -162,7 +170,7 @@ export default function CompetitionDetailPage() {
   const infoCards = [
     {
       icon: Coins,
-      label: 'Biaya Pendaftaran',
+      label: competition.batchName ? `Biaya (${competition.batchName})` : 'Biaya Pendaftaran',
       value: competition.isFree ? 'Gratis' : competition.fee > 0 ? 'Rp ' + competition.fee.toLocaleString('id-ID') : 'TBA',
     },
     {
@@ -431,6 +439,59 @@ export default function CompetitionDetailPage() {
                       </motion.div>
                     ))}
                   </div>
+
+                  {/* ── Batches / Gelombang Pendaftaran ── */}
+                  {competition.hasBatches && Array.isArray(competition.batches) && competition.batches.length > 0 && (
+                    <div className="space-y-4">
+                      <motion.div
+                        initial={reduce ? false : { opacity: 0, y: 16 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] as const }}
+                        className="flex items-center gap-3"
+                      >
+                        <div className="accent-line" />
+                        <h2 className="text-xl md:text-2xl font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
+                          <Layers className="w-5 h-5 text-astro-cyan" />
+                          Gelombang Pendaftaran
+                        </h2>
+                      </motion.div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        {competition.batches.map((batch: any, bIdx: number) => {
+                          const now = new Date();
+                          const isOngoing = batch.startDate && batch.endDate && now >= new Date(batch.startDate) && now <= new Date(batch.endDate);
+                          const isUpcoming = batch.startDate && now < new Date(batch.startDate);
+                          const isPast = batch.endDate && now > new Date(batch.endDate);
+
+                          return (
+                            <div
+                              key={batch.id || bIdx}
+                              className={cn(
+                                "border p-4 bg-white transition-all",
+                                isOngoing ? "border-cyan-500 shadow-md ring-2 ring-cyan-500/20 bg-cyan-50/20" : "border-slate-200"
+                              )}
+                              style={{ clipPath: 'polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%)' }}
+                            >
+                              <div className="flex items-center justify-between mb-2">
+                                <span className="text-xs font-black uppercase tracking-wider text-slate-900">{batch.name}</span>
+                                {isOngoing && <Badge className="bg-emerald-500 text-white text-[9px] font-extrabold uppercase py-0 px-2 h-4">Aktif Sekarang</Badge>}
+                                {isUpcoming && <Badge variant="secondary" className="text-[9px] font-bold text-cyan-600 py-0 px-2 h-4">Mendatang</Badge>}
+                                {isPast && <Badge variant="outline" className="text-[9px] text-slate-400 py-0 px-2 h-4">Berakhir</Badge>}
+                              </div>
+                              <div className="text-lg font-black text-slate-900 mb-2">
+                                Rp {Number(batch.fee).toLocaleString('id-ID')}
+                              </div>
+                              <div className="text-[11px] text-slate-500 flex items-center gap-1.5">
+                                <Clock className="w-3 h-3 text-slate-400" />
+                                {formatDateLong(batch.startDate)} s/d {formatDateLong(batch.endDate)}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
 
                   {/* ── Prizes ── */}
                   <div className="space-y-6">

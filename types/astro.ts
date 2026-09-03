@@ -29,6 +29,14 @@ export interface Competition {
   };
   isActive?: boolean;
   timeline?: TimelineItem[];
+  hasBatches?: boolean;
+  batches?: {
+    id: string;
+    name: string;
+    startDate: string;
+    endDate: string;
+    fee: number;
+  }[];
 }
 
 export interface EventConfig {

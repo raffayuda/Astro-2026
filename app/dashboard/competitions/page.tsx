@@ -5,7 +5,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   Pencil, X, Check, Search, Plus, Trophy,
   Coins, Users, MapPin, Calendar, Phone, User, Tag,
-  Trash2, EyeOff, Eye, Clock, Award,
+  Trash2, EyeOff, Eye, Clock, Award, Layers,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import DeleteModal from '@/components/DeleteModal';
@@ -19,11 +19,14 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { Spinner } from '@/components/ui/spinner';
 import { Textarea } from '@/components/ui/textarea';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
 import WinnerManager from '@/components/WinnerManager';
 import { useCompetitions, useCategories, queryKeys } from '@/src/lib/hooks/use-queries';
 import { apiHelpers } from '@/src/lib/api';
 import { cn } from '@/lib/utils';
 import { formatDateNumeric, toDateInputValue, toIsoOrNull } from '@/lib/date';
+import { getActiveBatch } from '@/src/lib/competitions';
 
 const PAGE_SIZE = 10;
 
@@ -38,6 +41,15 @@ interface Category {
   createdAt: Date;
 }
 
+export interface CompetitionBatchItem {
+  id: string;
+  name: string;
+  startDate: string;
+  endDate: string;
+  fee: number;
+  feeDisplay?: string;
+}
+
 const emptyForm = {
   id: '',
   title: '',
@@ -49,6 +61,8 @@ const emptyForm = {
   tagline: '',
   description: '',
   fee: 0,
+  hasBatches: false,
+  batches: [] as CompetitionBatchItem[],
   maxSlots: 0,
   filledSlots: 0,
   scheduleDate: '',
@@ -231,6 +245,215 @@ function FormFields({ form, setForm, isAdd, categories }: { form: any; setForm: 
           </>
         )}
       </Field>
+      {!form.isFree && (
+        <Field className="sm:col-span-2">
+          <div className="rounded-xl border border-cyan-500/30 bg-cyan-950/10 p-4 dark:bg-cyan-950/20">
+            <div className="flex items-center justify-between gap-3">
+              <div className="space-y-0.5">
+                <Label htmlFor="toggle-has-batches" className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-foreground cursor-pointer">
+                  <Layers className="size-4 text-cyan-600" />
+                  Aktifkan Batch Pendaftaran (Harga Beda)
+                </Label>
+                <p className="text-[11px] text-muted-foreground leading-relaxed">
+                  Aktifkan untuk membagi periode pendaftaran menjadi beberapa gelombang (misalnya Early Bird, Batch 1, Reguler) dengan rentang tanggal dan harga yang berbeda.
+                </p>
+              </div>
+              <Switch
+                id="toggle-has-batches"
+                checked={!!form.hasBatches}
+                onCheckedChange={(checked) => {
+                  if (checked && (!form.batches || form.batches.length === 0)) {
+                    const now = new Date();
+                    const nextWeek = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+                    update({
+                      hasBatches: true,
+                      batches: [
+                        {
+                          id: crypto.randomUUID(),
+                          name: 'Early Bird',
+                          startDate: now.toISOString().slice(0, 16),
+                          endDate: nextWeek.toISOString().slice(0, 16),
+                          fee: form.fee || 35000,
+                          feeDisplay: form.fee ? formatRupiah(String(form.fee)) : '35.000',
+                        },
+                      ],
+                    });
+                  } else {
+                    update({ hasBatches: checked });
+                  }
+                }}
+              />
+            </div>
+
+            {form.hasBatches && (
+              <div className="mt-4 space-y-3 border-t border-cyan-500/20 pt-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                    Daftar Gelombang / Batch ({form.batches?.length || 0})
+                  </span>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      const currentBatches = form.batches || [];
+                      const lastBatch = currentBatches[currentBatches.length - 1];
+                      let startDate = new Date().toISOString().slice(0, 16);
+                      if (lastBatch?.endDate) {
+                        startDate = lastBatch.endDate;
+                      }
+                      const endDate = new Date(new Date(startDate).getTime() + 14 * 24 * 60 * 60 * 1000)
+                        .toISOString()
+                        .slice(0, 16);
+
+                      const newBatch: CompetitionBatchItem = {
+                        id: crypto.randomUUID(),
+                        name: `Batch ${currentBatches.length + 1}`,
+                        startDate,
+                        endDate,
+                        fee: form.fee || 50000,
+                        feeDisplay: form.fee ? formatRupiah(String(form.fee)) : '50.000',
+                      };
+                      update({ batches: [...currentBatches, newBatch] });
+                    }}
+                    className="h-7 text-xs font-bold uppercase tracking-wider border-cyan-500/40 text-cyan-700 dark:text-cyan-400 hover:bg-cyan-500/10"
+                  >
+                    <Plus className="size-3.5 mr-1" /> Tambah Batch
+                  </Button>
+                </div>
+
+                {(!form.batches || form.batches.length === 0) ? (
+                  <p className="py-3 text-center text-xs italic text-muted-foreground">
+                    Belum ada batch pendaftaran yang ditambahkan. Klik &quot;Tambah Batch&quot; di atas.
+                  </p>
+                ) : (
+                  <div className="space-y-3">
+                    {form.batches.map((batch: CompetitionBatchItem, idx: number) => {
+                      const now = new Date();
+                      const isOngoing = batch.startDate && batch.endDate && now >= new Date(batch.startDate) && now <= new Date(batch.endDate);
+                      const isPast = batch.endDate && now > new Date(batch.endDate);
+                      const isUpcoming = batch.startDate && now < new Date(batch.startDate);
+
+                      return (
+                        <div
+                          key={batch.id || idx}
+                          className="rounded-lg border border-border bg-card p-3.5 shadow-xs space-y-3"
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs font-black uppercase text-foreground">
+                                Batch #{idx + 1}
+                              </span>
+                              {isOngoing && (
+                                <Badge className="bg-emerald-500 text-white text-[10px] py-0 px-2 h-4 font-bold">
+                                  Aktif Sekarang
+                                </Badge>
+                              )}
+                              {isUpcoming && (
+                                <Badge variant="secondary" className="text-[10px] py-0 px-2 h-4 text-cyan-600 font-bold">
+                                  Mendatang
+                                </Badge>
+                              )}
+                              {isPast && (
+                                <Badge variant="outline" className="text-[10px] py-0 px-2 h-4 text-muted-foreground font-bold">
+                                  Berakhir
+                                </Badge>
+                              )}
+                            </div>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon-xs"
+                              onClick={() => {
+                                const nextBatches = form.batches.filter((_: any, i: number) => i !== idx);
+                                update({ batches: nextBatches });
+                              }}
+                              className="text-muted-foreground hover:text-destructive"
+                              title="Hapus Batch"
+                            >
+                              <Trash2 className="size-3.5" />
+                            </Button>
+                          </div>
+
+                          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                            <div>
+                              <Label className="text-[11px] font-bold uppercase text-muted-foreground">Nama Gelombang / Batch</Label>
+                              <Input
+                                value={batch.name}
+                                onChange={(e) => {
+                                  const nextBatches = [...form.batches];
+                                  nextBatches[idx] = { ...nextBatches[idx], name: e.target.value };
+                                  update({ batches: nextBatches });
+                                }}
+                                placeholder="mis. Early Bird / Gelombang 1"
+                                className="h-9 text-xs font-semibold mt-1"
+                              />
+                            </div>
+                            <div>
+                              <Label className="text-[11px] font-bold uppercase text-muted-foreground">Harga / Biaya Gelombang</Label>
+                              <InputGroup className="h-9 mt-1 border-border bg-background">
+                                <InputGroupAddon align="inline-start">
+                                  <span className="text-xs font-bold text-muted-foreground">Rp</span>
+                                </InputGroupAddon>
+                                <InputGroupInput
+                                  type="text"
+                                  inputMode="numeric"
+                                  value={batch.feeDisplay !== undefined ? batch.feeDisplay : (batch.fee ? formatRupiah(String(batch.fee)) : '')}
+                                  onChange={(e) => {
+                                    const raw = e.target.value.replace(/\D/g, '');
+                                    const nextBatches = [...form.batches];
+                                    nextBatches[idx] = {
+                                      ...nextBatches[idx],
+                                      fee: raw ? parseInt(raw, 10) : 0,
+                                      feeDisplay: raw ? formatRupiah(raw) : '',
+                                    };
+                                    update({ batches: nextBatches });
+                                  }}
+                                  placeholder="35.000"
+                                  className="text-xs font-semibold"
+                                />
+                              </InputGroup>
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                            <div>
+                              <Label className="text-[11px] font-bold uppercase text-muted-foreground">Tanggal Mulai (Daterange Start)</Label>
+                              <Input
+                                type="datetime-local"
+                                value={batch.startDate ? (batch.startDate.includes('T') ? batch.startDate.slice(0, 16) : `${batch.startDate}T00:00`) : ''}
+                                onChange={(e) => {
+                                  const nextBatches = [...form.batches];
+                                  nextBatches[idx] = { ...nextBatches[idx], startDate: e.target.value };
+                                  update({ batches: nextBatches });
+                                }}
+                                className="h-9 text-xs mt-1"
+                              />
+                            </div>
+                            <div>
+                              <Label className="text-[11px] font-bold uppercase text-muted-foreground">Tanggal Selesai (Daterange End)</Label>
+                              <Input
+                                type="datetime-local"
+                                value={batch.endDate ? (batch.endDate.includes('T') ? batch.endDate.slice(0, 16) : `${batch.endDate}T23:59`) : ''}
+                                onChange={(e) => {
+                                  const nextBatches = [...form.batches];
+                                  nextBatches[idx] = { ...nextBatches[idx], endDate: e.target.value };
+                                  update({ batches: nextBatches });
+                                }}
+                                className="h-9 text-xs mt-1"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </Field>
+      )}
       <Field>
         <FieldLabel className="gap-1" required><Users className="size-3" /> {form.type === 'team' ? 'Kuota Tim' : form.type === 'both' ? 'Kuota Peserta / Tim' : 'Kuota Peserta'}</FieldLabel>
         <Input type="number" value={form.maxSlots} onChange={(e) => update('maxSlots', e.target.value)} />
@@ -410,6 +633,7 @@ export default function KompetisiPage() {
     setShowAdd(false);
     setEditingId(comp.id);
     const isFreeBool = comp.isFree === true || (comp as any).isFree === '1';
+    const hasBatchesBool = comp.hasBatches === true || (comp as any).hasBatches === '1';
     setEditForm({
       title: comp.title,
       category: comp.category,
@@ -421,6 +645,13 @@ export default function KompetisiPage() {
       tagline: comp.tagline || '',
       description: comp.description || '',
       fee: isFreeBool ? 0 : (comp.fee || 0),
+      hasBatches: hasBatchesBool,
+      batches: Array.isArray((comp as any).batches)
+        ? (comp as any).batches.map((b: any) => ({
+            ...b,
+            feeDisplay: b.fee ? formatRupiah(String(b.fee)) : '',
+          }))
+        : [],
       maxSlots: comp.maxSlots || 0,
       filledSlots: comp.filledSlots || 0,
       scheduleDate: toDateInputValue(comp.scheduleDate),
@@ -452,10 +683,47 @@ export default function KompetisiPage() {
       const isFree = !!editForm.isFree;
       const feeNum = isFree ? 0 : (parseRupiah(String(editForm.feeDisplay ?? editForm.fee)) || 0);
 
-      if (!isFree && feeNum > 0 && feeNum < 1000) {
+      if (!isFree && !editForm.hasBatches && feeNum > 0 && feeNum < 1000) {
         toast.error('Biaya berbayar minimal Rp 1.000 untuk gateway pembayaran. Jika lomba gratis, pilih opsi Gratis.');
+        setSaving(false);
         return;
       }
+
+      let cleanedBatches: CompetitionBatchItem[] = [];
+      if (!isFree && editForm.hasBatches) {
+        if (!editForm.batches || editForm.batches.length === 0) {
+          toast.error('Silakan tambahkan minimal 1 batch pendaftaran atau nonaktifkan opsi batch.');
+          setSaving(false);
+          return;
+        }
+        for (let i = 0; i < editForm.batches.length; i++) {
+          const b = editForm.batches[i];
+          if (!b.name || !b.name.trim()) {
+            toast.error(`Nama pada Gelombang #${i + 1} wajib diisi`);
+            setSaving(false);
+            return;
+          }
+          if (!b.startDate || !b.endDate) {
+            toast.error(`Rentang tanggal pada Gelombang #${i + 1} wajib diisi`);
+            setSaving(false);
+            return;
+          }
+          const batchFee = parseRupiah(String(b.feeDisplay ?? b.fee)) || 0;
+          if (batchFee > 0 && batchFee < 1000) {
+            toast.error(`Biaya pada Gelombang #${i + 1} minimal Rp 1.000.`);
+            setSaving(false);
+            return;
+          }
+        }
+        cleanedBatches = editForm.batches.map((b: any) => ({
+          id: b.id || crypto.randomUUID(),
+          name: b.name.trim(),
+          startDate: b.startDate,
+          endDate: b.endDate,
+          fee: parseRupiah(String(b.feeDisplay ?? b.fee)) || 0,
+        }));
+      }
+
       const rules = typeof editForm.rulesSummary === 'string'
         ? editForm.rulesSummary.split('\n').filter((s: string) => s.trim())
         : Array.isArray(editForm.rulesSummary)
@@ -467,6 +735,8 @@ export default function KompetisiPage() {
         body: {
           ...submitData,
           fee: feeNum,
+          hasBatches: !isFree && !!editForm.hasBatches,
+          batches: cleanedBatches,
           isFree,
           maxSlots: parseInt(String(editForm.maxSlots), 10) || 0,
           filledSlots: parseInt(String(editForm.filledSlots), 10) || 0,
@@ -492,10 +762,47 @@ export default function KompetisiPage() {
       const isFree = !!addForm.isFree;
       const feeNum = isFree ? 0 : (parseRupiah(String(addForm.feeDisplay ?? addForm.fee)) || 0);
 
-      if (!isFree && feeNum > 0 && feeNum < 1000) {
+      if (!isFree && !addForm.hasBatches && feeNum > 0 && feeNum < 1000) {
         toast.error('Biaya berbayar minimal Rp 1.000 untuk gateway pembayaran. Jika lomba gratis, pilih opsi Gratis.');
+        setSaving(false);
         return;
       }
+
+      let cleanedBatches: CompetitionBatchItem[] = [];
+      if (!isFree && addForm.hasBatches) {
+        if (!addForm.batches || addForm.batches.length === 0) {
+          toast.error('Silakan tambahkan minimal 1 batch pendaftaran atau nonaktifkan opsi batch.');
+          setSaving(false);
+          return;
+        }
+        for (let i = 0; i < addForm.batches.length; i++) {
+          const b = addForm.batches[i];
+          if (!b.name || !b.name.trim()) {
+            toast.error(`Nama pada Gelombang #${i + 1} wajib diisi`);
+            setSaving(false);
+            return;
+          }
+          if (!b.startDate || !b.endDate) {
+            toast.error(`Rentang tanggal pada Gelombang #${i + 1} wajib diisi`);
+            setSaving(false);
+            return;
+          }
+          const batchFee = parseRupiah(String(b.feeDisplay ?? b.fee)) || 0;
+          if (batchFee > 0 && batchFee < 1000) {
+            toast.error(`Biaya pada Gelombang #${i + 1} minimal Rp 1.000.`);
+            setSaving(false);
+            return;
+          }
+        }
+        cleanedBatches = addForm.batches.map((b: any) => ({
+          id: b.id || crypto.randomUUID(),
+          name: b.name.trim(),
+          startDate: b.startDate,
+          endDate: b.endDate,
+          fee: parseRupiah(String(b.feeDisplay ?? b.fee)) || 0,
+        }));
+      }
+
       const rules = typeof addForm.rulesSummary === 'string'
         ? addForm.rulesSummary.split('\n').filter((s: string) => s.trim())
         : Array.isArray(addForm.rulesSummary)
@@ -506,6 +813,8 @@ export default function KompetisiPage() {
         body: {
           ...submitData,
           fee: feeNum,
+          hasBatches: !isFree && !!addForm.hasBatches,
+          batches: cleanedBatches,
           isFree,
           maxSlots: parseInt(String(addForm.maxSlots), 10) || 0,
           filledSlots: parseInt(String(addForm.filledSlots), 10) || 0,
@@ -888,16 +1197,32 @@ export default function KompetisiPage() {
                         >
                           {comp.isActive ? 'Pendaftaran Dibuka' : 'Pendaftaran Ditutup'}
                         </Badge>
+                        {((comp as any).hasBatches === true || (comp as any).hasBatches === '1') && (
+                          <Badge variant="outline" className="clip-angled-sm border-cyan-300 bg-cyan-50 text-[9px] font-bold uppercase tracking-wider text-cyan-700 dark:bg-cyan-950/40 dark:text-cyan-400 gap-1">
+                            <Layers className="size-2.5" /> {(comp as any).batches?.length || 0} Batch
+                          </Badge>
+                        )}
                       </div>
                       {comp.tagline && (
                         <p className="text-sm text-slate-500 font-light mb-2">{comp.tagline}</p>
                       )}
                       <div className="flex flex-wrap gap-x-5 gap-y-1.5 text-xs text-slate-600">
-                        <span className="flex items-center gap-1">
-                          <Coins className="w-3 h-3" />
-                          {(comp as any).isFree === '1' || (comp as any).isFree === true || comp.isFree
-                            ? 'Gratis'
-                            : `Rp ${comp.fee.toLocaleString('id-ID')}`}
+                        <span className="flex items-center gap-1 font-semibold text-slate-900 dark:text-slate-100">
+                          <Coins className="w-3 h-3 text-cyan-600" />
+                          {(() => {
+                            if ((comp as any).isFree === '1' || (comp as any).isFree === true || comp.isFree) {
+                              return 'Gratis';
+                            }
+                            const hasBatches = (comp as any).hasBatches === true || (comp as any).hasBatches === '1';
+                            if (hasBatches && Array.isArray((comp as any).batches) && (comp as any).batches.length > 0) {
+                              const active = getActiveBatch((comp as any).batches);
+                              if (active) {
+                                return `${active.name}: Rp ${active.fee.toLocaleString('id-ID')}`;
+                              }
+                              return `${(comp as any).batches.length} Gelombang (Rp ${comp.fee.toLocaleString('id-ID')})`;
+                            }
+                            return `Rp ${comp.fee.toLocaleString('id-ID')}`;
+                          })()}
                         </span>
                         <span className="flex items-center gap-1"><Users className="w-3 h-3" /> {comp.filledSlots}/{comp.maxSlots} terisi</span>
                         {comp.location && <span className="flex items-center gap-1"><MapPin className="w-3 h-3" /> {comp.location}</span>}

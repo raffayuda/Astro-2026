@@ -11,6 +11,7 @@ import { Progress } from '@/components/ui/progress';
 import { cn } from '@/lib/utils';
 import type { Competition, CategoryType } from '@/types/astro';
 import { formatDateShort } from '@/lib/date';
+import { getEffectiveCompetitionFee } from '@/src/lib/competitions';
 
 const categoryConfig: Record<CategoryType, { accent: string; label: string; badgeClass: string }> = {
   akademik: { accent: 'bg-emerald-500', label: 'AKADEMIK', badgeClass: 'border-emerald-200 bg-emerald-50 text-emerald-700' },
@@ -33,6 +34,7 @@ export default function CompetitionCard({ competition, index }: Props) {
   const cat = categoryConfig[competition.category] || categoryConfig.akademik;
   const ratio = Math.min((competition.filledSlots / competition.maxSlots) * 100, 100);
   const left = competition.maxSlots - competition.filledSlots;
+  const effective = getEffectiveCompetitionFee(competition);
 
   const isOpen = competition.isActive !== false;
   const isFull = left <= 0;
@@ -89,7 +91,15 @@ export default function CompetitionCard({ competition, index }: Props) {
           <div className="mt-1 grid grid-cols-2 gap-2 text-[11px] text-muted-foreground">
             <span className="flex items-center gap-1.5">
               <Coins className="size-3 text-primary flex-shrink-0" />
-              <span className="truncate">{competition.isFree ? 'Gratis' : competition.fee > 0 ? toIdr(competition.fee) : 'TBA'}</span>
+              <span className="truncate">
+                {competition.isFree
+                  ? 'Gratis'
+                  : effective.fee > 0
+                    ? effective.batchName
+                      ? `${effective.batchName}: ${toIdr(effective.fee)}`
+                      : toIdr(effective.fee)
+                    : 'TBA'}
+              </span>
             </span>
             <span className="flex items-center gap-1.5">
               <MapPin className="size-3 text-primary flex-shrink-0" />

@@ -184,7 +184,7 @@ export default function InviteAcceptPage({
         <div className="flex flex-col items-center mb-6">
           <Link href="/" className="inline-block transition-transform hover:scale-105">
             <Image
-              src="https://abhshprulipnmetfumrt.supabase.co/storage/v1/object/public/assets/logo-astro.png"
+              src="https://i.ibb.co.com/yvSvfLK/logo-astro.png"
               alt="ASTRO 2026"
               width={140}
               height={48}
@@ -245,13 +245,12 @@ export default function InviteAcceptPage({
               {/* Header inside card */}
               <div className="mb-6 text-center">
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-50 border border-cyan-200 text-cyan-800 text-[11px] font-bold uppercase tracking-wider mb-2">
-                  <Sparkles className="size-3 text-cyan-600" />
                   {invitation.role === 'admin'
                     ? 'Undangan Administrator'
                     : 'Undangan Peserta'}
                 </div>
                 <h1 className="text-xl sm:text-2xl font-black uppercase tracking-tight text-slate-900">
-                  Selamat Datang di ASTRO
+                  Selamat Datang di ASTRO 2026
                 </h1>
                 <p className="text-xs sm:text-sm text-slate-600 mt-1">
                   Lengkapi data di bawah ini untuk mengaktifkan akun dan menentukan kata sandi Anda.

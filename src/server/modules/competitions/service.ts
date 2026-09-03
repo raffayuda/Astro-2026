@@ -28,10 +28,52 @@ function toApiCompetition(row: typeof competitions.$inferSelect) {
   return {
     ...row,
     isFree: toBool(row.isFree),
+    hasBatches: toBool(row.hasBatches),
     playerPhotoRequired: toBool(row.playerPhotoRequired),
     isActive: toBool(row.isActive),
     certificateEnabled: toBool(row.certificateEnabled),
   };
+}
+
+/** Get the currently active batch from a list of competition batches */
+export function getActiveCompetitionBatch(
+  batches: typeof competitions.$inferSelect['batches'] | null | undefined,
+  now = new Date(),
+) {
+  if (!batches || !Array.isArray(batches) || batches.length === 0) return null;
+  return (
+    batches.find((b) => {
+      const start = new Date(b.startDate);
+      const end = new Date(b.endDate);
+      return now >= start && now <= end;
+    }) || null
+  );
+}
+
+/** Calculate the effective fee and active batch name for a competition */
+export function getEffectiveFee(
+  competition: {
+    fee: number;
+    isFree?: boolean | string | null;
+    hasBatches?: boolean | string | null;
+    batches?: typeof competitions.$inferSelect['batches'] | null;
+  },
+  now = new Date(),
+) {
+  const isFree = competition.isFree === true || competition.isFree === '1';
+  if (isFree) {
+    return { fee: 0, batchName: null, isBatch: false, activeBatch: null };
+  }
+
+  const hasBatches = competition.hasBatches === true || competition.hasBatches === '1';
+  if (hasBatches && competition.batches && competition.batches.length > 0) {
+    const activeBatch = getActiveCompetitionBatch(competition.batches, now);
+    if (activeBatch) {
+      return { fee: activeBatch.fee, batchName: activeBatch.name, isBatch: true, activeBatch };
+    }
+  }
+
+  return { fee: competition.fee || 0, batchName: null, isBatch: false, activeBatch: null };
 }
 
 export async function listCompetitions() {
@@ -61,6 +103,8 @@ export async function createCompetition(input: CompetitionInput) {
       tagline: input.tagline,
       description: input.description,
       fee: isFree ? 0 : (input.fee ?? 0),
+      hasBatches: input.hasBatches ? '1' : '0',
+      batches: input.batches ?? [],
       maxSlots: input.maxSlots,
       filledSlots: input.filledSlots,
       scheduleDate: input.scheduleDate ? new Date(input.scheduleDate) : null,
@@ -105,6 +149,12 @@ export async function updateCompetition(id: string, input: Partial<CompetitionIn
   }
   if (input.fee !== undefined && !input.isFree) {
     updates.fee = input.fee;
+  }
+  if (input.hasBatches !== undefined) {
+    updates.hasBatches = input.hasBatches ? '1' : '0';
+  }
+  if (input.batches !== undefined) {
+    updates.batches = input.batches;
   }
 
   if (input.maxSlots !== undefined) updates.maxSlots = input.maxSlots;

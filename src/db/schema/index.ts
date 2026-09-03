@@ -39,6 +39,14 @@ export const categoriesRelations = relations(categories, ({ many }) => ({
   competitions: many(competitions),
 }));
 
+export interface CompetitionBatch {
+  id: string;
+  name: string;
+  startDate: string;
+  endDate: string;
+  fee: number;
+}
+
 /* ─── Competitions ─── */
 export const competitions = pgTable(
   "competitions",
@@ -51,6 +59,11 @@ export const competitions = pgTable(
     tagline: text("tagline"),
     description: text("description"),
     fee: integer("fee").notNull().default(0),
+    hasBatches: text("has_batches").default("0"), // '0' = tidak ada batch, '1' = ada batch
+    batches: jsonb("batches")
+      .$type<CompetitionBatch[]>()
+      .default([])
+      .notNull(),
     maxSlots: integer("max_slots").notNull().default(0),
     filledSlots: integer("filled_slots").notNull().default(0),
     scheduleDate: timestamp("schedule_date"),
@@ -126,6 +139,7 @@ export const registrations = pgTable(
     paymentStatus: text("payment_status").notNull().default("pending"), // 'pending' | 'detecting' | 'paid' | 'failed'
     paymentMethod: text("payment_method"), // 'qris' | 'transfer'
     paymentAmount: integer("payment_amount").notNull(),
+    batchName: text("batch_name"), // Gelombang pendaftaran yang berlaku saat registrasi
     paymentReference: text("payment_reference"), // also used as SumoPod `order_id`
     // SumoPod payment link (populated once created; null for free/manual registrations)
     paymentLinkId: uuid("payment_link_id"),
