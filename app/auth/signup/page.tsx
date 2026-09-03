@@ -38,6 +38,7 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const [unverifiedEmail, setUnverifiedEmail] = useState(false);
   const [cooldown, setCooldown] = useState(0);
   const router = useRouter();
 
@@ -45,6 +46,7 @@ export default function SignupPage() {
     e.preventDefault();
     setLoading(true);
     setError('');
+    setUnverifiedEmail(false);
 
     try {
       // Pre-check: Better Auth returns a synthetic success response for an
@@ -53,6 +55,21 @@ export default function SignupPage() {
       try {
         const res = await apiHelpers.auth.checkEmail(email);
         if (!res.available) {
+          if ((res as any)?.emailVerified === false) {
+            setStep('otp');
+            setError('');
+            if ((res as any)?.hasActiveOtp) {
+              setMessage(
+                'Email ini sudah pernah didaftarkan dan kode OTP Anda masih aktif! Silakan masukkan kode OTP yang telah dikirim ke email Anda sebelum kadaluarsa, atau kirim ulang kode baru.',
+              );
+            } else {
+              setMessage(
+                'Email ini sudah pernah didaftarkan tetapi belum diverifikasi. Silakan masukkan kode OTP terakhir Anda atau klik kirim ulang kode baru di bawah.',
+              );
+            }
+            setLoading(false);
+            return;
+          }
           setError(
             'Email sudah terdaftar. Silakan masuk dengan akun tersebut, atau gunakan email lain.',
           );
@@ -213,7 +230,26 @@ export default function SignupPage() {
 
                   {error && (
                     <Alert variant="destructive" className="clip-angled mb-5 border-border">
-                      <AlertDescription className="text-xs font-medium">{error}</AlertDescription>
+                      <AlertDescription className="text-xs font-medium leading-relaxed">
+                        {error}
+                      </AlertDescription>
+                      {unverifiedEmail && (
+                        <div className="mt-3 flex flex-wrap gap-2">
+                          <Button
+                            type="button"
+                            size="sm"
+                            onClick={() => {
+                              setStep('otp');
+                              setError('');
+                              setMessage('Silakan masukkan kode OTP Anda atau kirim ulang kode baru di bawah.');
+                              handleResendOTP();
+                            }}
+                            className="clip-angled-sm text-xs font-bold uppercase bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                          >
+                            <KeyRound className="size-3.5 mr-1" /> Masukkan Kode OTP Sekarang
+                          </Button>
+                        </div>
+                      )}
                     </Alert>
                   )}
 
@@ -253,6 +289,20 @@ export default function SignupPage() {
               {/* ─── Step OTP ─── */}
               {step === 'otp' && (
                 <>
+                  <Button
+                    type="button"
+                    variant="link"
+                    onClick={() => {
+                      setStep('form');
+                      setError('');
+                      setMessage('');
+                      setOtp('');
+                    }}
+                    className="mb-4 gap-1 text-xs font-bold uppercase tracking-wider text-muted-foreground hover:text-primary p-0"
+                  >
+                    <ArrowLeft data-icon="inline-start" className="size-3.5" /> Ganti Email / Kembali
+                  </Button>
+
                   <div className="mb-4 flex justify-center">
                     <div className="flex size-14 items-center justify-center rounded-full border border-cyan-200 bg-primary/10">
                       <KeyRound className="size-7 text-primary" />
@@ -324,10 +374,20 @@ export default function SignupPage() {
                 </>
               )}
 
-              <p className="mt-5 text-center text-xs text-muted-foreground">
-                Sudah punya akun?{' '}
-                <Link href="/login" className="font-bold text-primary hover:underline">Masuk</Link>
-              </p>
+              <div className="mt-5 flex flex-col items-center gap-2 text-center text-xs text-muted-foreground">
+                <p>
+                  Sudah punya akun?{' '}
+                  <Link href="/login" className="font-bold text-primary hover:underline">
+                    Masuk
+                  </Link>
+                </p>
+                <Link
+                  href={`/auth/verify-otp${email ? `?email=${encodeURIComponent(email)}` : ''}`}
+                  className="text-[11px] font-medium text-slate-500 hover:text-primary hover:underline"
+                >
+                  Sudah daftar tapi belum verifikasi OTP? Verifikasi di sini
+                </Link>
+              </div>
             </CardContent>
           </Card>
         </motion.div>

@@ -1,7 +1,7 @@
 import { Elysia, status } from 'elysia';
 import { db } from '@/src/db';
-import { users } from '@/src/db/schema';
-import { eq } from 'drizzle-orm';
+import { users, authVerifications } from '@/src/db/schema';
+import { eq, or, like, desc } from 'drizzle-orm';
 import { z } from 'zod';
 
 const checkEmailSchema = z.object({
@@ -17,8 +17,8 @@ const checkEmailSchema = z.object({
  * though the account already exists. This endpoint lets the client detect that
  * case before calling `signUp.email`.
  *
- * We return a neutral `{ available }` boolean (200) so an attacker cannot tell
- * apart "email already registered" from "invalid email" by response code.
+ * Returns email availability, verification status, and whether an active
+ * unexpired OTP exists for this email.
  */
 export const authRoutes = new Elysia({ prefix: '/auth' })
   .post('/check-email', async ({ body }) => {
@@ -29,12 +29,39 @@ export const authRoutes = new Elysia({ prefix: '/auth' })
 
     const email = parsed.data.email.toLowerCase();
     const [existing] = await db
-      .select({ id: users.id })
+      .select({ id: users.id, emailVerified: users.emailVerified })
       .from(users)
       .where(eq(users.email, email))
       .limit(1);
 
-    return { available: !existing };
+    let hasActiveOtp = false;
+    let otpExpiresAt: string | null = null;
+
+    if (existing && !existing.emailVerified) {
+      const [verification] = await db
+        .select({ expiresAt: authVerifications.expiresAt })
+        .from(authVerifications)
+        .where(
+          or(
+            eq(authVerifications.identifier, email),
+            like(authVerifications.identifier, `${email}%`),
+          ),
+        )
+        .orderBy(desc(authVerifications.createdAt))
+        .limit(1);
+
+      if (verification && verification.expiresAt > new Date()) {
+        hasActiveOtp = true;
+        otpExpiresAt = verification.expiresAt.toISOString();
+      }
+    }
+
+    return {
+      available: !existing,
+      emailVerified: existing ? existing.emailVerified : false,
+      hasActiveOtp,
+      otpExpiresAt,
+    };
   }, {
     body: checkEmailSchema,
   });
