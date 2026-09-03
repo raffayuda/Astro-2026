@@ -4,14 +4,17 @@ import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import Image from 'next/image';
 import { Reorder } from 'framer-motion';
-import { Plus, Pencil, Check, Trash2, Star, Share2, GripVertical, ArrowUpDown, X } from 'lucide-react';
+import { Plus, Pencil, Check, Trash2, Star, Share2, GripVertical, ArrowUpDown, X, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
 import DeleteModal from '@/components/DeleteModal';
 import Pagination from '@/components/Pagination';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
 import ImagePreviewModal from '@/components/ImagePreviewModal';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Spinner } from '@/components/ui/spinner';
@@ -26,12 +29,14 @@ interface Sponsor {
   tier: string;
   website: string | null;
   logo?: string | null;
+  isCurrent?: boolean;
 }
 interface MediaPartner {
   id: number;
   name: string;
   website: string | null;
   logo?: string | null;
+  isCurrent?: boolean;
 }
 
 const PAGE_SIZE = 10;
@@ -43,14 +48,16 @@ export default function SponsorPage() {
   const sponsors = sponsorsData ?? [];
   const mediaPartners = mediaPartnersData ?? [];
   const [tab, setTab] = useState<'sponsor' | 'media-partner'>('sponsor');
+  const [spFilter, setSpFilter] = useState<'all' | 'current' | 'previous'>('all');
+  const [mpFilter, setMpFilter] = useState<'all' | 'current' | 'previous'>('all');
   const [spPage, setSpPage] = useState(1);
   const [mpPage, setMpPage] = useState(1);
 
-  const [spForm, setSpForm] = useState({ name: '', website: '', logo: '', tier: 'gold' });
+  const [spForm, setSpForm] = useState({ name: '', website: '', logo: '', tier: 'gold', isCurrent: false });
   const [spEditingId, setSpEditingId] = useState<number | null>(null);
   const [spSaving, setSpSaving] = useState(false);
   const [showSpAdd, setShowSpAdd] = useState(false);
-  const [mpForm, setMpForm] = useState({ name: '', website: '', logo: '' });
+  const [mpForm, setMpForm] = useState({ name: '', website: '', logo: '', isCurrent: false });
   const [mpEditingId, setMpEditingId] = useState<number | null>(null);
   const [mpSaving, setMpSaving] = useState(false);
   const [showMpAdd, setShowMpAdd] = useState(false);
@@ -75,7 +82,7 @@ export default function SponsorPage() {
         ? apiHelpers.sponsors.update(String(spEditingId), body)
         : apiHelpers.sponsors.create(body),
     onSuccess: () => {
-      setSpForm({ name: '', website: '', logo: '', tier: 'gold' });
+      setSpForm({ name: '', website: '', logo: '', tier: 'gold', isCurrent: false });
       setSpEditingId(null); setShowSpAdd(false);
       toast.success(spEditingId ? 'Sponsor diperbarui' : 'Sponsor ditambahkan');
       invalidate();
@@ -95,7 +102,7 @@ export default function SponsorPage() {
         ? apiHelpers.mediaPartners.update(String(mpEditingId), body)
         : apiHelpers.mediaPartners.create(body),
     onSuccess: () => {
-      setMpForm({ name: '', website: '', logo: '' });
+      setMpForm({ name: '', website: '', logo: '', isCurrent: false });
       setMpEditingId(null); setShowMpAdd(false);
       toast.success(mpEditingId ? 'Media partner diperbarui' : 'Media partner ditambahkan');
       invalidate();
@@ -108,6 +115,26 @@ export default function SponsorPage() {
     onSuccess: () => { toast.success('Media partner dihapus'); setDeleteModal(null); invalidate(); },
     onError: (err: Error) => toast.error(err.message),
   });
+
+  const handleToggleSpCurrent = async (s: Sponsor) => {
+    try {
+      await apiHelpers.sponsors.update(String(s.id), { isCurrent: !s.isCurrent });
+      invalidate();
+      toast.success(!s.isCurrent ? `"${s.name}" dijadikan Sponsor ASTRO 2026` : `"${s.name}" dijadikan Sponsor Periode Lalu`);
+    } catch {
+      toast.error('Gagal mengubah status sponsor');
+    }
+  };
+
+  const handleToggleMpCurrent = async (m: MediaPartner) => {
+    try {
+      await apiHelpers.mediaPartners.update(String(m.id), { isCurrent: !m.isCurrent });
+      invalidate();
+      toast.success(!m.isCurrent ? `"${m.name}" dijadikan Media Partner ASTRO 2026` : `"${m.name}" dijadikan Media Partner Periode Lalu`);
+    } catch {
+      toast.error('Gagal mengubah status media partner');
+    }
+  };
 
   const spReorderMutation = useMutation({
     mutationFn: (ids: number[]) => apiHelpers.sponsors.reorder(ids),
@@ -144,8 +171,15 @@ export default function SponsorPage() {
   };
 
   const handleSpEdit = (s: Sponsor) => {
-    setSpForm({ name: s.name, website: s.website || '', logo: s.logo || '', tier: (s as any).tier || 'gold' });
-    setSpEditingId(s.id); setShowSpAdd(true);
+    setSpForm({
+      name: s.name,
+      website: s.website || '',
+      logo: s.logo || '',
+      tier: (s as any).tier || 'gold',
+      isCurrent: !!s.isCurrent,
+    });
+    setSpEditingId(s.id);
+    setShowSpAdd(true);
   };
 
   const handleSpDelete = (id: number, name: string) => {
@@ -172,8 +206,14 @@ export default function SponsorPage() {
   };
 
   const handleMpEdit = (m: MediaPartner) => {
-    setMpForm({ name: m.name, website: m.website || '', logo: m.logo || '' });
-    setMpEditingId(m.id); setShowMpAdd(true);
+    setMpForm({
+      name: m.name,
+      website: m.website || '',
+      logo: m.logo || '',
+      isCurrent: !!m.isCurrent,
+    });
+    setMpEditingId(m.id);
+    setShowMpAdd(true);
   };
 
   const handleMpDelete = (id: number, name: string) => {
@@ -185,8 +225,19 @@ export default function SponsorPage() {
     });
   };
 
-  const spPaginated = sponsors.slice((spPage - 1) * PAGE_SIZE, spPage * PAGE_SIZE);
-  const mpPaginated = mediaPartners.slice((mpPage - 1) * PAGE_SIZE, mpPage * PAGE_SIZE);
+  const filteredSponsors = sponsors.filter((s) => {
+    if (spFilter === 'current') return !!s.isCurrent;
+    if (spFilter === 'previous') return !s.isCurrent;
+    return true;
+  });
+  const spPaginated = filteredSponsors.slice((spPage - 1) * PAGE_SIZE, spPage * PAGE_SIZE);
+
+  const filteredMediaPartners = mediaPartners.filter((m) => {
+    if (mpFilter === 'current') return !!m.isCurrent;
+    if (mpFilter === 'previous') return !m.isCurrent;
+    return true;
+  });
+  const mpPaginated = filteredMediaPartners.slice((mpPage - 1) * PAGE_SIZE, mpPage * PAGE_SIZE);
 
   if (loading) return <div className="flex justify-center py-20"><Spinner className="size-6 text-primary" /></div>;
 
@@ -209,8 +260,39 @@ export default function SponsorPage() {
       {/* Sponsor Tab */}
       {tab === 'sponsor' && (
         <div>
-          <div className="mb-4 flex items-center justify-between">
-            <p className="text-sm text-muted-foreground">{sponsors.length} sponsor</p>
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-1.5">
+              <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground mr-1">Filter:</span>
+              <Button
+                variant={spFilter === 'all' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => { setSpFilter('all'); setSpPage(1); }}
+                className="h-7 text-xs font-bold uppercase tracking-wider"
+              >
+                Semua ({sponsors.length})
+              </Button>
+              <Button
+                variant={spFilter === 'current' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => { setSpFilter('current'); setSpPage(1); }}
+                className={cn(
+                  "h-7 text-xs font-bold uppercase tracking-wider",
+                  spFilter === 'current'
+                    ? "bg-emerald-600 hover:bg-emerald-700 text-white"
+                    : "border-emerald-500/40 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/30"
+                )}
+              >
+                ASTRO 2026 ({sponsors.filter(s => s.isCurrent).length})
+              </Button>
+              <Button
+                variant={spFilter === 'previous' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => { setSpFilter('previous'); setSpPage(1); }}
+                className="h-7 text-xs font-bold uppercase tracking-wider text-muted-foreground"
+              >
+                Periode Lalu ({sponsors.filter(s => !s.isCurrent).length})
+              </Button>
+            </div>
             <div className="flex items-center gap-2">
               <Button
                 variant="outline"
@@ -223,7 +305,11 @@ export default function SponsorPage() {
                 <ArrowUpDown className="size-4 mr-2" /> Atur Urutan
               </Button>
               <Button
-                onClick={() => { setShowSpAdd(!showSpAdd); setSpEditingId(null); setSpForm({ name: '', tier: 'gold', website: '', logo: '' }); }}
+                onClick={() => {
+                  setShowSpAdd(!showSpAdd);
+                  setSpEditingId(null);
+                  setSpForm({ name: '', tier: 'gold', website: '', logo: '', isCurrent: spFilter === 'current' });
+                }}
                 className="clip-angled text-xs font-bold uppercase tracking-wider"
               >
                 <Plus data-icon="inline-start" /> Tambah Sponsor
@@ -297,6 +383,24 @@ export default function SponsorPage() {
                       )}
                     </div>
                   </Field>
+                  <Field className="sm:col-span-2">
+                    <div className="flex items-center justify-between rounded-lg border border-border bg-muted/40 p-3">
+                      <div className="space-y-0.5">
+                        <Label htmlFor="sp-is-current" className="text-xs font-bold uppercase tracking-wider text-foreground cursor-pointer flex items-center gap-1.5">
+                          <Sparkles className="size-3.5 text-amber-500" />
+                          Sponsor Event Saat Ini (ASTRO 2026)
+                        </Label>
+                        <p className="text-[11px] text-muted-foreground">
+                          Aktifkan jika brand ini merupakan sponsor resmi ASTRO 2026 yang sedang berlangsung (tampil di halaman utama). Matikan jika merupakan sponsor periode terdahulu (portofolio).
+                        </p>
+                      </div>
+                      <Switch
+                        id="sp-is-current"
+                        checked={spForm.isCurrent}
+                        onCheckedChange={(checked) => setSpForm({ ...spForm, isCurrent: checked })}
+                      />
+                    </div>
+                  </Field>
                 </FieldGroup>
 
                 {spForm.logo && (
@@ -316,7 +420,7 @@ export default function SponsorPage() {
                     {spSaving ? <Spinner data-icon="inline-start" /> : <Check data-icon="inline-start" />} Simpan
                   </Button>
                   <Button variant="outline" className="clip-angled-sm gap-1 text-xs font-bold uppercase tracking-wider"
-                    onClick={() => { setShowSpAdd(false); setSpEditingId(null); setSpForm({ name: '', tier: 'gold', website: '', logo: '' }); }}>
+                    onClick={() => { setShowSpAdd(false); setSpEditingId(null); setSpForm({ name: '', tier: 'gold', website: '', logo: '', isCurrent: false }); }}>
                     Batal
                   </Button>
                 </div>
@@ -336,26 +440,76 @@ export default function SponsorPage() {
                       </button>
                     ) : null}
                     <span className="text-sm font-bold text-foreground">{s.name || '(tanpa nama)'}</span>
+                    {s.isCurrent ? (
+                      <Badge className="bg-emerald-500/15 text-emerald-700 border-emerald-500/30 dark:text-emerald-400 text-[10px] font-bold">
+                        ASTRO 2026
+                      </Badge>
+                    ) : (
+                      <Badge variant="outline" className="text-[10px] font-medium text-muted-foreground">
+                        Periode Lalu
+                      </Badge>
+                    )}
                     {s.website && <span className="hidden text-[11px] text-muted-foreground sm:block">{s.website.replace(/https?:\/\//, '')}</span>}
                   </div>
-                  <div className="flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+                  <div className="flex items-center gap-1">
+                    <Button
+                      variant="ghost"
+                      size="icon-sm"
+                      onClick={() => handleToggleSpCurrent(s)}
+                      title={s.isCurrent ? "Ubah ke Periode Lalu" : "Jadikan Sponsor ASTRO 2026"}
+                      aria-label={s.isCurrent ? "Ubah ke Periode Lalu" : "Jadikan Sponsor ASTRO 2026"}
+                      className={s.isCurrent ? "text-emerald-600 hover:text-amber-600" : "text-muted-foreground hover:text-emerald-600"}
+                    >
+                      <Sparkles className="size-3.5" />
+                    </Button>
                     <Button variant="ghost" size="icon-sm" onClick={() => handleSpEdit(s)} aria-label="Edit"><Pencil /></Button>
                     <Button variant="ghost" size="icon-sm" onClick={() => handleSpDelete(s.id, s.name)} aria-label="Hapus" className="text-muted-foreground hover:text-destructive"><Trash2 /></Button>
                   </div>
                 </CardContent>
               </Card>
             ))}
-            {sponsors.length === 0 && <p className="py-4 text-center text-sm italic text-muted-foreground">Belum ada sponsor.</p>}
+            {filteredSponsors.length === 0 && <p className="py-4 text-center text-sm italic text-muted-foreground">Tidak ada sponsor pada filter ini.</p>}
           </div>
-          <Pagination currentPage={spPage} totalItems={sponsors.length} pageSize={PAGE_SIZE} onPageChange={setSpPage} />
+          <Pagination currentPage={spPage} totalItems={filteredSponsors.length} pageSize={PAGE_SIZE} onPageChange={setSpPage} />
         </div>
       )}
 
       {/* Media Partner Tab */}
       {tab === 'media-partner' && (
         <div>
-          <div className="mb-4 flex items-center justify-between">
-            <p className="text-sm text-muted-foreground">{mediaPartners.length} media partner</p>
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-1.5">
+              <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground mr-1">Filter:</span>
+              <Button
+                variant={mpFilter === 'all' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => { setMpFilter('all'); setMpPage(1); }}
+                className="h-7 text-xs font-bold uppercase tracking-wider"
+              >
+                Semua ({mediaPartners.length})
+              </Button>
+              <Button
+                variant={mpFilter === 'current' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => { setMpFilter('current'); setMpPage(1); }}
+                className={cn(
+                  "h-7 text-xs font-bold uppercase tracking-wider",
+                  mpFilter === 'current'
+                    ? "bg-cyan-600 hover:bg-cyan-700 text-white"
+                    : "border-cyan-500/40 text-cyan-700 dark:text-cyan-400 hover:bg-cyan-50 dark:hover:bg-cyan-950/30"
+                )}
+              >
+                ASTRO 2026 ({mediaPartners.filter(m => m.isCurrent).length})
+              </Button>
+              <Button
+                variant={mpFilter === 'previous' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => { setMpFilter('previous'); setMpPage(1); }}
+                className="h-7 text-xs font-bold uppercase tracking-wider text-muted-foreground"
+              >
+                Periode Lalu ({mediaPartners.filter(m => !m.isCurrent).length})
+              </Button>
+            </div>
             <div className="flex items-center gap-2">
               <Button
                 variant="outline"
@@ -368,7 +522,11 @@ export default function SponsorPage() {
                 <ArrowUpDown className="size-4 mr-2" /> Atur Urutan
               </Button>
               <Button
-                onClick={() => { setShowMpAdd(!showMpAdd); setMpEditingId(null); setMpForm({ name: '', website: '', logo: '' }); }}
+                onClick={() => {
+                  setShowMpAdd(!showMpAdd);
+                  setMpEditingId(null);
+                  setMpForm({ name: '', website: '', logo: '', isCurrent: mpFilter === 'current' });
+                }}
                 className="clip-angled text-xs font-bold uppercase tracking-wider"
               >
                 <Plus data-icon="inline-start" /> Tambah Media Partner
@@ -427,6 +585,24 @@ export default function SponsorPage() {
                       )}
                     </div>
                   </Field>
+                  <Field className="sm:col-span-2">
+                    <div className="flex items-center justify-between rounded-lg border border-border bg-muted/40 p-3">
+                      <div className="space-y-0.5">
+                        <Label htmlFor="mp-is-current" className="text-xs font-bold uppercase tracking-wider text-foreground cursor-pointer flex items-center gap-1.5">
+                          <Sparkles className="size-3.5 text-cyan-500" />
+                          Media Partner Event Saat Ini (ASTRO 2026)
+                        </Label>
+                        <p className="text-[11px] text-muted-foreground">
+                          Aktifkan jika media ini merupakan media partner resmi ASTRO 2026 yang sedang berlangsung (tampil di halaman utama). Matikan jika merupakan mitra periode terdahulu.
+                        </p>
+                      </div>
+                      <Switch
+                        id="mp-is-current"
+                        checked={mpForm.isCurrent}
+                        onCheckedChange={(checked) => setMpForm({ ...mpForm, isCurrent: checked })}
+                      />
+                    </div>
+                  </Field>
                 </FieldGroup>
 
                 {mpForm.logo && (
@@ -446,7 +622,7 @@ export default function SponsorPage() {
                     {mpSaving ? <Spinner data-icon="inline-start" /> : <Check data-icon="inline-start" />} Simpan
                   </Button>
                   <Button variant="outline" className="clip-angled-sm gap-1 text-xs font-bold uppercase tracking-wider"
-                    onClick={() => { setShowMpAdd(false); setMpEditingId(null); setMpForm({ name: '', website: '', logo: '' }); }}>
+                    onClick={() => { setShowMpAdd(false); setMpEditingId(null); setMpForm({ name: '', website: '', logo: '', isCurrent: false }); }}>
                     Batal
                   </Button>
                 </div>
@@ -466,18 +642,37 @@ export default function SponsorPage() {
                       </button>
                     ) : null}
                     <span className="text-sm font-bold text-foreground">{m.name || '(tanpa nama)'}</span>
+                    {m.isCurrent ? (
+                      <Badge className="bg-cyan-500/15 text-cyan-700 border-cyan-500/30 dark:text-cyan-400 text-[10px] font-bold">
+                        ASTRO 2026
+                      </Badge>
+                    ) : (
+                      <Badge variant="outline" className="text-[10px] font-medium text-muted-foreground">
+                        Periode Lalu
+                      </Badge>
+                    )}
                     {m.website && <span className="hidden text-[11px] text-muted-foreground sm:block">{m.website.replace(/https?:\/\//, '')}</span>}
                   </div>
-                  <div className="flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+                  <div className="flex items-center gap-1">
+                    <Button
+                      variant="ghost"
+                      size="icon-sm"
+                      onClick={() => handleToggleMpCurrent(m)}
+                      title={m.isCurrent ? "Ubah ke Periode Lalu" : "Jadikan Media Partner ASTRO 2026"}
+                      aria-label={m.isCurrent ? "Ubah ke Periode Lalu" : "Jadikan Media Partner ASTRO 2026"}
+                      className={m.isCurrent ? "text-cyan-600 hover:text-amber-600" : "text-muted-foreground hover:text-cyan-600"}
+                    >
+                      <Sparkles className="size-3.5" />
+                    </Button>
                     <Button variant="ghost" size="icon-sm" onClick={() => handleMpEdit(m)} aria-label="Edit"><Pencil /></Button>
                     <Button variant="ghost" size="icon-sm" onClick={() => handleMpDelete(m.id, m.name)} aria-label="Hapus" className="text-muted-foreground hover:text-destructive"><Trash2 /></Button>
                   </div>
                 </CardContent>
               </Card>
             ))}
-            {mediaPartners.length === 0 && <p className="py-4 text-center text-sm italic text-muted-foreground">Belum ada media partner.</p>}
+            {filteredMediaPartners.length === 0 && <p className="py-4 text-center text-sm italic text-muted-foreground">Tidak ada media partner pada filter ini.</p>}
           </div>
-          <Pagination currentPage={mpPage} totalItems={mediaPartners.length} pageSize={PAGE_SIZE} onPageChange={setMpPage} />
+          <Pagination currentPage={mpPage} totalItems={filteredMediaPartners.length} pageSize={PAGE_SIZE} onPageChange={setMpPage} />
         </div>
       )}
 

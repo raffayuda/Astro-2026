@@ -68,7 +68,7 @@ export default function StatsBar({ data }: Props) {
                 <div className="text-[10px] font-bold tracking-[0.2em] text-slate-600 mt-1 uppercase">
                   {stat.label}
                 </div>
-              </motion.div>
+              </motion.div> 
             );
           })}
         </motion.div>

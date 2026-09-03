@@ -10,6 +10,7 @@ const partnerSchema = z.object({
   name: z.string().min(1, 'Nama media partner wajib diisi'),
   website: z.string().nullable().optional(),
   logo: z.string().nullable().optional(),
+  isCurrent: z.boolean().optional().default(false),
   sortOrder: z.number().int().optional().default(0),
 });
 
@@ -26,6 +27,7 @@ export const mediaPartnersModule = new Elysia({ prefix: '/media-partners' })
         name: body.name,
         website: body.website ?? null,
         logo: body.logo ?? null,
+        isCurrent: body.isCurrent ?? false,
         sortOrder: body.sortOrder,
       })
       .returning();
@@ -39,6 +41,7 @@ export const mediaPartnersModule = new Elysia({ prefix: '/media-partners' })
     if (body.name !== undefined) updates.name = body.name;
     if (body.website !== undefined) updates.website = body.website ?? null;
     if (body.logo !== undefined) updates.logo = body.logo ?? null;
+    if (body.isCurrent !== undefined) updates.isCurrent = body.isCurrent;
     if (body.sortOrder !== undefined) updates.sortOrder = body.sortOrder;
 
     const [existing] = await db.select().from(mediaPartners).where(eq(mediaPartners.id, Number(params.id)));

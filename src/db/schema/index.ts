@@ -380,6 +380,7 @@ export const sponsors = pgTable("sponsors", {
   tier: text("tier").notNull().default("gold"), // 'platinum' | 'gold' | 'silver'
   website: text("website"),
   logo: text("logo"),
+  isCurrent: boolean("is_current").default(false).notNull(),
   sortOrder: integer("sort_order").default(0),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
@@ -390,6 +391,7 @@ export const mediaPartners = pgTable("media_partners", {
   name: text("name").notNull(),
   website: text("website"),
   logo: text("logo"),
+  isCurrent: boolean("is_current").default(false).notNull(),
   sortOrder: integer("sort_order").default(0),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });

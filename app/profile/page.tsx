@@ -627,7 +627,7 @@ export default function ProfilePage() {
       {/* ════════════ 9. COMMITTEE ════════════ */}
       <CommitteeSection />
 
-      <SponsorSection />
+      <SponsorSection variant="profile" id="sponsor" />
 
       <Footer />
     </div>

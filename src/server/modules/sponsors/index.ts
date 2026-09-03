@@ -11,6 +11,7 @@ const sponsorSchema = z.object({
   tier: z.string().optional().default('gold'),
   website: z.string().nullable().optional(),
   logo: z.string().nullable().optional(),
+  isCurrent: z.boolean().optional().default(false),
   sortOrder: z.number().int().optional().default(0),
 });
 
@@ -28,6 +29,7 @@ export const sponsorsModule = new Elysia({ prefix: '/sponsors' })
         tier: body.tier,
         website: body.website ?? null,
         logo: body.logo ?? null,
+        isCurrent: body.isCurrent ?? false,
         sortOrder: body.sortOrder,
       })
       .returning();
@@ -42,6 +44,7 @@ export const sponsorsModule = new Elysia({ prefix: '/sponsors' })
     if (body.tier !== undefined) updates.tier = body.tier;
     if (body.website !== undefined) updates.website = body.website ?? null;
     if (body.logo !== undefined) updates.logo = body.logo ?? null;
+    if (body.isCurrent !== undefined) updates.isCurrent = body.isCurrent;
     if (body.sortOrder !== undefined) updates.sortOrder = body.sortOrder;
 
     const [existing] = await db.select().from(sponsors).where(eq(sponsors.id, Number(params.id)));
