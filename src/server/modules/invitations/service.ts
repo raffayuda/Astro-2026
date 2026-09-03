@@ -109,7 +109,7 @@ export async function createInvitation(
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 480px; margin: 0 auto; padding: 32px 24px; background: #f8fafc; border-radius: 16px;">
             <div style="text-align: center; margin-bottom: 24px;">
-              <img src="https://abhshprulipnmetfumrt.supabase.co/storage/v1/object/public/assets/logo-astro.png" alt="ASTRO 2026" style="height: 48px;" />
+              <img src="https://i.ibb.co.com/yvSvfLK/logo-astro.png" alt="ASTRO 2026" style="height: 48px;" />
             </div>
             <h1 style="font-size: 20px; font-weight: 900; color: #0f172a; text-align: center; text-transform: uppercase; letter-spacing: 0.02em; margin-bottom: 8px;">
               Undangan Akun ASTRO 2026
