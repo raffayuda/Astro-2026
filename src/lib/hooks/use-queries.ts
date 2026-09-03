@@ -35,6 +35,7 @@ export const queryKeys = {
   sponsors: { all: ['sponsors'] as const },
   mediaPartners: { all: ['media-partners'] as const },
   users: { all: ['users'] as const },
+  invitations: { all: ['invitations'] as const },
   certificateTemplates: {
     all: ['certificate-templates'] as const,
     list: (competitionId: string) =>
@@ -227,10 +228,33 @@ export function useMediaPartners() {
   });
 }
 
-/* ─── Users ─── */
+/* ─── Users & Invitations ─── */
 
 export function useUsers() {
   return useQuery({ queryKey: queryKeys.users.all, queryFn: apiHelpers.users.list });
+}
+
+export function useInvitations() {
+  return useQuery({
+    queryKey: queryKeys.invitations.all,
+    queryFn: apiHelpers.invitations.list,
+  });
+}
+
+export function useInvitationMutations() {
+  const qc = useQueryClient();
+  const invalidate = () =>
+    qc.invalidateQueries({ queryKey: queryKeys.invitations.all });
+  return {
+    create: useMutation({
+      mutationFn: apiHelpers.invitations.create,
+      onSuccess: invalidate,
+    }),
+    revoke: useMutation({
+      mutationFn: apiHelpers.invitations.revoke,
+      onSuccess: invalidate,
+    }),
+  };
 }
 
 /* ─── Certificate Templates ─── */

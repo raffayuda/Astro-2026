@@ -20,6 +20,7 @@ import { certificatesModule } from '@/src/server/modules/certificates';
 import { certificateTemplatesModule } from '@/src/server/modules/certificate-templates';
 import { uploadModule } from '@/src/server/modules/upload';
 import { paymentsModule } from '@/src/server/modules/payments';
+import { invitationsModule } from '@/src/server/modules/invitations';
 
 /**
  * Root Elysia app — mounted under `/api` via the single catch-all route.
@@ -58,6 +59,7 @@ export const app = new Elysia({ prefix: '/api' })
   .use(certificatesModule)
   .use(certificateTemplatesModule)
   .use(uploadModule)
-  .use(paymentsModule);
+  .use(paymentsModule)
+  .use(invitationsModule);
 
 export type App = typeof app;

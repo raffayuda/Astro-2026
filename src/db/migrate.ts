@@ -12,6 +12,7 @@
 import * as dotenv from 'dotenv';
 
 dotenv.config({ path: '.env.local' });
+dotenv.config({ path: '.env' });
 
 import { readFileSync } from 'node:fs';
 import postgres from 'postgres';

@@ -305,8 +305,50 @@ export const authVerifications = pgTable("verifications", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
+/* ─── User Invitations ─── */
+export const userInvitations = pgTable(
+  "user_invitations",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    token: text("token").notNull().unique(),
+    email: text("email"),
+    role: text("role").notNull().default("admin"), // 'admin' | 'participant'
+    invitedById: uuid("invited_by_id").references(() => users.id, {
+      onDelete: "set null",
+    }),
+    expiresAt: timestamp("expires_at").notNull(),
+    usedAt: timestamp("used_at"),
+    usedById: uuid("used_by_id").references(() => users.id, {
+      onDelete: "set null",
+    }),
+    revokedAt: timestamp("revoked_at"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  },
+  (table) => [
+    index("user_invitations_token_idx").on(table.token),
+    index("user_invitations_email_idx").on(table.email),
+    index("user_invitations_invited_by_idx").on(table.invitedById),
+  ],
+);
+
 export const usersRelations = relations(users, ({ many }) => ({
   registrations: many(registrations),
+  createdInvitations: many(userInvitations, { relationName: "invitedBy" }),
+  acceptedInvitations: many(userInvitations, { relationName: "usedBy" }),
+}));
+
+export const userInvitationsRelations = relations(userInvitations, ({ one }) => ({
+  invitedBy: one(users, {
+    fields: [userInvitations.invitedById],
+    references: [users.id],
+    relationName: "invitedBy",
+  }),
+  usedBy: one(users, {
+    fields: [userInvitations.usedById],
+    references: [users.id],
+    relationName: "usedBy",
+  }),
 }));
 
 /* ─── FAQs ─── */

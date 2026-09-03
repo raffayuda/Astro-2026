@@ -217,6 +217,16 @@ export const apiHelpers = {
     remove: (id: string) => unwrap(api.users({ id }).delete()),
   },
 
+  // Invitations
+  invitations: {
+    list: () => unwrap(api.invitations.get()),
+    create: (body: unknown) => unwrap(api.invitations.post(body as never)),
+    revoke: (id: string) => unwrap(api.invitations({ id }).delete()),
+    verify: (token: string) => unwrap(api.invitations.verify({ token }).get()),
+    accept: (token: string, body: unknown) =>
+      unwrap(api.invitations.accept({ token }).post(body as never)),
+  },
+
   // Certificates
   certificates: {
     send: (body: unknown) => unwrap(api.certificates.send.post(body as never)),
