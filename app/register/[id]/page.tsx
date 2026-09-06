@@ -19,6 +19,8 @@ const MotionImage = motion.create(Image);
 
 import { getEffectiveCompetitionFee } from "@/src/lib/competitions";
 
+import type { CompetitionCustomField } from "@/types/astro";
+
 interface CompetitionData {
   id: string;
   title: string;
@@ -44,6 +46,7 @@ interface CompetitionData {
   playerPhotoRequired?: boolean;
   isFree?: boolean;
   isActive?: boolean;
+  customFields?: CompetitionCustomField[];
 }
 
 const categoryConfig: Record<
@@ -85,6 +88,15 @@ const categoryConfig: Record<
     iconBg: "bg-cyan-50 text-cyan-600",
     iconBorder: "border-cyan-200",
   },
+  "kesenian-/-seni": {
+    label: "KESENIAN",
+    color: "text-violet-700",
+    bg: "bg-violet-50",
+    border: "border-violet-200",
+    accent: "bg-violet-500",
+    iconBg: "bg-violet-50 text-violet-600",
+    iconBorder: "border-violet-200",
+  },
 };
 
 export default function RegistrationPage({
@@ -113,6 +125,7 @@ export default function RegistrationPage({
     whatsapp: "",
     members: "",
     memberDetails: [] as { name: string; photoUrl: string }[],
+    customFields: {} as Record<string, any>,
   });
 
   useEffect(() => {
@@ -174,6 +187,7 @@ export default function RegistrationPage({
       playerPhotoRequired: !!c.playerPhotoRequired,
       isFree,
       isActive: c.isActive !== undefined ? (c.isActive === true || (c.isActive as any) === '1') : true,
+      customFields: (c as any).customFields || [],
     };
   }, [c]);
 
@@ -201,6 +215,7 @@ export default function RegistrationPage({
           photoUrl: m.photoUrl || "",
         }),
       ),
+      customFields: r.customFields || {},
     });
     setStep(1); // Stay on form step with pre-filled data
   }, [existingReg]);
@@ -610,6 +625,7 @@ export default function RegistrationPage({
                       maxTeamMembers={competition.maxTeamMembers || 5}
                       minTeamMembers={competition.minTeamMembers || 1}
                       photoRequired={!!competition.playerPhotoRequired}
+                      customFields={competition.customFields || []}
                     />
                   </motion.div>
                 ) : (

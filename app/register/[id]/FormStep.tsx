@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 import { useForm } from "@tanstack/react-form";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -12,15 +12,17 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Spinner } from "@/components/ui/spinner";
 import { toast } from "sonner";
-import type { Competition } from "@/types/astro";
+import type { Competition, CompetitionCustomField } from "@/types/astro";
 import { useRegistrationApi } from "@/src/lib/hooks/use-registration";
 import {
   buildRegistrationSchema,
   type RegistrationFormValues,
 } from "@/src/lib/forms/registration";
 import PlayerPhotoField from "./PlayerPhotoField";
+import CustomFieldUpload from "./CustomFieldUpload";
 
 interface Props {
   competition: Competition;
@@ -42,6 +44,7 @@ interface Props {
   minTeamMembers?: number;
   /** Competition requires a photo for every player (esports, e.g. MLBB). */
   photoRequired?: boolean;
+  customFields?: CompetitionCustomField[];
 }
 
 export default function FormStep({
@@ -58,6 +61,7 @@ export default function FormStep({
   maxTeamMembers = 5,
   minTeamMembers = 1,
   photoRequired = false,
+  customFields = [],
 }: Props) {
   const { create, update } = useRegistrationApi();
 
@@ -68,14 +72,15 @@ export default function FormStep({
   const requiredMembers = Math.min(Math.max(minTeamMembers - 1, 0), memberSlots);
 
   const schema = useMemo(
-    () => buildRegistrationSchema({ isTeam, photoRequired, requiredMembers }),
-    [isTeam, photoRequired, requiredMembers],
+    () => buildRegistrationSchema({ isTeam, photoRequired, requiredMembers, customFields }),
+    [isTeam, photoRequired, requiredMembers, customFields],
   );
 
   // tanstack-form reads defaultValues once, so pre-create every roster slot.
   const defaultValues = useMemo<RegistrationFormValues>(
     () => ({
       ...formData,
+      customFields: formData.customFields ?? {},
       memberDetails: Array.from({ length: memberSlots }, (_, i) => ({
         name: formData.memberDetails?.[i]?.name ?? "",
         photoUrl: formData.memberDetails?.[i]?.photoUrl ?? "",
@@ -127,7 +132,7 @@ export default function FormStep({
   });
 
   const renderField = (
-    name: Exclude<keyof RegistrationFormValues, "memberDetails">,
+    name: Exclude<keyof RegistrationFormValues, "memberDetails" | "customFields">,
     label: string,
     type: string,
     placeholder: string,
@@ -367,6 +372,166 @@ export default function FormStep({
                 }}
               />
             </Field>
+          )}
+
+          {/* ─── FIELD KHUSUS KOMPETISI (DYNAMIC) ─── */}
+          {customFields && customFields.length > 0 && (
+            <div className="space-y-5 pt-5 border-t border-border/70">
+              <div>
+                <h3 className="text-sm font-black uppercase tracking-tight text-foreground flex items-center gap-2">
+                  <FileText className="w-4 h-4 text-primary" />
+                  Informasi & Berkas Khusus Lomba
+                </h3>
+                <p className="mt-0.5 text-xs text-muted-foreground font-light">
+                  Lengkapi data khusus di bawah ini sesuai ketentuan juknis resmi <strong>{competition.title}</strong>.
+                </p>
+              </div>
+
+              <FieldGroup className="gap-5">
+                {customFields.map((field) => {
+                  const fieldName = `customFields.${field.id}`;
+                  if (field.type === 'image') {
+                    return (
+                      <form.Field
+                        key={field.id}
+                        name={fieldName as never}
+                        children={(subField) => {
+                          const err = subField.state.meta.errors?.[0] as
+                            | { message?: string }
+                            | undefined;
+                          return (
+                            <CustomFieldUpload
+                              label={field.label}
+                              description={field.description}
+                              required={field.required}
+                              value={(subField.state.value as string) ?? ""}
+                              onChange={(url) => subField.handleChange(url as never)}
+                              error={err?.message}
+                            />
+                          );
+                        }}
+                      />
+                    );
+                  }
+
+                  if (field.type === 'textarea') {
+                    return (
+                      <form.Field
+                        key={field.id}
+                        name={fieldName as never}
+                        children={(subField) => {
+                          const err = subField.state.meta.errors?.[0] as
+                            | { message?: string }
+                            | undefined;
+                          const fieldId = `field-custom-${field.id}`;
+                          return (
+                            <Field data-invalid={!!err}>
+                              <FieldLabel htmlFor={fieldId} required={field.required}>
+                                {field.label}
+                              </FieldLabel>
+                              {field.description && (
+                                <p className="text-[11px] font-normal text-muted-foreground -mt-1">
+                                  {field.description}
+                                </p>
+                              )}
+                              <Textarea
+                                id={fieldId}
+                                value={(subField.state.value as string) ?? ""}
+                                onBlur={subField.handleBlur}
+                                onChange={(e) => subField.handleChange(e.target.value as never)}
+                                placeholder={field.placeholder || `Masukkan ${field.label.toLowerCase()}`}
+                                aria-invalid={!!err}
+                                rows={3}
+                              />
+                              {err ? <FieldError>{err.message}</FieldError> : null}
+                            </Field>
+                          );
+                        }}
+                      />
+                    );
+                  }
+
+                  if (field.type === 'select') {
+                    return (
+                      <form.Field
+                        key={field.id}
+                        name={fieldName as never}
+                        children={(subField) => {
+                          const err = subField.state.meta.errors?.[0] as
+                            | { message?: string }
+                            | undefined;
+                          const fieldId = `field-custom-${field.id}`;
+                          return (
+                            <Field data-invalid={!!err}>
+                              <FieldLabel htmlFor={fieldId} required={field.required}>
+                                {field.label}
+                              </FieldLabel>
+                              {field.description && (
+                                <p className="text-[11px] font-normal text-muted-foreground -mt-1">
+                                  {field.description}
+                                </p>
+                              )}
+                              <select
+                                id={fieldId}
+                                value={(subField.state.value as string) ?? ""}
+                                onBlur={subField.handleBlur}
+                                onChange={(e) => subField.handleChange(e.target.value as never)}
+                                aria-invalid={!!err}
+                                className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring md:text-sm dark:bg-slate-900"
+                              >
+                                <option value="">-- Pilih {field.label} --</option>
+                                {(field.options || []).map((opt) => (
+                                  <option key={opt} value={opt}>
+                                    {opt}
+                                  </option>
+                                ))}
+                              </select>
+                              {err ? <FieldError>{err.message}</FieldError> : null}
+                            </Field>
+                          );
+                        }}
+                      />
+                    );
+                  }
+
+                  // Default: input text
+                  return (
+                    <form.Field
+                      key={field.id}
+                      name={fieldName as never}
+                      children={(subField) => {
+                        const err = subField.state.meta.errors?.[0] as
+                          | { message?: string }
+                          | undefined;
+                        const fieldId = `field-custom-${field.id}`;
+                        return (
+                          <Field data-invalid={!!err}>
+                            <FieldLabel htmlFor={fieldId} required={field.required}>
+                              {field.label}
+                            </FieldLabel>
+                            {field.description && (
+                              <p className="text-[11px] font-normal text-muted-foreground -mt-1">
+                                {field.description}
+                              </p>
+                            )}
+                            <Input
+                              id={fieldId}
+                              type="text"
+                              value={(subField.state.value as string) ?? ""}
+                              onBlur={subField.handleBlur}
+                              onChange={(e) => subField.handleChange(e.target.value as never)}
+                              placeholder={field.placeholder || `Masukkan ${field.label.toLowerCase()}`}
+                              aria-invalid={!!err}
+                            />
+                            {err ? <FieldError>{err.message}</FieldError> : null}
+                          </Field>
+                        );
+                      }}
+                    />
+                  );
+                })}
+              </FieldGroup>
+            </div>
           )}
         </CardContent>
       </Card>

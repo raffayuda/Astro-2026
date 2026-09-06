@@ -25,6 +25,7 @@ export const registrationCreateSchema = z.object({
   email: z.string().email('Format email tidak valid'),
   whatsapp: z.string().min(1, 'Nomor WhatsApp wajib diisi'),
   paymentMethod: z.string().nullable().optional(),
+  customFields: z.record(z.string(), z.any()).nullable().optional().default({}),
 });
 
 export type RegistrationCreate = z.infer<typeof registrationCreateSchema>;
@@ -52,6 +53,7 @@ export const SELF_SERVICE_FIELDS = [
   'institution',
   'email',
   'whatsapp',
+  'customFields',
 ] as const;
 
 /** Fields only an admin may edit. */

@@ -34,3 +34,38 @@
 [21:06] - [.gitignore] - [UPDATE] - Add committe-photos/ to ignore downloaded committee asset folder from git
 [21:09] - [app/register/[id]/PlayerPhotoField.tsx] - [UPDATE] - Implement Drag & Drop image upload with visual feedback for player photos
 [21:09] - [app/dashboard/committee/page.tsx] - [UPDATE] - Implement Drag & Drop dropzone for committee photo uploads with live preview and drive link support
+[22:15] - [src/db/migrations/0026_add_guidebook_sections.sql] - [ADD] - Add guidebook_sections jsonb column to competitions table
+[22:15] - [src/db/schema/index.ts] - [UPDATE] - Define CompetitionGuidebookSection interface and add guidebookSections column
+[22:15] - [src/server/modules/competitions/model.ts] - [UPDATE] - Add guidebookSectionSchema and validate guidebookSections in competitionInputSchema
+[22:15] - [src/server/modules/competitions/service.ts] - [UPDATE] - Map and persist guidebookSections in createCompetition and updateCompetition
+[22:15] - [components/GuidebookArticle.tsx] - [ADD] - Modular article component with interactive tabs, smart markdown styling, warning callouts, CP button, and PDF guidebook link
+[22:15] - [components/admin/GuidebookSectionsBuilder.tsx] - [ADD] - Section builder for admin with add/reorder/delete, quick markdown toolbar (B, I, list, warn), and live preview
+[22:15] - [app/dashboard/competitions/page.tsx] - [UPDATE] - Integrate GuidebookSectionsBuilder and rulebookUrl input field in admin competition modal
+[22:15] - [app/competitions/[id]/page.tsx] - [UPDATE] - Render GuidebookArticle in dedicated full-width section, map guidebookSections, and support kesenian category styling
+[22:15] - [src/db/update-competitions-guidebook.ts] - [ADD] - Seed detailed AGT and Cerdas Cermat guidebook sections, batches, fees, and rules into PostgreSQL
+[22:18] - [src/db/seed.ts] - [UPDATE] - Support kesenian-/-seni category label and guidebookSections mapping during seed execution
+[22:20] - [types/astro.ts] - [UPDATE] - Add kesenian-/-seni and guidebookSections to Competition type definition
+[22:20] - [components/CompetitionCard.tsx] - [UPDATE] - Support kesenian-/-seni category badge with violet styling
+[22:20] - [app/announcements/PengumumanClient.tsx] - [UPDATE] - Support kesenian-/-seni filter tab and badge in announcement winners list
+[22:20] - [app/register/[id]/page.tsx] - [UPDATE] - Add kesenian-/-seni category styling to registration page
+[22:30] - [src/db/migrations/0027_add_custom_fields.sql] - [ADD] - Add custom_fields jsonb columns to competitions and registrations tables
+[22:30] - [src/db/schema/index.ts] - [UPDATE] - Define CompetitionCustomField interface and map customFields columns
+[22:30] - [types/astro.ts] - [UPDATE] - Export CompetitionCustomField type and add customFields to Competition interface
+[22:30] - [src/server/modules/competitions/model.ts] - [UPDATE] - Define competitionCustomFieldSchema and add customFields to competitionInputSchema
+[22:30] - [src/server/modules/competitions/service.ts] - [UPDATE] - Persist and map customFields on create and update competition
+[22:30] - [src/server/modules/registrations/model.ts] - [UPDATE] - Allow customFields in registrationCreateSchema and SELF_SERVICE_FIELDS
+[22:30] - [src/server/modules/registrations/service.ts] - [UPDATE] - Persist and return customFields in registration queries and creation
+[22:30] - [src/lib/forms/registration.ts] - [UPDATE] - Integrate custom fields dynamic validation and submission formatting
+[22:30] - [app/register/[id]/CustomFieldUpload.tsx] - [ADD] - Drag-and-drop custom field image upload with automatic client-side WebP compression
+[22:30] - [app/register/[id]/FormStep.tsx] - [UPDATE] - Render dynamic custom fields (text, textarea, select, image dropzones) in registration form
+[22:30] - [components/admin/CustomFieldsBuilder.tsx] - [ADD] - Admin builder component for dynamic custom fields with presets (STT-NF + Berkas, Seni/AGT)
+[22:30] - [app/dashboard/competitions/page.tsx] - [UPDATE] - Integrate CustomFieldsBuilder in admin competition modal
+[22:30] - [app/dashboard/registrations/[id]/page.tsx] - [UPDATE] - Render custom fields card with text and image previews in registration admin detail
+[22:30] - [src/db/update-competitions-custom-fields.ts] - [ADD] - Seed custom fields for AGT (bakat, judul karya, properti, foto KTM) and Cerdas Cermat (prodi/angkatan, KTM, foto profil, bukti follow IG)
+[22:30] - [src/db/seed.ts] - [UPDATE] - Map customFields during competition seeding
+[22:45] - [src/server/modules/competitions/model.ts] - [FIX] - Define competitionUpdateSchema with zero defaults to prevent partial updates (e.g. toggling isActive) from overwriting existing data with empty defaults
+[22:45] - [src/server/modules/competitions/index.ts] - [FIX] - Use competitionUpdateSchema for PUT and PATCH endpoints instead of competitionInputSchema.partial()
+[22:45] - [src/server/modules/categories/index.ts] - [FIX] - Add categoryUpdateSchema to prevent defaults from overwriting color and sortOrder on category update
+[22:45] - [src/server/modules/sponsors/index.ts] - [FIX] - Add sponsorUpdateSchema to prevent defaults from overwriting sponsor tier, isCurrent, and sortOrder
+[22:45] - [src/server/modules/media-partners/index.ts] - [FIX] - Add partnerUpdateSchema to prevent defaults from overwriting media partner isCurrent and sortOrder
+[22:45] - [src/db/restore-competitions.ts] - [ADD] - Restore all competition details (AGT, Cerdas Cermat, Futsal Internal, Badminton, Mobile Legends) in database

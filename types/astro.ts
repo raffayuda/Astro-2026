@@ -1,4 +1,4 @@
-export type CategoryType = 'akademik' | 'olahraga' | 'esports';
+export type CategoryType = 'akademik' | 'olahraga' | 'esports' | 'kesenian-/-seni' | (string & {});
 
 export interface Competition {
   id: string;
@@ -37,6 +37,22 @@ export interface Competition {
     endDate: string;
     fee: number;
   }[];
+  guidebookSections?: {
+    id: string;
+    title: string;
+    content: string;
+  }[];
+  customFields?: CompetitionCustomField[];
+}
+
+export interface CompetitionCustomField {
+  id: string;
+  label: string;
+  type: 'text' | 'textarea' | 'select' | 'image';
+  placeholder?: string;
+  options?: string[];
+  required: boolean;
+  description?: string;
 }
 
 export interface EventConfig {

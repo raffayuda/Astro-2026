@@ -2,7 +2,7 @@ import { db } from '@/src/db';
 import { registrations, competitions } from '@/src/db/schema';
 import { eq } from 'drizzle-orm';
 import { notFound } from 'next/navigation';
-import { CalendarDays, Coins, Mail, Phone, Building2, User, CheckCircle2, XCircle, Tag, Globe } from 'lucide-react';
+import { CalendarDays, Coins, Mail, Phone, Building2, User, CheckCircle2, XCircle, Tag, Globe, FileText, ExternalLink } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import PaymentStatusUpdate from './PaymentStatusUpdate';
@@ -38,6 +38,7 @@ export default async function RegistrationDetailPage({
       institution: registrations.institution,
       email: registrations.email,
       whatsapp: registrations.whatsapp,
+      customFields: registrations.customFields,
       paymentStatus: registrations.paymentStatus,
       paymentMethod: registrations.paymentMethod,
       paymentAmount: registrations.paymentAmount,
@@ -49,6 +50,7 @@ export default async function RegistrationDetailPage({
       competitionFee: competitions.fee,
       competitionIsFree: competitions.isFree,
       competitionOrigin: competitions.origin,
+      competitionCustomFields: competitions.customFields,
     })
     .from(registrations)
     .innerJoin(competitions, eq(registrations.competitionId, competitions.id))
@@ -191,6 +193,79 @@ export default async function RegistrationDetailPage({
               </div>
             </div>
           </div>
+
+          {/* Berkas & Informasi Khusus Lomba */}
+          {reg.customFields && Object.keys(reg.customFields).length > 0 && (
+            <div className="bg-white border border-slate-200 relative"
+              style={{ clipPath: 'polygon(14px 0, 100% 0, calc(100% - 14px) 100%, 0 100%)' }}
+            >
+              <div className="p-5 md:p-6 space-y-5">
+                <h2 className="text-sm font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
+                  <FileText className="w-4 h-4 text-astro-cyan" />
+                  Berkas & Data Khusus Lomba
+                </h2>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {Object.entries(reg.customFields).map(([key, val]) => {
+                    const fieldDef = (reg.competitionCustomFields || []).find((f: any) => f.id === key);
+                    const label = fieldDef?.label || key;
+                    const isImg = typeof val === 'string' && (val.startsWith('http') || val.includes('/storage/v1/object/public/'));
+
+                    if (isImg) {
+                      return (
+                        <div key={key} className="space-y-1.5 sm:col-span-2">
+                          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
+                            {label}
+                          </span>
+                          <div className="flex items-center gap-3">
+                            <a
+                              href={val}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="block relative size-24 shrink-0 overflow-hidden rounded-md border border-slate-200 bg-slate-50 hover:opacity-90 transition-opacity"
+                            >
+                              <Image
+                                src={val}
+                                alt={label}
+                                fill
+                                sizes="96px"
+                                className="object-cover"
+                              />
+                            </a>
+                            <div className="space-y-1">
+                              <a
+                                href={val}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="inline-flex items-center gap-1 text-xs font-bold text-astro-cyan hover:underline"
+                              >
+                                <ExternalLink className="size-3.5" />
+                                Buka Berkas / Foto Ukuran Penuh
+                              </a>
+                              <p className="text-[11px] text-slate-500">
+                                Berkas diunggah oleh pendaftar saat registrasi
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    }
+
+                    return (
+                      <div key={key} className="space-y-0.5">
+                        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
+                          {label}
+                        </span>
+                        <p className="text-sm text-slate-900 font-medium whitespace-pre-line">
+                          {String(val || '-')}
+                        </p>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Contact */}
           <div className="bg-white border border-slate-200 relative"

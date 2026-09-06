@@ -13,10 +13,11 @@ import type { Competition, CategoryType } from '@/types/astro';
 import { formatDateShort } from '@/lib/date';
 import { getEffectiveCompetitionFee } from '@/src/lib/competitions';
 
-const categoryConfig: Record<CategoryType, { accent: string; label: string; badgeClass: string }> = {
+const categoryConfig: Record<string, { accent: string; label: string; badgeClass: string }> = {
   akademik: { accent: 'bg-emerald-500', label: 'AKADEMIK', badgeClass: 'border-emerald-200 bg-emerald-50 text-emerald-700' },
   olahraga: { accent: 'bg-orange-500', label: 'OLAHRAGA', badgeClass: 'border-orange-200 bg-orange-50 text-orange-700' },
   esports: { accent: 'bg-cyan-500', label: 'ESPORTS', badgeClass: 'border-cyan-200 bg-cyan-50 text-cyan-700' },
+  'kesenian-/-seni': { accent: 'bg-violet-500', label: 'KESENIAN', badgeClass: 'border-violet-200 bg-violet-50 text-violet-700' },
 };
 
 function toIdr(n: number) {

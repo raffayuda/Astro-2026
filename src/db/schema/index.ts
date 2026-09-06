@@ -47,6 +47,22 @@ export interface CompetitionBatch {
   fee: number;
 }
 
+export interface CompetitionGuidebookSection {
+  id: string;
+  title: string;
+  content: string;
+}
+
+export interface CompetitionCustomField {
+  id: string;
+  label: string;
+  type: "text" | "textarea" | "select" | "image";
+  placeholder?: string;
+  options?: string[];
+  required: boolean;
+  description?: string;
+}
+
 /* ─── Competitions ─── */
 export const competitions = pgTable(
   "competitions",
@@ -62,6 +78,14 @@ export const competitions = pgTable(
     hasBatches: text("has_batches").default("0"), // '0' = tidak ada batch, '1' = ada batch
     batches: jsonb("batches")
       .$type<CompetitionBatch[]>()
+      .default([])
+      .notNull(),
+    guidebookSections: jsonb("guidebook_sections")
+      .$type<CompetitionGuidebookSection[]>()
+      .default([])
+      .notNull(),
+    customFields: jsonb("custom_fields")
+      .$type<CompetitionCustomField[]>()
       .default([])
       .notNull(),
     maxSlots: integer("max_slots").notNull().default(0),
@@ -135,6 +159,10 @@ export const registrations = pgTable(
     institution: text("institution").notNull(),
     email: text("email").notNull(),
     whatsapp: text("whatsapp").notNull(),
+    customFields: jsonb("custom_fields")
+      .$type<Record<string, any>>()
+      .default({})
+      .notNull(),
     // Payment
     paymentStatus: text("payment_status").notNull().default("pending"), // 'pending' | 'detecting' | 'paid' | 'failed'
     paymentMethod: text("payment_method"), // 'qris' | 'transfer'

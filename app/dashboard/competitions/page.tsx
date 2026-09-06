@@ -5,11 +5,13 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   Pencil, X, Check, Search, Plus, Trophy,
   Coins, Users, MapPin, Calendar, Phone, User, Tag,
-  Trash2, EyeOff, Eye, Clock, Award, Layers,
+  Trash2, EyeOff, Eye, Clock, Award, Layers, FileText, BookOpen,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import DeleteModal from '@/components/DeleteModal';
 import Pagination from '@/components/Pagination';
+import GuidebookSectionsBuilder from '@/components/admin/GuidebookSectionsBuilder';
+import CustomFieldsBuilder from '@/components/admin/CustomFieldsBuilder';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
@@ -27,6 +29,7 @@ import { apiHelpers } from '@/src/lib/api';
 import { cn } from '@/lib/utils';
 import { formatDateNumeric, toDateInputValue, toIsoOrNull } from '@/lib/date';
 import { getActiveBatch } from '@/src/lib/competitions';
+import type { CompetitionGuidebookSection, CompetitionCustomField } from '@/src/db/schema';
 
 const PAGE_SIZE = 10;
 
@@ -70,6 +73,8 @@ const emptyForm = {
   prizes: [] as { label: string; value: string }[],
   rulesSummary: '',
   rulebookUrl: '',
+  guidebookSections: [] as CompetitionGuidebookSection[],
+  customFields: [] as CompetitionCustomField[],
   contactName: '',
   contactWhatsapp: '',
   isActive: true,
@@ -517,8 +522,32 @@ function FormFields({ form, setForm, isAdd, categories }: { form: any; setForm: 
         </FieldGroup>
       </Field>
       <Field className="sm:col-span-2">
-        <FieldLabel>Aturan (1 baris = 1 aturan)</FieldLabel>
-        <Textarea value={form.rulesSummary} onChange={(e) => update('rulesSummary', e.target.value)} rows={3} />
+        <FieldLabel>Aturan Ringkas (1 baris = 1 aturan)</FieldLabel>
+        <Textarea value={form.rulesSummary} onChange={(e) => update('rulesSummary', e.target.value)} rows={3} placeholder="Aturan utama (opsional jika sudah menulis di Bagian Guidebook)" />
+      </Field>
+      <Field className="sm:col-span-2">
+        <FieldLabel className="gap-1"><FileText className="size-3" /> Link Guidebook / Juknis Resmi (PDF / Google Drive)</FieldLabel>
+        <Input
+          type="url"
+          value={form.rulebookUrl}
+          onChange={(e) => update('rulebookUrl', e.target.value)}
+          placeholder="https://drive.google.com/... atau link dokumen PDF"
+        />
+        <p className="mt-1 text-[10px] text-muted-foreground">
+          Tautan dokumen juknis resmi lomba (Google Drive / PDF / dokumen eksternal) yang akan dibuka saat peserta klik tombol Buka Guidebook di halaman lomba.
+        </p>
+      </Field>
+      <Field className="sm:col-span-2">
+        <GuidebookSectionsBuilder
+          sections={form.guidebookSections || []}
+          onChange={(sections) => update('guidebookSections', sections)}
+        />
+      </Field>
+      <Field className="sm:col-span-2">
+        <CustomFieldsBuilder
+          fields={form.customFields || []}
+          onChange={(fields) => update('customFields', fields)}
+        />
       </Field>
       <Field>
         <FieldLabel className="gap-1" required><User className="size-3" /> Kontak (Nama)</FieldLabel>
@@ -665,6 +694,8 @@ export default function KompetisiPage() {
           ],
       rulesSummary: Array.isArray(comp.rulesSummary) ? comp.rulesSummary.join('\n') : (comp.rulesSummary || ''),
       rulebookUrl: comp.rulebookUrl || '',
+      guidebookSections: (comp as any).guidebookSections || [],
+      customFields: (comp as any).customFields || [],
       contactName: comp.contactName || '',
       contactWhatsapp: comp.contactWhatsapp || '',
       feeDisplay: isFreeBool ? '0' : (comp.fee ? formatRupiah(String(comp.fee)) : ''),

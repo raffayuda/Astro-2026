@@ -14,6 +14,14 @@ const partnerSchema = z.object({
   sortOrder: z.number().int().optional().default(0),
 });
 
+const partnerUpdateSchema = z.object({
+  name: z.string().min(1, 'Nama media partner wajib diisi').optional(),
+  website: z.string().nullable().optional(),
+  logo: z.string().nullable().optional(),
+  isCurrent: z.boolean().optional(),
+  sortOrder: z.number().int().optional(),
+});
+
 export const mediaPartnersModule = new Elysia({ prefix: '/media-partners' })
   .use(authPlugin)
   .get('/', () => db.select().from(mediaPartners).orderBy(asc(mediaPartners.sortOrder)))
@@ -60,7 +68,7 @@ export const mediaPartnersModule = new Elysia({ prefix: '/media-partners' })
     return item;
   }, {
     params: t.Object({ id: t.String() }),
-    body: partnerSchema.partial(),
+    body: partnerUpdateSchema,
     admin: true,
   })
   .delete('/:id', async ({ params }) => {

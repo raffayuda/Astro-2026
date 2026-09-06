@@ -13,6 +13,7 @@ const CATEGORY_LABELS: Record<string, { label: string; color: string }> = {
   akademik: { label: 'Akademik', color: 'text-emerald-700 bg-emerald-50 border-emerald-200' },
   olahraga: { label: 'Olahraga', color: 'text-orange-700 bg-orange-50 border-orange-200' },
   esports: { label: 'Esports', color: 'text-cyan-700 bg-cyan-50 border-cyan-200' },
+  'kesenian-/-seni': { label: 'Kesenian / Seni', color: 'text-violet-700 bg-violet-50 border-violet-200' },
 };
 
 const ADMIN_EMAIL = 'admin@gmail.com';
@@ -58,6 +59,10 @@ async function seedCompetitions() {
     contactWhatsapp: comp.contactPerson.whatsapp,
     playerPhotoRequired:
       (comp as { playerPhotoRequired?: boolean }).playerPhotoRequired ? '1' : '0',
+    guidebookSections:
+      (comp as { guidebookSections?: Array<{ id: string; title: string; content: string }> })
+        .guidebookSections ?? [],
+    customFields: (comp as { customFields?: any }).customFields ?? [],
   }));
 
   await db.insert(competitions).values(rows).onConflictDoNothing({ target: competitions.id });

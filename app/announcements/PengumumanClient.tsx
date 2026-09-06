@@ -25,7 +25,7 @@ import WinnersModal from "./WinnersModal";
 import { apiHelpers } from "@/src/lib/api";
 import { queryKeys } from "@/src/lib/hooks/use-queries";
 
-type CategoryType = "akademik" | "olahraga" | "esports";
+type CategoryType = "akademik" | "olahraga" | "esports" | "kesenian-/-seni";
 
 interface CompetitionItem {
   id: string;
@@ -77,6 +77,13 @@ const categoryConfig: Record<
     border: "border-cyan-200",
     accent: "bg-cyan-500",
   },
+  "kesenian-/-seni": {
+    label: "KESENIAN",
+    color: "text-violet-700",
+    bg: "bg-violet-50",
+    border: "border-violet-200",
+    accent: "bg-violet-500",
+  },
 };
 
 const CATEGORIES: { label: string; value: CategoryType | "all" }[] = [
@@ -84,6 +91,7 @@ const CATEGORIES: { label: string; value: CategoryType | "all" }[] = [
   { label: "AKADEMIK", value: "akademik" },
   { label: "OLAHRAGA", value: "olahraga" },
   { label: "ESPORTS", value: "esports" },
+  { label: "KESENIAN", value: "kesenian-/-seni" },
 ];
 
 const SKELETON_COUNT = 6;

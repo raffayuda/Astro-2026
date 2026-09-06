@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import type { CompetitionCustomField } from '@/types/astro';
 
 /** One player on a team roster — name plus photo (formal or casual, both fine). */
 export const memberDetailSchema = z.object({
@@ -23,6 +24,7 @@ export const registrationFormSchema = z.object({
   whatsapp: z
     .string()
     .min(9, 'Nomor WhatsApp tidak valid (minimal 9 digit)'),
+  customFields: z.record(z.string(), z.any()),
 });
 
 export type RegistrationFormValues = z.infer<typeof registrationFormSchema>;
@@ -31,54 +33,82 @@ export type RegistrationFormValues = z.infer<typeof registrationFormSchema>;
  * Schema for one competition. When the competition requires a player photo
  * (esports, e.g. Mobile Legends) every listed player needs both a name and an
  * uploaded photo — a name alone is not enough.
+ * Also validates any competition-specific custom fields.
  */
 export function buildRegistrationSchema(opts: {
   isTeam: boolean;
   photoRequired: boolean;
   /** Roster rows that must be filled, excluding the leader. */
   requiredMembers?: number;
+  customFields?: CompetitionCustomField[];
 }) {
-  if (!opts.photoRequired) return registrationFormSchema;
-
   const minMembers = Math.max(opts.requiredMembers ?? 0, 0);
 
   return registrationFormSchema.superRefine((values, ctx) => {
-    if (!values.leaderPhotoUrl) {
-      ctx.addIssue({
-        code: 'custom',
-        path: ['leaderPhotoUrl'],
-        message: opts.isTeam
-          ? 'Foto ketua tim wajib diunggah'
-          : 'Foto pemain wajib diunggah',
-      });
-    }
-
-    if (!opts.isTeam) return;
-
-    const players = (values.memberDetails ?? []).filter((m) => m.name.trim());
-    if (players.length < minMembers) {
-      ctx.addIssue({
-        code: 'custom',
-        path: ['memberDetails'],
-        message: `Minimal ${minMembers} anggota (selain ketua) wajib diisi`,
-      });
-    }
-    (values.memberDetails ?? []).forEach((m, i) => {
-      if (m.name.trim() && !m.photoUrl) {
+    // 1. Photo requirement check for esports
+    if (opts.photoRequired) {
+      if (!values.leaderPhotoUrl) {
         ctx.addIssue({
           code: 'custom',
-          path: ['memberDetails', i, 'photoUrl'],
-          message: 'Foto pemain wajib diunggah',
+          path: ['leaderPhotoUrl'],
+          message: opts.isTeam
+            ? 'Foto ketua tim wajib diunggah'
+            : 'Foto pemain wajib diunggah',
         });
       }
-      if (!m.name.trim() && m.photoUrl) {
-        ctx.addIssue({
-          code: 'custom',
-          path: ['memberDetails', i, 'name'],
-          message: 'Nama pemain wajib diisi',
+
+      if (opts.isTeam) {
+        const players = (values.memberDetails ?? []).filter((m) => m.name.trim());
+        if (players.length < minMembers) {
+          ctx.addIssue({
+            code: 'custom',
+            path: ['memberDetails'],
+            message: `Minimal ${minMembers} anggota (selain ketua) wajib diisi`,
+          });
+        }
+        (values.memberDetails ?? []).forEach((m, i) => {
+          if (m.name.trim() && !m.photoUrl) {
+            ctx.addIssue({
+              code: 'custom',
+              path: ['memberDetails', i, 'photoUrl'],
+              message: 'Foto pemain wajib diunggah',
+            });
+          }
+          if (!m.name.trim() && m.photoUrl) {
+            ctx.addIssue({
+              code: 'custom',
+              path: ['memberDetails', i, 'name'],
+              message: 'Nama pemain wajib diisi',
+            });
+          }
         });
       }
-    });
+    }
+
+    // 2. Custom fields validation
+    if (opts.customFields && opts.customFields.length > 0) {
+      opts.customFields.forEach((field) => {
+        if (!field.required) return;
+        const val = values.customFields?.[field.id];
+        if (field.type === 'image') {
+          if (!val || typeof val !== 'string' || !val.trim()) {
+            ctx.addIssue({
+              code: 'custom',
+              path: ['customFields', field.id],
+              message: `${field.label} wajib diunggah`,
+            });
+          }
+        } else {
+          if (!val || !val.toString().trim()) {
+            ctx.addIssue({
+              code: 'custom',
+              path: ['customFields', field.id],
+              message: `${field.label} wajib diisi`,
+            });
+          }
+        }
+      });
+    }
   });
 }
 
@@ -106,6 +136,7 @@ export function toRegistrationBody(
     institution: values.institution,
     email: values.email,
     whatsapp: values.whatsapp,
+    customFields: values.customFields ?? {},
   };
 }
 

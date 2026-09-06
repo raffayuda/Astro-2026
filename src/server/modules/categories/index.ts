@@ -12,6 +12,12 @@ const categorySchema = z.object({
   sortOrder: z.number().int().optional().default(99),
 });
 
+const categoryUpdateSchema = z.object({
+  label: z.string().min(1, 'Nama kategori wajib diisi').optional(),
+  color: z.string().optional(),
+  sortOrder: z.number().int().optional(),
+});
+
 /** Categories — public list, admin mutations. */
 export const categoriesModule = new Elysia({ prefix: '/categories' })
   .use(authPlugin)
@@ -46,7 +52,7 @@ export const categoriesModule = new Elysia({ prefix: '/categories' })
     return updated;
   }, {
     params: t.Object({ id: t.String() }),
-    body: categorySchema.partial(),
+    body: categoryUpdateSchema,
     admin: true,
   })
   .delete('/:id', async ({ params }) => {

@@ -1,6 +1,6 @@
 import { Elysia, t, status } from 'elysia';
 import { authPlugin } from '@/src/server/plugins/auth';
-import { competitionInputSchema, timelineItemSchema } from './model';
+import { competitionInputSchema, competitionUpdateSchema, timelineItemSchema } from './model';
 import * as service from './service';
 
 /**
@@ -42,7 +42,17 @@ export const competitionsModule = new Elysia({ prefix: '/competitions' })
     return comp;
   }, {
     params: t.Object({ id: t.String() }),
-    body: competitionInputSchema.partial(),
+    body: competitionUpdateSchema,
+    admin: true,
+  })
+
+  .patch('/:id', async ({ params, body }) => {
+    const comp = await service.updateCompetition(params.id, body);
+    if (!comp) return status(404, { error: 'Not found' });
+    return comp;
+  }, {
+    params: t.Object({ id: t.String() }),
+    body: competitionUpdateSchema,
     admin: true,
   })
 

@@ -15,6 +15,15 @@ const sponsorSchema = z.object({
   sortOrder: z.number().int().optional().default(0),
 });
 
+const sponsorUpdateSchema = z.object({
+  name: z.string().min(1, 'Nama sponsor wajib diisi').optional(),
+  tier: z.string().optional(),
+  website: z.string().nullable().optional(),
+  logo: z.string().nullable().optional(),
+  isCurrent: z.boolean().optional(),
+  sortOrder: z.number().int().optional(),
+});
+
 export const sponsorsModule = new Elysia({ prefix: '/sponsors' })
   .use(authPlugin)
   .get('/', () => db.select().from(sponsors).orderBy(asc(sponsors.sortOrder)))
@@ -63,7 +72,7 @@ export const sponsorsModule = new Elysia({ prefix: '/sponsors' })
     return item;
   }, {
     params: t.Object({ id: t.String() }),
-    body: sponsorSchema.partial(),
+    body: sponsorUpdateSchema,
     admin: true,
   })
   .delete('/:id', async ({ params }) => {

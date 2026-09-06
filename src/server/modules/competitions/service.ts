@@ -105,6 +105,8 @@ export async function createCompetition(input: CompetitionInput) {
       fee: isFree ? 0 : (input.fee ?? 0),
       hasBatches: input.hasBatches ? '1' : '0',
       batches: input.batches ?? [],
+      guidebookSections: input.guidebookSections ?? [],
+      customFields: input.customFields ?? [],
       maxSlots: input.maxSlots,
       filledSlots: input.filledSlots,
       scheduleDate: input.scheduleDate ? new Date(input.scheduleDate) : null,
@@ -155,6 +157,12 @@ export async function updateCompetition(id: string, input: Partial<CompetitionIn
   }
   if (input.batches !== undefined) {
     updates.batches = input.batches;
+  }
+  if (input.guidebookSections !== undefined) {
+    updates.guidebookSections = input.guidebookSections;
+  }
+  if (input.customFields !== undefined) {
+    updates.customFields = input.customFields;
   }
 
   if (input.maxSlots !== undefined) updates.maxSlots = input.maxSlots;
