@@ -45,3 +45,5 @@ next-env.d.ts
 .claude/
 .commandcode/
 .oxlintrc.json
+
+committe-photos/

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import { Reorder } from "framer-motion";
@@ -107,7 +107,34 @@ export default function CommitteePage() {
     linkedin: "",
   });
   const [uploading, setUploading] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+
+  const handleFileUpload = async (file: File) => {
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      toast.error("File harus berupa gambar (PNG, JPG, WEBP, GIF)");
+      return;
+    }
+    setUploading(true);
+    try {
+      const uploadRes = await apiHelpers.uploadCommittee(file);
+      const url = uploadRes?.url;
+      if (url) {
+        setForm((prev) => ({ ...prev, image: url }));
+        toast.success("Foto panitia berhasil diunggah (maks. 30MB)");
+      }
+    } catch (err: unknown) {
+      const errorMsg =
+        err instanceof Error ? err.message : "Gagal mengunggah file";
+      toast.error(errorMsg);
+      console.error("Upload failed", err);
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
 
   const invalidate = () => {
     qc.invalidateQueries({ queryKey: queryKeys.committeeMembers.all });
@@ -619,80 +646,159 @@ export default function CommitteePage() {
                 <Input value={form.linkedin} onChange={(e) => setForm({ ...form, linkedin: e.target.value })} placeholder="URL LinkedIn" />
               </Field>
               <Field>
-                <FieldLabel required>Foto</FieldLabel>
-                <div className="space-y-2">
-                  <Input
-                    value={form.image}
-                    onChange={(e) => setForm({ ...form, image: e.target.value })}
-                    placeholder="URL Google Drive / link gambar langsung (PNG, JPG, WEBP)..."
-                    className="flex-1"
-                  />
-                  {form.image && (
-                    <p className={cn(
-                      "text-[10px] font-semibold",
-                      normalizeImageUrl(form.image) !== form.image || form.image.startsWith('https://lh3.googleusercontent.com/d/')
-                        ? "text-emerald-600"
-                        : "text-muted-foreground"
-                    )}>
-                      {form.image.startsWith('https://drive.google.com/') || form.image.startsWith('https://docs.google.com/')
-                        ? "Link Google Drive terdeteksi — akan dikonversi otomatis menjadi URL gambar."
-                        : "Foto akan disimpan sebagai URL gambar."}
-                    </p>
-                  )}
-                  <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
-                    <span>atau</span>
-                    <label className="cursor-pointer">
-                      <span className={cn(
-                        "clip-angled-sm inline-block border border-border px-3 py-1 text-[10px] font-bold uppercase tracking-wider transition-colors",
-                        uploading ? "bg-primary text-primary-foreground opacity-70 cursor-not-allowed" : "bg-muted text-muted-foreground hover:bg-accent"
+                <FieldLabel required>Foto Panitia</FieldLabel>
+                <div className="space-y-2.5">
+                  {/* Drag and Drop Zone */}
+                  <div
+                    onDragOver={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      if (!uploading) setIsDragging(true);
+                    }}
+                    onDragEnter={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      if (!uploading) setIsDragging(true);
+                    }}
+                    onDragLeave={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setIsDragging(false);
+                    }}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setIsDragging(false);
+                      if (uploading) return;
+                      const file = e.dataTransfer.files?.[0];
+                      if (file) handleFileUpload(file);
+                    }}
+                    onClick={() => fileInputRef.current?.click()}
+                    className={cn(
+                      "group relative flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed p-4 text-center transition-all cursor-pointer",
+                      isDragging
+                        ? "border-primary bg-primary/10 scale-[1.01] shadow-inner"
+                        : form.image
+                          ? "border-border/80 bg-muted/20 hover:border-primary/50 hover:bg-muted/40"
+                          : "border-border hover:border-primary/60 hover:bg-muted/30 bg-muted/10",
+                      uploading && "opacity-60 pointer-events-none"
+                    )}
+                  >
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      disabled={uploading}
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) handleFileUpload(file);
+                      }}
+                    />
+
+                    {form.image ? (
+                      <div className="flex items-center gap-3 w-full" onClick={(e) => e.stopPropagation()}>
+                        <button
+                          type="button"
+                          onClick={() => setPreviewImage(form.image)}
+                          className="overflow-hidden rounded-md border border-border transition-opacity hover:opacity-80 shrink-0"
+                        >
+                          <Image
+                            src={prepareImage(form.image)}
+                            alt="Preview"
+                            width={56}
+                            height={56}
+                            unoptimized
+                            className="size-14 object-cover"
+                          />
+                        </button>
+                        <div className="flex-1 text-left min-w-0">
+                          <p className="text-xs font-bold text-foreground truncate">Foto Terpasang</p>
+                          <p className="text-[11px] text-muted-foreground truncate">
+                            Tarik & lepas foto baru di sini untuk mengganti
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            disabled={uploading}
+                            onClick={() => fileInputRef.current?.click()}
+                            className="text-[10px] font-bold uppercase tracking-wider"
+                          >
+                            {uploading ? (
+                              <>
+                                <Spinner data-icon="inline-start" /> Mengunggah...
+                              </>
+                            ) : (
+                              "Ganti Foto"
+                            )}
+                          </Button>
+                          {!uploading && (
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon-xs"
+                              onClick={() => setForm({ ...form, image: "" })}
+                              className="text-muted-foreground hover:text-destructive"
+                              aria-label="Hapus foto"
+                            >
+                              <Trash2 className="size-3.5" />
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                    ) : (
+                      <>
+                        <div className={cn(
+                          "flex size-10 items-center justify-center rounded-full transition-colors",
+                          isDragging
+                            ? "bg-primary text-primary-foreground animate-bounce"
+                            : "bg-muted text-muted-foreground group-hover:text-primary group-hover:bg-primary/10"
+                        )}>
+                          {uploading ? <Spinner className="size-5" /> : <UploadCloud className="size-5" />}
+                        </div>
+                        <div>
+                          <p className="text-xs font-semibold text-foreground">
+                            {uploading
+                              ? "Sedang mengunggah foto..."
+                              : isDragging
+                                ? "Lepaskan file di sini..."
+                                : "Tarik & lepas foto panitia di sini, atau klik untuk memilih"}
+                          </p>
+                          <p className="text-[10px] text-muted-foreground mt-0.5">
+                            PNG, JPG, WEBP (maksimal 30 MB)
+                          </p>
+                        </div>
+                      </>
+                    )}
+                  </div>
+
+                  {/* Direct URL input fallback / Google Drive */}
+                  <div className="space-y-1">
+                    <Input
+                      value={form.image}
+                      onChange={(e) => setForm({ ...form, image: e.target.value })}
+                      placeholder="Atau tempel URL Google Drive / link gambar langsung..."
+                      className="text-xs h-8"
+                    />
+                    {form.image && (
+                      <p className={cn(
+                        "text-[10px] font-medium",
+                        normalizeImageUrl(form.image) !== form.image || form.image.startsWith('https://lh3.googleusercontent.com/d/')
+                          ? "text-emerald-600 dark:text-emerald-400"
+                          : "text-muted-foreground"
                       )}>
-                        {uploading ? "Mengunggah..." : "Upload File (Maks. 30MB)"}
-                      </span>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        className="hidden"
-                        disabled={uploading}
-                        onChange={async (e) => {
-                          const file = e.target.files?.[0];
-                          if (!file) return;
-                          setUploading(true);
-                          try {
-                            const uploadRes = await apiHelpers.uploadCommittee(file);
-                            const url = uploadRes?.url;
-                            if (url) {
-                              setForm({ ...form, image: url });
-                              toast.success('Foto panitia berhasil diunggah (maks. 30MB)');
-                            }
-                          } catch (err: unknown) {
-                            const errorMsg = err instanceof Error ? err.message : 'Gagal mengunggah file';
-                            toast.error(errorMsg);
-                            console.error("Upload failed", err);
-                          } finally {
-                            setUploading(false);
-                            e.target.value = '';
-                          }
-                        }}
-                      />
-                    </label>
-                    <span className="ml-auto">Paste link Drive: <code className="rounded bg-muted px-1 py-0.5">drive.google.com/file/d/…</code></span>
+                        {form.image.startsWith('https://drive.google.com/') || form.image.startsWith('https://docs.google.com/')
+                          ? "✓ Link Google Drive terdeteksi — otomatis dikonversi ke gambar."
+                          : "Link langsung tersimpan."}
+                      </p>
+                    )}
                   </div>
                 </div>
               </Field>
             </FieldGroup>
-            {form.image && (
-              <div className="clip-angled-sm flex items-center gap-3 border border-border bg-muted/50 p-3">
-                <button
-                  type="button"
-                  onClick={() => setPreviewImage(form.image)}
-                  className="overflow-hidden rounded-full transition-opacity hover:opacity-80"
-                >
-                  <Image src={prepareImage(form.image)} alt="Preview" width={48} height={48} unoptimized className="size-12 object-cover" />
-                </button>
-                <span className="text-xs text-muted-foreground">Preview</span>
-                <Button variant="ghost" size="sm" onClick={() => setForm({ ...form, image: "" })} className="ml-auto text-xs text-destructive hover:text-destructive">Hapus</Button>
-              </div>
-            )}
             <div className="flex gap-2 pt-2">
               <Button onClick={handleSave} disabled={saving} className="clip-angled-sm gap-1 text-xs font-bold uppercase tracking-wider">
                 {saving ? <Spinner data-icon="inline-start" /> : <Check data-icon="inline-start" />} Simpan

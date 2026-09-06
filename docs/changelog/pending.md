@@ -29,3 +29,8 @@
 [23:09] - [src/lib/image-compression.ts] - [ADD] - Client-side HTML5 Canvas image compression utility (WebP, max 1600px/1200px) to safeguard Supabase Free Tier storage & egress
 [23:09] - [src/lib/api.ts] - [UPDATE] - Integrate auto-compression into upload, uploadCommittee, and uploadPlayerPhoto, allowing up to 20-30MB raw file input
 [23:09] - [app/register/[id]/PlayerPhotoField.tsx] - [UPDATE] - Clarify auto-optimization for player photo upload
+[20:30] - [committe-photos/] - [FETCH] - Download all 70 committee member photos from Figma via MCP (1080x1350 scale 1x, named Divisi_Jabatan_Nama.png)
+[21:02] - [committe-photos/] - [ORGANIZE] - Sort all 70 photos into division subfolders and clean up temporary helper scripts
+[21:06] - [.gitignore] - [UPDATE] - Add committe-photos/ to ignore downloaded committee asset folder from git
+[21:09] - [app/register/[id]/PlayerPhotoField.tsx] - [UPDATE] - Implement Drag & Drop image upload with visual feedback for player photos
+[21:09] - [app/dashboard/committee/page.tsx] - [UPDATE] - Implement Drag & Drop dropzone for committee photo uploads with live preview and drive link support
