@@ -646,7 +646,7 @@ export default function CommitteePage() {
                         "clip-angled-sm inline-block border border-border px-3 py-1 text-[10px] font-bold uppercase tracking-wider transition-colors",
                         uploading ? "bg-primary text-primary-foreground opacity-70 cursor-not-allowed" : "bg-muted text-muted-foreground hover:bg-accent"
                       )}>
-                        {uploading ? "Mengunggah..." : "Upload File"}
+                        {uploading ? "Mengunggah..." : "Upload File (Maks. 30MB)"}
                       </span>
                       <input
                         type="file"
@@ -658,14 +658,15 @@ export default function CommitteePage() {
                           if (!file) return;
                           setUploading(true);
                           try {
-                            const uploadRes = await apiHelpers.upload(file);
-                            const url = (uploadRes as any)?.url;
+                            const uploadRes = await apiHelpers.uploadCommittee(file);
+                            const url = uploadRes?.url;
                             if (url) {
                               setForm({ ...form, image: url });
-                              toast.success('File berhasil diunggah');
+                              toast.success('Foto panitia berhasil diunggah (maks. 30MB)');
                             }
-                          } catch (err: any) {
-                            toast.error(err.message || 'Gagal mengunggah file');
+                          } catch (err: unknown) {
+                            const errorMsg = err instanceof Error ? err.message : 'Gagal mengunggah file';
+                            toast.error(errorMsg);
                             console.error("Upload failed", err);
                           } finally {
                             setUploading(false);

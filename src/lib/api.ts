@@ -1,4 +1,5 @@
 import { api } from '@/src/lib/eden';
+import { compressImage } from '@/src/lib/image-compression';
 
 /** Parse a server error payload into a clean, human-readable message. */
 export function getApiError(err: unknown, fallback = 'Request failed'): string {
@@ -38,7 +39,9 @@ export function getApiError(err: unknown, fallback = 'Request failed'): string {
         if (parsed.type === 'validation' && (parsed.summary || parsed.message)) {
           const msg = parsed.summary || parsed.message;
           if (msg.includes('Expected file size to not exceed')) {
-            return 'Ukuran file terlalu besar (maksimal 10MB)';
+            const match = msg.match(/Expected file size to not exceed (\d+)/i);
+            const mb = match ? Math.round(Number(match[1]) / (1024 * 1024)) : 10;
+            return `Ukuran file terlalu besar (maksimal ${mb}MB)`;
           }
           if (msg.includes('Expected File')) {
             return 'Format file tidak didukung atau file kosong';
@@ -49,7 +52,9 @@ export function getApiError(err: unknown, fallback = 'Request failed'): string {
     } catch {
       // Handle Elysia raw validation string messages
       if (raw.includes('Expected file size to not exceed')) {
-        return 'Ukuran file terlalu besar (maksimal 10MB)';
+        const match = raw.match(/Expected file size to not exceed (\d+)/i);
+        const mb = match ? Math.round(Number(match[1]) / (1024 * 1024)) : 10;
+        return `Ukuran file terlalu besar (maksimal ${mb}MB)`;
       }
       if (raw.includes('Expected File')) {
         return 'Format file tidak didukung atau file kosong';
@@ -60,7 +65,9 @@ export function getApiError(err: unknown, fallback = 'Request failed'): string {
   
   if (typeof raw === 'string') {
     if (raw.includes('Expected file size to not exceed')) {
-      return 'Ukuran file terlalu besar (maksimal 10MB)';
+      const match = raw.match(/Expected file size to not exceed (\d+)/i);
+      const mb = match ? Math.round(Number(match[1]) / (1024 * 1024)) : 10;
+      return `Ukuran file terlalu besar (maksimal ${mb}MB)`;
     }
     if (raw.includes('Expected File')) {
       return 'Format file tidak didukung atau file kosong';
@@ -248,17 +255,27 @@ export const apiHelpers = {
     remove: (id: number) => unwrap(api['certificate-templates']({ id }).delete()),
   },
 
-  // Upload (multipart, admin) — fails fast on oversized files client-side too
-  upload: (file: File) => {
-    const MAX = 10 * 1024 * 1024;
-    if (file.size > MAX) {
-      return Promise.reject(new Error('File terlalu besar (maksimal 10MB)'));
+  // Upload (multipart, admin) — auto-compresses photos client-side before upload to protect Supabase Storage
+  upload: async (file: File, options?: { isCommittee?: boolean }): Promise<{ url: string }> => {
+    if (options?.isCommittee) {
+      return apiHelpers.uploadCommittee(file);
+    }
+    const RAW_MAX = 30 * 1024 * 1024;
+    if (file.size > RAW_MAX) {
+      return Promise.reject(new Error('File terlalu besar (maksimal 30MB)'));
     }
     if (file.size === 0) {
       return Promise.reject(new Error('File kosong'));
     }
+
+    const processedFile = await compressImage(file, { maxDimension: 1600, quality: 0.85 });
+    const SERVER_MAX = 10 * 1024 * 1024;
+    if (processedFile.size > SERVER_MAX) {
+      return Promise.reject(new Error('Ukuran file setelah kompresi melebihi 10MB'));
+    }
+
     return api.upload
-      .post({ file } as never)
+      .post({ file: processedFile } as never)
       .then((res) => {
         if (res.error) {
           throw new Error(getApiError(res.error, 'Upload gagal'));
@@ -267,17 +284,46 @@ export const apiHelpers = {
       });
   },
 
-  // Player photo (multipart, anonymous) — images only, 5MB cap
-  uploadPlayerPhoto: (file: File) => {
-    const MAX = 5 * 1024 * 1024;
-    if (file.size > MAX) {
-      return Promise.reject(new Error('Foto terlalu besar (maksimal 5MB)'));
+  // Committee photo upload (multipart, admin) — allows up to 30MB raw photos, auto-compressed to WebP
+  uploadCommittee: async (file: File): Promise<{ url: string }> => {
+    const RAW_MAX = 30 * 1024 * 1024;
+    if (file.size > RAW_MAX) {
+      return Promise.reject(new Error('File terlalu besar (maksimal 30MB)'));
     }
     if (file.size === 0) {
       return Promise.reject(new Error('File kosong'));
     }
+
+    const processedFile = await compressImage(file, { maxDimension: 1600, quality: 0.85 });
+
+    return api.upload.committee
+      .post({ file: processedFile } as never)
+      .then((res) => {
+        if (res.error) {
+          throw new Error(getApiError(res.error, 'Upload gagal'));
+        }
+        return res.data as { url: string };
+      });
+  },
+
+  // Player photo (multipart, anonymous) — raw photos up to 20MB auto-compressed to lightweight WebP
+  uploadPlayerPhoto: async (file: File): Promise<{ url: string }> => {
+    const RAW_MAX = 20 * 1024 * 1024;
+    if (file.size > RAW_MAX) {
+      return Promise.reject(new Error('Foto terlalu besar (maksimal 20MB)'));
+    }
+    if (file.size === 0) {
+      return Promise.reject(new Error('File kosong'));
+    }
+
+    const processedFile = await compressImage(file, { maxDimension: 1200, quality: 0.82 });
+    const SERVER_MAX = 5 * 1024 * 1024;
+    if (processedFile.size > SERVER_MAX) {
+      return Promise.reject(new Error('Foto setelah kompresi melebihi 5MB'));
+    }
+
     return api.upload['player-photo']
-      .post({ file } as never)
+      .post({ file: processedFile } as never)
       .then((res) => {
         if (res.error) {
           throw new Error(getApiError(res.error, 'Upload foto gagal'));

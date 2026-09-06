@@ -23,3 +23,9 @@
 [22:47] - [components/HeroSection.tsx] - [UPDATE] - Calibrate Hero typography clamp, container vertical centering, and compact card padding so entire hero fits above the fold on laptop screens
 [22:50] - [components/HeroSection.tsx] - [UPDATE] - Redesign Hero announcement card to match ASTRO signature theme (angled polygon clip, corner cyan accent, 3-column metric blocks)
 [22:53] - [components/HeroSection.tsx] - [UPDATE] - Replace heavy announcement card with ultra-clean Parallelogram Status Badge (Opsi 3): "ASTRO 2026 • PENDAFTARAN SEGERA DIBUKA (TBA)" matching button skew
+[22:58] - [src/server/modules/upload/index.ts] - [UPDATE] - Add MAX_COMMITTEE_UPLOAD_SIZE (30MB) and /upload/committee endpoint for committee staff photos
+[22:58] - [src/lib/api.ts] - [UPDATE] - Add apiHelpers.uploadCommittee with 30MB limit, support isCommittee flag in upload, and dynamic MB formatting in getApiError
+[22:58] - [app/dashboard/committee/page.tsx] - [UPDATE] - Connect committee modal to uploadCommittee and show 30MB max upload size in UI
+[23:09] - [src/lib/image-compression.ts] - [ADD] - Client-side HTML5 Canvas image compression utility (WebP, max 1600px/1200px) to safeguard Supabase Free Tier storage & egress
+[23:09] - [src/lib/api.ts] - [UPDATE] - Integrate auto-compression into upload, uploadCommittee, and uploadPlayerPhoto, allowing up to 20-30MB raw file input
+[23:09] - [app/register/[id]/PlayerPhotoField.tsx] - [UPDATE] - Clarify auto-optimization for player photo upload

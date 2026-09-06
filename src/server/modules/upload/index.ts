@@ -4,6 +4,8 @@ import { createClient } from '@supabase/supabase-js';
 import { randomUUID } from 'node:crypto';
 
 export const MAX_UPLOAD_SIZE = 10 * 1024 * 1024; // 10 MB
+/** Exclusion for Committee member uploads (allows high-res portrait photos up to 30 MB). */
+export const MAX_COMMITTEE_UPLOAD_SIZE = 30 * 1024 * 1024; // 30 MB
 /** Anonymous uploads (player photos) get a tighter cap than admin uploads. */
 export const MAX_PUBLIC_UPLOAD_SIZE = 5 * 1024 * 1024; // 5 MB
 
@@ -130,6 +132,29 @@ export const uploadModule = new Elysia({ prefix: '/upload' })
   }, {
     body: t.Object({
       file: t.File({ maxSize: MAX_UPLOAD_SIZE }),
+    }),
+    admin: true,
+  })
+
+  /**
+   * Committee member photo upload (admin) — exclusion for committee photos
+   * allowing higher resolution photos up to 30 MB.
+   */
+  .post('/committee', async ({ body, user }) => {
+    if (user?.role !== 'admin') return status(403, { error: 'Forbidden' });
+
+    const file = body.file;
+    if (!file) return status(400, { error: 'File tidak ditemukan' });
+
+    const result = await storeUpload(file, {
+      maxSize: MAX_COMMITTEE_UPLOAD_SIZE,
+      imagesOnly: true,
+    });
+    if ('error' in result) return status(result.status, { error: result.error });
+    return result;
+  }, {
+    body: t.Object({
+      file: t.File({ maxSize: MAX_COMMITTEE_UPLOAD_SIZE }),
     }),
     admin: true,
   })

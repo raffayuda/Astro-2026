@@ -117,7 +117,7 @@ export default function PlayerPhotoField({
       <FieldLabel required={required}>{label}</FieldLabel>
       {picker}
       <p className="text-[11px] font-light text-muted-foreground">
-        Foto pemain (formal atau non-formal), PNG/JPG/WEBP maks. 5MB.
+        Foto pemain (formal atau non-formal), PNG/JPG/WEBP (otomatis dioptimasi).
       </p>
       {error ? <FieldError>{error}</FieldError> : null}
     </Field>
