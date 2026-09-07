@@ -53,16 +53,26 @@
   --color-surface-dark: #b8e4fb;
   --color-surface-mid: #f3f4f6;
 
-  /* ── Sticker shadows (hard offset, no blur) ──
-     Literal hex, not var(), because @theme inline substitutes values at build time.
-     Tailwind's own --shadow-sm/md/lg are deliberately NOT overridden: a hard navy
-     offset on dropdowns, popovers and dialogs reads as broken chrome. Brand surfaces
-     opt in via shadow-sticker*. */
-  --shadow-sticker-sm: 0 2px 0 #1e3a8a, inset 0 2px 0 rgba(255, 255, 255, 0.55);
-  --shadow-sticker: 0 4px 0 #1e3a8a, inset 0 2px 0 rgba(255, 255, 255, 0.6);
-  --shadow-sticker-lg: 0 6px 0 #1e3a8a, inset 0 2px 0 rgba(255, 255, 255, 0.65);
-  --shadow-sticker-xl: 0 9px 0 #1e3a8a, inset 0 2px 0 rgba(255, 255, 255, 0.65);
+  /* ── Shadows ──
+     The component style guide uses SOFT DIFFUSE shadows on borderless gradient
+     surfaces, so those are the default. The hard-offset "sticker" set is kept for
+     poster-style surfaces (chevron frames, price pills) that genuinely want it.
+     Tailwind's own --shadow-sm/md/lg are deliberately left alone so dropdowns,
+     popovers and dialogs keep neutral elevation. */
+  --shadow-soft-sm: 0 1px 2px rgba(30, 58, 138, 0.06), 0 2px 6px rgba(30, 58, 138, 0.06);
+  --shadow-soft: 0 2px 4px rgba(30, 58, 138, 0.06), 0 8px 20px rgba(30, 58, 138, 0.1);
+  --shadow-soft-lg: 0 4px 8px rgba(30, 58, 138, 0.07), 0 16px 36px rgba(30, 58, 138, 0.14);
+  --shadow-glow-blue: 0 6px 18px rgba(59, 130, 246, 0.38);
+  --shadow-glow-orange: 0 6px 18px rgba(255, 158, 100, 0.4);
+  --shadow-glow-pink: 0 6px 18px rgba(236, 72, 153, 0.35);
+  --shadow-sticker-sm: 0 2px 0 #1e3a8a;
+  --shadow-sticker: 0 4px 0 #1e3a8a;
+  --shadow-sticker-lg: 0 6px 0 #1e3a8a;
   --shadow-gloss: inset 0 2px 0 rgba(255, 255, 255, 0.65);
+  --shadow-inset-screen: inset 0 4px 12px rgba(0, 0, 0, 0.35);
+
+  /* Micro-label size used by talent chips and stat captions. */
+  --text-2xs: 0.625rem;
 
   --animate-shimmer: shimmer 2.5s ease-in-out infinite;
 
@@ -238,35 +248,40 @@ body {
   background-size: 2.8rem 2.8rem, 4rem 4rem, 4rem 4rem;
 }
 
-/* ── Sticker card. `astro-card` is the legacy alias applied at ~30 sites. ── */
+/* ── Surface card. `astro-card` is the legacy alias applied at ~30 sites.
+      Borderless + soft shadow, per the component style guide. ── */
 @utility astro-sticker {
-  border: 3px solid var(--color-astro-navy);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-xl);
   background: #ffffff;
-  box-shadow: var(--shadow-sticker), var(--shadow-gloss);
+  box-shadow: var(--shadow-soft);
 }
 
 @utility astro-card {
-  border: 3px solid var(--color-astro-navy);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-xl);
   background: #ffffff;
-  box-shadow: var(--shadow-sticker), var(--shadow-gloss);
+  box-shadow: var(--shadow-soft);
 }
 
-/* ── Inverted blue panel (dashboard page headers) ── */
+/* ── Inverted blue gradient panel (dashboard page headers) ── */
 @utility astro-panel {
-  border: 3px solid #ffffff;
   border-radius: var(--radius-xl);
-  background: linear-gradient(180deg, #3b82f6 0%, #1e3a8a 100%);
-  box-shadow: var(--shadow-sticker-lg), var(--shadow-gloss);
+  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 55%, #60a5fa 100%);
+  box-shadow: var(--shadow-soft-lg);
 }
 
 /* ── Pill / chip ── */
 @utility astro-pill {
-  border: 3px solid var(--color-astro-navy);
-  border-radius: 999px;
+  border-radius: 9999px;
   background: #ffffff;
-  box-shadow: var(--shadow-sticker-sm), var(--shadow-gloss);
+  box-shadow: var(--shadow-soft-sm);
+}
+
+/* ── Poster-style bordered sticker, for surfaces that want the hard offset ── */
+@utility astro-sticker-hard {
+  border: 3px solid var(--color-astro-navy);
+  border-radius: var(--radius-xl);
+  background: #ffffff;
+  box-shadow: var(--shadow-sticker), var(--shadow-gloss);
 }
 
 /* ── Glossy chrome display type.
