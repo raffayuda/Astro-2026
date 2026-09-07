@@ -28,7 +28,7 @@ export default function ProfileHero() {
   return (
     <section
       id="home"
-      className="bg-linear-to-b from-sky-top via-sky-mid to-white relative flex min-h-[100svh] flex-col items-center justify-start overflow-hidden pt-[18svh] md:pt-[15svh]"
+      className="bg-linear-to-b from-sky-top via-sky-mid to-white relative flex min-h-svh flex-col items-center justify-start overflow-hidden pt-[18svh] md:pt-[15svh]"
     >
       <Bubbles preset="sparse" />
       <ChevronRibbon edge="top" />

@@ -9,10 +9,11 @@ import Navbar from '@/components/Navbar';
 import HeroSection from '@/components/HeroSection';
 import StatsBar from '@/components/StatsBar';
 import Footer from '@/components/Footer';
+import ScheduleAndPricing from '@/components/ScheduleAndPricing';
+import { FloatingCta } from '@/components/brand';
 import astroData from '@/data/astro-data.json';
 
 const AboutSection = nextDynamic(() => import('@/components/AboutSection'), { ssr: true });
-const TimelineSection = nextDynamic(() => import('@/components/TimelineSection'), { ssr: true });
 const SponsorSection = nextDynamic(() => import('@/components/SponsorSection'), { ssr: true });
 const FAQSection = nextDynamic(() => import('@/components/FAQSection'), { ssr: true });
 
@@ -83,11 +84,9 @@ export default async function Home() {
       <main>
         <HeroSection eventConfig={data.eventConfig} />
         <StatsBar data={data} />
+        <ScheduleAndPricing timeline={data.timeline} eventConfig={data.eventConfig} />
         <Suspense fallback={<SectionFallback className="py-24 md:py-32" />}>
           <AboutSection competitions={data.competitions} />
-        </Suspense>
-        <Suspense fallback={<SectionFallback className="py-24 md:py-32" />}>
-          <TimelineSection timeline={data.timeline} />
         </Suspense>
         <Suspense fallback={<SectionFallback className="py-24 md:py-32" />}>
           <FAQSection faqs={data.faqs} />
@@ -97,6 +96,7 @@ export default async function Home() {
         </Suspense>
       </main>
       <Footer />
+      <FloatingCta />
     </>
   );
 }

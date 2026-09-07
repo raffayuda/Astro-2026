@@ -144,7 +144,7 @@ export default function InviteAcceptPage({
   };
 
   return (
-    <div className="relative min-h-[100svh] flex flex-col items-center justify-center p-4 overflow-hidden">
+    <div className="relative min-h-svh flex flex-col items-center justify-center p-4 overflow-hidden">
       {/* Sky Background */}
       <div className="absolute inset-0 -z-10 bg-linear-to-b from-sky-400 via-sky-300 to-sky-100" />
 
