@@ -166,51 +166,34 @@ export default function QrisDisplay({
   };
 
   return (
-    <div className="w-full max-w-sm mx-auto space-y-4">
+    <div className="w-full max-w-sm mx-auto space-y-3">
       {/* ─── CARD CONTAINER ─── */}
       <div
         id={qrContainerId}
-        className="bg-white rounded-2xl border border-slate-200/90 p-5 sm:p-6 shadow-md text-left space-y-4"
+        className="bg-white rounded-2xl border border-slate-200/90 p-6 shadow-sm text-center space-y-5"
       >
-        {/* Identitas Merchant: Simpel Astro 2026 */}
-        <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-          <div className="flex items-center gap-2">
-            <span className="px-2 py-0.5 rounded bg-rose-600 text-white font-black text-[11px] tracking-wider uppercase">
-              QRIS
-            </span>
-            <span className="text-xs font-bold text-slate-900 uppercase tracking-wider">
-              Astro 2026
-            </span>
-          </div>
-          <span className="text-[11px] font-mono text-slate-400 font-medium">
-            {paymentReference}
+        {/* Header: Astro 2026 & Ref */}
+        <div className="flex items-center justify-between pb-3 border-b border-slate-100 text-xs font-semibold text-slate-500">
+          <span className="text-slate-900 font-bold uppercase tracking-wider">Astro 2026</span>
+          <span className="font-mono text-[11px] text-slate-400">{paymentReference}</span>
+        </div>
+
+        {/* Total Pembayaran */}
+        <div className="space-y-1">
+          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+            Total Pembayaran
           </span>
-        </div>
-
-        {/* Display Tagihan */}
-        <div className="flex items-center justify-between pt-1">
-          <div>
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
-              Total Tagihan
-            </span>
-            <div className="text-2xl sm:text-3xl font-black text-slate-950 tracking-tight">
-              {formatCurrency(amount)}
-            </div>
-          </div>
-          <div className="text-right">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-50 text-amber-900 font-bold text-[10px] uppercase tracking-wider border border-amber-200">
-              <span className="size-1.5 rounded-full bg-amber-500 animate-pulse" />
-              Menunggu Bayar
-            </span>
+          <div className="text-3xl font-black text-slate-950 tracking-tight">
+            {formatCurrency(amount)}
           </div>
         </div>
 
-        {/* QR Code Center Box */}
-        <div className="flex flex-col items-center gap-3 pt-1">
-          <div className="p-3 bg-white rounded-2xl border border-slate-200 shadow-xs inline-block">
+        {/* QR Code */}
+        <div className="flex flex-col items-center gap-3">
+          <div className="p-2.5 bg-white rounded-xl border border-slate-100 shadow-xs inline-block">
             <QRCodeSVG
               value={paymentCode}
-              size={230}
+              size={220}
               level="H"
               includeMargin={true}
               imageSettings={{
@@ -223,45 +206,34 @@ export default function QrisDisplay({
             />
           </div>
 
-          {/* Expiration Timer Countdown */}
+          {/* Sisa Waktu */}
           {expiresAt && (
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700">
+            <div className="flex items-center justify-center gap-1.5 text-xs text-slate-500 font-medium">
               <Clock className="size-3.5 text-amber-600" />
-              <span>Sisa Waktu:</span>
-              <span className={`font-mono font-bold ${isExpired ? 'text-red-600' : 'text-slate-900'}`}>
+              <span>Sisa waktu:</span>
+              <span className={`font-mono font-bold ${isExpired ? 'text-rose-600' : 'text-slate-800'}`}>
                 {timeLeft || 'Memuat...'}
               </span>
             </div>
           )}
         </div>
 
-        {/* Aksi Cepat */}
-        <div className="flex items-center gap-2 pt-1">
+        {/* Primary Action Button */}
+        <div className="space-y-2 pt-1">
           <Button
             type="button"
-            variant="outline"
-            size="sm"
+            size="lg"
             onClick={handleDownloadQr}
-            className="flex-1 text-xs font-bold gap-1.5 border-slate-300 text-slate-700 hover:bg-slate-50"
+            className="w-full text-xs font-bold uppercase tracking-wider gap-2 shadow-sm active:scale-95"
           >
-            <Download className="size-3.5 text-slate-700" /> Unduh QR
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={handleCopyCode}
-            className="flex-1 text-xs font-bold gap-1.5 border-slate-300 text-slate-700 hover:bg-slate-50"
-          >
-            {copied ? <Check className="size-3.5 text-emerald-600" /> : <Copy className="size-3.5 text-slate-700" />}
-            {copied ? 'Tersalin' : 'Salin Kode'}
+            <Download className="size-4" /> Unduh Gambar QR
           </Button>
         </div>
 
-        {/* Pita Jaringan */}
-        <div className="pt-3 border-t border-slate-100 text-center">
-          <p className="text-[10px] text-slate-500 leading-relaxed">
-            Mendukung seluruh m-Banking & e-Wallet: <strong className="text-slate-700">BCA, Mandiri, BRI, BNI, GoPay, OVO, DANA, ShopeePay</strong>, dan seluruh aplikasi berstandar QRIS.
+        {/* Subtext 1 baris */}
+        <div className="pt-2 border-t border-slate-100">
+          <p className="text-[11px] text-slate-400">
+            Scan dengan aplikasi m-Banking atau e-Wallet apa saja
           </p>
         </div>
       </div>
@@ -276,7 +248,7 @@ export default function QrisDisplay({
             className="text-[11px] text-slate-400 hover:text-cyan-700 hover:bg-transparent h-auto py-1"
           >
             <a href={paymentLinkUrl} target="_blank" rel="noopener noreferrer">
-              Mengalami kendala scan? Buka Halaman Checkout <ExternalLink className="size-3 ml-1" />
+              Kendala scan? Buka Halaman Checkout <ExternalLink className="size-3 ml-1" />
             </a>
           </Button>
         </div>

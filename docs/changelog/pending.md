@@ -113,3 +113,4 @@
 [11:32] - [app/register/[id]/PaymentStep.tsx] - [ADD] - Implement instant client-side fail-safe checkout API fetch and initialPaymentCode props so QRIS card renders immediately without falling back to redirect button
 [11:32] - [app/register/[id]/page.tsx] - [UPDATE] - Wire initialPaymentCode and initialPaymentCodeType from registration response into PaymentStep
 [11:32] - [app/register/[id]/FormStep.tsx] - [UPDATE] - Forward paymentCode and paymentCodeType in onContinue callback
+[11:41] - [components/QrisDisplay.tsx] - [UPDATE] - Redesign QRIS card to an ultra-clean minimalist layout: remove heavy badge noise, center prominent amount, focus on QR with embedded logo, single primary download action, and 1-line guidance
