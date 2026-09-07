@@ -296,7 +296,7 @@ export default function EventGallerySection() {
             {/* Main fullscreen image stage (landscape) */}
             <div className="relative z-10 flex-1 min-h-0 px-4 pb-2 md:px-12">
               <div className="relative h-full w-full overflow-hidden rounded-2xl border border-white/10 bg-slate-950 shadow-2xl">
-                {/* Animated shimmer skeleton while loading */}
+                {/* Animated pulse skeleton while loading */}
                 <SkeletonImage
                   key={photo.id}
                   src={normalizeImageUrl(photo.imageUrl)}

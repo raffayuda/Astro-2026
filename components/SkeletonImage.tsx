@@ -23,7 +23,7 @@ interface SkeletonImageProps {
 }
 
 /**
- * Image that shows an animated shimmer skeleton until the actual image has
+ * Image that shows an animated pulse skeleton until the actual image has
  * decoded/loaded. State is keyed by `imgKey`, so when you switch to a new
  * image (e.g. next/prev in a lightbox), the skeleton resets and the new image
  * fades in — while the surrounding data updates instantly.
