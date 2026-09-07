@@ -22,6 +22,7 @@ import {
   BenefitCard,
   ChevronRibbon,
   ChromeText,
+  ChromeTitle,
   CtaButton,
   Pill,
   PricePill,
@@ -267,13 +268,10 @@ export function DesignSystemClient() {
           <Pill tone="white" size="sm">
             Design System
           </Pill>
-          <ChromeText
-            as="h1"
-            depth="lg"
-            className="text-5xl sm:text-6xl lg:text-7xl"
-          >
-            Core Components
-          </ChromeText>
+          <ChromeTitle depth="lg" align="middle" className="max-w-3xl">
+            {`Core
+Components`}
+          </ChromeTitle>
           <p className="max-w-2xl text-sm font-semibold text-astro-navy sm:text-base">
             Every ASTRO 2026 surface is composed from the components below. No
             global astro-star CSS classes and no arbitrary Tailwind values:
@@ -332,16 +330,12 @@ export function DesignSystemClient() {
 
               <div className="flex flex-col gap-2">
                 <p className="text-10 font-bold uppercase tracking-widest text-muted-foreground">
-                  text-title-sm &mdash; Alexandria 700 / 126.06px ceiling
+                  ChromeTitle &mdash; SVG text, round-joined outline, scales to container
                 </p>
-                <ChromeText
-                  as="p"
-                  variant="outline"
-                  depth="md"
-                  className="text-title-sm"
-                >
-                  Firtiansyah
-                </ChromeText>
+                <ChromeTitle depth="md" className="max-w-xl">
+                  {`Firtiansyah
+Okta R.`}
+                </ChromeTitle>
               </div>
 
               <div className="flex flex-col gap-2">
