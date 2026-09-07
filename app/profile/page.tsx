@@ -431,7 +431,7 @@ export default function ProfilePage() {
                     <div
                       className={`astro-card relative h-full cursor-pointer overflow-hidden p-8 transition-all duration-500 hover:-translate-y-1 hover:border-[#3157ff]/45 md:p-10 ${
                         isFuture
-                          ? "border-astro-cyan/20 bg-gradient-to-br from-white to-cyan-50/30"
+                          ? "border-astro-cyan/20 bg-linear-to-br from-white to-cyan-50/30"
                           : ""
                       }`}
                       style={{
@@ -505,7 +505,7 @@ export default function ProfilePage() {
 
                       {/* Corner accent */}
                       <div
-                        className={`absolute top-0 ${isLarge ? "right-0" : "left-0"} w-12 h-1 bg-gradient-to-r from-astro-cyan to-transparent opacity-60`}
+                        className={`absolute top-0 ${isLarge ? "right-0" : "left-0"} w-12 h-1 bg-linear-to-r from-astro-cyan to-transparent opacity-60`}
                       />
                     </div>
                   </button>
@@ -544,7 +544,7 @@ export default function ProfilePage() {
           </DialogHeader>
 
           {/* Overlay header */}
-          <div className="relative overflow-hidden bg-gradient-to-br from-sky-500 via-cyan-500 to-sky-600 p-8 md:p-12">
+          <div className="relative overflow-hidden bg-linear-to-br from-sky-500 via-cyan-500 to-sky-600 p-8 md:p-12">
             <div className="absolute top-0 right-0 size-40 rounded-full bg-white/10 blur-[60px]" />
             <div className="absolute bottom-0 left-0 size-60 rounded-full bg-white/5 blur-[80px]" />
             <h2 className="font-masterpiece relative z-10 text-3xl leading-tight text-white md:text-5xl">

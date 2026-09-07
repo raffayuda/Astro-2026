@@ -96,7 +96,7 @@ export default function NotFound() {
                 404
               </h1>
               <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-                <span className="font-masterpiece text-8xl sm:text-9xl md:text-[11rem] leading-none text-transparent bg-clip-text bg-gradient-to-b from-white via-white/80 to-sky-200/50 opacity-90">
+                <span className="font-masterpiece text-8xl sm:text-9xl md:text-[11rem] leading-none text-transparent bg-clip-text bg-linear-to-b from-white via-white/80 to-sky-200/50 opacity-90">
                   404
                 </span>
               </div>

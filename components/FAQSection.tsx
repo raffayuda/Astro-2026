@@ -25,7 +25,7 @@ export default function FAQSection({ faqs }: Props) {
   return (
     <section id="faq" className="relative overflow-hidden py-24 md:py-32">
       {/* Background — starts at sky-100 (connects Timeline's bottom) → deeper sky */}
-      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-sky-100 via-sky-200 to-slate-50" />
+      <div className="absolute inset-0 -z-10 bg-linear-to-b from-sky-100 via-sky-200 to-slate-50" />
 
       {/* ─── FLOATING BLOB ROUND IMAGES ─── */}
       <MotionImage
@@ -87,7 +87,7 @@ export default function FAQSection({ faqs }: Props) {
 
       {/* Angular accent lines */}
       <div className="pointer-events-none absolute top-[20%] -left-[10%] size-[400px] rounded-full bg-sky-500/5 blur-[120px]" />
-      <div className="pointer-events-none absolute right-[5%] bottom-[30%] h-[2px] w-[100px] skew-x-[-12deg] bg-gradient-to-r from-sky-300/20 to-transparent" />
+      <div className="pointer-events-none absolute right-[5%] bottom-[30%] h-[2px] w-[100px] skew-x-[-12deg] bg-linear-to-r from-sky-300/20 to-transparent" />
 
       <div className="relative z-10 mx-auto mb-10 max-w-3xl px-4 sm:px-6">
         {/* Section Header */}
@@ -142,14 +142,14 @@ export default function FAQSection({ faqs }: Props) {
           transition={{ duration: 0.5, delay: 0.2 }}
         >
           <Card className="clip-angled-lg inline-flex flex-col items-center gap-3 border border-border bg-white p-8 shadow-sm">
-            <div className="clip-angled-sm border border-pink-200 bg-gradient-to-tr from-amber-50 via-rose-50 to-purple-50 p-3">
+            <div className="clip-angled-sm border border-pink-200 bg-linear-to-tr from-amber-50 via-rose-50 to-purple-50 p-3">
               <FaInstagram className="size-6 text-pink-600" />
             </div>
             <div>
               <p className="text-sm font-black uppercase tracking-wider text-foreground">Masih punya pertanyaan?</p>
               <p className="mt-1 text-sm font-light text-muted-foreground">Hubungi kami langsung melalui Direct Message Instagram.</p>
             </div>
-            <Button asChild variant="default" className="clip-angled bg-gradient-to-r from-purple-600 via-pink-600 to-rose-500 text-white text-xs font-black uppercase tracking-wider hover:opacity-90 active:scale-95 shadow-md">
+            <Button asChild variant="default" className="clip-angled bg-linear-to-r from-purple-600 via-pink-600 to-rose-500 text-white text-xs font-black uppercase tracking-wider hover:opacity-90 active:scale-95 shadow-md">
               <a href="https://instagram.com/astrosttnf" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
                 <FaInstagram className="size-4" /> Hubungi @astrosttnf
               </a>

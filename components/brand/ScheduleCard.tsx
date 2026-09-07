@@ -39,7 +39,7 @@ export function ScheduleCard({
         className
       )}
     >
-      <header className="bg-gradient-to-r from-amber-400 to-astro-gold px-4 py-2">
+      <header className="bg-linear-to-r from-amber-400 to-astro-gold px-4 py-2">
         <p className="text-center text-xs font-bold uppercase tracking-widest text-white">
           {bannerLabel}
         </p>

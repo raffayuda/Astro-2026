@@ -273,7 +273,7 @@ export default function AboutSection({ competitions }: Props) {
                     <ToggleGroupItem
                       key={opt.value}
                       value={opt.value}
-                      className="rounded-[14px] border border-[#83cfff]/80 bg-white/80 px-4 py-2 text-[10px] font-black uppercase tracking-[0.15em] text-[#3157ff] shadow-sm data-[state=on]:border-white data-[state=on]:bg-gradient-to-b data-[state=on]:from-[#28aaff] data-[state=on]:to-[#3157ff] data-[state=on]:text-white data-[state=on]:shadow-[0_8px_18px_rgba(49,87,255,0.22)]"
+                      className="rounded-[14px] border border-[#83cfff]/80 bg-white/80 px-4 py-2 text-[10px] font-black uppercase tracking-[0.15em] text-[#3157ff] shadow-sm data-[state=on]:border-white data-[state=on]:bg-linear-to-b data-[state=on]:from-[#28aaff] data-[state=on]:to-[#3157ff] data-[state=on]:text-white data-[state=on]:shadow-[0_8px_18px_rgba(49,87,255,0.22)]"
                     >
                       {opt.label}
                     </ToggleGroupItem>
@@ -299,7 +299,7 @@ export default function AboutSection({ competitions }: Props) {
                   <ToggleGroupItem
                     key={cat.value}
                     value={cat.value}
-                    className="rounded-[14px] border border-[#83cfff]/80 bg-white/80 px-4 py-2 text-[10px] font-black uppercase tracking-[0.15em] text-[#3157ff] shadow-sm data-[state=on]:border-white data-[state=on]:bg-gradient-to-b data-[state=on]:from-[#28aaff] data-[state=on]:to-[#3157ff] data-[state=on]:text-white data-[state=on]:shadow-[0_8px_18px_rgba(49,87,255,0.22)]"
+                    className="rounded-[14px] border border-[#83cfff]/80 bg-white/80 px-4 py-2 text-[10px] font-black uppercase tracking-[0.15em] text-[#3157ff] shadow-sm data-[state=on]:border-white data-[state=on]:bg-linear-to-b data-[state=on]:from-[#28aaff] data-[state=on]:to-[#3157ff] data-[state=on]:text-white data-[state=on]:shadow-[0_8px_18px_rgba(49,87,255,0.22)]"
                   >
                     {cat.label}
                   </ToggleGroupItem>

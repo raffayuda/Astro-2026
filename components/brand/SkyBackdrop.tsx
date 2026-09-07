@@ -42,10 +42,10 @@ export function SkyBackdrop({
       className={cn("pointer-events-none absolute inset-0 overflow-hidden", className)}
     >
       {tone === "bright" && (
-        <div className="absolute inset-0 bg-gradient-to-b from-sky-top via-sky-mid to-white" />
+        <div className="absolute inset-0 bg-linear-to-b from-sky-top via-sky-mid to-white" />
       )}
       {tone === "soft" && (
-        <div className="absolute inset-0 bg-gradient-to-b from-sky-bottom via-white to-white" />
+        <div className="absolute inset-0 bg-linear-to-b from-sky-bottom via-white to-white" />
       )}
 
       {clouds &&

@@ -9,12 +9,12 @@ const pillVariants = cva(
     variants: {
       tone: {
         white: "bg-white text-astro-navy shadow-soft-sm",
-        blue: "bg-gradient-to-r from-astro-blue to-cyan-400 text-white shadow-soft-sm",
+        blue: "bg-linear-to-r from-astro-blue to-cyan-400 text-white shadow-soft-sm",
         navy: "bg-astro-navy text-white shadow-soft-sm",
-        gold: "bg-gradient-to-r from-amber-400 to-astro-gold text-astro-navy shadow-soft-sm",
-        pink: "bg-gradient-to-r from-astro-pink to-pink-400 text-white shadow-soft-sm",
+        gold: "bg-linear-to-r from-amber-400 to-astro-gold text-astro-navy shadow-soft-sm",
+        pink: "bg-linear-to-r from-astro-pink to-pink-400 text-white shadow-soft-sm",
         orange:
-          "bg-gradient-to-r from-pastel-orange to-orange-300 text-white shadow-soft-sm",
+          "bg-linear-to-r from-pastel-orange to-orange-300 text-white shadow-soft-sm",
         glass: "bg-white/70 text-astro-navy ring-1 ring-inset ring-white",
       },
       size: {

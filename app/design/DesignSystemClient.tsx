@@ -29,6 +29,7 @@ import {
   ScheduleCard,
   SectionHeading,
   SectionShell,
+  SiteFooter,
   StatCard,
   Surface,
   TALENT_CATEGORIES,
@@ -45,7 +46,24 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp"
+import { Label } from "@/components/ui/label"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { Switch } from "@/components/ui/switch"
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { Textarea } from "@/components/ui/textarea"
 
 const COLOR_GROUPS = [
@@ -156,6 +174,54 @@ const SHADOWS = [
   { name: "shadow-sticker", cls: "shadow-sticker" },
 ]
 
+const PAGE_LAYOUTS = [
+  {
+    name: "Landing",
+    route: "/",
+    parts: ["SectionShell", "ChromeText", "StatCard", "ScheduleCard", "TalentCategoryCard", "PricePill", "CtaButton", "SiteFooter"],
+  },
+  {
+    name: "Company Profile",
+    route: "/profile",
+    parts: ["SectionShell", "SectionHeading", "Surface", "SiteFooter"],
+  },
+  {
+    name: "Competition Detail",
+    route: "/competitions/[id]",
+    parts: ["SectionShell", "ChromeText", "Pill", "ScheduleCard", "BenefitCard", "CtaButton"],
+  },
+  {
+    name: "Registration",
+    route: "/register/[id]",
+    parts: ["SectionShell", "Surface", "Label", "Input", "Select", "TalentCategoryCard", "PricePill", "CtaButton"],
+  },
+  {
+    name: "Sponsorship Proposal",
+    route: "/sponsorship",
+    parts: ["SectionShell", "StatCard", "RetroMonitorWidget", "Surface", "CtaButton", "SiteFooter"],
+  },
+  {
+    name: "Announcements",
+    route: "/announcements",
+    parts: ["SectionShell", "ToggleGroup", "Surface", "Badge", "SiteFooter"],
+  },
+  {
+    name: "Check Registration",
+    route: "/check-registration",
+    parts: ["SectionShell", "Surface", "Badge", "SiteFooter"],
+  },
+  {
+    name: "Auth",
+    route: "/login, /auth/signup",
+    parts: ["SectionShell", "Surface", "Label", "Input", "InputOTP", "Button"],
+  },
+  {
+    name: "Dashboard",
+    route: "/dashboard/*",
+    parts: ["Surface", "Card", "Table", "Badge", "Button", "Select", "Switch"],
+  },
+] as const
+
 /** One labelled block in the style guide. */
 function Spec({
   title,
@@ -187,6 +253,11 @@ function Spec({
 export function DesignSystemClient() {
   const [talent, setTalent] = React.useState<TalentId>("dance")
   const [tier, setTier] = React.useState("Gold")
+  const [checked, setChecked] = React.useState(true)
+  const [toggled, setToggled] = React.useState(true)
+  const [radio, setRadio] = React.useState("individu")
+  const [filter, setFilter] = React.useState("semua")
+  const [otp, setOtp] = React.useState("")
 
   return (
     <main className="relative min-h-screen pb-24">
@@ -495,6 +566,107 @@ export function DesignSystemClient() {
           </Spec>
 
           <Spec
+            title="Selection controls"
+            hint="Checkbox, RadioGroup, Switch, Select, ToggleGroup and InputOTP, all on the same cyan rail and blue active state."
+          >
+            <div className="flex flex-col gap-7">
+              <div className="flex flex-wrap items-center gap-8">
+                <div className="flex items-center gap-2">
+                  <Checkbox
+                    id="ds-check"
+                    checked={checked}
+                    onCheckedChange={(v) => setChecked(v === true)}
+                  />
+                  <Label htmlFor="ds-check">Saya menyetujui ketentuan</Label>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <Switch
+                    id="ds-switch"
+                    checked={toggled}
+                    onCheckedChange={setToggled}
+                  />
+                  <Label htmlFor="ds-switch">Notifikasi email</Label>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <Switch id="ds-switch-sm" size="sm" defaultChecked />
+                  <Label htmlFor="ds-switch-sm">size sm</Label>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <Label variant="micro">Tipe Pendaftaran</Label>
+                <RadioGroup
+                  value={radio}
+                  onValueChange={setRadio}
+                  className="flex flex-wrap gap-6"
+                >
+                  {[
+                    { value: "individu", label: "Individu" },
+                    { value: "kelompok", label: "Kelompok" },
+                  ].map((option) => (
+                    <div key={option.value} className="flex items-center gap-2">
+                      <RadioGroupItem
+                        id={`ds-radio-${option.value}`}
+                        value={option.value}
+                      />
+                      <Label htmlFor={`ds-radio-${option.value}`}>
+                        {option.label}
+                      </Label>
+                    </div>
+                  ))}
+                </RadioGroup>
+              </div>
+
+              <div className="grid gap-5 sm:grid-cols-2">
+                <div className="flex flex-col gap-1.5">
+                  <Label variant="micro" htmlFor="ds-select">
+                    Program Studi
+                  </Label>
+                  <Select>
+                    <SelectTrigger id="ds-select" className="w-full">
+                      <SelectValue placeholder="Pilih program studi" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="ti">Teknik Informatika</SelectItem>
+                      <SelectItem value="si">Sistem Informasi</SelectItem>
+                      <SelectItem value="bd">Bisnis Digital</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <Label variant="micro">Kode OTP</Label>
+                  <InputOTP maxLength={6} value={otp} onChange={setOtp}>
+                    <InputOTPGroup>
+                      {[0, 1, 2, 3, 4, 5].map((i) => (
+                        <InputOTPSlot key={i} index={i} />
+                      ))}
+                    </InputOTPGroup>
+                  </InputOTP>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <Label variant="micro">Filter Kategori</Label>
+                <ToggleGroup
+                  type="single"
+                  value={filter}
+                  onValueChange={(v) => v && setFilter(v)}
+                  className="flex flex-wrap gap-2"
+                >
+                  {["semua", "akademik", "olahraga", "esports"].map((v) => (
+                    <ToggleGroupItem key={v} value={v} className="px-4 capitalize">
+                      {v}
+                    </ToggleGroupItem>
+                  ))}
+                </ToggleGroup>
+              </div>
+            </div>
+          </Spec>
+
+          <Spec
             title="Card primitive"
             hint="The shadcn Card, retuned onto the soft-shadow surface."
           >
@@ -528,10 +700,50 @@ export function DesignSystemClient() {
           </Spec>
 
           <Spec
+            title="Site footer"
+            hint="SiteFooter: navy panel, social marks, contact details. Brand marks use react-icons because lucide v1 dropped them."
+          >
+            <div className="overflow-hidden rounded-xl">
+              <SiteFooter phone="+62 813-8468-1275" />
+            </div>
+          </Spec>
+
+          <Spec
+            title="Page layouts"
+            hint="Which components compose each route. Every page is assembled from the library above."
+          >
+            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+              {PAGE_LAYOUTS.map((page) => (
+                <Surface key={page.route} tone="tint" pad="md" radius="lg">
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="font-heading text-sm font-extrabold text-astro-navy">
+                        {page.name}
+                      </p>
+                      <code className="font-mono text-2xs text-muted-foreground">
+                        {page.route}
+                      </code>
+                    </div>
+                    <ul className="flex flex-wrap gap-1.5">
+                      {page.parts.map((part) => (
+                        <li key={part}>
+                          <Pill tone="white" size="sm" className="font-mono">
+                            {part}
+                          </Pill>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </Surface>
+              ))}
+            </div>
+          </Spec>
+
+          <Spec
             title="Decor"
             hint="ChevronRibbon, Bubbles and SkyBackdrop, all composed for you by SectionShell."
           >
-            <div className="relative h-40 overflow-hidden rounded-xl bg-gradient-to-b from-sky-top via-sky-mid to-white">
+            <div className="relative h-40 overflow-hidden rounded-xl bg-linear-to-b from-sky-top via-sky-mid to-white">
               <ChevronRibbon edge="top" />
               <ChevronRibbon edge="bottom" />
               <div className="grid h-full place-items-center">

@@ -109,7 +109,7 @@ export default function DashboardShell({ children, role, userName }: Props) {
                         isActive={isActive(item.href)}
                         className={cn(
                           isActive(item.href) &&
-                            'border border-[#83cfff]/70 bg-gradient-to-b from-[#28aaff]/15 to-[#3157ff]/10 text-[#3157ff] hover:bg-[#e8f8ff] hover:text-[#3157ff]'
+                            'border border-[#83cfff]/70 bg-linear-to-b from-[#28aaff]/15 to-[#3157ff]/10 text-[#3157ff] hover:bg-[#e8f8ff] hover:text-[#3157ff]'
                         )}
                       >
                         <Link href={item.href}>

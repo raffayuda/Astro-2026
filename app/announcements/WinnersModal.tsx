@@ -251,7 +251,7 @@ export default function WinnersModal({
         description={competitionTitle}
         titleClassName="sr-only"
         descriptionClassName="sr-only"
-        contentClassName="max-w-5xl gap-0 border border-border bg-gradient-to-b from-blue-50/50 via-white to-white p-6 sm:p-8 md:p-10"
+        contentClassName="max-w-5xl gap-0 border border-border bg-linear-to-b from-blue-50/50 via-white to-white p-6 sm:p-8 md:p-10"
       >
         {loading ? (
           <div className="flex flex-col items-center justify-center gap-3 py-24 text-center">
@@ -337,7 +337,7 @@ export default function WinnersModal({
             )}
 
             {grouped['1'].length > 0 && (
-              <div className="relative flex h-full min-h-[220px] flex-col justify-between rounded-2xl border-2 border-amber-300 bg-gradient-to-b from-amber-50/80 to-amber-100/40 px-4 pt-11 pb-6 text-center shadow-md ring-4 ring-amber-400/10 md:-translate-y-1">
+              <div className="relative flex h-full min-h-[220px] flex-col justify-between rounded-2xl border-2 border-amber-300 bg-linear-to-b from-amber-50/80 to-amber-100/40 px-4 pt-11 pb-6 text-center shadow-md ring-4 ring-amber-400/10 md:-translate-y-1">
                 <div className="absolute -top-9 left-1/2 size-16 -translate-x-1/2 drop-shadow-lg">
                   <Image src="/assets/medali1.png" alt="Medali Juara 1" fill className="object-contain" />
                 </div>

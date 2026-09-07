@@ -38,7 +38,7 @@ export function BenefitCard({
         {label}
       </Pill>
 
-      <div className="rounded-xl bg-gradient-to-br from-astro-pink to-pink-300 p-4 pt-6 shadow-glow-pink">
+      <div className="rounded-xl bg-linear-to-br from-astro-pink to-pink-300 p-4 pt-6 shadow-glow-pink">
         <ul className="flex flex-col gap-2">
           {items.map((item) => {
             const Icon = item.icon ?? Sparkles

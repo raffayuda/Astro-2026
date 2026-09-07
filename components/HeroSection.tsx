@@ -20,7 +20,7 @@ export default function HeroSection({ eventConfig }: Props) {
       className="relative min-h-[100svh] flex flex-col items-center justify-center overflow-hidden pt-20 pb-12 sm:pt-24 sm:pb-16 md:pt-20 md:pb-14"
     >
       {/* ─── SKY BACKGROUND ─── */}
-      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-sky-400 via-sky-300 to-sky-100" />
+      <div className="absolute inset-0 -z-10 bg-linear-to-b from-sky-400 via-sky-300 to-sky-100" />
 
       {/* ─── CLOUD IMAGES ─── */}
       {/* Big cloud top-left */}
@@ -149,7 +149,7 @@ export default function HeroSection({ eventConfig }: Props) {
         <div className="mb-2 sm:mb-3">
           <h1 className="font-masterpiece font-black tracking-tight leading-[0.82] uppercase mb-0 text-[clamp(3.5rem,7.5vw,7.5rem)]">
             <span
-              className="block bg-gradient-to-b from-slate-300 via-slate-400 to-slate-600 bg-clip-text text-transparent drop-shadow-[0_4px_30px_rgba(0,0,0,0.15)]"
+              className="block bg-linear-to-b from-slate-300 via-slate-400 to-slate-600 bg-clip-text text-transparent drop-shadow-[0_4px_30px_rgba(0,0,0,0.15)]"
               style={{
                 textShadow: '0 2px 0 #cbd5e1, 0 4px 0 #94a3b8, 0 6px 0 #64748b, 0 8px 20px rgba(0,0,0,0.3)',
               }}
@@ -157,7 +157,7 @@ export default function HeroSection({ eventConfig }: Props) {
               ASTRO
             </span>
             <span
-              className="block bg-gradient-to-b from-slate-200 via-slate-500 to-slate-800 bg-clip-text text-transparent -mt-1 sm:-mt-2"
+              className="block bg-linear-to-b from-slate-200 via-slate-500 to-slate-800 bg-clip-text text-transparent -mt-1 sm:-mt-2"
               style={{
                 textShadow: '0 2px 0 #e2e8f0, 0 4px 0 #94a3b8, 0 6px 0 #475569, 0 8px 0 #1e293b, 0 12px 30px rgba(0,0,0,0.35)',
               }}
@@ -171,7 +171,7 @@ export default function HeroSection({ eventConfig }: Props) {
             <span className="text-xl sm:text-2xl md:text-3xl text-white/95 block">
               Where Innovation
             </span>
-            <span className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl bg-gradient-to-r from-yellow-200 via-orange-200 to-pink-200 bg-clip-text text-transparent block -mt-0.5 sm:-mt-1">
+            <span className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl bg-linear-to-r from-yellow-200 via-orange-200 to-pink-200 bg-clip-text text-transparent block -mt-0.5 sm:-mt-1">
               Meets the Stars
             </span>
           </p>
@@ -224,7 +224,7 @@ export default function HeroSection({ eventConfig }: Props) {
       </div>
 
       {/* Bottom gradient fade to white */}
-      <div className="absolute bottom-0 left-0 right-0 h-24 sm:h-32 z-20 pointer-events-none bg-gradient-to-b from-transparent to-white" />
+      <div className="absolute bottom-0 left-0 right-0 h-24 sm:h-32 z-20 pointer-events-none bg-linear-to-b from-transparent to-white" />
     </section>
   );
 }

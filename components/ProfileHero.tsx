@@ -182,7 +182,7 @@ export default function ProfileHero() {
             <span className="text-3xl sm:text-4xl md:text-5xl text-white/95 block">
               Where Innovation
             </span>
-            <span className="-mt-1 block bg-gradient-to-r from-[#f8ff7a] via-[#d9f64a] to-white bg-clip-text text-4xl text-transparent sm:text-5xl md:text-6xl">
+            <span className="-mt-1 block bg-linear-to-r from-[#f8ff7a] via-[#d9f64a] to-white bg-clip-text text-4xl text-transparent sm:text-5xl md:text-6xl">
               Meets the Stars
             </span>
           </p>
@@ -226,7 +226,7 @@ export default function ProfileHero() {
       </motion.div>
 
       {/* Bottom gradient fade to sky-100 */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 z-20 pointer-events-none bg-gradient-to-b from-transparent to-sky-100" />
+      <div className="absolute bottom-0 left-0 right-0 h-32 z-20 pointer-events-none bg-linear-to-b from-transparent to-sky-100" />
     </section>
   );
 }

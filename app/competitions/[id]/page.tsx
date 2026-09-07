@@ -230,7 +230,7 @@ export default function CompetitionDetailPage() {
           {/* ════════════════════════════════════════
               1. HERO
               ════════════════════════════════════════ */}
-          <section className="relative pt-36 pb-20 bg-gradient-to-b from-sky-400 via-sky-300 to-sky-100 md:pt-40 md:pb-28 overflow-hidden">
+          <section className="relative pt-36 pb-20 bg-linear-to-b from-sky-400 via-sky-300 to-sky-100 md:pt-40 md:pb-28 overflow-hidden">
 
             {/* ─── FLOATING BLOBS ─── */}
             {blobs.map((b, i) => (
@@ -325,7 +325,7 @@ export default function CompetitionDetailPage() {
                   whileInView="visible"
                   viewport={{ once: true }}
                   transition={{ delay: 0.1 }}
-                  className="text-display mb-4 bg-gradient-to-r from-sky-900 via-cyan-800 to-slate-800 bg-clip-text text-transparent"
+                  className="text-display mb-4 bg-linear-to-r from-sky-900 via-cyan-800 to-slate-800 bg-clip-text text-transparent"
                 >
                   {competition.title}
                 </motion.h1>
@@ -373,7 +373,7 @@ export default function CompetitionDetailPage() {
           {/* ════════════════════════════════════════
               2. DETAILS
               ════════════════════════════════════════ */}
-          <section className="relative bg-gradient-to-b from-sky-100 via-sky-50 to-white py-12 md:py-16 overflow-hidden">
+          <section className="relative bg-linear-to-b from-sky-100 via-sky-50 to-white py-12 md:py-16 overflow-hidden">
             {/* Subtle floating blobs in details section */}
             <MotionImage
               src="/assets/blob-round.png"
@@ -630,7 +630,7 @@ export default function CompetitionDetailPage() {
           {/* ════════════════════════════════════════
               4. CTA
               ════════════════════════════════════════ */}
-          <section className="relative bg-gradient-to-b from-white via-sky-50 to-slate-50 py-16 md:py-20 overflow-hidden">
+          <section className="relative bg-linear-to-b from-white via-sky-50 to-slate-50 py-16 md:py-20 overflow-hidden">
             {/* Background glow */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-astro-cyan/3 blur-[120px] rounded-full pointer-events-none" />
 
@@ -744,7 +744,7 @@ function DetailSkeleton() {
       <div className="flex min-h-screen flex-col justify-between bg-background">
         <main className="flex-grow">
           {/* Skeleton Hero */}
-          <section className="relative overflow-hidden bg-gradient-to-b from-sky-400 via-sky-300 to-sky-100 pt-36 pb-20 md:pt-40 md:pb-28">
+          <section className="relative overflow-hidden bg-linear-to-b from-sky-400 via-sky-300 to-sky-100 pt-36 pb-20 md:pt-40 md:pb-28">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
               <div className="space-y-6 lg:w-10/12 xl:w-3/4">
                 <Skeleton className="h-3 w-32 bg-white/40" />
@@ -762,7 +762,7 @@ function DetailSkeleton() {
           </section>
 
           {/* Skeleton Details */}
-          <section className="bg-gradient-to-b from-sky-100 via-sky-50 to-white py-12 md:py-16">
+          <section className="bg-linear-to-b from-sky-100 via-sky-50 to-white py-12 md:py-16">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
               <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
                 <div className="space-y-12 lg:col-span-7">
@@ -811,7 +811,7 @@ function DetailSkeleton() {
           </section>
 
           {/* Skeleton CTA */}
-          <section className="bg-gradient-to-b from-white via-sky-50 to-slate-50 py-16 md:py-20">
+          <section className="bg-linear-to-b from-white via-sky-50 to-slate-50 py-16 md:py-20">
             <div className="mx-auto max-w-7xl space-y-6 px-4 text-center sm:px-6 lg:px-8">
               <div className="mx-auto max-w-xl space-y-4">
                 <Skeleton className="mx-auto h-8 w-72" />

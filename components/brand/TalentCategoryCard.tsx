@@ -69,7 +69,7 @@ export function TalentCategoryCard({
       aria-pressed={isButton ? selected : undefined}
       onClick={isButton ? () => onSelect?.(id) : undefined}
       className={cn(
-        "flex flex-col items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-pastel-orange to-orange-300 text-center text-white shadow-soft transition-all duration-200",
+        "flex flex-col items-center justify-center gap-2 rounded-xl bg-linear-to-br from-pastel-orange to-orange-300 text-center text-white shadow-soft transition-all duration-200",
         isButton && "cursor-pointer hover:-translate-y-0.5 hover:shadow-glow-orange",
         selected && "ring-3 ring-astro-blue ring-offset-2",
         size === "default" ? "p-4" : "gap-1 p-2.5",

@@ -15,7 +15,7 @@ export function AccentLine({
       aria-hidden
       data-slot="accent-line"
       className={cn(
-        "block rounded-full bg-gradient-to-r from-astro-gold via-astro-lime2 to-astro-blue",
+        "block rounded-full bg-linear-to-r from-astro-gold via-astro-lime2 to-astro-blue",
         wide ? "h-1.5 w-35" : "h-1.5 w-18",
         className
       )}

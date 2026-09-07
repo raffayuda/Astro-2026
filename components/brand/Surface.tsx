@@ -11,14 +11,14 @@ const surfaceVariants = cva("relative", {
       /** Pale sky tint, for nested/secondary surfaces. */
       tint: "bg-sky-bottom text-astro-navy shadow-soft-sm",
       /** Blue gradient panel — inverted, for page headers. */
-      blue: "bg-gradient-to-br from-astro-navy via-astro-blue to-blue-400 text-white shadow-soft-lg",
+      blue: "bg-linear-to-br from-astro-navy via-astro-blue to-blue-400 text-white shadow-soft-lg",
       /** Pink gradient panel — the "Event Detail / Benefit" card. */
-      pink: "bg-gradient-to-br from-astro-pink to-pink-300 text-white shadow-glow-pink",
+      pink: "bg-linear-to-br from-astro-pink to-pink-300 text-white shadow-glow-pink",
       /** Orange, for talent/category surfaces. */
       orange:
-        "bg-gradient-to-br from-pastel-orange to-orange-300 text-white shadow-glow-orange",
+        "bg-linear-to-br from-pastel-orange to-orange-300 text-white shadow-glow-orange",
       /** Gold, for price and highlight surfaces. */
-      gold: "bg-gradient-to-br from-amber-400 to-astro-gold text-astro-navy shadow-soft",
+      gold: "bg-linear-to-br from-amber-400 to-astro-gold text-astro-navy shadow-soft",
       /** Poster-style hard sticker outline. */
       sticker: "border-2 border-astro-navy bg-white text-ink shadow-sticker",
     },

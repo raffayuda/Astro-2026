@@ -472,7 +472,7 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <div className="flex min-h-screen flex-col bg-gradient-to-b from-sky-400 via-sky-300 to-sky-100">
+    <div className="flex min-h-screen flex-col bg-linear-to-b from-sky-400 via-sky-300 to-sky-100">
       {/* Floating blobs */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <Image

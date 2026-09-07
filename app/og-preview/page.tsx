@@ -9,7 +9,7 @@ export default function OgPreview() {
       */}
       <div 
         id="og-container"
-        className="relative flex items-center justify-center overflow-hidden bg-gradient-to-b from-sky-400 via-sky-300 to-sky-100 shadow-2xl ring-1 ring-white/10"
+        className="relative flex items-center justify-center overflow-hidden bg-linear-to-b from-sky-400 via-sky-300 to-sky-100 shadow-2xl ring-1 ring-white/10"
         style={{ width: "1200px", height: "630px" }}
       >
         {/* ─── CLOUD IMAGES ─── */}
@@ -33,7 +33,7 @@ export default function OgPreview() {
             
             <h1 className="text-[160px] font-black leading-[0.85] tracking-tight drop-shadow-2xl font-masterpiece flex items-center gap-8">
               <span
-                className="bg-gradient-to-b from-slate-100 via-slate-300 to-slate-500 bg-clip-text text-transparent"
+                className="bg-linear-to-b from-slate-100 via-slate-300 to-slate-500 bg-clip-text text-transparent"
                 style={{
                   textShadow: '0 2px 0 #cbd5e1, 0 4px 0 #94a3b8, 0 6px 0 #64748b, 0 8px 20px rgba(0,0,0,0.3)',
                 }}
@@ -42,7 +42,7 @@ export default function OgPreview() {
               </span>
               
               <span
-                className="bg-gradient-to-b from-slate-200 via-slate-500 to-slate-800 bg-clip-text text-transparent"
+                className="bg-linear-to-b from-slate-200 via-slate-500 to-slate-800 bg-clip-text text-transparent"
                 style={{
                   textShadow: '0 2px 0 #e2e8f0, 0 4px 0 #94a3b8, 0 6px 0 #475569, 0 8px 0 #1e293b, 0 12px 30px rgba(0,0,0,0.35)',
                 }}
@@ -57,7 +57,7 @@ export default function OgPreview() {
             <span className="text-[40px] text-white/95 block tracking-wide">
               Where Innovation
             </span>
-            <span className="text-[64px] bg-gradient-to-r from-yellow-200 via-orange-200 to-pink-200 bg-clip-text text-transparent block -mt-2">
+            <span className="text-[64px] bg-linear-to-r from-yellow-200 via-orange-200 to-pink-200 bg-clip-text text-transparent block -mt-2">
               Meets the Stars
             </span>
           </div>

@@ -17,15 +17,15 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "border-white bg-gradient-to-r from-astro-navy via-astro-blue to-cyan-400 text-white shadow-glow-blue hover:brightness-110 hover:shadow-soft-lg",
+          "border-white bg-linear-to-r from-astro-navy via-astro-blue to-cyan-400 text-white shadow-glow-blue hover:brightness-110 hover:shadow-soft-lg",
         outline:
           "border-astro-cyan-2 bg-white text-astro-navy shadow-soft-sm hover:border-astro-blue hover:text-astro-blue aria-expanded:border-astro-blue aria-expanded:text-astro-blue",
         secondary:
-          "border-white bg-gradient-to-r from-astro-blue to-astro-cyan-2 text-white shadow-soft hover:brightness-105",
-        gold: "border-white bg-gradient-to-r from-amber-400 to-astro-gold text-astro-navy shadow-soft hover:brightness-105",
+          "border-white bg-linear-to-r from-astro-blue to-astro-cyan-2 text-white shadow-soft hover:brightness-105",
+        gold: "border-white bg-linear-to-r from-amber-400 to-astro-gold text-astro-navy shadow-soft hover:brightness-105",
         talent:
-          "border-white bg-gradient-to-r from-pastel-orange to-orange-300 text-white shadow-glow-orange hover:brightness-105",
-        pink: "border-white bg-gradient-to-r from-astro-pink to-pink-400 text-white shadow-glow-pink hover:brightness-105",
+          "border-white bg-linear-to-r from-pastel-orange to-orange-300 text-white shadow-glow-orange hover:brightness-105",
+        pink: "border-white bg-linear-to-r from-astro-pink to-pink-400 text-white shadow-glow-pink hover:brightness-105",
         ghost:
           "text-astro-navy hover:bg-white hover:text-astro-blue hover:shadow-soft-sm aria-expanded:bg-white aria-expanded:text-astro-blue",
         destructive:

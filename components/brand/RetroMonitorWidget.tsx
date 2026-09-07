@@ -39,9 +39,9 @@ export function RetroMonitorWidget({
       data-slot="retro-monitor"
       className={cn("mx-auto w-full max-w-2xl", className)}
     >
-      <div className="rounded-2xl bg-gradient-to-b from-zinc-100 to-zinc-300 p-5 shadow-soft-lg ring-1 ring-inset ring-white/70">
+      <div className="rounded-2xl bg-linear-to-b from-zinc-100 to-zinc-300 p-5 shadow-soft-lg ring-1 ring-inset ring-white/70">
         <div
-          className="relative overflow-hidden rounded-xl bg-gradient-to-b from-astro-blue to-astro-cyan-2 p-5"
+          className="relative overflow-hidden rounded-xl bg-linear-to-b from-astro-blue to-astro-cyan-2 p-5"
           style={{ boxShadow: "var(--shadow-inset-screen)" }}
         >
           <span
@@ -66,7 +66,7 @@ export function RetroMonitorWidget({
                   aria-pressed={isButton ? isSelected : undefined}
                   onClick={isButton ? () => onSelect?.(t.tier) : undefined}
                   className={cn(
-                    "flex flex-col items-center gap-0.5 rounded-full bg-gradient-to-b px-4 py-3 text-astro-navy shadow-soft transition-all duration-200",
+                    "flex flex-col items-center gap-0.5 rounded-full bg-linear-to-b px-4 py-3 text-astro-navy shadow-soft transition-all duration-200",
                     t.face,
                     isButton && "cursor-pointer hover:-translate-y-0.5 hover:shadow-soft-lg",
                     isSelected && "ring-3 ring-white"

@@ -29,10 +29,10 @@ export default function TimelineSection({ timeline }: Props) {
   return (
     <section id="timeline" className="relative py-20 md:py-28 overflow-x-hidden">
       {/* Background — starts white (connects Competition), gently introduces sky toward bottom */}
-      <div className="absolute inset-0 bg-gradient-to-b from-white via-sky-50 to-sky-100 -z-10" />
+      <div className="absolute inset-0 bg-linear-to-b from-white via-sky-50 to-sky-100 -z-10" />
       <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-cyan-500/3 blur-[150px] rounded-full pointer-events-none" />
-      <div className="absolute top-[15%] left-0 w-[200px] h-[2px] bg-gradient-to-r from-slate-200/40 to-transparent skew-x-[-12deg] pointer-events-none" />
-      <div className="absolute bottom-[20%] right-0 w-[150px] h-[2px] bg-gradient-to-l from-slate-200/30 to-transparent skew-x-[12deg] pointer-events-none" />
+      <div className="absolute top-[15%] left-0 w-[200px] h-[2px] bg-linear-to-r from-slate-200/40 to-transparent skew-x-[-12deg] pointer-events-none" />
+      <div className="absolute bottom-[20%] right-0 w-[150px] h-[2px] bg-linear-to-l from-slate-200/30 to-transparent skew-x-[12deg] pointer-events-none" />
 
       <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6">
         {/* Section Header */}
@@ -179,7 +179,7 @@ export default function TimelineSection({ timeline }: Props) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="mt-14 max-w-2xl mx-auto rounded-2xl border border-amber-200/80 bg-gradient-to-r from-amber-50/90 via-sky-50/90 to-amber-50/90 p-5 sm:p-6 text-center shadow-xs backdrop-blur-xs relative z-10"
+          className="mt-14 max-w-2xl mx-auto rounded-2xl border border-amber-200/80 bg-linear-to-r from-amber-50/90 via-sky-50/90 to-amber-50/90 p-5 sm:p-6 text-center shadow-xs backdrop-blur-xs relative z-10"
         >
           <div className="flex items-center justify-center gap-2 mb-2 text-amber-900 font-bold text-xs uppercase tracking-wider">
             <Sparkles className="size-3.5 text-amber-600" />
@@ -192,7 +192,7 @@ export default function TimelineSection({ timeline }: Props) {
             href="https://instagram.com/astrosttnf"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-4 py-2 text-xs font-bold uppercase tracking-wider text-white bg-gradient-to-r from-purple-600 via-pink-600 to-rose-500 rounded-lg shadow-sm hover:opacity-95 transition-opacity active:scale-95"
+            className="inline-flex items-center gap-2 px-4 py-2 text-xs font-bold uppercase tracking-wider text-white bg-linear-to-r from-purple-600 via-pink-600 to-rose-500 rounded-lg shadow-sm hover:opacity-95 transition-opacity active:scale-95"
           >
             <FaInstagram className="size-3.5" /> Ikuti Info Terkini @astrosttnf
           </a>

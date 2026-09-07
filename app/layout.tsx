@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import { Plus_Jakarta_Sans, Space_Grotesk, Geist } from "next/font/google";
+import { Plus_Jakarta_Sans, Geist } from "next/font/google";
 import { Toaster } from "sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Providers } from "@/src/lib/providers";
@@ -9,15 +9,12 @@ import { cn } from "@/lib/utils";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
+// Heading / display face. Geometric, high-contrast at bold weights — matches the
+// component spec sheets. Previously loaded but only ever used as a fallback.
 const plusJakartaSans = Plus_Jakarta_Sans({
   variable: "--font-plus-jakarta-sans",
   subsets: ["latin"],
-  display: "swap",
-});
-
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-space-grotesk",
-  subsets: ["latin"],
+  weight: ["500", "600", "700", "800"],
   display: "swap",
 });
 
@@ -204,7 +201,6 @@ export default function RootLayout({
         "h-full",
         "antialiased",
         plusJakartaSans.variable,
-        spaceGrotesk.variable,
         masterpiece.variable,
         "font-sans",
         geist.variable,

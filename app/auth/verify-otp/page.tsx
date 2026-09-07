@@ -317,7 +317,7 @@ function VerifyOtpContent() {
 
 export default function VerifyOtpPage() {
   return (
-    <div className="flex min-h-screen flex-col bg-gradient-to-b from-sky-400 via-sky-300 to-sky-100">
+    <div className="flex min-h-screen flex-col bg-linear-to-b from-sky-400 via-sky-300 to-sky-100">
       <div className="relative z-10 flex flex-1 items-center justify-center px-4 py-10">
         <motion.div
           initial={{ opacity: 0, y: 30 }}

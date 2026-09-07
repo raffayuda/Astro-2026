@@ -14,12 +14,12 @@
 @theme inline {
   /* ── Fonts ── */
   --font-sans: var(--font-sans);
-  --font-display: var(--font-space-grotesk), var(--font-plus-jakarta-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-space-grotesk: var(--font-space-grotesk);
+  --font-display: var(--font-plus-jakarta-sans), ui-sans-serif, system-ui, sans-serif;
   --font-masterpiece: var(--font-masterpiece);
-  /* Stays sans: CardTitle uses font-heading, and Masterpiece at small sizes in
-     dashboard tables is unreadable. Apply font-masterpiece explicitly for display copy. */
-  --font-heading: var(--font-sans);
+  /* Plus Jakarta Sans for every heading and stat figure. Masterpiece stays
+     reserved for the big chrome hero wordmarks, where its display weight works;
+     at small sizes in dashboard tables it is unreadable. */
+  --font-heading: var(--font-plus-jakarta-sans), ui-sans-serif, system-ui, sans-serif;
 
   /* ── Brand: primary ── */
   --color-astro-blue: #3b82f6;
@@ -449,7 +449,7 @@ body {
   line-height: 0.85;
   letter-spacing: 0;
   text-transform: uppercase;
-  font-family: var(--font-masterpiece), var(--font-space-grotesk), sans-serif;
+  font-family: var(--font-masterpiece), var(--font-plus-jakarta-sans), sans-serif;
   text-wrap: balance;
 }
 

@@ -44,7 +44,7 @@ export default function CompetitionSection({ competitions }: Props) {
   return (
     <section id="competitions" className="relative overflow-hidden">
       {/* Background — white, connects About's white bottom */}
-      <div className="absolute inset-0 bg-gradient-to-b from-white to-white -z-10" />
+      <div className="absolute inset-0 bg-linear-to-b from-white to-white -z-10" />
       <div className="absolute top-[40%] left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-astro-cyan/2 blur-[150px] rounded-full -z-10" />
 
       {/* Diagonal transition */}

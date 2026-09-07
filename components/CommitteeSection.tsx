@@ -322,7 +322,7 @@ export default function CommitteeSection() {
               <ToggleGroupItem
                 key={div.id}
                 value={div.slug}
-                className="rounded-[14px] gap-2 px-4 py-2 text-xs font-black tracking-wide transition-all data-[state=on]:bg-gradient-to-b data-[state=on]:from-[#28aaff] data-[state=on]:to-[#3157ff] data-[state=on]:text-white data-[state=on]:shadow-lg data-[state=off]:bg-white/65 data-[state=off]:text-[#3157ff] data-[state=off]:hover:bg-white data-[state=off]:hover:text-[#3157ff]"
+                className="rounded-[14px] gap-2 px-4 py-2 text-xs font-black tracking-wide transition-all data-[state=on]:bg-linear-to-b data-[state=on]:from-[#28aaff] data-[state=on]:to-[#3157ff] data-[state=on]:text-white data-[state=on]:shadow-lg data-[state=off]:bg-white/65 data-[state=off]:text-[#3157ff] data-[state=off]:hover:bg-white data-[state=off]:hover:text-[#3157ff]"
               >
                 <span
                   className={cn(
@@ -455,7 +455,7 @@ export default function CommitteeSection() {
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.25 }}
-                        className="absolute inset-0 z-10 flex flex-col justify-end bg-gradient-to-t from-slate-950/85 via-slate-900/40 to-transparent backdrop-blur-[2px]"
+                        className="absolute inset-0 z-10 flex flex-col justify-end bg-linear-to-t from-slate-950/85 via-slate-900/40 to-transparent backdrop-blur-[2px]"
                       >
                         <div className="p-4 md:p-5">
                           <h3 className="text-sm md:text-base font-bold text-white leading-tight drop-shadow-sm capitalize">

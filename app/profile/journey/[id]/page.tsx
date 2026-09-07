@@ -74,7 +74,7 @@ export default function JourneyDetailPage() {
       <Navbar />
 
       {/* ═══ HERO BANNER ═══ */}
-      <section className={`relative pt-28 pb-28 md:pt-36 md:pb-36 bg-gradient-to-br ${data.color} overflow-hidden`}>
+      <section className={`relative pt-28 pb-28 md:pt-36 md:pb-36 bg-linear-to-br ${data.color} overflow-hidden`}>
         {/* Radial glow */}
         <div className="absolute inset-0">
           <div className="absolute top-1/4 -left-[10%] w-[40%] h-[50%] bg-white/20 blur-[120px] rounded-full" />
@@ -145,7 +145,7 @@ export default function JourneyDetailPage() {
                   <div className="flex-1 min-w-[100px] bg-white/10 backdrop-blur-sm border border-white/15 p-4 text-center"
                     style={{ clipPath: 'polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%)' }}
                   >
-                    <div className="text-2xl md:text-3xl font-black text-white font-space-grotesk">{data.participants}+</div>
+                    <div className="text-2xl md:text-3xl font-black text-white font-display">{data.participants}+</div>
                     <div className="text-[9px] font-bold text-white/60 uppercase tracking-wider mt-1">Peserta</div>
                   </div>
                 )}
@@ -153,14 +153,14 @@ export default function JourneyDetailPage() {
                   <div className="flex-1 min-w-[100px] bg-white/10 backdrop-blur-sm border border-white/15 p-4 text-center"
                     style={{ clipPath: 'polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%)' }}
                   >
-                    <div className="text-sm md:text-base font-black text-white font-space-grotesk leading-tight">{data.date}</div>
+                    <div className="text-sm md:text-base font-black text-white font-display leading-tight">{data.date}</div>
                     <div className="text-[9px] font-bold text-white/60 uppercase tracking-wider mt-1">Hari Pelaksanaan</div>
                   </div>
                 )}
                 <div className="flex-1 min-w-[100px] bg-white/10 backdrop-blur-sm border border-white/15 p-4 text-center"
                   style={{ clipPath: 'polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%)' }}
                 >
-                  <div className="text-2xl md:text-3xl font-black text-white font-space-grotesk">{data.competitions}</div>
+                  <div className="text-2xl md:text-3xl font-black text-white font-display">{data.competitions}</div>
                   <div className="text-[9px] font-bold text-white/60 uppercase tracking-wider mt-1">Cabang Lomba</div>
                 </div>
               </div>
@@ -168,7 +168,7 @@ export default function JourneyDetailPage() {
           </motion.div>
         </div>
 
-        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-b from-transparent to-white" />
+        <div className="absolute bottom-0 left-0 right-0 h-24 bg-linear-to-b from-transparent to-white" />
       </section>
 
       {/* ═══ CONTENT ═══ */}
@@ -225,7 +225,7 @@ export default function JourneyDetailPage() {
                 variants={fadeUp}
                 className="sticky top-28"
               >
-                <div className="bg-gradient-to-br from-cyan-50 to-sky-50 border border-cyan-100/80 p-8"
+                <div className="bg-linear-to-br from-cyan-50 to-sky-50 border border-cyan-100/80 p-8"
                   style={{ clipPath: 'polygon(16px 0, 100% 0, calc(100% - 16px) 100%, 0 100%)' }}
                 >
                   {/* Header */}
@@ -343,7 +343,7 @@ export default function JourneyDetailPage() {
                       className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                     {doc.caption && (
-                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent px-4 pb-3 pt-8">
+                      <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/70 to-transparent px-4 pb-3 pt-8">
                         <p className="text-[10px] font-bold uppercase tracking-wider text-white">{doc.caption}</p>
                       </div>
                     )}

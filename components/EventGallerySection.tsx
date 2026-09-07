@@ -146,7 +146,7 @@ export default function EventGallerySection() {
                 <ToggleGroupItem
                   key={cat.slug}
                   value={cat.slug}
-                  className="rounded-[14px] gap-2 border border-white/80 bg-white/70 px-4 py-2 text-xs font-black uppercase tracking-wider text-[#3157ff] backdrop-blur-xl data-[state=on]:border-white data-[state=on]:bg-gradient-to-b data-[state=on]:from-[#28aaff] data-[state=on]:to-[#3157ff] data-[state=on]:text-white data-[state=on]:shadow-md"
+                  className="rounded-[14px] gap-2 border border-white/80 bg-white/70 px-4 py-2 text-xs font-black uppercase tracking-wider text-[#3157ff] backdrop-blur-xl data-[state=on]:border-white data-[state=on]:bg-linear-to-b data-[state=on]:from-[#28aaff] data-[state=on]:to-[#3157ff] data-[state=on]:text-white data-[state=on]:shadow-md"
                 >
                   <Camera className="size-3.5" />
                   {cat.name}
@@ -163,8 +163,8 @@ export default function EventGallerySection() {
           onMouseLeave={() => setIsMarqueeHovered(false)}
         >
           {/* Narrow edge fade masks */}
-          <div className="pointer-events-none absolute top-0 bottom-0 left-0 z-30 w-12 bg-gradient-to-r from-sky-100 via-sky-100/60 to-transparent sm:w-16 md:w-24" />
-          <div className="pointer-events-none absolute top-0 right-0 bottom-0 z-30 w-12 bg-gradient-to-l from-sky-100 via-sky-100/60 to-transparent sm:w-16 md:w-24" />
+          <div className="pointer-events-none absolute top-0 bottom-0 left-0 z-30 w-12 bg-linear-to-r from-sky-100 via-sky-100/60 to-transparent sm:w-16 md:w-24" />
+          <div className="pointer-events-none absolute top-0 right-0 bottom-0 z-30 w-12 bg-linear-to-l from-sky-100 via-sky-100/60 to-transparent sm:w-16 md:w-24" />
 
           <div className="space-y-6">
             {[marqueeRow1, marqueeRow2].map((row, rowIdx) => (
@@ -184,7 +184,7 @@ export default function EventGallerySection() {
                       style={{ clipPath: 'polygon(14px 0, 100% 0, calc(100% - 14px) 100%, 0 100%)' }}
                     >
                       {/* Glass Refraction Highlight */}
-                      <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-tr from-white/10 via-white/35 to-transparent" />
+                      <div className="pointer-events-none absolute inset-0 z-10 bg-linear-to-tr from-white/10 via-white/35 to-transparent" />
 
                       <div
                         className="relative h-full w-full overflow-hidden border border-white/60 bg-slate-900 transition-colors group-hover:border-astro-cyan"
@@ -201,7 +201,7 @@ export default function EventGallerySection() {
                         />
 
                         {/* Dark Gradient Legibility Overlay */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/20 to-transparent opacity-60 transition-opacity duration-300 group-hover:opacity-90" />
+                        <div className="absolute inset-0 bg-linear-to-t from-slate-950/85 via-slate-950/20 to-transparent opacity-60 transition-opacity duration-300 group-hover:opacity-90" />
 
                         {/* Year Badge */}
                         <div className="absolute top-3 left-3 z-20 flex items-center gap-2">

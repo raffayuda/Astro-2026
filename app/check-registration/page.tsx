@@ -243,7 +243,7 @@ function CheckRegistrationContent() {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-b from-sky-400 via-sky-300 to-white">
+    <div className="relative min-h-screen overflow-hidden bg-linear-to-b from-sky-400 via-sky-300 to-white">
       <Navbar />
 
       {/* Floating Blobs */}
@@ -310,7 +310,7 @@ function CheckRegistrationContent() {
           <div className="mb-3 flex justify-center">
             <div className="accent-line" />
           </div>
-          <h1 className="font-masterpiece mb-2 bg-gradient-to-b from-slate-800 via-slate-900 to-black bg-clip-text text-4xl leading-tight text-transparent md:text-5xl">
+          <h1 className="font-masterpiece mb-2 bg-linear-to-b from-slate-800 via-slate-900 to-black bg-clip-text text-4xl leading-tight text-transparent md:text-5xl">
             Cek Pendaftaran
           </h1>
           <p className="mx-auto max-w-md text-xs md:text-sm font-normal text-slate-700">

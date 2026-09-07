@@ -269,7 +269,7 @@ export default function PengumumanClient() {
                 <ToggleGroupItem
                   key={cat.value}
                   value={cat.value}
-                  className="rounded-[14px] border border-[#83cfff]/80 bg-white/80 px-4 py-2 text-[10px] font-black tracking-[0.15em] uppercase text-[#3157ff] data-[state=on]:border-white data-[state=on]:bg-gradient-to-b data-[state=on]:from-[#28aaff] data-[state=on]:to-[#3157ff] data-[state=on]:text-white data-[state=on]:shadow-sm"
+                  className="rounded-[14px] border border-[#83cfff]/80 bg-white/80 px-4 py-2 text-[10px] font-black tracking-[0.15em] uppercase text-[#3157ff] data-[state=on]:border-white data-[state=on]:bg-linear-to-b data-[state=on]:from-[#28aaff] data-[state=on]:to-[#3157ff] data-[state=on]:text-white data-[state=on]:shadow-sm"
                 >
                   {cat.label}
                 </ToggleGroupItem>

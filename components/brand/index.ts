@@ -16,6 +16,12 @@ export { RetroMonitorWidget, SPONSOR_TIERS, type SponsorTier } from "./RetroMoni
 export { ScheduleCard, type ScheduleStatus } from "./ScheduleCard"
 export { SectionHeading } from "./SectionHeading"
 export { SectionShell } from "./SectionShell"
+export {
+  ASTRO_EMAIL,
+  ASTRO_SOCIALS,
+  SiteFooter,
+  type SocialLink,
+} from "./SiteFooter"
 export { SkyBackdrop } from "./SkyBackdrop"
 export { StatCard } from "./StatCard"
 export { Surface, surfaceVariants, type SurfaceProps } from "./Surface"

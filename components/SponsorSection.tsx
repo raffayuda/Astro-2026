@@ -82,7 +82,7 @@ export default function SponsorSection({ variant = 'home', id = 'sponsor' }: Spo
   return (
     <section
       id={id}
-      className="relative py-24 bg-gradient-to-b from-sky-200 via-sky-200 to-sky-300 md:py-32 overflow-hidden text-slate-900 select-none"
+      className="relative py-24 bg-linear-to-b from-sky-200 via-sky-200 to-sky-300 md:py-32 overflow-hidden text-slate-900 select-none"
     >
       {/* Floating decors */}
       <MotionImage
@@ -132,7 +132,7 @@ export default function SponsorSection({ variant = 'home', id = 'sponsor' }: Spo
           className="text-center mb-14 md:mb-16"
         >
           <div className="flex justify-center mb-3">
-            <div className="w-[60px] h-[4px] bg-gradient-to-r from-sky-400 to-slate-900 skew-x-[-12deg]" />
+            <div className="w-[60px] h-[4px] bg-linear-to-r from-sky-400 to-slate-900 skew-x-[-12deg]" />
           </div>
           <h2 className="font-masterpiece text-5xl md:text-6xl lg:text-7xl text-slate-900 mb-3 leading-tight">
             Didukung <span className="text-sky-500">Oleh</span>
@@ -464,7 +464,7 @@ export default function SponsorSection({ variant = 'home', id = 'sponsor' }: Spo
 
         {/* Arc divider */}
         <div className="relative max-w-5xl mx-auto mt-16 md:mt-24 px-2">
-          <div className="absolute left-1/2 -translate-x-1/2 bottom-0 w-[85%] h-32 md:h-44 bg-gradient-to-t from-sky-400/40 via-cyan-400/20 to-transparent blur-2xl rounded-t-[100%] pointer-events-none" />
+          <div className="absolute left-1/2 -translate-x-1/2 bottom-0 w-[85%] h-32 md:h-44 bg-linear-to-t from-sky-400/40 via-cyan-400/20 to-transparent blur-2xl rounded-t-[100%] pointer-events-none" />
           <svg
             viewBox="0 0 1200 100"
             className="w-full h-auto overflow-visible pointer-events-none relative z-10"
