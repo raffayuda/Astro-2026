@@ -50,23 +50,122 @@ export type SumoPodPublicCheckout = {
 };
 
 /**
- * Fetch live public checkout state directly from SumoPod.
- * Useful for active sync when polling or checking status.
+ * Fetch live public checkout state directly from SumoPod or its managed checkout platform (e.g. checkout.pymnt.app).
+ * Useful for active sync when polling, checking status, or extracting QRIS payload.
  */
 export async function fetchPublicPaymentCheckout(
-  paymentId: string,
+  paymentIdOrUrl: string,
+  paymentLinkUrl?: string | null,
 ): Promise<SumoPodPublicCheckout | null> {
-  if (!paymentId) return null;
-  try {
-    return await ky
-      .get(`${SUMOPOD_BASE_URL}/public/payments/${encodeURIComponent(paymentId)}/checkout`, {
-        timeout: 8_000,
-        retry: 0,
-      })
-      .json<SumoPodPublicCheckout>();
-  } catch {
-    return null;
+  const targetUrl = paymentLinkUrl || (paymentIdOrUrl?.startsWith('http') ? paymentIdOrUrl : null);
+  const paymentId = !paymentIdOrUrl?.startsWith('http') ? paymentIdOrUrl : null;
+
+  // 1. Direct managed checkout API (e.g. checkout.pymnt.app/api/checkout/{id})
+  if (targetUrl) {
+    try {
+      const urlObj = new URL(targetUrl);
+      const checkoutId = urlObj.pathname.split('/').filter(Boolean).pop();
+      if (checkoutId) {
+        const checkoutApiUrl = `${urlObj.origin}/api/checkout/${checkoutId}`;
+        const res = await ky
+          .get(checkoutApiUrl, {
+            headers: {
+              Accept: 'application/json',
+              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+            },
+            timeout: 6_000,
+            retry: 0,
+          })
+          .json<any>();
+
+        if (res) {
+          const rawStatus = (res.status || '').toLowerCase();
+          const normalizedStatus =
+            rawStatus === 'completed' || rawStatus === 'paid' || rawStatus === 'success'
+              ? 'completed'
+              : rawStatus === 'canceled' || rawStatus === 'cancelled'
+              ? 'canceled'
+              : rawStatus === 'expired'
+              ? 'expired'
+              : rawStatus === 'failed'
+              ? 'failed'
+              : 'pending';
+
+          const paymentCode = res.paymentCode || null;
+          const paymentCodeType =
+            res.paymentCodeType || (paymentCode?.startsWith('000201') ? 'QR_TEXT' : null);
+
+          return {
+            status: normalizedStatus,
+            order_id: res.referenceCode || '',
+            amount: Number(res.initiatedAmount || res.amount || 0),
+            currency: res.currency || 'IDR',
+            expires_at: res.expirationTime || '',
+            payment_code: paymentCode,
+            payment_code_type: paymentCodeType,
+            payment_channel_used: res.paymentChannel || 'QRIS',
+          };
+        }
+      }
+    } catch {
+      // Continue to next fallback
+    }
+
+    // 2. Fallback: Parse paymentCode from HTML page of targetUrl
+    try {
+      const html = await ky
+        .get(targetUrl, {
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+            Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+          },
+          timeout: 6_000,
+          retry: 0,
+        })
+        .text();
+
+      const codeMatch =
+        html.match(/\\"paymentCode\\":\\"([^"\\]+)\\"/) ||
+        html.match(/"paymentCode"\s*:\s*"([^"]+)"/) ||
+        html.match(/000201010212[0-9A-Za-z.=-]+/);
+
+      if (codeMatch) {
+        const paymentCode = codeMatch[1] || codeMatch[0];
+        const typeMatch =
+          html.match(/\\"paymentCodeType\\":\\"([^"\\]+)\\"/) ||
+          html.match(/"paymentCodeType"\s*:\s*"([^"]+)"/);
+
+        return {
+          status: 'pending',
+          order_id: '',
+          amount: 0,
+          currency: 'IDR',
+          expires_at: '',
+          payment_code: paymentCode,
+          payment_code_type: typeMatch ? typeMatch[1] : 'QR_TEXT',
+          payment_channel_used: 'QRIS',
+        };
+      }
+    } catch {
+      // Continue to legacy fallback
+    }
   }
+
+  // 3. SumoPod API direct public checkout (legacy fallback)
+  if (paymentId) {
+    try {
+      return await ky
+        .get(`${SUMOPOD_BASE_URL}/public/payments/${encodeURIComponent(paymentId)}/checkout`, {
+          timeout: 6_000,
+          retry: 0,
+        })
+        .json<SumoPodPublicCheckout>();
+    } catch {
+      return null;
+    }
+  }
+
+  return null;
 }
 
 export class SumoPodError extends Error {

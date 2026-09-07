@@ -108,5 +108,8 @@
 [01:36] - [app/register/[id]/PaymentStep.tsx] - [ADD] - Add 'Daftarkan Peserta / Tim Lainnya' action button on paid state screen
 [11:06] - [src/server/modules/registrations/service.ts] - [UPDATE] - Integrate full official invoice into confirmation email with itemized breakdown table, verified status badge, metadata, and direct PDF print link
 [11:07] - [src/server/modules/registrations/service.ts] - [UPDATE] - Replace email confirmation footer with clean copyright notice (© 2026 ASTRO. All rights reserved.)
-[11:07] - [src/server/auth.ts] - [UPDATE] - Replace OTP email footer with clean copyright notice (© 2026 ASTRO. All rights reserved.)
-
+[11:32] - [src/server/modules/payments/sumopod.ts] - [FIX] - Support managed checkout API (checkout.pymnt.app/api/checkout/{id}) in fetchPublicPaymentCheckout to reliably retrieve paymentCode, exact customer-charged amount, and paymentCodeType
+[11:32] - [src/server/modules/registrations/service.ts] - [UPDATE] - Pass paymentLinkUrl into fetchPublicPaymentCheckout in getRegistration, createRegistration, and checkRegistrationStatus to persist paymentCode and sync live status
+[11:32] - [app/register/[id]/PaymentStep.tsx] - [ADD] - Implement instant client-side fail-safe checkout API fetch and initialPaymentCode props so QRIS card renders immediately without falling back to redirect button
+[11:32] - [app/register/[id]/page.tsx] - [UPDATE] - Wire initialPaymentCode and initialPaymentCodeType from registration response into PaymentStep
+[11:32] - [app/register/[id]/FormStep.tsx] - [UPDATE] - Forward paymentCode and paymentCodeType in onContinue callback

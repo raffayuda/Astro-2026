@@ -35,6 +35,8 @@ interface Props {
     reference: string,
     paymentLinkUrl?: string | null,
     paymentExpiresAt?: string | null,
+    paymentCode?: string | null,
+    paymentCodeType?: string | null,
   ) => void;
   existingRegId?: string | null;
   existingRef?: string | null;
@@ -122,6 +124,8 @@ export default function FormStep({
               reg.paymentReference ?? "",
               reg.paymentLinkUrl,
               reg.paymentExpiresAt as unknown as string | null,
+              (reg as any).paymentCode ?? null,
+              (reg as any).paymentCodeType ?? null,
             );
           }
         }

@@ -165,10 +165,13 @@ export async function getRegistration(id: string) {
   const [row] = await db.select().from(registrations).where(eq(registrations.id, id));
   if (!row) return null;
 
-  // Active sync with SumoPod live checkout API if outcome is undecided
-  if (row.paymentStatus === 'pending' && row.paymentLinkId) {
+  // Active sync with SumoPod live checkout API if outcome is undecided or payment code is missing
+  if (row.paymentStatus === 'pending' && (row.paymentLinkId || row.paymentLinkUrl)) {
     try {
-      const checkout = await fetchPublicPaymentCheckout(row.paymentLinkId);
+      const checkout = await fetchPublicPaymentCheckout(
+        row.paymentLinkUrl || row.paymentLinkId || '',
+        row.paymentLinkUrl,
+      );
       if (checkout) {
         let shouldUpdate = false;
         const updates: Partial<typeof registrations.$inferInsert> = {};
@@ -314,7 +317,10 @@ export async function createRegistration(input: RegistrationCreate, userId: stri
       let finalChannel = reg.paymentMethod ?? payment.payment_channel_used ?? 'QRIS';
 
       try {
-        const checkout = await fetchPublicPaymentCheckout(payment.payment_id);
+        const checkout = await fetchPublicPaymentCheckout(
+          payment.payment_link_url || payment.payment_id,
+          payment.payment_link_url,
+        );
         if (checkout) {
           if (checkout.amount && Number(checkout.amount) > 0) {
             finalAmount = checkout.amount;
@@ -885,9 +891,12 @@ export async function checkRegistrationStatus(rawQuery: string) {
 
   // Sync any pending registrations with SumoPod checkout
   for (const item of data) {
-    if (item.paymentStatus === 'pending' && item.paymentLinkId) {
+    if (item.paymentStatus === 'pending' && (item.paymentLinkId || item.paymentLinkUrl)) {
       try {
-        const checkout = await fetchPublicPaymentCheckout(item.paymentLinkId);
+        const checkout = await fetchPublicPaymentCheckout(
+          item.paymentLinkUrl || item.paymentLinkId || '',
+          item.paymentLinkUrl,
+        );
         if (checkout) {
           if (checkout.status === 'completed') {
             item.paymentStatus = 'paid';

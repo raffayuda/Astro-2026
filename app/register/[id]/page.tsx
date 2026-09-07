@@ -113,6 +113,8 @@ export default function RegistrationPage({
   const [paymentReference, setPaymentReference] = useState<string | null>(null);
   const [paymentLinkUrl, setPaymentLinkUrl] = useState<string | null>(null);
   const [paymentExpiresAt, setPaymentExpiresAt] = useState<string | null>(null);
+  const [initialPaymentCode, setInitialPaymentCode] = useState<string | null>(null);
+  const [initialPaymentCodeType, setInitialPaymentCodeType] = useState<string | null>(null);
   const [regType, setRegType] = useState<'team' | 'individual'>('individual');
   const [formData, setFormData] = useState({
     fullName: "",
@@ -252,6 +254,10 @@ export default function RegistrationPage({
     setPaymentReference(r.paymentReference);
     setPaymentLinkUrl(r.paymentLinkUrl ?? null);
     setPaymentExpiresAt(r.paymentExpiresAt ?? null);
+    if (r.paymentCode) {
+      setInitialPaymentCode(r.paymentCode);
+      setInitialPaymentCodeType(r.paymentCodeType ?? 'QR_TEXT');
+    }
     setFormData({
       fullName: r.fullName || "",
       teamName: r.teamName || "",
@@ -367,11 +373,15 @@ export default function RegistrationPage({
     ref: string,
     linkUrl?: string | null,
     expiresAt?: string | null,
+    paymentCode?: string | null,
+    paymentCodeType?: string | null,
   ) => {
     setRegistrationId(regId);
     setPaymentReference(ref);
     setPaymentLinkUrl(linkUrl ?? null);
     setPaymentExpiresAt(expiresAt ?? null);
+    setInitialPaymentCode(paymentCode ?? null);
+    setInitialPaymentCodeType(paymentCodeType ?? null);
     setStep(2);
     if (resolvedId && typeof window !== "undefined") {
       try {
@@ -388,6 +398,8 @@ export default function RegistrationPage({
     setPaymentReference(null);
     setPaymentLinkUrl(null);
     setPaymentExpiresAt(null);
+    setInitialPaymentCode(null);
+    setInitialPaymentCodeType(null);
     setRegIdFromQuery(null);
     if (resolvedId && typeof window !== "undefined") {
       try {
@@ -751,6 +763,8 @@ export default function RegistrationPage({
                       paymentReference={paymentReference || ""}
                       paymentLinkUrl={paymentLinkUrl}
                       paymentExpiresAt={paymentExpiresAt}
+                      initialPaymentCode={initialPaymentCode}
+                      initialPaymentCodeType={initialPaymentCodeType}
                       onBack={handleBackToForm}
                     />
                   </motion.div>

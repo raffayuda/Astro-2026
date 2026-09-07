@@ -29,6 +29,8 @@ interface Props {
   paymentReference: string;
   paymentLinkUrl: string | null;
   paymentExpiresAt: string | null;
+  initialPaymentCode?: string | null;
+  initialPaymentCodeType?: string | null;
   onBack: () => void;
 }
 
@@ -50,12 +52,17 @@ export default function PaymentStep({
   paymentReference,
   paymentLinkUrl,
   paymentExpiresAt,
+  initialPaymentCode,
+  initialPaymentCodeType,
   onBack,
 }: Props) {
   const router = useRouter();
   const [printing, setPrinting] = useState(false);
 
   const [isFinalStatus, setIsFinalStatus] = useState(false);
+  const [clientPaymentCode, setClientPaymentCode] = useState<string | null>(initialPaymentCode ?? null);
+  const [clientPaymentCodeType, setClientPaymentCodeType] = useState<string | null>(initialPaymentCodeType ?? null);
+  const [clientAmount, setClientAmount] = useState<number | null>(null);
 
   const { data: reg } = useRegistration(registrationId, {
     refetchInterval: isFinalStatus ? false : POLL_INTERVAL_MS,
@@ -76,11 +83,35 @@ export default function PaymentStep({
       setIsFinalStatus(true);
     }
   }, [paymentStatus, competition?.id]);
+
   const resolvedLinkUrl = (reg as any)?.paymentLinkUrl ?? paymentLinkUrl;
   const resolvedExpiresAt = (reg as any)?.paymentExpiresAt ?? paymentExpiresAt;
-  const paymentCode = (reg as any)?.paymentCode;
-  const paymentCodeType = (reg as any)?.paymentCodeType;
-  const paymentAmount = (reg as any)?.paymentAmount || competition.fee;
+  const paymentCode = (reg as any)?.paymentCode || clientPaymentCode;
+  const paymentCodeType = (reg as any)?.paymentCodeType || clientPaymentCodeType;
+  const paymentAmount = clientAmount || (reg as any)?.paymentAmount || competition.fee;
+
+  // Client-side fail-safe: if paymentCode is not yet loaded in reg, fetch directly from checkout API
+  useEffect(() => {
+    if (paymentCode || !resolvedLinkUrl || typeof window === 'undefined') return;
+    try {
+      const urlObj = new URL(resolvedLinkUrl);
+      const checkoutId = urlObj.pathname.split('/').filter(Boolean).pop();
+      if (checkoutId && urlObj.origin.includes('pymnt.app')) {
+        fetch(`${urlObj.origin}/api/checkout/${checkoutId}`)
+          .then((r) => (r.ok ? r.json() : null))
+          .then((data) => {
+            if (data?.paymentCode) {
+              setClientPaymentCode(data.paymentCode);
+              setClientPaymentCodeType(data.paymentCodeType || 'QR_TEXT');
+              if (data.initiatedAmount) {
+                setClientAmount(Number(data.initiatedAmount));
+              }
+            }
+          })
+          .catch(() => {});
+      }
+    } catch {}
+  }, [paymentCode, resolvedLinkUrl]);
 
   const waNumber = (competition.contactPerson?.whatsapp || '').replace(/\D/g, '');
   const waHref = waNumber
