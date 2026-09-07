@@ -2,7 +2,6 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 import { AccentLine } from "./AccentLine"
-import { ChromeText } from "./ChromeText"
 import { Pill } from "./Pill"
 
 /** Eyebrow pill + chrome display title + accent rule + optional lead paragraph. */
@@ -36,15 +35,14 @@ export function SectionHeading({
         </Pill>
       )}
 
-      {chrome ? (
-        <ChromeText as="h2" depth="md" className="text-subtitle sm:text-title">
-          {title}
-        </ChromeText>
-      ) : (
-        <h2 className="font-title text-subtitle uppercase text-astro-navy">
-          {title}
-        </h2>
-      )}
+      <h2
+        className={cn(
+          "font-title text-3xl font-bold uppercase tracking-tight sm:text-4xl lg:text-5xl",
+          chrome ? "text-astro-blue" : "text-astro-navy"
+        )}
+      >
+        {title}
+      </h2>
 
       <AccentLine />
 

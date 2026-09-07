@@ -434,7 +434,7 @@ export default function ProfilePage() {
                     className="block h-full w-full text-left group"
                   >
                     <div
-                      className={`rounded-xl bg-white shadow-soft relative h-full cursor-pointer overflow-hidden p-8 transition-all duration-500 hover:-translate-y-1 hover:border-astro-blue/45 md:p-10 ${
+                      className={`rounded-xl bg-white shadow-soft relative h-full cursor-pointer overflow-hidden p-8 transition-all duration-500 hover:-translate-y-1 hover:shadow-soft-lg md:p-10 ${
                         isFuture
                           ? "border-astro-cyan/20 bg-linear-to-br from-white to-cyan-50/30"
                           : ""

@@ -348,7 +348,7 @@ export default function JourneyDetailPage() {
                       </div>
                     )}
                     <div className="absolute inset-0 bg-white/0 transition-all duration-300 group-hover:bg-astro-cyan/20 flex items-end justify-end p-4">
-                      <span className="flex items-center gap-1 text-9 font-black text-astro-600 uppercase tracking-wider opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                      <span className="flex items-center gap-1 text-9 font-black text-astro-blue uppercase tracking-wider opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                         <Camera className="size-3" /> Lihat
                       </span>
                     </div>

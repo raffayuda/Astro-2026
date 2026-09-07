@@ -352,7 +352,7 @@ export default function PengumumanClient() {
                     delay: Math.min(index * 0.05, 0.3),
                     ease: [0.16, 1, 0.3, 1],
                   }}
-                  className="rounded-xl bg-white shadow-soft group transition-all duration-200 ease-in-out hover:-translate-y-1 hover:border-astro-blue/45"
+                  className="rounded-xl bg-white shadow-soft group transition-all duration-200 ease-in-out hover:-translate-y-1 hover:shadow-soft-lg"
                 >
                   {/* Corner accent */}
                   <div className="relative">

@@ -24,6 +24,7 @@ import {
   ChromeText,
   ChromeTitle,
   CtaButton,
+  FloatingCta,
   Pill,
   PricePill,
   RetroMonitorWidget,
@@ -316,71 +317,52 @@ Components`}
 
           <Spec
             title="Typography"
-            hint="Alexandria for display titles, Lexend Exa for subtitles, Plus Jakarta Sans for headings, Geist for body."
+            hint="Alexandria for display, Lexend Exa for subtitles, Plus Jakarta Sans for headings, Geist for body. No layered text effects."
           >
             <div className="flex flex-col gap-8">
               <div className="flex flex-col gap-2">
                 <p className="text-10 font-bold uppercase tracking-widest text-muted-foreground">
-                  text-title &mdash; Alexandria 700 / 162.55px ceiling / -6% tracking
+                  ChromeTitle &mdash; SVG text, round-joined outline, scales to its container
                 </p>
-                <ChromeText as="p" depth="lg" className="text-title">
-                  Astro
-                </ChromeText>
-              </div>
-
-              <div className="flex flex-col gap-2">
-                <p className="text-10 font-bold uppercase tracking-widest text-muted-foreground">
-                  ChromeTitle &mdash; SVG text, round-joined outline, scales to container
-                </p>
-                <ChromeTitle depth="md" className="max-w-xl">
-                  {`Firtiansyah
-Okta R.`}
+                <ChromeTitle depth="md" className="max-w-lg">
+                  Astro 2026
                 </ChromeTitle>
               </div>
 
               <div className="flex flex-col gap-2">
                 <p className="text-10 font-bold uppercase tracking-widest text-muted-foreground">
-                  text-subtitle &mdash; Lexend Exa 700 / 35.05px ceiling / -19% tracking
+                  ChromeTitle &mdash; multi-line, no outline
                 </p>
-                <Subtitle>Ruang Tanpa Sekat</Subtitle>
+                <ChromeTitle depth="sm" outline={false} className="max-w-md">
+                  {`Firtiansyah
+Okta R.`}
+                </ChromeTitle>
               </div>
 
-              <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-3 border-t border-astro-cyan-2/40 pt-6">
                 <p className="text-10 font-bold uppercase tracking-widest text-muted-foreground">
-                  Chrome depth &mdash; gloss stack vs. outline
+                  Type scale
                 </p>
-                <div className="flex flex-wrap items-end gap-6">
-                  {(["sm", "md", "lg"] as const).map((d) => (
-                    <ChromeText key={d} as="p" depth={d} className="text-4xl">
-                      Chrome {d}
-                    </ChromeText>
-                  ))}
-                </div>
-                <div className="flex flex-wrap items-end gap-6">
-                  {(["sm", "md", "lg"] as const).map((d) => (
-                    <ChromeText
-                      key={d}
-                      as="p"
-                      variant="outline"
-                      depth={d}
-                      className="text-4xl"
-                    >
-                      Outline {d}
-                    </ChromeText>
-                  ))}
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-2 border-t border-astro-cyan-2/40 pt-5">
+                <p className="font-title text-title text-astro-navy">Title</p>
+                <Subtitle>Subtitle &mdash; Lexend Exa</Subtitle>
                 <p className="font-heading text-2xl font-extrabold text-astro-navy">
-                  Plus Jakarta Sans &mdash; headings and stat figures
+                  Heading &mdash; Plus Jakarta Sans
                 </p>
                 <p className="text-base text-ink">
                   Geist body copy, used for all running text, form labels and
                   table content.
                 </p>
                 <p className="text-10 font-bold uppercase tracking-widest text-muted-foreground">
-                  Micro label / text-10
+                  Micro label &mdash; text-10
+                </p>
+              </div>
+
+              <div className="flex flex-col gap-2 border-t border-astro-cyan-2/40 pt-6">
+                <p className="text-10 font-bold uppercase tracking-widest text-muted-foreground">
+                  Inline emphasis &mdash; ChromeText
+                </p>
+                <p className="font-title text-2xl font-bold uppercase text-astro-navy">
+                  Our <ChromeText>Committee</ChromeText>
                 </p>
               </div>
             </div>
@@ -744,6 +726,21 @@ Okta R.`}
           </Spec>
 
           <Spec
+            title="Persistent CTA"
+            hint="FloatingCta — appears only after the hero scrolls past, so it never competes with the hero button. Live at the bottom-right of this page."
+          >
+            <div className="flex flex-col gap-3">
+              <p className="text-sm font-medium text-ink">
+                Scroll this page and the CTA docks bottom-right. It exits on
+                scroll back to the top and is hidden when printing.
+              </p>
+              <Pill tone="glass" className="font-mono">
+                showAfter=600px
+              </Pill>
+            </div>
+          </Spec>
+
+          <Spec
             title="Site footer"
             hint="SiteFooter: navy panel, social marks, contact details. Brand marks use react-icons because lucide v1 dropped them."
           >
@@ -797,6 +794,8 @@ Okta R.`}
           </Spec>
         </div>
       </SectionShell>
+
+      <FloatingCta href="#top" label="Daftar Segera" />
 
       <SectionShell ribbon sky="bright" bubbles="corners" className="py-20">
         <SectionHeading

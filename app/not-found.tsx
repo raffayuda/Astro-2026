@@ -7,7 +7,7 @@ import { Home, Trophy, Search, ArrowLeft, Sparkles } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { Bubbles, ChevronRibbon, ChromeText, Pattern } from "@/components/brand";
+import { Bubbles, ChevronRibbon, ChromeTitle, Pattern } from "@/components/brand";
 
 const MotionImage = motion.create(Image);
 
@@ -94,21 +94,9 @@ export default function NotFound() {
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
             className="rounded-xl bg-white shadow-soft flex flex-col gap-6 p-8"
           >
-            {/* Big 404 Headline with Masterpiece Font */}
-            <div className="relative">
-              <ChromeText
-                as="h1"
-                depth="lg"
-                className="text-title select-none"
-              >
-                404
-              </ChromeText>
-              <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-                <span className="font-title text-8xl sm:text-9xl md:text-title leading-none text-transparent bg-clip-text bg-linear-to-b from-white via-white/80 to-sky-200/50 opacity-90">
-                  404
-                </span>
-              </div>
-            </div>
+            <ChromeTitle depth="lg" align="middle" className="mx-auto max-w-sm">
+              404
+            </ChromeTitle>
 
             {/* Description */}
             <div className="mx-auto flex max-w-md flex-col gap-2">

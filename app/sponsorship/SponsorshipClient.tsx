@@ -20,7 +20,7 @@ import {
 import { FaWhatsapp } from "react-icons/fa6"
 
 import {
-  ChromeText,
+  ChromeTitle,
   CtaButton,
   Pill,
   RetroMonitorWidget,
@@ -91,9 +91,9 @@ export function SponsorshipClient() {
           <Pill tone="white" size="sm">
             Sponsorship Proposal
           </Pill>
-          <ChromeText as="h1" depth="lg" className="text-title-sm">
+          <ChromeTitle depth="md" align="middle" className="mx-auto max-w-2xl">
             Why Partner
-          </ChromeText>
+          </ChromeTitle>
           <Subtitle>With Astro 2026</Subtitle>
           <p className="max-w-2xl text-sm font-semibold text-astro-navy sm:text-base">
             Hadirkan brand Anda langsung di hadapan generasi muda yang aktif dan

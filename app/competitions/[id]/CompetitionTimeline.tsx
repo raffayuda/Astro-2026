@@ -179,7 +179,7 @@ function TimelineCard({
 }) {
   return (
     <div
-      className={`rounded-xl bg-white shadow-soft transition-all duration-200 w-full max-w-md relative group hover:border-astro-blue/45 ${
+      className={`rounded-xl bg-white shadow-soft transition-all duration-200 w-full max-w-md relative group hover:shadow-soft-lg ${
         align === 'right' ? 'text-right' : 'text-left'
       }`}
     >

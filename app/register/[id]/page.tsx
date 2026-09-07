@@ -21,7 +21,7 @@ const MotionImage = motion.create(Image);
 import { getEffectiveCompetitionFee } from "@/src/lib/competitions";
 
 import type { CompetitionCustomField } from "@/types/astro";
-import { Bubbles, ChevronRibbon, Pattern, chromeTextStyle } from "@/components/brand";
+import { Bubbles, ChevronRibbon, Pattern } from "@/components/brand";
 
 interface CompetitionData {
   id: string;
@@ -559,8 +559,7 @@ export default function RegistrationPage({
                 initial="hidden"
                 animate="visible"
                 variants={fadeUp}
-                style={chromeTextStyle()}
-                className="font-title text-xl uppercase tracking-tight text-sky-bottom mb-2 md:text-3xl"
+                className="mb-2 font-title text-xl font-bold uppercase tracking-tight text-white md:text-3xl"
               >
                 Pendaftaran {competition.title}
               </motion.h1>

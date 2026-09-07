@@ -5,28 +5,28 @@ import * as React from "react"
 import { cn } from "@/lib/utils"
 
 /**
- * Sticker-outline display title, rendered as SVG text.
+ * Outlined display title, rendered as SVG text.
  *
- * SVG is used rather than `-webkit-text-stroke` because it supports
- * `stroke-linejoin="round"`, which is what produces the soft rounded outline
- * corners of the sticker look. `-webkit-text-stroke` always miters, so sharp
- * letterforms grow spikes, and it is poorly supported outside WebKit.
+ * SVG rather than `-webkit-text-stroke` because only SVG supports
+ * `stroke-linejoin="round"`, which is what keeps the outline corners soft;
+ * `-webkit-text-stroke` always miters, so sharp letterforms sprout spikes.
  *
- * Sizing model: glyphs are laid out at a fixed 100 user-unit font size and the
- * viewBox is fitted to the measured text, so the SVG scales to whatever width
- * its container gives it. Callers control size with the wrapper width, not a
- * font-size.
+ * One clean white outline and a single soft drop shadow. No layered offsets.
+ *
+ * Sizing is container-driven: glyphs lay out at a fixed 100 user-unit font size
+ * and the viewBox is fitted to the measured text, so the title scales to
+ * whatever width its container gives it.
  */
 
 const FONT_SIZE = 100
 
-/** Stroke width as a fraction of font size. Centred, so half sits outside. */
-const STROKE_RATIO = { sm: 0.18, md: 0.24, lg: 0.3 } as const
+/** Outline width as a fraction of font size. Centred, so half sits outside. */
+const STROKE_RATIO = { sm: 0.1, md: 0.14, lg: 0.18 } as const
 
 const DROP_SHADOW = {
-  sm: "drop-shadow-md",
-  md: "drop-shadow-lg",
-  lg: "drop-shadow-xl",
+  sm: "drop-shadow-sm",
+  md: "drop-shadow-md",
+  lg: "drop-shadow-lg",
 } as const
 
 export function ChromeTitle({
@@ -35,8 +35,8 @@ export function ChromeTitle({
   align = "start",
   fill = "fill-astro-blue",
   stroke = "#ffffff",
+  outline = true,
   className,
-  titleClassName,
 }: {
   /** Text to render. Newlines start a new line. */
   children: string
@@ -46,25 +46,29 @@ export function ChromeTitle({
   fill?: string
   /** Outline colour. */
   stroke?: string
+  /** Set false for a flat title with no outline at all. */
+  outline?: boolean
   className?: string
-  titleClassName?: string
 }) {
   const lines = React.useMemo(
-    () => children.split("\n").map((l) => l.trim()).filter(Boolean),
+    () =>
+      children
+        .split("\n")
+        .map((l) => l.trim())
+        .filter(Boolean),
     [children]
   )
 
-  const strokeWidth = FONT_SIZE * STROKE_RATIO[depth]
-  const pad = strokeWidth / 2
+  const strokeWidth = outline ? FONT_SIZE * STROKE_RATIO[depth] : 0
+  const pad = Math.max(strokeWidth / 2, 2)
 
-  // Pre-measurement estimate keeps SSR output close to final and avoids a jump.
+  // Pre-measurement estimate keeps SSR close to final and avoids a visible jump.
   const longest = lines.reduce((a, b) => (b.length > a.length ? b : a), "")
-  const estWidth = Math.max(longest.length * FONT_SIZE * 0.62, FONT_SIZE)
-  const estHeight = lines.length * FONT_SIZE
+  const estWidth = Math.max(longest.length * FONT_SIZE * 0.6, FONT_SIZE)
+  const estHeight = lines.length * FONT_SIZE * 0.98
 
   const [viewBox, setViewBox] = React.useState(
-    () =>
-      `${-pad} ${-pad} ${estWidth + strokeWidth} ${estHeight + strokeWidth}`
+    () => `${-pad} ${-pad} ${estWidth + pad * 2} ${estHeight + pad * 2}`
   )
 
   const groupRef = React.useRef<SVGGElement>(null)
@@ -76,16 +80,16 @@ export function ChromeTitle({
       const b = g.getBBox()
       if (b.width === 0 || b.height === 0) return
       setViewBox(
-        `${b.x - pad} ${b.y - pad} ${b.width + strokeWidth} ${b.height + strokeWidth}`
+        `${b.x - pad} ${b.y - pad} ${b.width + pad * 2} ${b.height + pad * 2}`
       )
     } catch {
-      // getBBox throws when the node is not rendered (display:none); keep the estimate.
+      // getBBox throws for nodes that are not rendered; keep the estimate.
     }
-  }, [pad, strokeWidth])
+  }, [pad])
 
   React.useLayoutEffect(() => {
     measure()
-    // Web fonts land after first paint, which changes the metrics.
+    // Web fonts land after first paint and change the metrics.
     let cancelled = false
     void document.fonts?.ready.then(() => {
       if (!cancelled) measure()
@@ -101,7 +105,7 @@ export function ChromeTitle({
   return (
     <div
       data-slot="chrome-title"
-      className={cn("w-full", DROP_SHADOW[depth], className)}
+      className={cn("w-full", outline && DROP_SHADOW[depth], className)}
     >
       <svg
         viewBox={viewBox}
@@ -112,22 +116,18 @@ export function ChromeTitle({
         <g ref={groupRef}>
           {lines.map((line, i) => (
             <text
-              key={i}
+              key={`${i}-${line}`}
               x={x}
-              y={FONT_SIZE * (i + 1) - FONT_SIZE * 0.22}
+              y={FONT_SIZE * 0.78 + i * FONT_SIZE * 0.98}
               textAnchor={anchor}
-              stroke={stroke}
-              strokeWidth={strokeWidth}
+              stroke={outline ? stroke : undefined}
+              strokeWidth={strokeWidth || undefined}
               strokeLinejoin="round"
               strokeLinecap="round"
               paintOrder="stroke fill"
               fontSize={FONT_SIZE}
-              className={cn(
-                "font-title font-bold uppercase",
-                fill,
-                titleClassName
-              )}
-              style={{ letterSpacing: "-0.06em" }}
+              className={cn("font-title font-bold uppercase", fill)}
+              style={{ letterSpacing: "-0.045em" }}
             >
               {line}
             </text>

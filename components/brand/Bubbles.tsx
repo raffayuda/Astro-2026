@@ -56,9 +56,9 @@ export function Bubbles({
         className
       )}
     >
-      {PRESETS[preset].map((b, i) => (
+      {PRESETS[preset].map((b) => (
         <motion.span
-          key={i}
+          key={`${b.size}-${b.position}`}
           className={cn(
             "absolute rounded-full bg-white/40 shadow-soft ring-1 ring-inset ring-white/70",
             b.size,

@@ -4,7 +4,7 @@ import Image from "next/image";
 import { motion, useReducedMotion } from "motion/react";
 import { ArrowDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Bubbles, ChevronRibbon, ChromeText, Pattern } from "@/components/brand";
+import { Bubbles, ChevronRibbon, ChromeTitle, Pattern } from "@/components/brand";
 
 const MotionImage = motion.create(Image);
 
@@ -168,23 +168,13 @@ export default function ProfileHero() {
         </motion.div>
         {/* ─── MAIN TITLE ─── */}
         <motion.div variants={fadeUp} className="mb-6 md:mb-0 md:-mt-6">
-          <h1 className="font-title text-6xl font-black uppercase leading-none sm:text-7xl lg:text-8xl mb-0">
-            <ChromeText
-              depth="lg"
-              className="block"
-            >
-              ASTRO
-            </ChromeText>
-            <ChromeText
-              depth="lg"
-              className="block"
-            >
-              2026
-            </ChromeText>
-          </h1>
+          <ChromeTitle depth="lg" className="max-w-md">
+            {`Astro
+2026`}
+          </ChromeTitle>
 
           {/* Tagline - Split Creative */}
-          <p className="mt-6 font-title leading-snug drop-shadow-sticker">
+          <p className="mt-6 font-title leading-snug drop-shadow-md">
             <span className="text-3xl sm:text-4xl md:text-5xl text-white/95 block">
               Where Innovation
             </span>

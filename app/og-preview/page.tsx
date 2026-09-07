@@ -27,7 +27,7 @@ export default function OgPreview() {
           {/* Main Title + Logo Combination */}
           <div className="flex flex-col items-center justify-center mb-6 mt-4">
             {/* Astro Logo */}
-            <div className="relative w-[100px] h-[100px] mb-4 drop-shadow-sticker">
+            <div className="relative w-[100px] h-[100px] mb-4 drop-shadow-md">
               <Image src="/assets/logo-astro.svg" alt="Astro Logo" fill className="object-contain" />
             </div>
             
@@ -53,7 +53,7 @@ export default function OgPreview() {
           </div>
 
           {/* Subtitle / Tagline */}
-          <div className="mt-4 font-title leading-snug drop-shadow-sticker text-center">
+          <div className="mt-4 font-title leading-snug drop-shadow-md text-center">
             <span className="text-4xl text-white/95 block tracking-wide">
               Where Innovation
             </span>
