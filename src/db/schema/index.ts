@@ -160,7 +160,7 @@ export const registrations = pgTable(
     email: text("email").notNull(),
     whatsapp: text("whatsapp").notNull(),
     customFields: jsonb("custom_fields")
-      .$type<Record<string, any>>()
+      .$type<Record<string, string>>()
       .default({})
       .notNull(),
     // Payment

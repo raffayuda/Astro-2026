@@ -24,7 +24,7 @@ export const registrationFormSchema = z.object({
   whatsapp: z
     .string()
     .min(9, 'Nomor WhatsApp tidak valid (minimal 9 digit)'),
-  customFields: z.record(z.string(), z.any()),
+  customFields: z.record(z.string(), z.string()),
 });
 
 export type RegistrationFormValues = z.infer<typeof registrationFormSchema>;

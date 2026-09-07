@@ -21,7 +21,7 @@ export interface PrintableInvoiceData {
   whatsapp: string;
   members?: string | null;
   memberDetails?: { name: string; photoUrl?: string | null }[] | null;
-  customFields?: Record<string, any> | null;
+  customFields?: Record<string, string> | null;
   competitionName: string;
   competitionCategory?: string | null;
   competitionContactName?: string | null;
