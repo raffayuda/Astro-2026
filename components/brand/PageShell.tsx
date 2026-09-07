@@ -45,14 +45,17 @@ export function PageShell({
 export function CenteredShell({
   children,
   footer = false,
+  navbar = false,
   className,
 }: {
   children: React.ReactNode
   footer?: boolean
+  /** Auth flows are chromeless by default. */
+  navbar?: boolean
   className?: string
 }) {
   return (
-    <PageShell footer={footer} className={className}>
+    <PageShell footer={footer} navbar={navbar} className={className}>
       <div className="relative flex min-h-svh items-center justify-center overflow-hidden px-4 py-24">
         <div className="absolute inset-0 bg-linear-to-b from-sky-top via-sky-mid to-white" />
         <div className="relative z-10 w-full max-w-md">{children}</div>

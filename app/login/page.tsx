@@ -20,6 +20,7 @@ import {
 import Image from 'next/image';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
+import { Bubbles, CenteredShell } from "@/components/brand";
 import { Card, CardContent } from '@/components/ui/card';
 import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
@@ -472,50 +473,23 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <div className="flex min-h-screen flex-col bg-linear-to-b from-sky-top via-astro-cyan-2 to-sky-mid">
-      {/* Floating blobs */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <Image
-          src="/assets/blob-round.png"
-          alt=""
-          width={120}
-          height={120}
-          className="absolute top-[10%] -left-[2%] size-20 object-contain opacity-30 md:size-32"
-        />
-        <Image
-          src="/assets/blob-round.png"
-          alt=""
-          width={80}
-          height={80}
-          className="absolute top-[30%] -right-[2%] size-14 object-contain opacity-30 md:size-24"
-        />
-        <Image
-          src="/assets/blob-round.png"
-          alt=""
-          width={100}
-          height={100}
-          className="absolute bottom-[20%] left-[5%] size-16 object-contain opacity-30 md:size-28"
-        />
-      </div>
-
-      <div className="relative z-10 flex flex-1 items-center justify-center px-4 py-10">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="w-full max-w-md"
+    <CenteredShell>
+      <Bubbles preset="dense" />
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+      >
+        <Suspense
+          fallback={
+            <Card className="p-8 text-center">
+              <Spinner className="mx-auto size-6 text-astro-blue" />
+            </Card>
+          }
         >
-          <Suspense
-            fallback={
-              <Card className="rounded-xl border border-white/40 bg-background/80 p-8 text-center backdrop-blur-xl">
-                <Spinner className="size-6 text-primary mx-auto" />
-              </Card>
-            }
-          >
-            <LoginForm />
-          </Suspense>
-        </motion.div>
-      </div>
-    </div>
+          <LoginForm />
+        </Suspense>
+      </motion.div>
+    </CenteredShell>
   );
 }

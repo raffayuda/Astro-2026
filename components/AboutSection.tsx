@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import Image from "next/image";
-import { motion, AnimatePresence, useReducedMotion } from "motion/react";
-import { Search } from "lucide-react";
+import { useMemo, useState } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { CalendarCheck, Search, Trophy, Users } from "lucide-react";
+
 import {
   InputGroup,
   InputGroupAddon,
@@ -16,11 +16,17 @@ import {
   EmptyHeader,
   EmptyTitle,
 } from "@/components/ui/empty";
-import type { Competition, CategoryType } from "@/types/astro";
+import {
+  Pattern,
+  Pill,
+  SectionHeading,
+  SectionShell,
+  StatCard,
+  Surface,
+} from "@/components/brand";
+import { cn } from "@/lib/utils";
+import type { CategoryType, Competition } from "@/types/astro";
 import CompetitionCard from "./CompetitionCard";
-import { Bubbles, ChromeText, Pattern } from "@/components/brand";
-
-const MotionImage = motion.create(Image);
 
 interface Props {
   competitions: Competition[];
@@ -36,22 +42,23 @@ export default function AboutSection({ competitions }: Props) {
     "all" | "internal" | "external"
   >("all");
 
-  // Derive categories dynamically from competition data
   const categoryMap = useMemo(() => {
     const map = new Map<CategoryType, string>();
-    competitions.forEach((c) => {
-      if (!map.has(c.category)) {
-        // Capitalize label
-        const label = c.category.charAt(0).toUpperCase() + c.category.slice(1);
-        map.set(c.category, label);
+    competitions.forEach((competition) => {
+      if (!map.has(competition.category)) {
+        map.set(
+          competition.category,
+          competition.category.charAt(0).toUpperCase() +
+            competition.category.slice(1),
+        );
       }
     });
     return map;
   }, [competitions]);
 
-  const CATEGORIES: { label: string; value: CategoryType | "all" }[] = useMemo(
+  const categories: { label: string; value: CategoryType | "all" }[] = useMemo(
     () => [
-      { label: "SEMUA", value: "all" as const },
+      { label: "Semua", value: "all" as const },
       ...Array.from(categoryMap.entries()).map(([value, label]) => ({
         label,
         value,
@@ -65,264 +72,158 @@ export default function AboutSection({ competitions }: Props) {
     [categoryMap],
   );
 
+  const openCompetitions = useMemo(
+    () =>
+      competitions.filter((competition) => competition.isActive !== false).length,
+    [competitions],
+  );
+
+  const totalSlots = useMemo(
+    () => competitions.reduce((sum, competition) => sum + competition.maxSlots, 0),
+    [competitions],
+  );
+
   const filtered = useMemo(() => {
-    const q = searchQuery.toLowerCase().trim();
+    const query = searchQuery.toLowerCase().trim();
+
     return competitions
-      .filter((c) => {
-        const matchCat =
-          selectedCategory === "all" || c.category === selectedCategory;
+      .filter((competition) => {
+        const matchCategory =
+          selectedCategory === "all" || competition.category === selectedCategory;
         const matchOrigin =
-          selectedOrigin === "all" || c.origin === selectedOrigin;
-        const matchQ =
-          !q ||
-          c.title.toLowerCase().includes(q) ||
-          c.tagline.toLowerCase().includes(q);
-        return matchCat && matchOrigin && matchQ;
+          selectedOrigin === "all" || competition.origin === selectedOrigin;
+        const matchQuery =
+          !query ||
+          competition.title.toLowerCase().includes(query) ||
+          competition.tagline.toLowerCase().includes(query);
+
+        return matchCategory && matchOrigin && matchQuery;
       })
       .sort((a, b) => {
-        const catDiff =
+        const categoryDiff =
           categoryOrder.indexOf(a.category) - categoryOrder.indexOf(b.category);
-        if (catDiff !== 0) return catDiff;
+        if (categoryDiff !== 0) return categoryDiff;
         return a.title.localeCompare(b.title);
       });
-    // oxlint-disable-next-line react-hooks/exhaustive-deps
-  }, [competitions, selectedCategory, selectedOrigin, searchQuery]);
+  }, [competitions, selectedCategory, selectedOrigin, searchQuery, categoryOrder]);
 
   return (
-    <section
+    <SectionShell
       id="competitions"
-      className="bg-linear-to-b from-sky-bottom via-white to-white relative overflow-hidden py-20 md:py-28"
+      sky="none"
+      width="wide"
+      className="relative overflow-hidden bg-linear-to-b from-sky-bottom via-white to-white py-18 md:py-24"
     >
-      <Bubbles preset="sparse" />
-      {/* Background — seamless transition from Hero's sky fade */}
       <Pattern className="absolute inset-0 -z-10 opacity-35" />
-      <div className="pointer-events-none absolute top-0 left-0 size-[500px] rounded-full bg-astro-cyan-2/18 blur-[120px]" />
-      <div className="pointer-events-none absolute right-0 bottom-0 size-[500px] rounded-full bg-astro-blue/10 blur-[120px]" />
+      <div className="pointer-events-none absolute left-0 top-10 size-[420px] rounded-full bg-astro-cyan-2/16 blur-[110px]" />
 
-      {/* ─── FLOATING BLOB ROUND IMAGES ─── */}
-      <motion.div
-        initial={reduce ? false : { opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8 }}
-      >
-        <Image
-          src="/assets/blob-round.png"
-          alt=""
-          width={112}
-          height={112}
-          className="absolute top-[2%] right-[2%] w-12 h-12 md:w-40 md:h-40 md:top-[8%] md:right-[12%] object-contain pointer-events-none select-none z-10"
-        />
-      </motion.div>
-      <motion.div
-        initial={reduce ? false : { opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8, delay: 0.1 }}
-      >
-        <Image
-          src="/assets/blob-round.png"
-          alt=""
-          width={96}
-          height={96}
-          className="absolute top-[30%] left-[1%] w-12 h-12 md:w-36 md:h-36 md:top-[35%] md:left-[2%] object-contain pointer-events-none select-none z-10"
-        />
-      </motion.div>
-      <motion.div
-        initial={reduce ? false : { opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8, delay: 0.2 }}
-      >
-        <Image
-          src="/assets/blob-round.png"
-          alt=""
-          width={64}
-          height={64}
-          className="absolute top-[60%] right-[1%] w-10 h-10 md:w-24 md:h-24 md:top-[55%] md:right-[3%] object-contain pointer-events-none select-none z-10"
-        />
-      </motion.div>
-      <motion.div
-        initial={reduce ? false : { opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8, delay: 0.3 }}
-      >
-        <Image
-          src="/assets/blob-round.png"
-          alt=""
-          width={80}
-          height={80}
-          className="absolute bottom-[2%] left-[2%] w-10 h-10 md:w-32 md:h-32 md:bottom-[10%] md:left-[10%] object-contain pointer-events-none select-none z-10"
-        />
-      </motion.div>
+      <div className="grid gap-8 lg:grid-cols-[0.36fr_0.64fr] lg:items-start">
+        <aside className="flex flex-col gap-5 lg:sticky lg:top-24">
+          <SectionHeading
+            eyebrow="Katalog lomba"
+            title="Pilih cabang yang pas"
+            lead="Cari berdasarkan nama, kategori, atau asal kompetisi. Semua kartu tetap terhubung ke halaman detail dan pendaftaran."
+            align="start"
+            chrome={false}
+          />
 
-      {/* ─── EARTH DECORATIVE ─── */}
-      <motion.div
-        initial={reduce ? false : { opacity: 0, scale: 0.6 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-        className="absolute top-[5%] right-[5%] md:top-[12%] md:right-[4%] z-10 pointer-events-none select-none"
-      >
-        <MotionImage
-          src="/assets/earth.png"
-          alt=""
-          width={280}
-          height={280}
-          sizes="(min-width: 768px) 280px, 96px"
-          animate={{ y: [0, -18, 0] }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          className="w-15 h-15 md:w-[280px] md:h-[280px] object-contain"
-        />
-      </motion.div>
-
-      {/* ─── AWAN DECORATIVE ─── */}
-      <motion.div
-        initial={reduce ? false : { opacity: 0, x: -60 }}
-        whileInView={{ opacity: 1, x: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-        className="absolute top-[32%] left-[1%] md:top-[12%] md:left-[3%] z-10 pointer-events-none select-none"
-      >
-        <MotionImage
-          src="/assets/awan1.png"
-          alt=""
-          width={160}
-          height={160}
-          animate={{ x: [0, 15, 0] }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-          className="w-10 h-10 md:w-[160px] md:h-[160px] object-contain"
-        />
-      </motion.div>
-
-      <motion.div
-        initial={reduce ? false : { opacity: 0, x: 60 }}
-        whileInView={{ opacity: 1, x: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 1.2, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-        className="absolute bottom-[8%] right-[1%] md:bottom-[15%] md:right-[3%] z-10 pointer-events-none select-none"
-      >
-        <MotionImage
-          src="/assets/awan2.png"
-          alt=""
-          width={200}
-          height={200}
-          animate={{ x: [0, -12, 0] }}
-          transition={{ duration: 11, repeat: Infinity, ease: "easeInOut" }}
-          className="w-10 h-10 md:w-[200px] md:h-[200px] object-contain"
-        />
-      </motion.div>
-
-      <div className="relative z-30 max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
-        {/* Pilih Lombamu */}
-        <div>
-          {/* Title — rata kiri */}
-          <div className="mb-8">
-            <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-            >
-              <div className="block h-1.5 w-18 rounded-full bg-linear-to-r from-astro-gold via-astro-lime2 to-astro-blue mb-3" />
-              <h2 className="font-title text-4xl leading-tight text-astro-navy md:text-5xl lg:text-6xl">
-                Pilih
-                <br />
-                <ChromeText>Lombamu</ChromeText>
-              </h2>
-              <p className="mt-2 text-sm font-semibold text-astro-blue/80">
-                Tersedia berbagai cabang lomba seru dari tiga kategori berbeda.
-              </p>
-            </motion.div>
-          </div>
-
-          {/* Filters */}
-          <div className="mb-6 flex flex-col gap-3">
-            {/* Row 1: Search + Origin */}
-            <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
-              <div className="relative flex-1 sm:max-w-xs">
-                <InputGroup className="rounded-full bg-white shadow-soft-sm h-11 border-white/80 bg-white/80">
+          <Surface
+            tone="plain"
+            radius="2xl"
+            pad="lg"
+            className="border border-white/80 bg-white/85 backdrop-blur"
+          >
+            <div className="flex flex-col gap-5">
+              <div>
+                <p className="mb-2 text-10 font-black uppercase tracking-widest text-muted-foreground">
+                  Cari lomba
+                </p>
+                <InputGroup className="h-11 rounded-full border-astro-cyan-2/70 bg-sky-bottom/70 shadow-soft-sm">
                   <InputGroupAddon align="inline-start">
                     <Search className="size-3.5 text-muted-foreground" />
                   </InputGroupAddon>
                   <InputGroupInput
-                    placeholder="CARI LOMBA..."
+                    placeholder="Nama lomba..."
                     value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="text-xs font-bold tracking-wider uppercase placeholder:text-astro-blue/50"
+                    onChange={(event) => setSearchQuery(event.target.value)}
+                    className="text-xs font-bold placeholder:text-astro-blue/45"
                   />
                 </InputGroup>
               </div>
-              {/* Origin filter — parallelogram buttons, no label */}
-              <div className="self-start sm:self-auto">
-                <ToggleGroup
-                  type="single"
-                  value={selectedOrigin}
-                  onValueChange={(v) =>
-                    v &&
-                    setSelectedOrigin(
-                      v as "all" | "internal" | "external",
-                    )
-                  }
-                  spacing={1}
-                >
-                  {[
-                    { label: "Semua", value: "all" as const },
-                    { label: "Internal", value: "internal" as const },
-                    { label: "Eksternal", value: "external" as const },
-                  ].map((opt) => (
-                    <ToggleGroupItem
-                      key={opt.value}
-                      value={opt.value}
-                      className="rounded-lg border border-astro-cyan-2/80 bg-white/80 px-4 py-2 text-10 font-black uppercase tracking-[0.15em] text-astro-blue shadow-sm data-[state=on]:border-white data-[state=on]:bg-linear-to-b data-[state=on]:from-astro-blue data-[state=on]:to-astro-blue data-[state=on]:text-white data-[state=on]:shadow-soft-lg"
-                    >
-                      {opt.label}
-                    </ToggleGroupItem>
-                  ))}
-                </ToggleGroup>
-              </div>
-            </div>
 
-            {/* Row 2: Category buttons */}
-            <div className="flex flex-wrap items-center gap-1">
-              <span className="mr-1 text-10 font-black uppercase tracking-wider text-astro-blue">
-                Kategori
-              </span>
-              <ToggleGroup
-                type="single"
-                value={selectedCategory}
-                onValueChange={(v) =>
-                  v && setSelectedCategory(v as CategoryType | "all")
+              <FilterGroup
+                label="Asal kompetisi"
+                value={selectedOrigin}
+                items={[
+                  { label: "Semua", value: "all" },
+                  { label: "Internal", value: "internal" },
+                  { label: "Eksternal", value: "external" },
+                ]}
+                onChange={(value) =>
+                  setSelectedOrigin(value as "all" | "internal" | "external")
                 }
-                spacing={1}
-              >
-                {CATEGORIES.map((cat) => (
-                  <ToggleGroupItem
-                    key={cat.value}
-                    value={cat.value}
-                    className="rounded-lg border border-astro-cyan-2/80 bg-white/80 px-4 py-2 text-10 font-black uppercase tracking-[0.15em] text-astro-blue shadow-sm data-[state=on]:border-white data-[state=on]:bg-linear-to-b data-[state=on]:from-astro-blue data-[state=on]:to-astro-blue data-[state=on]:text-white data-[state=on]:shadow-soft-lg"
-                  >
-                    {cat.label}
-                  </ToggleGroupItem>
-                ))}
-              </ToggleGroup>
+              />
+
+              <FilterGroup
+                label="Kategori"
+                value={selectedCategory}
+                items={categories}
+                activeClassName="data-[state=on]:bg-astro-gold data-[state=on]:text-astro-navy"
+                onChange={(value) =>
+                  setSelectedCategory(value as CategoryType | "all")
+                }
+              />
             </div>
+          </Surface>
+
+          <div className="grid grid-cols-3 gap-3">
+            <StatCard
+              icon={Trophy}
+              metric={String(competitions.length)}
+              label="Lomba"
+            />
+            <StatCard
+              icon={CalendarCheck}
+              metric={String(openCompetitions)}
+              label="Aktif"
+            />
+            <StatCard icon={Users} metric={String(totalSlots)} label="Kuota" />
+          </div>
+        </aside>
+
+        <div>
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <motion.div
+              initial={reduce ? false : { opacity: 0, y: 12 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+            >
+              <Pill tone="blue" size="sm">
+                {filtered.length} hasil
+              </Pill>
+            </motion.div>
+            <p className="text-sm font-semibold text-muted-foreground">
+              Klik detail untuk aturan lengkap, atau daftar langsung dari kartu.
+            </p>
           </div>
 
-          {/* Competition Grid */}
           <AnimatePresence mode="wait">
             {filtered.length > 0 ? (
               <motion.div
-                key={`${selectedCategory}-${searchQuery}`}
-                className="grid gap-5 sm:grid-cols-2 md:grid-cols-3"
+                key={`${selectedCategory}-${selectedOrigin}-${searchQuery}`}
+                className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.2 }}
               >
-                {filtered.map((c, i) => (
-                  <CompetitionCard key={c.id} competition={c} index={i} />
+                {filtered.map((competition, index) => (
+                  <CompetitionCard
+                    key={competition.id}
+                    competition={competition}
+                    index={index}
+                  />
                 ))}
               </motion.div>
             ) : (
@@ -331,10 +232,10 @@ export default function AboutSection({ competitions }: Props) {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
               >
-                <Empty className="rounded-xl bg-white shadow-soft py-16">
+                <Empty className="rounded-xl bg-white py-16 shadow-soft">
                   <EmptyHeader>
                     <EmptyTitle className="text-base font-black uppercase tracking-wider">
-                      Tidak Ditemukan
+                      Tidak ditemukan
                     </EmptyTitle>
                     <EmptyDescription>
                       Coba kata kunci atau filter lain.
@@ -346,6 +247,47 @@ export default function AboutSection({ competitions }: Props) {
           </AnimatePresence>
         </div>
       </div>
-    </section>
+    </SectionShell>
+  );
+}
+
+function FilterGroup({
+  label,
+  value,
+  items,
+  activeClassName = "data-[state=on]:bg-astro-blue data-[state=on]:text-white",
+  onChange,
+}: {
+  label: string;
+  value: string;
+  items: { label: string; value: string }[];
+  activeClassName?: string;
+  onChange: (value: string) => void;
+}) {
+  return (
+    <div className="flex flex-col gap-2">
+      <p className="text-10 font-black uppercase tracking-widest text-muted-foreground">
+        {label}
+      </p>
+      <ToggleGroup
+        type="single"
+        value={value}
+        onValueChange={(nextValue) => nextValue && onChange(nextValue)}
+        className="flex flex-wrap justify-start gap-2"
+      >
+        {items.map((item) => (
+          <ToggleGroupItem
+            key={item.value}
+            value={item.value}
+            className={cn(
+              "rounded-full px-4 text-10 font-black uppercase tracking-widest",
+              activeClassName,
+            )}
+          >
+            {item.label}
+          </ToggleGroupItem>
+        ))}
+      </ToggleGroup>
+    </div>
   );
 }

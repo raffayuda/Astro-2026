@@ -14,7 +14,7 @@ import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 import { Spinner } from '@/components/ui/spinner';
-import { Bubbles, ChevronRibbon, Pattern } from "@/components/brand";
+import { Bubbles, CenteredShell, ChevronRibbon, Pattern } from "@/components/brand";
 
 type Step = 'form' | 'otp' | 'success';
 
@@ -177,16 +177,15 @@ export default function SignupPage() {
   // ─── SUCCESS ───
   if (step === 'success') {
     return (
-      <div className="relative bg-linear-to-b from-sky-top via-sky-mid to-white flex min-h-screen flex-col">
+      <CenteredShell>
         <Bubbles preset="sparse" />
         <ChevronRibbon edge="top" />
         <ChevronRibbon edge="bottom" />
         <Pattern className="absolute inset-0 opacity-35" />
-        <div className="flex flex-1 items-center justify-center px-4">
+        <div>
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="w-full max-w-md"
           >
             <Card className="rounded-xl bg-white shadow-soft p-8 text-center md:p-10">
               <CardContent className="flex flex-col items-center p-0">
@@ -202,17 +201,17 @@ export default function SignupPage() {
             </Card>
           </motion.div>
         </div>
-      </div>
+      </CenteredShell>
     );
   }
 
   return (
-    <div className="relative bg-linear-to-b from-sky-top via-sky-mid to-white flex min-h-screen flex-col">
+    <CenteredShell>
       <Bubbles preset="sparse" />
       <ChevronRibbon edge="top" />
       <ChevronRibbon edge="bottom" />
       <Pattern className="absolute inset-0 opacity-35" />
-      <div className="relative z-10 flex flex-1 items-center justify-center px-4">
+      <div className="relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -401,6 +400,6 @@ export default function SignupPage() {
           </Card>
         </motion.div>
       </div>
-    </div>
+    </CenteredShell>
   );
 }
