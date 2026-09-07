@@ -38,8 +38,8 @@ export default function OverviewCharts() {
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-white border border-slate-200 shadow-md px-4 py-3 text-xs">
-          <p className="font-bold text-slate-900 mb-1">{label}</p>
+        <div className="bg-white border border-astro-cyan-2 shadow-md px-4 py-3 text-xs">
+          <p className="font-bold text-astro-navy mb-1">{label}</p>
           {payload.map((p: any, i: number) => (
             <p key={i} style={{ color: p.color }} className="font-medium">
               {p.name}: {p.value}

@@ -9,7 +9,7 @@ export default function OgPreview() {
       */}
       <div 
         id="og-container"
-        className="relative flex items-center justify-center overflow-hidden bg-linear-to-b from-sky-400 via-sky-300 to-sky-100 shadow-2xl ring-1 ring-white/10"
+        className="relative flex items-center justify-center overflow-hidden bg-linear-to-b from-sky-top via-astro-cyan-2 to-sky-mid shadow-2xl ring-1 ring-white/10"
         style={{ width: "1200px", height: "630px" }}
       >
         {/* ─── CLOUD IMAGES ─── */}
@@ -33,7 +33,7 @@ export default function OgPreview() {
             
             <h1 className="text-title font-black leading-[0.85] tracking-tight drop-shadow-2xl font-title flex items-center gap-8">
               <span
-                className="bg-linear-to-b from-slate-100 via-slate-300 to-slate-500 bg-clip-text text-transparent"
+                className="bg-linear-to-b from-surface via-astro-cyan-2 to-ink bg-clip-text text-transparent"
                 style={{
                   textShadow: '0 2px 0 #cbd5e1, 0 4px 0 #94a3b8, 0 6px 0 #64748b, 0 8px 20px rgba(0,0,0,0.3)',
                 }}
@@ -42,7 +42,7 @@ export default function OgPreview() {
               </span>
               
               <span
-                className="bg-linear-to-b from-slate-200 via-slate-500 to-slate-800 bg-clip-text text-transparent"
+                className="bg-linear-to-b from-astro-cyan-2 via-ink to-astro-navy bg-clip-text text-transparent"
                 style={{
                   textShadow: '0 2px 0 #e2e8f0, 0 4px 0 #94a3b8, 0 6px 0 #475569, 0 8px 0 #1e293b, 0 12px 30px rgba(0,0,0,0.35)',
                 }}
@@ -64,18 +64,18 @@ export default function OgPreview() {
 
           {/* Categories */}
           <div className="mt-12 flex items-center gap-4 bg-white/20 backdrop-blur-md px-8 py-3 rounded-full shadow-sticker border border-white/40">
-             <span className="text-sky-900 font-bold text-xl uppercase tracking-widest">Akademik</span>
+             <span className="text-astro-navy font-bold text-xl uppercase tracking-widest">Akademik</span>
              <span className="text-white mx-2 text-2xl">•</span>
-             <span className="text-sky-900 font-bold text-xl uppercase tracking-widest">Olahraga</span>
+             <span className="text-astro-navy font-bold text-xl uppercase tracking-widest">Olahraga</span>
              <span className="text-white mx-2 text-2xl">•</span>
-             <span className="text-sky-900 font-bold text-xl uppercase tracking-widest">Esports</span>
+             <span className="text-astro-navy font-bold text-xl uppercase tracking-widest">Esports</span>
           </div>
           
         </div>
         
         {/* Bottom Bar / URL */}
         <div className="absolute bottom-0 left-0 w-full h-12 flex items-center justify-center px-12 z-20">
-          <div className="font-black text-sky-950 text-lg tracking-widest font-display drop-shadow-sm">
+          <div className="font-black text-astro-navy text-lg tracking-widest font-display drop-shadow-sm">
             astro.nurulfikri.ac.id
           </div>
         </div>

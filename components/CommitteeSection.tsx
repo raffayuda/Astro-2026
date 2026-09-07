@@ -246,12 +246,12 @@ export default function CommitteeSection() {
   return (
     <section
       id="committee"
-      className="bg-linear-to-b from-sky-bottom via-white to-white relative overflow-hidden py-20 text-slate-900 md:py-28"
+      className="bg-linear-to-b from-sky-bottom via-white to-white relative overflow-hidden py-20 text-astro-navy md:py-28"
     >
       <Bubbles preset="sparse" />
       <Pattern className="absolute inset-0 z-0 opacity-25" />
       {/* ─── SKY BACKGROUND GLOWS ─── */}
-      <div className="pointer-events-none absolute top-1/2 left-1/2 z-0 size-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-300/20 blur-[140px]" />
+      <div className="pointer-events-none absolute top-1/2 left-1/2 z-0 size-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-astro-cyan-2/20 blur-[140px]" />
 
       {/* ─── FLOATING DECORATIVE CLOUDS & BLOBS ─── */}
       <MotionImage
@@ -324,14 +324,14 @@ export default function CommitteeSection() {
               <ToggleGroupItem
                 key={div.id}
                 value={div.slug}
-                className="rounded-[14px] gap-2 px-4 py-2 text-xs font-black tracking-wide transition-all data-[state=on]:bg-linear-to-b data-[state=on]:from-astro-blue data-[state=on]:to-astro-blue data-[state=on]:text-white data-[state=on]:shadow-lg data-[state=off]:bg-white/65 data-[state=off]:text-astro-blue data-[state=off]:hover:bg-white data-[state=off]:hover:text-astro-blue"
+                className="rounded-lg gap-2 px-4 py-2 text-xs font-black tracking-wide transition-all data-[state=on]:bg-linear-to-b data-[state=on]:from-astro-blue data-[state=on]:to-astro-blue data-[state=on]:text-white data-[state=on]:shadow-lg data-[state=off]:bg-white/65 data-[state=off]:text-astro-blue data-[state=off]:hover:bg-white data-[state=off]:hover:text-astro-blue"
               >
                 <span
                   className={cn(
                     "size-1.5 rounded-full",
                     activeDivision === div.slug
                       ? "bg-astro-cyan"
-                      : "bg-slate-300",
+                      : "bg-astro-cyan-2",
                   )}
                 />
                 {div.shortDisplay}
@@ -340,7 +340,7 @@ export default function CommitteeSection() {
                   className={cn(
                     "rounded-md text-10 font-bold",
                     activeDivision === div.slug
-                      ? "bg-sky-50 text-astro-cyan"
+                      ? "bg-sky-bottom text-astro-cyan"
                       : "bg-white/40 text-muted-foreground",
                   )}
                 >
@@ -357,7 +357,7 @@ export default function CommitteeSection() {
             <span className="rounded-full bg-white shadow-soft-sm px-4 py-1.5 text-xs font-black uppercase tracking-widest text-astro-blue">
               {currentDivision?.displayName || activeDivision}
             </span>
-            <span className="hidden sm:inline-block text-11 font-medium text-slate-500">
+            <span className="hidden sm:inline-block text-11 font-medium text-ink">
               ({filteredMembers.length} Personel)
             </span>
           </div>
@@ -371,7 +371,7 @@ export default function CommitteeSection() {
                 onClick={() => scroll("left")}
                 disabled={!canScrollLeft}
                 aria-label="Geser ke kiri"
-                className="size-8 rounded-full border-slate-300 bg-white/80 text-slate-700 shadow-sm hover:bg-astro-cyan hover:text-slate-950 hover:border-astro-cyan disabled:opacity-30 disabled:hover:bg-white/80 transition-all"
+                className="size-8 rounded-full border-astro-cyan-2 bg-white/80 text-ink shadow-sm hover:bg-astro-cyan hover:text-astro-navy hover:border-astro-cyan disabled:opacity-30 disabled:hover:bg-white/80 transition-all"
               >
                 <ChevronLeft className="size-4" />
               </Button>
@@ -381,7 +381,7 @@ export default function CommitteeSection() {
                 onClick={() => scroll("right")}
                 disabled={!canScrollRight}
                 aria-label="Geser ke kanan"
-                className="size-8 rounded-full border-slate-300 bg-white/80 text-slate-700 shadow-sm hover:bg-astro-cyan hover:text-slate-950 hover:border-astro-cyan disabled:opacity-30 disabled:hover:bg-white/80 transition-all"
+                className="size-8 rounded-full border-astro-cyan-2 bg-white/80 text-ink shadow-sm hover:bg-astro-cyan hover:text-astro-navy hover:border-astro-cyan disabled:opacity-30 disabled:hover:bg-white/80 transition-all"
               >
                 <ChevronRight className="size-4" />
               </Button>
@@ -427,7 +427,7 @@ export default function CommitteeSection() {
                   setSelectedMemberIndex(index);
                 }}
               >
-                <div className="relative w-full aspect-[3/4] rounded-2xl overflow-hidden bg-slate-100 shadow-md hover:shadow-xl transition-all duration-300 ring-1 ring-white/90 cursor-pointer">
+                <div className="relative w-full aspect-[3/4] rounded-2xl overflow-hidden bg-surface shadow-md hover:shadow-xl transition-all duration-300 ring-1 ring-white/90 cursor-pointer">
                   <Image
                     src={normalizeImageUrl(member.image) || "/assets/users.png"}
                     alt={member.name}
@@ -442,7 +442,7 @@ export default function CommitteeSection() {
                       className={
                         member.isLeader === "1"
                           ? "bg-amber-400 text-10 font-bold uppercase tracking-wider text-amber-950 shadow-sm max-w-[140px] truncate inline-block"
-                          : "bg-white/85 text-10 font-bold uppercase tracking-wider text-slate-700 ring-1 ring-white/90 backdrop-blur-sm max-w-[140px] truncate inline-block"
+                          : "bg-white/85 text-10 font-bold uppercase tracking-wider text-ink ring-1 ring-white/90 backdrop-blur-sm max-w-[140px] truncate inline-block"
                       }
                     >
                       {member.role || "Anggota"}
@@ -457,7 +457,7 @@ export default function CommitteeSection() {
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.25 }}
-                        className="absolute inset-0 z-10 flex flex-col justify-end bg-linear-to-t from-slate-950/85 via-slate-900/40 to-transparent backdrop-blur-[2px]"
+                        className="absolute inset-0 z-10 flex flex-col justify-end bg-linear-to-t from-astro-navy/85 via-astro-navy/40 to-transparent backdrop-blur-[2px]"
                       >
                         <div className="p-4 md:p-5">
                           <h3 className="text-sm md:text-base font-bold text-white leading-tight drop-shadow-sm capitalize">
@@ -468,7 +468,7 @@ export default function CommitteeSection() {
                           </p>
 
                           {(member.studyProgram || member.batch) && (
-                            <p className="mt-1 text-10 font-semibold uppercase tracking-wider text-cyan-200/90 drop-shadow-sm">
+                            <p className="mt-1 text-10 font-semibold uppercase tracking-wider text-astro-cyan-2/90 drop-shadow-sm">
                               {[member.studyProgram, member.batch]
                                 .filter(Boolean)
                                 .join(" ")}
@@ -502,9 +502,9 @@ export default function CommitteeSection() {
 
         {/* ── Summary & Interaction Hint ── */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-10">
-          <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/60 backdrop-blur-xl rounded-xl ring-1 ring-slate-200 shadow-sm">
+          <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/60 backdrop-blur-xl rounded-xl ring-1 ring-astro-cyan-2 shadow-sm">
             <Users className="w-4 h-4 text-astro-cyan" />
-            <span className="text-xs font-bold text-slate-700">
+            <span className="text-xs font-bold text-ink">
               {filteredMembers.length} Anggota —{" "}
               {currentDivision?.name || activeDivision}
             </span>
@@ -521,14 +521,14 @@ export default function CommitteeSection() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-xl"
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-astro-navy/80 p-4 backdrop-blur-xl"
             role="dialog"
             aria-modal="true"
             aria-label={viewerMember.name}
             onClick={() => setSelectedMemberIndex(null)}
           >
             {/* Sky Glow Backdrop */}
-            <div className="pointer-events-none absolute top-1/2 left-1/2 z-0 size-[550px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-400/10 blur-[140px]" />
+            <div className="pointer-events-none absolute top-1/2 left-1/2 z-0 size-[550px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-astro-sky/10 blur-[140px]" />
 
             {/* Centered Dark Navy Portrait Card */}
             <motion.div
@@ -537,13 +537,13 @@ export default function CommitteeSection() {
               exit={{ scale: 0.95, opacity: 0, y: 15 }}
               transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
               onClick={(e) => e.stopPropagation()}
-              className="relative z-10 flex flex-col w-full max-w-sm sm:max-w-md max-h-[92vh] overflow-hidden rounded-3xl border border-sky-400/30 bg-astro-navy/95 p-4 sm:p-5 text-white shadow-2xl backdrop-blur-2xl"
+              className="relative z-10 flex flex-col w-full max-w-sm sm:max-w-md max-h-[92vh] overflow-hidden rounded-3xl border border-sky-top/30 bg-astro-navy/95 p-4 sm:p-5 text-white shadow-2xl backdrop-blur-2xl"
             >
               {/* Header inside Card */}
               <div className="flex items-center justify-between pb-3">
                 <div className="flex items-center gap-2">
                   {isMemberReady ? (
-                    <Badge className="rounded-md bg-astro-cyan text-11 font-black uppercase tracking-wider text-slate-950 shadow-sm">
+                    <Badge className="rounded-md bg-astro-cyan text-11 font-black uppercase tracking-wider text-astro-navy shadow-sm">
                       {currentDivision?.shortDisplay ||
                         currentDivision?.name ||
                         activeDivision}
@@ -557,14 +557,14 @@ export default function CommitteeSection() {
                   size="icon"
                   aria-label="Tutup"
                   onClick={() => setSelectedMemberIndex(null)}
-                  className="size-8 border border-white/15 bg-white/10 text-slate-200 hover:bg-white/20 hover:text-white rounded-full"
+                  className="size-8 border border-white/15 bg-white/10 text-astro-cyan-2 hover:bg-white/20 hover:text-white rounded-full"
                 >
                   <X className="size-4" />
                 </Button>
               </div>
 
               {/* Image Stage inside Portrait Card */}
-              <div className="relative w-full aspect-[3/4] max-h-[46vh] sm:max-h-[50vh] overflow-hidden rounded-2xl border border-white/10 bg-slate-950 shadow-inner">
+              <div className="relative w-full aspect-[3/4] max-h-[46vh] sm:max-h-[50vh] overflow-hidden rounded-2xl border border-white/10 bg-astro-navy shadow-inner">
                 <SkeletonImage
                   key={viewerMember.id}
                   src={
@@ -584,7 +584,7 @@ export default function CommitteeSection() {
                   variant="ghost"
                   size="icon"
                   onClick={handlePrevMember}
-                  className="absolute top-1/2 left-2.5 z-30 -translate-y-1/2 size-9 rounded-full bg-white text-slate-950 shadow-lg hover:bg-astro-cyan hover:scale-105 transition-all"
+                  className="absolute top-1/2 left-2.5 z-30 -translate-y-1/2 size-9 rounded-full bg-white text-astro-navy shadow-lg hover:bg-astro-cyan hover:scale-105 transition-all"
                   aria-label="Anggota sebelumnya"
                 >
                   <ChevronLeft className="size-5" />
@@ -593,7 +593,7 @@ export default function CommitteeSection() {
                   variant="ghost"
                   size="icon"
                   onClick={handleNextMember}
-                  className="absolute top-1/2 right-2.5 z-30 -translate-y-1/2 size-9 rounded-full bg-white text-slate-950 shadow-lg hover:bg-astro-cyan hover:scale-105 transition-all"
+                  className="absolute top-1/2 right-2.5 z-30 -translate-y-1/2 size-9 rounded-full bg-white text-astro-navy shadow-lg hover:bg-astro-cyan hover:scale-105 transition-all"
                   aria-label="Anggota berikutnya"
                 >
                   <ChevronRight className="size-5" />
@@ -611,18 +611,18 @@ export default function CommitteeSection() {
                       {viewerMember.role}
                     </p>
                     {(viewerMember.studyProgram || viewerMember.batch) && (
-                      <p className="mt-1 text-10 font-bold uppercase tracking-wider text-cyan-200/90">
+                      <p className="mt-1 text-10 font-bold uppercase tracking-wider text-astro-cyan-2/90">
                         {[viewerMember.studyProgram, viewerMember.batch]
                           .filter(Boolean)
                           .join(" ")}
                       </p>
                     )}
                     {viewerMember.quote && (
-                      <p className="mt-2 px-2 text-xs text-slate-300 italic leading-relaxed">
+                      <p className="mt-2 px-2 text-xs text-astro-cyan-2 italic leading-relaxed">
                         "{viewerMember.quote}"
                       </p>
                     )}
-                    <p className="mt-2 text-11 font-semibold text-slate-400">
+                    <p className="mt-2 text-11 font-semibold text-ink">
                       {selectedMemberIndex! + 1} dari {filteredMembers.length}{" "}
                       anggota
                     </p>

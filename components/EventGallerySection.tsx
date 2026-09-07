@@ -88,11 +88,11 @@ export default function EventGallerySection() {
   }, [selectedPhotoIndex, filteredPhotos.length]);
 
   return (
-    <section id="gallery" className="bg-linear-to-b from-sky-bottom via-white to-white relative overflow-hidden py-24 text-slate-900 md:py-32">
+    <section id="gallery" className="bg-linear-to-b from-sky-bottom via-white to-white relative overflow-hidden py-24 text-astro-navy md:py-32">
       <Bubbles preset="sparse" />
       <Pattern className="absolute inset-0 z-0 opacity-25" />
       {/* ─── SKY BACKGROUND GLOWS ─── */}
-      <div className="pointer-events-none absolute top-1/2 left-1/2 z-0 size-[850px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-300/25 blur-[140px]" />
+      <div className="pointer-events-none absolute top-1/2 left-1/2 z-0 size-[850px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-astro-cyan-2/25 blur-[140px]" />
 
       {/* ─── FLOATING DECORATIVE CLOUDS & BLOBS ─── */}
       <MotionImage
@@ -148,7 +148,7 @@ export default function EventGallerySection() {
                 <ToggleGroupItem
                   key={cat.slug}
                   value={cat.slug}
-                  className="rounded-[14px] gap-2 border border-white/80 bg-white/70 px-4 py-2 text-xs font-black uppercase tracking-wider text-astro-blue backdrop-blur-xl data-[state=on]:border-white data-[state=on]:bg-linear-to-b data-[state=on]:from-astro-blue data-[state=on]:to-astro-blue data-[state=on]:text-white data-[state=on]:shadow-md"
+                  className="rounded-lg gap-2 border border-white/80 bg-white/70 px-4 py-2 text-xs font-black uppercase tracking-wider text-astro-blue backdrop-blur-xl data-[state=on]:border-white data-[state=on]:bg-linear-to-b data-[state=on]:from-astro-blue data-[state=on]:to-astro-blue data-[state=on]:text-white data-[state=on]:shadow-md"
                 >
                   <Camera className="size-3.5" />
                   {cat.name}
@@ -165,8 +165,8 @@ export default function EventGallerySection() {
           onMouseLeave={() => setIsMarqueeHovered(false)}
         >
           {/* Narrow edge fade masks */}
-          <div className="pointer-events-none absolute top-0 bottom-0 left-0 z-30 w-12 bg-linear-to-r from-sky-100 via-sky-100/60 to-transparent sm:w-16 md:w-24" />
-          <div className="pointer-events-none absolute top-0 right-0 bottom-0 z-30 w-12 bg-linear-to-l from-sky-100 via-sky-100/60 to-transparent sm:w-16 md:w-24" />
+          <div className="pointer-events-none absolute top-0 bottom-0 left-0 z-30 w-12 bg-linear-to-r from-sky-mid via-sky-mid/60 to-transparent sm:w-16 md:w-24" />
+          <div className="pointer-events-none absolute top-0 right-0 bottom-0 z-30 w-12 bg-linear-to-l from-sky-mid via-sky-mid/60 to-transparent sm:w-16 md:w-24" />
 
           <div className="space-y-6">
             {[marqueeRow1, marqueeRow2].map((row, rowIdx) => (
@@ -182,14 +182,14 @@ export default function EventGallerySection() {
                     <div
                       key={`r${rowIdx}-${photoItem.id}-${idx}`}
                       onClick={() => setSelectedPhotoIndex(idx % filteredPhotos.length)}
-                      className="group relative aspect-[4/3] w-[280px] shrink-0 cursor-pointer overflow-hidden rounded-[22px] border-2 border-white/80 bg-white/60 p-3 shadow-md backdrop-blur-2xl transition-all duration-500 hover:border-white hover:shadow-2xl sm:w-[330px] md:w-[380px]"
+                      className="group relative aspect-[4/3] w-[280px] shrink-0 cursor-pointer overflow-hidden rounded-2xl border-2 border-white/80 bg-white/60 p-3 shadow-md backdrop-blur-2xl transition-all duration-500 hover:border-white hover:shadow-2xl sm:w-[330px] md:w-[380px]"
                       style={{ clipPath: 'polygon(14px 0, 100% 0, calc(100% - 14px) 100%, 0 100%)' }}
                     >
                       {/* Glass Refraction Highlight */}
                       <div className="pointer-events-none absolute inset-0 z-10 bg-linear-to-tr from-white/10 via-white/35 to-transparent" />
 
                       <div
-                        className="relative h-full w-full overflow-hidden border border-white/60 bg-slate-900 transition-colors group-hover:border-astro-cyan"
+                        className="relative h-full w-full overflow-hidden border border-white/60 bg-astro-navy transition-colors group-hover:border-astro-cyan"
                         style={{ borderRadius: '18px' }}
                       >
                         {/* Shimmer skeleton while thumbnail loads */}
@@ -203,11 +203,11 @@ export default function EventGallerySection() {
                         />
 
                         {/* Dark Gradient Legibility Overlay */}
-                        <div className="absolute inset-0 bg-linear-to-t from-slate-950/85 via-slate-950/20 to-transparent opacity-60 transition-opacity duration-300 group-hover:opacity-90" />
+                        <div className="absolute inset-0 bg-linear-to-t from-astro-navy/85 via-astro-navy/20 to-transparent opacity-60 transition-opacity duration-300 group-hover:opacity-90" />
 
                         {/* Year Badge */}
                         <div className="absolute top-3 left-3 z-20 flex items-center gap-2">
-                          <Badge className="rounded-md bg-astro-cyan text-10 font-black uppercase tracking-wider text-slate-950 shadow-md">
+                          <Badge className="rounded-md bg-astro-cyan text-10 font-black uppercase tracking-wider text-astro-navy shadow-md">
                             {photoItem.year}
                           </Badge>
                         </div>
@@ -217,7 +217,7 @@ export default function EventGallerySection() {
                           <h4 className="text-sm font-black leading-tight text-white transition-colors group-hover:text-astro-cyan md:text-base">
                             {photoItem.title}
                           </h4>
-                          <p className="mt-0.5 text-11 font-semibold text-slate-300 opacity-80">
+                          <p className="mt-0.5 text-11 font-semibold text-astro-cyan-2 opacity-80">
                             {photoItem.category}
                           </p>
                         </div>
@@ -246,17 +246,17 @@ export default function EventGallerySection() {
             aria-label={photo.title}
           >
             {/* Ambient Cyan Glow */}
-            <div className="pointer-events-none absolute top-1/2 left-1/2 z-0 size-[700px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-400/10 blur-[140px]" />
+            <div className="pointer-events-none absolute top-1/2 left-1/2 z-0 size-[700px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-astro-sky/10 blur-[140px]" />
 
             {/* Header */}
             <div className="relative z-10 flex items-center justify-between px-5 py-4 md:px-8 md:py-5">
               <div className="flex items-center gap-3">
                 {isPhotoReady ? (
                   <>
-                    <Badge className="rounded-md bg-astro-cyan text-11 font-black uppercase tracking-wider text-slate-950 shadow-sm">
+                    <Badge className="rounded-md bg-astro-cyan text-11 font-black uppercase tracking-wider text-astro-navy shadow-sm">
                       {photo.year}
                     </Badge>
-                    <span className="text-xs font-bold uppercase tracking-widest text-slate-300">
+                    <span className="text-xs font-bold uppercase tracking-widest text-astro-cyan-2">
                       {photo.category}
                     </span>
                   </>
@@ -295,7 +295,7 @@ export default function EventGallerySection() {
 
             {/* Main fullscreen image stage (landscape) */}
             <div className="relative z-10 flex-1 min-h-0 px-4 pb-2 md:px-12">
-              <div className="relative h-full w-full overflow-hidden rounded-2xl border border-white/10 bg-slate-950 shadow-2xl">
+              <div className="relative h-full w-full overflow-hidden rounded-2xl border border-white/10 bg-astro-navy shadow-2xl">
                 {/* Animated pulse skeleton while loading */}
                 <SkeletonImage
                   key={photo.id}
@@ -314,7 +314,7 @@ export default function EventGallerySection() {
                   variant="ghost"
                   size="icon-lg"
                   onClick={handlePrevPhoto}
-                  className="absolute top-1/2 left-3 z-30 -translate-y-1/2 size-10 rounded-full bg-white text-slate-950 shadow-lg hover:bg-astro-cyan hover:scale-105 transition-all md:left-6"
+                  className="absolute top-1/2 left-3 z-30 -translate-y-1/2 size-10 rounded-full bg-white text-astro-navy shadow-lg hover:bg-astro-cyan hover:scale-105 transition-all md:left-6"
                   aria-label="Foto sebelumnya"
                 >
                   <ChevronLeft className="size-6" />
@@ -323,7 +323,7 @@ export default function EventGallerySection() {
                   variant="ghost"
                   size="icon-lg"
                   onClick={handleNextPhoto}
-                  className="absolute top-1/2 right-3 z-30 -translate-y-1/2 size-10 rounded-full bg-white text-slate-950 shadow-lg hover:bg-astro-cyan hover:scale-105 transition-all md:right-6"
+                  className="absolute top-1/2 right-3 z-30 -translate-y-1/2 size-10 rounded-full bg-white text-astro-navy shadow-lg hover:bg-astro-cyan hover:scale-105 transition-all md:right-6"
                   aria-label="Foto berikutnya"
                 >
                   <ChevronRight className="size-6" />
@@ -337,7 +337,7 @@ export default function EventGallerySection() {
                 {isPhotoReady ? (
                   <>
                     <h3 className="text-base font-black text-white md:text-lg">{photo.title}</h3>
-                    <p className="mt-0.5 text-xs font-semibold text-slate-300">
+                    <p className="mt-0.5 text-xs font-semibold text-astro-cyan-2">
                       Foto {selectedPhotoIndex! + 1} dari {filteredPhotos.length} dokumentasi resmi
                     </p>
                   </>
@@ -350,8 +350,8 @@ export default function EventGallerySection() {
               </div>
 
               {isPhotoReady ? (
-                <div className="hidden items-center gap-1.5 border border-sky-400/30 bg-sky-500/10 px-3 py-1.5 text-xs font-bold text-sky-200 rounded-lg shadow-sm sm:flex">
-                  <ZoomIn className="size-3.5 text-sky-300" /> HD Documentation
+                <div className="hidden items-center gap-1.5 border border-sky-top/30 bg-astro-blue/10 px-3 py-1.5 text-xs font-bold text-astro-cyan-2 rounded-lg shadow-sm sm:flex">
+                  <ZoomIn className="size-3.5 text-astro-cyan-2" /> HD Documentation
                 </div>
               ) : (
                 <div className="hidden sm:block h-7 w-32 rounded bg-astro-cyan-2/40 animate-pulse" />

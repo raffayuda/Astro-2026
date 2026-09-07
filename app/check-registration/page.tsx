@@ -106,7 +106,7 @@ const statusConfig: Record<
   },
   detecting: {
     label: "Diverifikasi",
-    color: "border-blue-300 bg-blue-50 text-blue-800",
+    color: "border-astro-cyan-2 bg-sky-bottom text-astro-navy",
     icon: AlertCircle,
     desc: "Pembayaran sedang diverifikasi oleh sistem gateway",
   },
@@ -243,7 +243,7 @@ function CheckRegistrationContent() {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-linear-to-b from-sky-400 via-sky-300 to-white">
+    <div className="relative min-h-screen overflow-hidden bg-linear-to-b from-sky-top via-astro-cyan-2 to-white">
       <Navbar />
 
       {/* Floating Blobs */}
@@ -310,10 +310,10 @@ function CheckRegistrationContent() {
           <div className="mb-3 flex justify-center">
             <div className="block h-1.5 w-18 rounded-full bg-linear-to-r from-astro-gold via-astro-lime2 to-astro-blue" />
           </div>
-          <h1 className="font-title mb-2 bg-linear-to-b from-slate-800 via-slate-900 to-black bg-clip-text text-4xl leading-tight text-transparent md:text-5xl">
+          <h1 className="font-title mb-2 bg-linear-to-b from-astro-navy via-astro-navy to-black bg-clip-text text-4xl leading-tight text-transparent md:text-5xl">
             Cek Pendaftaran
           </h1>
-          <p className="mx-auto max-w-md text-xs md:text-sm font-normal text-slate-700">
+          <p className="mx-auto max-w-md text-xs md:text-sm font-normal text-ink">
             Periksa status verifikasi, invoice, dan berkas partisipasi lomba ASTRO 2026 Anda secara instan.
           </p>
         </div>
@@ -323,20 +323,20 @@ function CheckRegistrationContent() {
           <Card className="rounded-xl border-2 border-white/60 bg-white/90 p-2 shadow-xl backdrop-blur-md">
             <form onSubmit={handleSearchSubmit} className="flex flex-col gap-2 sm:flex-row">
               <div className="relative flex-1">
-                <Search className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-slate-400" />
+                <Search className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-ink" />
                 <Input
                   type="text"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="Masukkan Nomor Invoice (INV-ASTRO-...) atau Email Pendaftar"
-                  className="h-12 border-slate-200 bg-white pl-10 pr-3 text-xs md:text-sm font-medium text-slate-900 placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-cyan-500"
+                  className="h-12 border-astro-cyan-2 bg-white pl-10 pr-3 text-xs md:text-sm font-medium text-astro-navy placeholder:text-ink focus-visible:ring-2 focus-visible:ring-astro-blue"
                 />
               </div>
               <div className="flex gap-2">
                 <Button
                   type="submit"
                   disabled={searchLoading || !query.trim()}
-                  className="rounded-lg h-12 gap-2 bg-cyan-600 px-6 text-xs font-black uppercase tracking-wider text-white hover:bg-cyan-500 shadow-md"
+                  className="rounded-lg h-12 gap-2 bg-astro-blue px-6 text-xs font-black uppercase tracking-wider text-white hover:bg-astro-blue shadow-md"
                 >
                   {searchLoading ? (
                     <Spinner className="size-4 text-white" />
@@ -350,7 +350,7 @@ function CheckRegistrationContent() {
                     type="button"
                     variant="outline"
                     onClick={handleClearSearch}
-                    className="rounded-lg h-12 border-slate-300 px-3 text-slate-600 hover:text-slate-900"
+                    className="rounded-lg h-12 border-astro-cyan-2 px-3 text-ink hover:text-astro-navy"
                     title="Reset Pencarian"
                   >
                     <RotateCcw className="size-4" />
@@ -359,11 +359,11 @@ function CheckRegistrationContent() {
               </div>
             </form>
           </Card>
-          <div className="mt-2 flex items-center justify-between px-2 text-11 text-slate-600">
+          <div className="mt-2 flex items-center justify-between px-2 text-11 text-ink">
             <span className="flex items-center gap-1">
-              <Sparkles className="size-3 text-cyan-600" /> Bebas akses tanpa perlu login
+              <Sparkles className="size-3 text-astro-blue" /> Bebas akses tanpa perlu login
             </span>
-            <span className="font-mono text-10 text-slate-500">
+            <span className="font-mono text-10 text-ink">
               Contoh: INV-ASTRO-2026-96885985
             </span>
           </div>
@@ -382,26 +382,26 @@ function CheckRegistrationContent() {
         {/* ─── HASIL PENCARIAN ─── */}
         {searchResults !== null && (
           <div className="mb-10 space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-300/60 pb-2">
-              <h2 className="text-xs font-black uppercase tracking-wider text-slate-800 flex items-center gap-2">
-                <Search className="size-3.5 text-cyan-600" />
+            <div className="flex items-center justify-between border-b border-astro-cyan-2/60 pb-2">
+              <h2 className="text-xs font-black uppercase tracking-wider text-astro-navy flex items-center gap-2">
+                <Search className="size-3.5 text-astro-blue" />
                 Hasil Pencarian ({searchResults.length})
               </h2>
-              <span className="text-10 font-mono text-slate-500 truncate max-w-[200px]">
+              <span className="text-10 font-mono text-ink truncate max-w-[200px]">
                 "{submittedQuery}"
               </span>
             </div>
 
             {searchResults.length === 0 ? (
-              <Empty className="rounded-xl border border-slate-200 bg-white/95 p-8 text-center shadow-md">
+              <Empty className="rounded-xl border border-astro-cyan-2 bg-white/95 p-8 text-center shadow-md">
                 <EmptyHeader>
                   <EmptyMedia variant="icon">
                     <HelpCircle className="size-8 text-amber-500" />
                   </EmptyMedia>
-                  <EmptyTitle className="text-sm font-bold text-slate-800">
+                  <EmptyTitle className="text-sm font-bold text-astro-navy">
                     Pendaftaran Tidak Ditemukan
                   </EmptyTitle>
-                  <EmptyDescription className="text-xs text-slate-600 max-w-sm mx-auto">
+                  <EmptyDescription className="text-xs text-ink max-w-sm mx-auto">
                     Tidak ditemukan pendaftaran dengan kata kunci <strong>"{submittedQuery}"</strong>. Pastikan Nomor Referensi Invoice atau Email sudah persis sesuai saat mengisi form pendaftaran.
                   </EmptyDescription>
                   <EmptyContent className="mt-4 flex flex-wrap justify-center gap-2">
@@ -416,7 +416,7 @@ function CheckRegistrationContent() {
                     <Button
                       asChild
                       size="sm"
-                      className="rounded-lg text-xs font-bold uppercase bg-cyan-600 hover:bg-cyan-500"
+                      className="rounded-lg text-xs font-bold uppercase bg-astro-blue hover:bg-astro-blue"
                     >
                       <Link href="/#competitions">
                         Daftar Lomba Baru <ArrowRight className="size-3 ml-1" />
@@ -443,36 +443,36 @@ function CheckRegistrationContent() {
         {/* ─── BAGIAN PENDAFTARAN AKUN (JIKA USER LOGIN) ─── */}
         {isLoggedIn && (
           <div className="mt-8 space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-300/60 pb-2">
+            <div className="flex items-center justify-between border-b border-astro-cyan-2/60 pb-2">
               <div>
-                <h2 className="text-xs font-black uppercase tracking-wider text-slate-800 flex items-center gap-1.5">
-                  <User className="size-3.5 text-cyan-600" />
+                <h2 className="text-xs font-black uppercase tracking-wider text-astro-navy flex items-center gap-1.5">
+                  <User className="size-3.5 text-astro-blue" />
                   Pendaftaran Akun Saya
                 </h2>
-                <p className="text-11 text-slate-600">
+                <p className="text-11 text-ink">
                   Terdaftar dengan email <strong>{user.email}</strong>
                 </p>
               </div>
-              <Badge variant="outline" className="text-10 font-bold border-cyan-300 text-cyan-800 bg-cyan-50">
+              <Badge variant="outline" className="text-10 font-bold border-astro-cyan-2 text-astro-navy bg-sky-bottom">
                 {accountRegistrations.length} Lomba
               </Badge>
             </div>
 
             {accountLoading ? (
               <div className="flex justify-center py-10">
-                <Spinner className="size-6 text-cyan-700" />
+                <Spinner className="size-6 text-astro-navy" />
               </div>
             ) : accountRegistrations.length === 0 ? (
-              <Empty className="rounded-xl border border-slate-200 bg-white/90 p-6 text-center shadow-sm">
+              <Empty className="rounded-xl border border-astro-cyan-2 bg-white/90 p-6 text-center shadow-sm">
                 <EmptyHeader>
-                  <EmptyTitle className="text-xs font-bold text-slate-800">
+                  <EmptyTitle className="text-xs font-bold text-astro-navy">
                     Belum Ada Pendaftaran Terhubung
                   </EmptyTitle>
-                  <EmptyDescription className="text-xs text-slate-600">
+                  <EmptyDescription className="text-xs text-ink">
                     Akun ini belum memiliki riwayat pendaftaran lomba aktif.
                   </EmptyDescription>
                   <EmptyContent className="mt-3">
-                    <Button asChild size="sm" className="rounded-lg text-xs font-bold uppercase bg-cyan-600 hover:bg-cyan-500">
+                    <Button asChild size="sm" className="rounded-lg text-xs font-bold uppercase bg-astro-blue hover:bg-astro-blue">
                       <Link href="/#competitions">Pilih & Daftar Lomba</Link>
                     </Button>
                   </EmptyContent>
@@ -496,28 +496,28 @@ function CheckRegistrationContent() {
         {/* ─── PANDUAN CEPAT BAGI YANG BELUM LOGIN & BELUM CARI ─── */}
         {!isLoggedIn && searchResults === null && (
           <div className="mt-6 rounded-xl border border-white/60 bg-white/80 p-5 shadow-sm backdrop-blur-sm">
-            <h3 className="mb-3 text-xs font-black uppercase tracking-wider text-slate-800 flex items-center gap-1.5">
-              <HelpCircle className="size-3.5 text-cyan-600" /> Panduan Cek Status Pendaftaran:
+            <h3 className="mb-3 text-xs font-black uppercase tracking-wider text-astro-navy flex items-center gap-1.5">
+              <HelpCircle className="size-3.5 text-astro-blue" /> Panduan Cek Status Pendaftaran:
             </h3>
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 text-xs text-slate-700">
-              <div className="rounded-lg bg-sky-50/70 p-3 border border-sky-100">
-                <span className="flex size-5 items-center justify-center rounded-full bg-cyan-600 text-10 font-bold text-white mb-1.5">1</span>
-                <p className="font-bold text-slate-900">Simpan Nomor Invoice</p>
-                <p className="text-11 text-slate-600 mt-0.5">Dapatkan kode referensi (contoh: <code>INV-ASTRO-...</code>) saat selesai submit pendaftaran.</p>
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 text-xs text-ink">
+              <div className="rounded-lg bg-sky-bottom/70 p-3 border border-sky-mid">
+                <span className="flex size-5 items-center justify-center rounded-full bg-astro-blue text-10 font-bold text-white mb-1.5">1</span>
+                <p className="font-bold text-astro-navy">Simpan Nomor Invoice</p>
+                <p className="text-11 text-ink mt-0.5">Dapatkan kode referensi (contoh: <code>INV-ASTRO-...</code>) saat selesai submit pendaftaran.</p>
               </div>
-              <div className="rounded-lg bg-sky-50/70 p-3 border border-sky-100">
-                <span className="flex size-5 items-center justify-center rounded-full bg-cyan-600 text-10 font-bold text-white mb-1.5">2</span>
-                <p className="font-bold text-slate-900">Cek Kapan Saja</p>
-                <p className="text-11 text-slate-600 mt-0.5">Ketik invoice atau email pada kotak pencarian di atas untuk cek bukti & bayar langsung.</p>
+              <div className="rounded-lg bg-sky-bottom/70 p-3 border border-sky-mid">
+                <span className="flex size-5 items-center justify-center rounded-full bg-astro-blue text-10 font-bold text-white mb-1.5">2</span>
+                <p className="font-bold text-astro-navy">Cek Kapan Saja</p>
+                <p className="text-11 text-ink mt-0.5">Ketik invoice atau email pada kotak pencarian di atas untuk cek bukti & bayar langsung.</p>
               </div>
-              <div className="rounded-lg bg-sky-50/70 p-3 border border-sky-100">
-                <span className="flex size-5 items-center justify-center rounded-full bg-cyan-600 text-10 font-bold text-white mb-1.5">3</span>
-                <p className="font-bold text-slate-900">Punya Akun?</p>
-                <p className="text-11 text-slate-600 mt-0.5">Masuk ke akun Anda untuk melihat seluruh riwayat lomba tanpa perlu mengetik nomor invoice.</p>
+              <div className="rounded-lg bg-sky-bottom/70 p-3 border border-sky-mid">
+                <span className="flex size-5 items-center justify-center rounded-full bg-astro-blue text-10 font-bold text-white mb-1.5">3</span>
+                <p className="font-bold text-astro-navy">Punya Akun?</p>
+                <p className="text-11 text-ink mt-0.5">Masuk ke akun Anda untuk melihat seluruh riwayat lomba tanpa perlu mengetik nomor invoice.</p>
               </div>
             </div>
-            <div className="mt-4 pt-3 border-t border-slate-200/80 flex items-center justify-between">
-              <span className="text-11 text-slate-600">Sudah memiliki akun ASTRO?</span>
+            <div className="mt-4 pt-3 border-t border-astro-cyan-2/80 flex items-center justify-between">
+              <span className="text-11 text-ink">Sudah memiliki akun ASTRO?</span>
               <Button asChild size="sm" variant="outline" className="rounded-lg text-xs font-bold uppercase gap-1.5">
                 <Link href="/login">
                   <LogIn className="size-3" /> Masuk Akun
@@ -531,7 +531,7 @@ function CheckRegistrationContent() {
         <div className="mt-12 flex items-center justify-center gap-6">
           <Link
             href="/"
-            className="text-xs font-bold uppercase tracking-wider text-slate-700 transition-colors hover:text-slate-950"
+            className="text-xs font-bold uppercase tracking-wider text-ink transition-colors hover:text-astro-navy"
           >
             ← Kembali ke Beranda
           </Link>
@@ -561,13 +561,13 @@ function CheckRegistrationContent() {
         {selectedReg && (
           <div className="space-y-5 py-1">
             {/* Header Lomba & Status */}
-            <div className="rounded-lg border border-slate-200 bg-slate-50/80 p-4">
+            <div className="rounded-lg border border-astro-cyan-2 bg-surface/80 p-4">
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <span className="text-10 font-bold uppercase tracking-wider text-muted-foreground">
                     Kompetisi Lomba
                   </span>
-                  <h3 className="text-base font-black text-slate-900">
+                  <h3 className="text-base font-black text-astro-navy">
                     {selectedReg.competitionName}
                   </h3>
                   {selectedReg.batchName && (
@@ -590,26 +590,26 @@ function CheckRegistrationContent() {
             </div>
 
             {/* Informasi Pembayaran */}
-            <div className="space-y-2.5 rounded-lg border border-slate-200 p-4">
+            <div className="space-y-2.5 rounded-lg border border-astro-cyan-2 p-4">
               <h4 className="flex items-center gap-1.5 text-10 font-bold uppercase tracking-[0.15em] text-muted-foreground">
-                <Coins className="size-3.5 text-cyan-600" /> Status & Pembayaran
+                <Coins className="size-3.5 text-astro-blue" /> Status & Pembayaran
               </h4>
               <div className="grid grid-cols-2 gap-3 text-xs">
                 <div>
                   <span className="text-10 text-muted-foreground">Nomor Referensi</span>
-                  <p className="font-mono font-bold text-slate-900 select-all">
+                  <p className="font-mono font-bold text-astro-navy select-all">
                     {selectedReg.paymentReference || "—"}
                   </p>
                 </div>
                 <div>
                   <span className="text-10 text-muted-foreground">Total Biaya</span>
-                  <p className="font-black text-cyan-700 text-sm">
+                  <p className="font-black text-astro-navy text-sm">
                     {selectedReg.paymentAmount === 0 ? "Gratis" : `Rp ${selectedReg.paymentAmount.toLocaleString("id-ID")}`}
                   </p>
                 </div>
                 <div>
                   <span className="text-10 text-muted-foreground">Waktu Pendaftaran</span>
-                  <p className="text-slate-700">
+                  <p className="text-ink">
                     {selectedReg.createdAt ? new Date(selectedReg.createdAt).toLocaleDateString("id-ID", {
                       day: "numeric",
                       month: "short",
@@ -621,7 +621,7 @@ function CheckRegistrationContent() {
                 </div>
                 <div>
                   <span className="text-10 text-muted-foreground">Metode Bayar</span>
-                  <p className="capitalize text-slate-700">
+                  <p className="capitalize text-ink">
                     {selectedReg.paymentMethod || "Payment Gateway (Online)"}
                   </p>
                 </div>
@@ -660,20 +660,20 @@ function CheckRegistrationContent() {
             </div>
 
             {/* Identitas Peserta / Tim */}
-            <div className="space-y-3 rounded-lg border border-slate-200 p-4">
+            <div className="space-y-3 rounded-lg border border-astro-cyan-2 p-4">
               <h4 className="flex items-center gap-1.5 text-10 font-bold uppercase tracking-[0.15em] text-muted-foreground">
-                <User className="size-3.5 text-cyan-600" /> {selectedReg.type === "team" ? "Data Tim & Pemain" : "Data Peserta"}
+                <User className="size-3.5 text-astro-blue" /> {selectedReg.type === "team" ? "Data Tim & Pemain" : "Data Peserta"}
               </h4>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 text-xs">
                 {selectedReg.type === "team" ? (
                   <>
                     <div>
                       <span className="text-10 text-muted-foreground">Nama Tim</span>
-                      <p className="font-bold text-slate-900">{selectedReg.teamName}</p>
+                      <p className="font-bold text-astro-navy">{selectedReg.teamName}</p>
                     </div>
                     <div>
                       <span className="text-10 text-muted-foreground">Ketua Tim</span>
-                      <p className="font-bold text-slate-900">{selectedReg.leaderName} ({selectedReg.leaderIdentity || "No ID"})</p>
+                      <p className="font-bold text-astro-navy">{selectedReg.leaderName} ({selectedReg.leaderIdentity || "No ID"})</p>
                     </div>
                     {selectedReg.leaderPhotoUrl && (
                       <div className="sm:col-span-2">
@@ -684,9 +684,9 @@ function CheckRegistrationContent() {
                             alt="Foto Ketua"
                             width={54}
                             height={54}
-                            className="size-14 rounded-md border border-slate-200 object-cover"
+                            className="size-14 rounded-md border border-astro-cyan-2 object-cover"
                           />
-                          <a href={selectedReg.leaderPhotoUrl} target="_blank" rel="noreferrer" className="text-xs text-cyan-600 hover:underline flex items-center gap-1 font-semibold">
+                          <a href={selectedReg.leaderPhotoUrl} target="_blank" rel="noreferrer" className="text-xs text-astro-blue hover:underline flex items-center gap-1 font-semibold">
                             Lihat Foto Penuh <ExternalLink className="size-3" />
                           </a>
                         </div>
@@ -697,13 +697,13 @@ function CheckRegistrationContent() {
                         <span className="text-10 text-muted-foreground">Roster Pemain ({selectedReg.memberDetails.length})</span>
                         <div className="mt-1.5 grid grid-cols-2 gap-2">
                           {selectedReg.memberDetails.map((m, i) => (
-                            <div key={i} className="flex items-center gap-2 rounded border border-slate-100 bg-slate-50/60 p-1.5">
+                            <div key={i} className="flex items-center gap-2 rounded border border-surface bg-surface/60 p-1.5">
                               {m.photoUrl ? (
-                                <Image src={m.photoUrl} alt={m.name} width={36} height={36} className="size-9 rounded object-cover border border-slate-200" />
+                                <Image src={m.photoUrl} alt={m.name} width={36} height={36} className="size-9 rounded object-cover border border-astro-cyan-2" />
                               ) : (
-                                <div className="flex size-9 items-center justify-center rounded bg-slate-200 text-9 text-slate-500">Foto</div>
+                                <div className="flex size-9 items-center justify-center rounded bg-astro-cyan-2 text-9 text-ink">Foto</div>
                               )}
-                              <span className="truncate text-xs font-medium text-slate-800">{m.name}</span>
+                              <span className="truncate text-xs font-medium text-astro-navy">{m.name}</span>
                             </div>
                           ))}
                         </div>
@@ -714,30 +714,30 @@ function CheckRegistrationContent() {
                   <>
                     <div>
                       <span className="text-10 text-muted-foreground">Nama Lengkap</span>
-                      <p className="font-bold text-slate-900">{selectedReg.fullName}</p>
+                      <p className="font-bold text-astro-navy">{selectedReg.fullName}</p>
                     </div>
                     <div>
                       <span className="text-10 text-muted-foreground">Nomor Identitas (NIM/NIK)</span>
-                      <p className="font-medium text-slate-900">{selectedReg.identityNumber || "—"}</p>
+                      <p className="font-medium text-astro-navy">{selectedReg.identityNumber || "—"}</p>
                     </div>
                   </>
                 )}
                 <div>
                   <span className="text-10 text-muted-foreground">Asal Sekolah / Instansi</span>
-                  <p className="font-medium text-slate-900 flex items-center gap-1">
-                    <Building2 className="size-3 text-slate-400" /> {selectedReg.institution}
+                  <p className="font-medium text-astro-navy flex items-center gap-1">
+                    <Building2 className="size-3 text-ink" /> {selectedReg.institution}
                   </p>
                 </div>
                 <div>
                   <span className="text-10 text-muted-foreground">Kontak WhatsApp</span>
-                  <p className="font-medium text-slate-900 flex items-center gap-1">
-                    <Phone className="size-3 text-slate-400" /> {selectedReg.whatsapp}
+                  <p className="font-medium text-astro-navy flex items-center gap-1">
+                    <Phone className="size-3 text-ink" /> {selectedReg.whatsapp}
                   </p>
                 </div>
                 <div className="sm:col-span-2">
                   <span className="text-10 text-muted-foreground">Email Terdaftar</span>
-                  <p className="font-medium text-slate-900 flex items-center gap-1">
-                    <Mail className="size-3 text-slate-400" /> {selectedReg.email}
+                  <p className="font-medium text-astro-navy flex items-center gap-1">
+                    <Mail className="size-3 text-ink" /> {selectedReg.email}
                   </p>
                 </div>
               </div>
@@ -745,9 +745,9 @@ function CheckRegistrationContent() {
 
             {/* Informasi & Berkas Khusus Lomba (Custom Fields) */}
             {selectedReg.customFields && Object.keys(selectedReg.customFields).length > 0 && (
-              <div className="space-y-3 rounded-lg border border-slate-200 p-4">
+              <div className="space-y-3 rounded-lg border border-astro-cyan-2 p-4">
                 <h4 className="flex items-center gap-1.5 text-10 font-bold uppercase tracking-[0.15em] text-muted-foreground">
-                  <Layers className="size-3.5 text-cyan-600" /> Berkas & Informasi Khusus Lomba
+                  <Layers className="size-3.5 text-astro-blue" /> Berkas & Informasi Khusus Lomba
                 </h4>
                 <div className="space-y-2.5">
                   {Object.entries(selectedReg.customFields).map(([key, val]) => {
@@ -759,8 +759,8 @@ function CheckRegistrationContent() {
                     if (!val) return null;
 
                     return (
-                      <div key={key} className="rounded-md border border-slate-100 bg-slate-50/50 p-2.5 text-xs">
-                        <span className="text-10 font-bold text-slate-500 uppercase tracking-wider block">
+                      <div key={key} className="rounded-md border border-surface bg-surface/50 p-2.5 text-xs">
+                        <span className="text-10 font-bold text-ink uppercase tracking-wider block">
                           {label}
                         </span>
                         {isImage ? (
@@ -770,19 +770,19 @@ function CheckRegistrationContent() {
                               alt={label}
                               width={56}
                               height={56}
-                              className="size-14 rounded border border-slate-200 object-cover bg-white"
+                              className="size-14 rounded border border-astro-cyan-2 object-cover bg-white"
                             />
                             <a
                               href={val}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-xs font-semibold text-cyan-600 hover:underline flex items-center gap-1"
+                              className="text-xs font-semibold text-astro-blue hover:underline flex items-center gap-1"
                             >
                               Lihat Berkas Penuh <ExternalLink className="size-3" />
                             </a>
                           </div>
                         ) : (
-                          <p className="mt-0.5 text-xs font-medium text-slate-900 whitespace-pre-line">
+                          <p className="mt-0.5 text-xs font-medium text-astro-navy whitespace-pre-line">
                             {String(val)}
                           </p>
                         )}
@@ -795,14 +795,14 @@ function CheckRegistrationContent() {
 
             {/* Kontak Panitia & Narahubung */}
             {selectedReg.competitionContactWhatsapp && (
-              <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 text-xs">
-                <span className="text-10 font-bold uppercase tracking-wider text-slate-500 block mb-1">
+              <div className="rounded-lg border border-astro-cyan-2 bg-surface p-4 text-xs">
+                <span className="text-10 font-bold uppercase tracking-wider text-ink block mb-1">
                   Narahubung Resmi Lomba (Contact Person)
                 </span>
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                   <div>
-                    <p className="font-bold text-slate-900">{selectedReg.competitionContactName || "Panitia Lomba"}</p>
-                    <p className="text-11 text-slate-600">Hubungi panitia jika ada kendala atau pertanyaan teknis.</p>
+                    <p className="font-bold text-astro-navy">{selectedReg.competitionContactName || "Panitia Lomba"}</p>
+                    <p className="text-11 text-ink">Hubungi panitia jika ada kendala atau pertanyaan teknis.</p>
                   </div>
                   <Button
                     asChild
@@ -824,14 +824,14 @@ function CheckRegistrationContent() {
             )}
 
         {/* Modal Bottom Actions */}
-        <div className="flex items-center justify-between pt-3 border-t border-slate-100">
+        <div className="flex items-center justify-between pt-3 border-t border-surface">
           <Button
             variant="outline"
             size="sm"
             onClick={() => handlePrint(selectedReg)}
-            className="rounded-lg gap-1.5 text-xs font-bold text-slate-800 hover:text-cyan-700 hover:border-cyan-400 bg-white shadow-xs"
+            className="rounded-lg gap-1.5 text-xs font-bold text-astro-navy hover:text-astro-navy hover:border-astro-sky bg-white shadow-xs"
           >
-            <Printer className="size-3.5 text-cyan-600" /> Cetak Bukti Invoice
+            <Printer className="size-3.5 text-astro-blue" /> Cetak Bukti Invoice
           </Button>
           <Button
             variant="outline"
@@ -871,57 +871,57 @@ function RegistrationCard({
   const Icon = cfg.icon;
 
   return (
-    <Card className="rounded-lg relative border-slate-200 bg-white shadow-sm hover:shadow-md transition-shadow">
+    <Card className="rounded-lg relative border-astro-cyan-2 bg-white shadow-sm hover:shadow-md transition-shadow">
       <div
-        className="absolute -top-px -left-px size-8 bg-cyan-600"
+        className="absolute -top-px -left-px size-8 bg-astro-blue"
         style={{ clipPath: "polygon(0 0, 100% 0, 0 100%)" }}
       />
       <CardContent className="p-4 md:p-5">
         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2 mb-1">
-              <h3 className="text-base font-black uppercase tracking-tight text-slate-900 truncate">
+              <h3 className="text-base font-black uppercase tracking-tight text-astro-navy truncate">
                 {reg.competitionName}
               </h3>
               {reg.batchName && (
-                <span className="text-10 font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200">
+                <span className="text-10 font-bold px-1.5 py-0.5 rounded bg-surface text-ink border border-astro-cyan-2">
                   {reg.batchName}
                 </span>
               )}
               {reg.type === "team" && (
-                <span className="text-10 font-bold px-1.5 py-0.5 rounded bg-cyan-50 text-cyan-700 border border-cyan-200 uppercase">
+                <span className="text-10 font-bold px-1.5 py-0.5 rounded bg-sky-bottom text-astro-navy border border-astro-cyan-2 uppercase">
                   Tim
                 </span>
               )}
             </div>
 
-            <p className="text-xs text-slate-700 font-medium">
+            <p className="text-xs text-ink font-medium">
               {reg.type === "team" ? (
                 <span>
-                  Tim: <strong className="text-slate-900">{reg.teamName}</strong>
+                  Tim: <strong className="text-astro-navy">{reg.teamName}</strong>
                   {reg.leaderName && ` • Ketua: ${reg.leaderName}`}
                 </span>
               ) : (
                 <span>
-                  Peserta: <strong className="text-slate-900">{reg.fullName || "—"}</strong>
+                  Peserta: <strong className="text-astro-navy">{reg.fullName || "—"}</strong>
                 </span>
               )}
             </p>
 
-            <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-600">
+            <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-ink">
               <span className="flex items-center gap-1">
-                <Building2 className="size-3 text-slate-400" /> {reg.institution}
+                <Building2 className="size-3 text-ink" /> {reg.institution}
               </span>
-              <span className="flex items-center gap-1 font-mono text-11 text-slate-500">
-                Ref: <strong className="text-slate-800 font-semibold">{reg.paymentReference || "—"}</strong>
+              <span className="flex items-center gap-1 font-mono text-11 text-ink">
+                Ref: <strong className="text-astro-navy font-semibold">{reg.paymentReference || "—"}</strong>
               </span>
-              <span className="font-bold text-cyan-700">
+              <span className="font-bold text-astro-navy">
                 {reg.paymentAmount === 0 ? "Gratis" : `Rp ${reg.paymentAmount.toLocaleString("id-ID")}`}
               </span>
             </div>
           </div>
 
-          <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-start gap-2 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100">
+          <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-start gap-2 pt-2 sm:pt-0 border-t sm:border-t-0 border-surface">
             <Badge
               variant="outline"
               className={cn(
@@ -948,7 +948,7 @@ function RegistrationCard({
                 <Button
                   variant="outline"
                   size="sm"
-                  className="rounded-lg h-8 gap-1 text-10 font-bold uppercase text-slate-700 hover:text-cyan-700 hover:border-cyan-300"
+                  className="rounded-lg h-8 gap-1 text-10 font-bold uppercase text-ink hover:text-astro-navy hover:border-astro-cyan-2"
                   onClick={onPrint}
                   title="Cetak Bukti Pendaftaran / Invoice"
                 >
@@ -959,7 +959,7 @@ function RegistrationCard({
               <Button
                 variant="outline"
                 size="sm"
-                className="rounded-lg h-8 gap-1 text-10 font-bold uppercase text-slate-700 hover:text-cyan-700 hover:border-cyan-300"
+                className="rounded-lg h-8 gap-1 text-10 font-bold uppercase text-ink hover:text-astro-navy hover:border-astro-cyan-2"
                 onClick={onOpenDetail}
               >
                 <FileText className="size-3" /> Detail
@@ -976,8 +976,8 @@ export default function CekPendaftaranPage() {
   return (
     <Suspense
       fallback={
-        <div className="flex min-h-screen items-center justify-center bg-sky-300">
-          <Spinner className="size-8 text-cyan-800" />
+        <div className="flex min-h-screen items-center justify-center bg-astro-cyan-2">
+          <Spinner className="size-8 text-astro-navy" />
         </div>
       }
     >

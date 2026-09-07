@@ -336,7 +336,7 @@ function LoginForm() {
               </p>
               <Link
                 href={`/auth/verify-otp${email ? `?email=${encodeURIComponent(email)}` : ''}`}
-                className="text-11 font-medium text-slate-500 hover:text-primary hover:underline"
+                className="text-11 font-medium text-ink hover:text-primary hover:underline"
               >
                 Sudah daftar tapi belum verifikasi OTP? Verifikasi di sini
               </Link>
@@ -472,7 +472,7 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <div className="flex min-h-screen flex-col bg-linear-to-b from-sky-400 via-sky-300 to-sky-100">
+    <div className="flex min-h-screen flex-col bg-linear-to-b from-sky-top via-astro-cyan-2 to-sky-mid">
       {/* Floating blobs */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <Image

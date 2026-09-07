@@ -25,7 +25,7 @@ export default function FAQSection({ faqs }: Props) {
   return (
     <section id="faq" className="relative overflow-hidden py-24 md:py-32">
       {/* Background — starts at sky-100 (connects Timeline's bottom) → deeper sky */}
-      <div className="absolute inset-0 -z-10 bg-linear-to-b from-sky-100 via-sky-200 to-slate-50" />
+      <div className="absolute inset-0 -z-10 bg-linear-to-b from-sky-mid via-astro-cyan-2 to-surface" />
 
       {/* ─── FLOATING BLOB ROUND IMAGES ─── */}
       <MotionImage
@@ -86,8 +86,8 @@ export default function FAQSection({ faqs }: Props) {
       />
 
       {/* Angular accent lines */}
-      <div className="pointer-events-none absolute top-[20%] -left-[10%] size-[400px] rounded-full bg-sky-500/5 blur-[120px]" />
-      <div className="pointer-events-none absolute right-[5%] bottom-[30%] h-[2px] w-[100px] skew-x-[-12deg] bg-linear-to-r from-sky-300/20 to-transparent" />
+      <div className="pointer-events-none absolute top-[20%] -left-[10%] size-[400px] rounded-full bg-astro-blue/5 blur-[120px]" />
+      <div className="pointer-events-none absolute right-[5%] bottom-[30%] h-[2px] w-[100px] skew-x-[-12deg] bg-linear-to-r from-astro-cyan-2/20 to-transparent" />
 
       <div className="relative z-10 mx-auto mb-10 max-w-3xl px-4 sm:px-6">
         {/* Section Header */}
@@ -101,10 +101,10 @@ export default function FAQSection({ faqs }: Props) {
           <div className="mb-3 flex justify-center">
             <div className="block h-1.5 w-18 rounded-full bg-linear-to-r from-astro-gold via-astro-lime2 to-astro-blue" />
           </div>
-          <h2 className="font-title mb-3 text-5xl leading-tight text-slate-900 md:text-6xl lg:text-7xl">
-            Frequently Asked <span className="text-sky-500">Questions</span>
+          <h2 className="font-title mb-3 text-5xl leading-tight text-astro-navy md:text-6xl lg:text-7xl">
+            Frequently Asked <span className="text-astro-blue">Questions</span>
           </h2>
-          <p className="text-sm font-light leading-relaxed text-slate-600 md:text-base">
+          <p className="text-sm font-light leading-relaxed text-ink md:text-base">
             Punya pertanyaan? Cek dulu FAQ berikut.
           </p>
         </motion.div>

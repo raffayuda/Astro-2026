@@ -176,10 +176,10 @@ export default function PaymentStep({
                   <CheckCircle2 className="w-12 h-12 text-emerald-500" />
                 </div>
               </motion.div>
-              <h2 className="text-xl md:text-2xl font-black text-slate-900 uppercase tracking-tight">
+              <h2 className="text-xl md:text-2xl font-black text-astro-navy uppercase tracking-tight">
                 Pembayaran Berhasil Diverifikasi!
               </h2>
-              <p className="text-sm text-slate-600 max-w-md mx-auto font-light">
+              <p className="text-sm text-ink max-w-md mx-auto font-light">
                 Pendaftaran dan pembayaran kamu telah diterima dan kuota slot lomba telah resmi terkunci.
               </p>
               <div className="flex justify-center">
@@ -191,9 +191,9 @@ export default function PaymentStep({
               <Button
                 onClick={handlePrint}
                 size="lg"
-                className="rounded-lg w-full text-sm font-black uppercase tracking-wider bg-slate-900 text-white hover:bg-slate-800 gap-2 shadow-md active:scale-95"
+                className="rounded-lg w-full text-sm font-black uppercase tracking-wider bg-astro-navy text-white hover:bg-astro-navy gap-2 shadow-md active:scale-95"
               >
-                <Printer className="size-4 text-cyan-400" />
+                <Printer className="size-4 text-astro-sky" />
                 Cetak Bukti Pendaftaran / Invoice
               </Button>
 
@@ -211,7 +211,7 @@ export default function PaymentStep({
                 onClick={onBack}
                 variant="ghost"
                 size="sm"
-                className="w-full text-xs text-slate-500 hover:text-slate-900 gap-1.5 pt-2"
+                className="w-full text-xs text-ink hover:text-astro-navy gap-1.5 pt-2"
               >
                 <RotateCcw className="size-3.5" />
                 Daftarkan Peserta / Tim Lainnya
@@ -235,12 +235,12 @@ export default function PaymentStep({
               </div>
             </div>
             <div className="space-y-2">
-              <h2 className="text-xl md:text-2xl font-black text-slate-900 uppercase tracking-tight">
+              <h2 className="text-xl md:text-2xl font-black text-astro-navy uppercase tracking-tight">
                 {paymentStatus === 'expired'
                   ? 'Batas Waktu Pembayaran Telah Habis'
                   : 'Pembayaran Dibatalkan / Gagal'}
               </h2>
-              <p className="text-sm text-slate-600 max-w-md mx-auto font-light leading-relaxed">
+              <p className="text-sm text-ink max-w-md mx-auto font-light leading-relaxed">
                 {paymentStatus === 'expired'
                   ? 'Link atau kode QRIS pembayaran telah kadaluarsa. Silakan buat ulang pendaftaran atau hubungi panitia.'
                   : 'Transaksi ini telah dibatalkan di Payment Gateway. Jangan khawatir, Anda dapat mengulangi proses pembayaran atau kembali ke formulir pendaftaran.'}
@@ -251,7 +251,7 @@ export default function PaymentStep({
               <Button
                 onClick={onBack}
                 size="lg"
-                className="rounded-lg w-full text-xs font-black uppercase tracking-wider gap-2 bg-cyan-600 text-white hover:bg-cyan-500 active:scale-95"
+                className="rounded-lg w-full text-xs font-black uppercase tracking-wider gap-2 bg-astro-blue text-white hover:bg-astro-blue active:scale-95"
               >
                 <RotateCcw className="size-4" />
                 Ulangi Pendaftaran & Dapatkan QRIS Baru
@@ -262,7 +262,7 @@ export default function PaymentStep({
                   asChild
                   variant="outline"
                   size="lg"
-                  className="rounded-lg w-full text-xs font-bold uppercase tracking-wider gap-2 border-slate-300"
+                  className="rounded-lg w-full text-xs font-bold uppercase tracking-wider gap-2 border-astro-cyan-2"
                 >
                   <a href={waHref} target="_blank" rel="noopener noreferrer">
                     <MessageCircle className="size-4 text-emerald-600" />
@@ -284,18 +284,18 @@ export default function PaymentStep({
             <div className="text-center space-y-3">
               <div className="flex justify-center">
                 <div
-                  className="p-4 bg-white border border-slate-200"
+                  className="p-4 bg-white border border-astro-cyan-2"
                   style={{ clipPath: 'polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%)' }}
                 >
                   <Receipt className="w-12 h-12 text-astro-cyan" />
                 </div>
               </div>
-              <h2 className="text-xl md:text-2xl font-black text-slate-900 uppercase tracking-tight">
+              <h2 className="text-xl md:text-2xl font-black text-astro-navy uppercase tracking-tight">
                 Selesaikan Pembayaran
               </h2>
-              <p className="text-sm text-slate-600 max-w-lg mx-auto font-light">
+              <p className="text-sm text-ink max-w-lg mx-auto font-light">
                 Lakukan pembayaran sebesar{' '}
-                <strong className="text-slate-900 font-bold">{formatCurrency(paymentAmount)}</strong>{' '}
+                <strong className="text-astro-navy font-bold">{formatCurrency(paymentAmount)}</strong>{' '}
                 untuk mengamankan kuota slot pendaftaran di <strong>{competition.title}</strong>.
               </p>
               <div className="flex justify-center">
@@ -315,7 +315,7 @@ export default function PaymentStep({
               />
             ) : resolvedLinkUrl ? (
               <div
-                className="bg-white border border-slate-200 relative max-w-lg mx-auto"
+                className="bg-white border border-astro-cyan-2 relative max-w-lg mx-auto"
                 style={{ clipPath: 'polygon(14px 0, 100% 0, calc(100% - 14px) 100%, 0 100%)' }}
               >
                 <div
@@ -324,10 +324,10 @@ export default function PaymentStep({
                 />
                 <div className="p-6 md:p-8 space-y-6 text-center">
                   <div>
-                    <span className="text-10 font-bold text-slate-500 uppercase tracking-wider">
+                    <span className="text-10 font-bold text-ink uppercase tracking-wider">
                       Referensi
                     </span>
-                    <p className="text-xs font-mono font-bold text-slate-700 mt-0.5 tracking-wide">
+                    <p className="text-xs font-mono font-bold text-ink mt-0.5 tracking-wide">
                       {paymentReference}
                     </p>
                   </div>
@@ -354,7 +354,7 @@ export default function PaymentStep({
 
             {/* Live Auto-detection status alert */}
             <div className="max-w-md mx-auto space-y-3">
-              <Alert className="rounded-lg border-sky-200 bg-sky-50/50 text-sky-800">
+              <Alert className="rounded-lg border-astro-cyan-2 bg-sky-bottom/50 text-astro-navy">
                 <AlertDescription className="flex items-center gap-2 text-11 font-medium">
                   <Spinner className="size-3.5 shrink-0" />
                   <span>Sistem memantau pembayaran secara otomatis. Halaman ini akan berganti seketika setelah pembayaran Anda terverifikasi.</span>

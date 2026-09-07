@@ -11,7 +11,7 @@ const surfaceVariants = cva("relative", {
       /** Pale sky tint, for nested/secondary surfaces. */
       tint: "bg-sky-bottom text-astro-navy shadow-soft-sm",
       /** Blue gradient panel — inverted, for page headers. */
-      blue: "bg-linear-to-br from-astro-navy via-astro-blue to-blue-400 text-white shadow-soft-lg",
+      blue: "bg-linear-to-br from-astro-navy via-astro-blue to-astro-sky text-white shadow-soft-lg",
       /** Pink gradient panel — the "Event Detail / Benefit" card. */
       pink: "bg-linear-to-br from-astro-pink to-pink-300 text-white shadow-glow-pink",
       /** Orange, for talent/category surfaces. */

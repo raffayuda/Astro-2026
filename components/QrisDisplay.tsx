@@ -170,27 +170,27 @@ export default function QrisDisplay({
       {/* ─── CARD CONTAINER ─── */}
       <div
         id={qrContainerId}
-        className="bg-white rounded-2xl border border-slate-200/90 p-6 shadow-sm text-center space-y-5"
+        className="bg-white rounded-2xl border border-astro-cyan-2/90 p-6 shadow-sm text-center space-y-5"
       >
         {/* Header: Astro 2026 & Ref */}
-        <div className="flex items-center justify-between pb-3 border-b border-slate-100 text-xs font-semibold text-slate-500">
-          <span className="text-slate-900 font-bold uppercase tracking-wider">Astro 2026</span>
-          <span className="font-mono text-11 text-slate-400">{paymentReference}</span>
+        <div className="flex items-center justify-between pb-3 border-b border-surface text-xs font-semibold text-ink">
+          <span className="text-astro-navy font-bold uppercase tracking-wider">Astro 2026</span>
+          <span className="font-mono text-11 text-ink">{paymentReference}</span>
         </div>
 
         {/* Total Pembayaran */}
         <div className="space-y-1">
-          <span className="text-10 font-bold text-slate-400 uppercase tracking-wider block">
+          <span className="text-10 font-bold text-ink uppercase tracking-wider block">
             Total Pembayaran
           </span>
-          <div className="text-3xl font-black text-slate-950 tracking-tight">
+          <div className="text-3xl font-black text-astro-navy tracking-tight">
             {formatCurrency(amount)}
           </div>
         </div>
 
         {/* QR Code */}
         <div className="flex flex-col items-center gap-3">
-          <div className="p-2.5 bg-white rounded-xl border border-slate-100 shadow-xs inline-block">
+          <div className="p-2.5 bg-white rounded-xl border border-surface shadow-xs inline-block">
             <QRCodeSVG
               value={paymentCode}
               size={220}
@@ -208,10 +208,10 @@ export default function QrisDisplay({
 
           {/* Sisa Waktu */}
           {expiresAt && (
-            <div className="flex items-center justify-center gap-1.5 text-xs text-slate-500 font-medium">
+            <div className="flex items-center justify-center gap-1.5 text-xs text-ink font-medium">
               <Clock className="size-3.5 text-amber-600" />
               <span>Sisa waktu:</span>
-              <span className={`font-mono font-bold ${isExpired ? 'text-rose-600' : 'text-slate-800'}`}>
+              <span className={`font-mono font-bold ${isExpired ? 'text-rose-600' : 'text-astro-navy'}`}>
                 {timeLeft || 'Memuat...'}
               </span>
             </div>
@@ -231,8 +231,8 @@ export default function QrisDisplay({
         </div>
 
         {/* Subtext 1 baris */}
-        <div className="pt-2 border-t border-slate-100">
-          <p className="text-11 text-slate-400">
+        <div className="pt-2 border-t border-surface">
+          <p className="text-11 text-ink">
             Scan dengan aplikasi m-Banking atau e-Wallet apa saja
           </p>
         </div>
@@ -245,7 +245,7 @@ export default function QrisDisplay({
             asChild
             variant="ghost"
             size="sm"
-            className="text-11 text-slate-400 hover:text-cyan-700 hover:bg-transparent h-auto py-1"
+            className="text-11 text-ink hover:text-astro-navy hover:bg-transparent h-auto py-1"
           >
             <a href={paymentLinkUrl} target="_blank" rel="noopener noreferrer">
               Kendala scan? Buka Halaman Checkout <ExternalLink className="size-3 ml-1" />

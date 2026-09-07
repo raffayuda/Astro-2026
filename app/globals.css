@@ -26,6 +26,8 @@
   --color-astro-blue: #3b82f6;
   --color-astro-cyan-2: #93c5fd;
   --color-astro-navy: #1e3a8a;
+  /* Bright gradient end for CTAs and sky ramps. */
+  --color-astro-sky: #38bdf8;
 
   /* ── Brand: accent ── */
   --color-pastel-orange: #ff9e64;

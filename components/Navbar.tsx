@@ -130,10 +130,10 @@ export default function Navbar() {
                 key={link.label}
                 onClick={() => scrollTo(link.href)}
                 className={cn(
-                  'relative flex h-9 items-center rounded-[14px] px-3.5 text-11 font-extrabold uppercase tracking-[0.12em] transition-all duration-200',
+                  'relative flex h-9 items-center rounded-lg px-3.5 text-11 font-extrabold uppercase tracking-[0.12em] transition-all duration-200',
                   isScrolled
                     ? 'text-astro-blue/75 hover:bg-sky-bottom hover:text-astro-blue'
-                    : 'text-slate-800 hover:bg-white/20 hover:text-white md:text-white/90'
+                    : 'text-astro-navy hover:bg-white/20 hover:text-white md:text-white/90'
                 )}
               >
                 {link.label}
@@ -145,10 +145,10 @@ export default function Navbar() {
             variant="default"
             size="sm"
             onClick={() => router.push(isProfilePage ? '/' : '/profile')}
-            className="rounded-[16px] border-2 border-white/70 text-10 font-black uppercase tracking-wider shadow-md hover:shadow-cyan-500/30 active:scale-95"
+            className="rounded-xl border-2 border-white/70 text-10 font-black uppercase tracking-wider shadow-md hover:shadow-astro-blue/30 active:scale-95"
             title={isProfilePage ? 'Ke Halaman Utama Portal Lomba ASTRO' : 'Ke Halaman Company Profile ASTRO'}
           >
-            {isProfilePage ? <Trophy className="text-slate-950" /> : <Building2 className="text-slate-950" />}
+            {isProfilePage ? <Trophy className="text-astro-navy" /> : <Building2 className="text-astro-navy" />}
             {isProfilePage ? 'PORTAL LOMBA' : 'COMPANY PROFILE'}
           </Button>
         </div>
@@ -205,7 +205,7 @@ export default function Navbar() {
             variant="default"
             size="sm"
             onClick={handleDaftar}
-            className="rounded-[16px] border-2 border-white/70 text-11 font-black uppercase tracking-wider shadow-md active:scale-95"
+            className="rounded-xl border-2 border-white/70 text-11 font-black uppercase tracking-wider shadow-md active:scale-95"
           >
             Daftar
           </Button>
@@ -216,7 +216,7 @@ export default function Navbar() {
               <Button
                 variant="ghost"
                 size="icon"
-                className={cn('md:hidden', !isScrolled && 'text-slate-900 md:text-white')}
+                className={cn('md:hidden', !isScrolled && 'text-astro-navy md:text-white')}
                 aria-label="Menu Navigasi"
               >
                 <Menu />
@@ -237,17 +237,17 @@ export default function Navbar() {
                   <p className="mb-2 text-10 font-extrabold uppercase tracking-wider text-muted-foreground">Pindah Web Portal</p>
                   <Button
                     variant="default"
-                    className="rounded-[16px] w-full items-center justify-between px-4 py-3 text-xs font-black uppercase tracking-wider shadow-md"
+                    className="rounded-xl w-full items-center justify-between px-4 py-3 text-xs font-black uppercase tracking-wider shadow-md"
                     onClick={() => {
                       router.push(isProfilePage ? '/' : '/profile');
                       setIsMobileOpen(false);
                     }}
                   >
                     <span className="flex items-center gap-2">
-                      {isProfilePage ? <Trophy className="size-4 text-slate-950" /> : <Building2 className="size-4 text-slate-950" />}
+                      {isProfilePage ? <Trophy className="size-4 text-astro-navy" /> : <Building2 className="size-4 text-astro-navy" />}
                       {isProfilePage ? 'Ke Portal Lomba Acara' : 'Ke Company Profile'}
                     </span>
-                    <span className="text-10 font-black text-slate-950">↗</span>
+                    <span className="text-10 font-black text-astro-navy">↗</span>
                   </Button>
                 </div>
 
@@ -258,7 +258,7 @@ export default function Navbar() {
                     <button
                       key={link.label}
                       onClick={() => scrollTo(link.href)}
-                      className="group flex items-center justify-between rounded-[16px] px-4 py-3 text-left text-xs font-extrabold tracking-wider text-muted-foreground transition-all hover:bg-white hover:text-astro-blue"
+                      className="group flex items-center justify-between rounded-xl px-4 py-3 text-left text-xs font-extrabold tracking-wider text-muted-foreground transition-all hover:bg-white hover:text-astro-blue"
                     >
                       <span>{link.label}</span>
                       <span className="size-1.5 rounded-sm bg-primary opacity-0 transition-opacity group-hover:opacity-100" />
@@ -292,7 +292,7 @@ export default function Navbar() {
 
                   <Button
                     variant="default"
-                    className="mt-3 w-full rounded-[16px] py-3.5 text-xs font-black uppercase tracking-wider shadow-md active:scale-95"
+                    className="mt-3 w-full rounded-xl py-3.5 text-xs font-black uppercase tracking-wider shadow-md active:scale-95"
                     onClick={handleDaftar}
                   >
                     Daftar Sekarang

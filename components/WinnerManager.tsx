@@ -264,7 +264,7 @@ export default function WinnerManager({ competitionId }: WinnerManagerProps) {
 
       {/* Registrations List */}
       <div className="space-y-2">
-        <div className="flex justify-between items-center text-10 text-slate-500 font-bold uppercase tracking-wider">
+        <div className="flex justify-between items-center text-10 text-ink font-bold uppercase tracking-wider">
           <span>Daftar Peserta ({registrations.length} Lunas)</span>
           <span>Halaman {page} dari {Math.max(1, Math.ceil(registrations.length / PAGE_SIZE))}</span>
         </div>
@@ -281,7 +281,7 @@ export default function WinnerManager({ competitionId }: WinnerManagerProps) {
             return (
               <div key={reg.id}
                 className={`border p-3 transition-colors ${
-                  isDraft ? 'bg-amber-50/80 border-amber-200' : 'bg-slate-50 border-slate-200'
+                  isDraft ? 'bg-amber-50/80 border-amber-200' : 'bg-surface border-astro-cyan-2'
                 }`}
                 style={{ clipPath: 'polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%)' }}
               >
@@ -339,22 +339,22 @@ export default function WinnerManager({ competitionId }: WinnerManagerProps) {
 
                 {/* ─── Daftar Sertifikat yang sudah diupload ─── */}
                 {certs.length > 0 && (
-                  <div className="border-t border-slate-200 pt-2 mt-2 space-y-1.5">
-                    <p className="text-9 font-bold text-slate-500 uppercase tracking-wider">Sertifikat Terupload:</p>
+                  <div className="border-t border-astro-cyan-2 pt-2 mt-2 space-y-1.5">
+                    <p className="text-9 font-bold text-ink uppercase tracking-wider">Sertifikat Terupload:</p>
                     {certs.map((c, i) => (
-                      <div key={i} className="flex items-center justify-between bg-white border border-slate-100 px-2.5 py-1.5"
+                      <div key={i} className="flex items-center justify-between bg-white border border-surface px-2.5 py-1.5"
                         style={{ clipPath: 'polygon(3px 0, 100% 0, calc(100% - 3px) 100%, 0 100%)' }}>
                         <div className="flex items-center gap-2 min-w-0">
-                          <FileText className="w-3 h-3 text-slate-400 flex-shrink-0" />
-                          <span className="text-11 font-bold text-slate-700 truncate">{c.name}</span>
+                          <FileText className="w-3 h-3 text-ink flex-shrink-0" />
+                          <span className="text-11 font-bold text-ink truncate">{c.name}</span>
                           <a href={c.url} target="_blank" rel="noopener noreferrer"
-                            className="text-slate-400 hover:text-astro-cyan flex-shrink-0" title="Lihat">
+                            className="text-ink hover:text-astro-cyan flex-shrink-0" title="Lihat">
                             <ExternalLink className="w-3 h-3" />
                           </a>
                         </div>
                         <button onClick={() => handleDeleteCert(reg.id, c.url)}
                           disabled={deletingCerts.has(c.url)}
-                          className="p-0.5 text-slate-400 hover:text-red-500 transition-colors cursor-pointer flex-shrink-0 disabled:opacity-60 disabled:cursor-not-allowed">
+                          className="p-0.5 text-ink hover:text-red-500 transition-colors cursor-pointer flex-shrink-0 disabled:opacity-60 disabled:cursor-not-allowed">
                           {deletingCerts.has(c.url) ? <Spinner className="w-3 h-3" /> : <X className="w-3 h-3" />}
                         </button>
                       </div>
@@ -384,11 +384,11 @@ export default function WinnerManager({ competitionId }: WinnerManagerProps) {
                   </label>
                 </div>
                 {newCert[reg.id]?.preview && (
-                  <div className="mt-2 flex items-center gap-2 border border-slate-100 bg-slate-50 px-2 py-1.5"
+                  <div className="mt-2 flex items-center gap-2 border border-surface bg-surface px-2 py-1.5"
                     style={{ clipPath: 'polygon(3px 0, 100% 0, calc(100% - 3px) 100%, 0 100%)' }}>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={newCert[reg.id]?.preview} alt={newCert[reg.id]?.name || 'Preview'} className="size-7 rounded object-cover" />
-                    <span className="text-10 font-semibold text-slate-500">
+                    <span className="text-10 font-semibold text-ink">
                       {newCert[reg.id]?.uploading ? 'Mengunggah...' : 'Preview sertifikat'}
                     </span>
                   </div>
@@ -398,10 +398,10 @@ export default function WinnerManager({ competitionId }: WinnerManagerProps) {
           })}
 
           {registrations.length === 0 && (
-            <div className="bg-slate-50 border border-slate-200 border-dashed py-8 text-center"
+            <div className="bg-surface border border-astro-cyan-2 border-dashed py-8 text-center"
               style={{ clipPath: 'polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%)' }}>
-              <Users className="w-8 h-8 text-slate-300 mx-auto mb-2" />
-              <p className="text-xs text-slate-400 italic">Belum ada peserta yang melakukan pembayaran lunas.</p>
+              <Users className="w-8 h-8 text-astro-cyan-2 mx-auto mb-2" />
+              <p className="text-xs text-ink italic">Belum ada peserta yang melakukan pembayaran lunas.</p>
             </div>
           )}
         </div>
@@ -440,7 +440,7 @@ export default function WinnerManager({ competitionId }: WinnerManagerProps) {
           <Button
             onClick={handleGenerateAll}
             disabled={generateAllMut.isPending}
-            className="rounded-md w-full gap-2 bg-cyan-500 px-6 py-4 text-xs font-black uppercase tracking-wider text-cyan-950 hover:bg-cyan-400"
+            className="rounded-md w-full gap-2 bg-astro-blue px-6 py-4 text-xs font-black uppercase tracking-wider text-astro-navy hover:bg-astro-sky"
           >
             {generateAllMut.isPending ? <Spinner className="size-4" /> : <Download className="size-4" />}
             Generate Otomatis untuk Semua Juara

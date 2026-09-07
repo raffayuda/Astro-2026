@@ -83,12 +83,12 @@ const categoryConfig: Record<
   },
   esports: {
     label: "ESPORTS",
-    color: "text-cyan-700",
-    bg: "bg-cyan-50",
-    border: "border-cyan-200",
-    accent: "bg-cyan-500",
-    iconBg: "bg-cyan-50 text-cyan-600",
-    iconBorder: "border-cyan-200",
+    color: "text-astro-navy",
+    bg: "bg-sky-bottom",
+    border: "border-astro-cyan-2",
+    accent: "bg-astro-blue",
+    iconBg: "bg-sky-bottom text-astro-blue",
+    iconBorder: "border-astro-cyan-2",
   },
   "kesenian-/-seni": {
     label: "KESENIAN",
@@ -579,15 +579,15 @@ export default function RegistrationPage({
               >
                 <Trophy className="w-4 h-4 text-astro-cyan" />
                 Biaya Pendaftaran:{" "}
-                <span className="font-bold text-slate-900">
+                <span className="font-bold text-astro-navy">
                   {competition.isFree ? "Gratis" : competition.fee > 0 ? `Rp ${competition.fee.toLocaleString("id-ID")}` : "Gratis"}
                 </span>
                 {competition.batchName && (
-                  <span className="ml-1.5 inline-flex items-center rounded-full bg-cyan-100 px-2 py-0.5 text-10 font-extrabold uppercase text-cyan-800">
+                  <span className="ml-1.5 inline-flex items-center rounded-full bg-sky-mid px-2 py-0.5 text-10 font-extrabold uppercase text-astro-navy">
                     {competition.batchName}
                   </span>
                 )}
-                <span className="text-slate-300 mx-1">|</span>
+                <span className="text-astro-cyan-2 mx-1">|</span>
                 {isTeam ? "Kategori Tim" : "Kategori Individu"}
               </motion.p>
 
@@ -599,7 +599,7 @@ export default function RegistrationPage({
                   variants={fadeUp}
                   className="mt-6 flex flex-wrap items-center gap-3"
                 >
-                  <span className="text-10 font-black uppercase tracking-wider text-slate-500">
+                  <span className="text-10 font-black uppercase tracking-wider text-ink">
                     Pilih Kategori Pendaftaran:
                   </span>
                   <div className="rounded-full bg-white shadow-soft-sm flex overflow-hidden border-white/80 bg-white/75">
@@ -623,8 +623,8 @@ export default function RegistrationPage({
                         }}
                         className={`px-5 py-2 text-xs font-black uppercase tracking-wider transition-colors ${
                           regType === t
-                            ? "bg-astro-cyan text-slate-950"
-                            : "text-slate-500 hover:bg-slate-100"
+                            ? "bg-astro-cyan text-astro-navy"
+                            : "text-ink hover:bg-surface"
                         }`}
                       >
                         {t === 'team' ? 'Tim' : 'Individu'}
@@ -647,8 +647,8 @@ export default function RegistrationPage({
                     animate={step === 1 ? { scale: 1.05 } : { scale: 1 }}
                     className={`flex items-center justify-center w-10 h-10 ${
                       step === 1
-                        ? "bg-astro-cyan text-slate-950"
-                        : "bg-slate-100 text-slate-500"
+                        ? "bg-astro-cyan text-astro-navy"
+                        : "bg-surface text-ink"
                     } font-black text-sm transition-all duration-300`}
                     style={{
                       clipPath: "polygon(50% 0, 100% 50%, 50% 100%, 0 50%)",
@@ -658,7 +658,7 @@ export default function RegistrationPage({
                   </motion.div>
                   <span
                     className={`ml-2 text-10 font-bold uppercase tracking-wider ${
-                      step === 1 ? "text-astro-cyan" : "text-slate-400"
+                      step === 1 ? "text-astro-cyan" : "text-ink"
                     }`}
                   >
                     Form
@@ -667,7 +667,7 @@ export default function RegistrationPage({
 
                 {/* Connector line */}
                 <div className="w-12 md:w-20 h-[2px] mx-3 relative">
-                  <div className="absolute inset-0 bg-slate-200" />
+                  <div className="absolute inset-0 bg-astro-cyan-2" />
                   <motion.div
                     className="absolute inset-y-0 left-0 bg-astro-cyan"
                     initial={{ width: "0%" }}
@@ -682,8 +682,8 @@ export default function RegistrationPage({
                     animate={step === 2 ? { scale: 1.05 } : { scale: 1 }}
                     className={`flex items-center justify-center w-10 h-10 ${
                       step === 2
-                        ? "bg-astro-cyan text-slate-950"
-                        : "bg-slate-100 text-slate-500"
+                        ? "bg-astro-cyan text-astro-navy"
+                        : "bg-surface text-ink"
                     } font-black text-sm transition-all duration-300`}
                     style={{
                       clipPath: "polygon(50% 0, 100% 50%, 50% 100%, 0 50%)",
@@ -693,7 +693,7 @@ export default function RegistrationPage({
                   </motion.div>
                   <span
                     className={`ml-2 text-10 font-bold uppercase tracking-wider ${
-                      step === 2 ? "text-astro-cyan" : "text-slate-400"
+                      step === 2 ? "text-astro-cyan" : "text-ink"
                     }`}
                   >
                     Bayar
@@ -716,9 +716,9 @@ export default function RegistrationPage({
                     exit="exit"
                   >
                     {draftRestored && !registrationId && (
-                      <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-cyan-200 bg-cyan-50/80 px-4 py-3 text-sm text-cyan-900 shadow-sm backdrop-blur-sm">
+                      <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-astro-cyan-2 bg-sky-bottom/80 px-4 py-3 text-sm text-astro-navy shadow-sm backdrop-blur-sm">
                         <div className="flex items-center gap-2.5">
-                          <Sparkles className="size-4 text-cyan-600 shrink-0" />
+                          <Sparkles className="size-4 text-astro-blue shrink-0" />
                           <span>
                             <strong>Draf formulir dipulihkan.</strong> Data input terakhir Anda telah dimuat kembali otomatis.
                           </span>
@@ -728,7 +728,7 @@ export default function RegistrationPage({
                           variant="ghost"
                           size="sm"
                           onClick={handleResetDraft}
-                          className="h-7 text-xs font-bold text-cyan-800 hover:bg-cyan-100 hover:text-cyan-900 gap-1.5"
+                          className="h-7 text-xs font-bold text-astro-navy hover:bg-sky-mid hover:text-astro-navy gap-1.5"
                         >
                           <RotateCcw className="size-3" />
                           Reset Formulir

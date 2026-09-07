@@ -42,7 +42,7 @@ function renderFormattedText(text: string) {
         return (
           <span
             key={i}
-            className="inline-block rounded bg-cyan-500/15 px-1.5 py-0.5 font-mono text-xs font-bold text-cyan-700 dark:text-cyan-300 border border-cyan-500/30 mx-0.5"
+            className="inline-block rounded bg-astro-blue/15 px-1.5 py-0.5 font-mono text-xs font-bold text-astro-navy dark:text-astro-cyan-2 border border-astro-blue/30 mx-0.5"
           >
             {inner}
           </span>
@@ -182,7 +182,7 @@ export default function GuidebookArticle({
       {/* ── Section Title & Guidebook Banner ── */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-2">
-          <span className="flex size-8 items-center justify-center rounded-lg border border-cyan-500/30 bg-cyan-500/10 text-cyan-600 dark:text-cyan-400">
+          <span className="flex size-8 items-center justify-center rounded-lg border border-astro-blue/30 bg-astro-blue/10 text-astro-blue dark:text-astro-sky">
             <BookOpen className="size-4" />
           </span>
           <div>
@@ -199,7 +199,7 @@ export default function GuidebookArticle({
           <Button
             asChild
             size="sm"
-            className="rounded-md gap-1.5 self-start font-bold uppercase tracking-wider bg-cyan-600 hover:bg-cyan-500 text-white shadow-md transition-all sm:self-auto"
+            className="rounded-md gap-1.5 self-start font-bold uppercase tracking-wider bg-astro-blue hover:bg-astro-blue text-white shadow-md transition-all sm:self-auto"
           >
             <a href={rulebookUrl} target="_blank" rel="noopener noreferrer">
               <FileText className="size-3.5" />
@@ -223,7 +223,7 @@ export default function GuidebookArticle({
                 className={cn(
                   "rounded-md group relative flex shrink-0 items-center gap-2 border px-4 py-2 text-xs font-bold uppercase tracking-wider transition-all",
                   isActive
-                    ? "border-cyan-500/60 bg-cyan-500/15 text-cyan-700 dark:text-cyan-300 shadow-sm"
+                    ? "border-astro-blue/60 bg-astro-blue/15 text-astro-navy dark:text-astro-cyan-2 shadow-sm"
                     : "border-border/60 bg-muted/40 text-muted-foreground hover:border-border hover:bg-muted hover:text-foreground"
                 )}
               >
@@ -232,7 +232,7 @@ export default function GuidebookArticle({
                 </span>
                 <span>{sec.title}</span>
                 {isActive && (
-                  <span className="absolute -bottom-[9px] left-1/2 size-1.5 -translate-x-1/2 rotate-45 border-b border-r border-cyan-500 bg-cyan-500" />
+                  <span className="absolute -bottom-[9px] left-1/2 size-1.5 -translate-x-1/2 rotate-45 border-b border-r border-astro-blue bg-astro-blue" />
                 )}
               </button>
             );
@@ -244,10 +244,10 @@ export default function GuidebookArticle({
       {currentSection && (
         <div className="relative rounded-2xl border border-border/80 bg-card/80 p-5 shadow-xs backdrop-blur-sm sm:p-7">
           {/* Cyberpunk corner accents */}
-          <div className="pointer-events-none absolute top-0 left-0 size-3 border-t-2 border-l-2 border-cyan-500/60" />
-          <div className="pointer-events-none absolute top-0 right-0 size-3 border-t-2 border-r-2 border-cyan-500/60" />
-          <div className="pointer-events-none absolute bottom-0 left-0 size-3 border-b-2 border-l-2 border-cyan-500/60" />
-          <div className="pointer-events-none absolute bottom-0 right-0 size-3 border-b-2 border-r-2 border-cyan-500/60" />
+          <div className="pointer-events-none absolute top-0 left-0 size-3 border-t-2 border-l-2 border-astro-blue/60" />
+          <div className="pointer-events-none absolute top-0 right-0 size-3 border-t-2 border-r-2 border-astro-blue/60" />
+          <div className="pointer-events-none absolute bottom-0 left-0 size-3 border-b-2 border-l-2 border-astro-blue/60" />
+          <div className="pointer-events-none absolute bottom-0 right-0 size-3 border-b-2 border-r-2 border-astro-blue/60" />
 
           {/* Section Heading */}
           <div className="mb-5 flex items-center justify-between border-b border-border/60 pb-3">
@@ -273,7 +273,7 @@ export default function GuidebookArticle({
                     key={bIdx}
                     className={cn(
                       "font-black uppercase tracking-wider text-foreground pt-2",
-                      block.level === 2 ? "text-base text-cyan-600 dark:text-cyan-400" : "text-sm"
+                      block.level === 2 ? "text-base text-astro-blue dark:text-astro-sky" : "text-sm"
                     )}
                   >
                     {block.text}
@@ -294,7 +294,7 @@ export default function GuidebookArticle({
                   <ul key={bIdx} className="space-y-2.5 pl-1">
                     {block.items.map((item, itemIdx) => (
                       <li key={itemIdx} className="flex items-start gap-2.5 text-sm text-foreground/90">
-                        <span className="mt-1 flex size-4 shrink-0 items-center justify-center rounded-full bg-cyan-500/15 text-cyan-600 dark:text-cyan-400">
+                        <span className="mt-1 flex size-4 shrink-0 items-center justify-center rounded-full bg-astro-blue/15 text-astro-blue dark:text-astro-sky">
                           <ChevronRight className="size-3" />
                         </span>
                         <div className="flex-1 leading-snug">
@@ -366,13 +366,13 @@ export default function GuidebookArticle({
 
         {/* Guidebook Download Reminder */}
         {rulebookUrl ? (
-          <div className="flex items-center justify-between rounded-xl border border-cyan-500/30 bg-cyan-500/5 p-4 transition-colors hover:border-cyan-500/50">
+          <div className="flex items-center justify-between rounded-xl border border-astro-blue/30 bg-astro-blue/5 p-4 transition-colors hover:border-astro-blue/50">
             <div className="flex items-center gap-3">
-              <span className="flex size-10 items-center justify-center rounded-lg bg-cyan-500/15 text-cyan-600 dark:text-cyan-400">
+              <span className="flex size-10 items-center justify-center rounded-lg bg-astro-blue/15 text-astro-blue dark:text-astro-sky">
                 <FileText className="size-5" />
               </span>
               <div>
-                <p className="text-10 font-bold uppercase tracking-wider text-cyan-600 dark:text-cyan-400">
+                <p className="text-10 font-bold uppercase tracking-wider text-astro-blue dark:text-astro-sky">
                   Dokumen Lengkap
                 </p>
                 <p className="text-xs font-black text-foreground">
@@ -383,7 +383,7 @@ export default function GuidebookArticle({
                 </p>
               </div>
             </div>
-            <Button asChild size="sm" className="rounded-md bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold uppercase tracking-wider">
+            <Button asChild size="sm" className="rounded-md bg-astro-blue hover:bg-astro-blue text-white text-xs font-bold uppercase tracking-wider">
               <a href={rulebookUrl} target="_blank" rel="noopener noreferrer">
                 Buka <ExternalLink className="size-3 ml-1" />
               </a>
@@ -391,7 +391,7 @@ export default function GuidebookArticle({
           </div>
         ) : (
           <div className="flex items-center gap-3 rounded-xl border border-dashed border-border/70 p-4 text-muted-foreground">
-            <Sparkles className="size-4 text-cyan-500" />
+            <Sparkles className="size-4 text-astro-blue" />
             <p className="text-xs">
               Guidebook versi PDF dapat diakses melalui tombol di atas atau melalui narahubung panitia.
             </p>

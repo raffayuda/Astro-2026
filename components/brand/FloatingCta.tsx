@@ -51,7 +51,7 @@ export function FloatingCta({
         >
           <Link
             href={href}
-            className="group flex items-center gap-2 rounded-full border-2 border-white bg-linear-to-r from-astro-navy via-astro-blue to-cyan-400 py-3 pr-3 pl-5 font-bold text-white shadow-glow-blue ring-3 ring-white/60 transition-transform hover:-translate-y-0.5 active:translate-y-px"
+            className="group flex items-center gap-2 rounded-full border-2 border-white bg-linear-to-r from-astro-navy via-astro-blue to-astro-sky py-3 pr-3 pl-5 font-bold text-white shadow-glow-blue ring-3 ring-white/60 transition-transform hover:-translate-y-0.5 active:translate-y-px"
           >
             <span className="text-sm uppercase tracking-wide">{label}</span>
             <span

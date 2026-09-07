@@ -42,7 +42,7 @@ export default async function DashboardOverview() {
       label: 'Total Pendaftar',
       value: totalRegistrations[0].count,
       icon: Users,
-      color: 'text-cyan-600 bg-cyan-50 border-cyan-200',
+      color: 'text-astro-blue bg-sky-bottom border-astro-cyan-2',
     },
     {
       label: 'Total Lomba',
@@ -66,7 +66,7 @@ export default async function DashboardOverview() {
 
   return (
     <div className="flex flex-col gap-8">
-      <div className="rounded-xl bg-linear-to-br from-astro-navy via-astro-blue to-blue-400 shadow-soft-lg p-6 text-white">
+      <div className="rounded-xl bg-linear-to-br from-astro-navy via-astro-blue to-astro-sky shadow-soft-lg p-6 text-white">
         <h1 className="text-2xl font-black uppercase tracking-tight text-white">Overview</h1>
         <p className="mt-1 text-sm font-semibold text-white/85">
           Ringkasan data pendaftaran ASTRO 2026

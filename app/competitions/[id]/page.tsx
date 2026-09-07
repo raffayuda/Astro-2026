@@ -102,15 +102,15 @@ const categoryConfig = {
   },
   esports: {
     label: 'ESPORTS',
-    color: 'text-cyan-700',
-    bg: 'bg-cyan-50',
-    border: 'border-cyan-200',
-    accent: 'bg-cyan-500',
-    accentLight: 'bg-cyan-500/10',
-    dot: 'bg-cyan-500',
-    ring: 'ring-cyan-500/20',
-    iconBg: 'bg-cyan-50 text-cyan-600',
-    iconBorder: 'border-cyan-200',
+    color: 'text-astro-navy',
+    bg: 'bg-sky-bottom',
+    border: 'border-astro-cyan-2',
+    accent: 'bg-astro-blue',
+    accentLight: 'bg-astro-blue/10',
+    dot: 'bg-astro-blue',
+    ring: 'ring-astro-blue/20',
+    iconBg: 'bg-sky-bottom text-astro-blue',
+    iconBorder: 'border-astro-cyan-2',
     hex: '#06b6d4',
   },
   'kesenian-/-seni': {
@@ -210,9 +210,9 @@ export default function CompetitionDetailPage() {
 
   const prizeStyles = [
     { style: 'border-amber-200 bg-amber-50/40', accentLine: 'bg-amber-500', iconColor: 'text-amber-600 bg-amber-50 border-amber-200' },
-    { style: 'border-slate-200 bg-slate-50/40', accentLine: 'bg-slate-400', iconColor: 'text-slate-500 bg-slate-50 border-slate-200' },
+    { style: 'border-astro-cyan-2 bg-surface/40', accentLine: 'bg-ink', iconColor: 'text-ink bg-surface border-astro-cyan-2' },
     { style: 'border-amber-200/60 bg-amber-50/20', accentLine: 'bg-amber-700', iconColor: 'text-amber-800 bg-amber-50 border-amber-200/60' },
-    { style: 'border-cyan-100 bg-cyan-50/30', accentLine: 'bg-cyan-400', iconColor: 'text-cyan-600 bg-cyan-50 border-cyan-200' },
+    { style: 'border-sky-mid bg-sky-bottom/30', accentLine: 'bg-astro-sky', iconColor: 'text-astro-blue bg-sky-bottom border-astro-cyan-2' },
     { style: 'border-violet-100 bg-violet-50/30', accentLine: 'bg-violet-400', iconColor: 'text-violet-600 bg-violet-50 border-violet-200' },
   ];
   const prizes = competition.prizes.map((p: { label: string; value: string }, i: number) => ({
@@ -230,7 +230,7 @@ export default function CompetitionDetailPage() {
           {/* ════════════════════════════════════════
               1. HERO
               ════════════════════════════════════════ */}
-          <section className="relative pt-36 pb-20 bg-linear-to-b from-sky-400 via-sky-300 to-sky-100 md:pt-40 md:pb-28 overflow-hidden">
+          <section className="relative pt-36 pb-20 bg-linear-to-b from-sky-top via-astro-cyan-2 to-sky-mid md:pt-40 md:pb-28 overflow-hidden">
 
             {/* ─── FLOATING BLOBS ─── */}
             {blobs.map((b, i) => (
@@ -301,7 +301,7 @@ export default function CompetitionDetailPage() {
                   <Badge variant="outline" className={cn('rounded-md border px-2.5 py-1 text-10 font-bold tracking-[0.15em] uppercase', cat.bg, cat.color, cat.border)}>
                     {cat.label}
                   </Badge>
-                  <Badge variant="outline" className="rounded-md border-sky-200 bg-sky-50 px-2.5 py-1 text-9 font-bold uppercase tracking-[0.1em] text-sky-700">
+                  <Badge variant="outline" className="rounded-md border-astro-cyan-2 bg-sky-bottom px-2.5 py-1 text-9 font-bold uppercase tracking-[0.1em] text-astro-navy">
                     {competition.origin === 'external' ? 'Eksternal' : 'Internal'}
                   </Badge>
                   <Badge variant="outline" className={cn('rounded-md border px-2.5 py-1 text-9 font-bold uppercase tracking-[0.1em]',
@@ -325,7 +325,7 @@ export default function CompetitionDetailPage() {
                   whileInView="visible"
                   viewport={{ once: true }}
                   transition={{ delay: 0.1 }}
-                  className="text-3xl font-extrabold uppercase leading-tight sm:text-4xl lg:text-5xl mb-4 bg-linear-to-r from-sky-900 via-cyan-800 to-slate-800 bg-clip-text text-transparent"
+                  className="text-3xl font-extrabold uppercase leading-tight sm:text-4xl lg:text-5xl mb-4 bg-linear-to-r from-astro-navy via-astro-navy to-astro-navy bg-clip-text text-transparent"
                 >
                   {competition.title}
                 </motion.h1>
@@ -338,7 +338,7 @@ export default function CompetitionDetailPage() {
                     whileInView="visible"
                     viewport={{ once: true }}
                     transition={{ delay: 0.15 }}
-                    className="text-base md:text-lg text-slate-700 font-light mb-6"
+                    className="text-base md:text-lg text-ink font-light mb-6"
                   >
                     {competition.tagline}
                   </motion.p>
@@ -361,7 +361,7 @@ export default function CompetitionDetailPage() {
                   whileInView="visible"
                   viewport={{ once: true }}
                   transition={{ delay: 0.25 }}
-                  className="text-sm md:text-base text-slate-600 leading-relaxed"
+                  className="text-sm md:text-base text-ink leading-relaxed"
                 >
                   <p>{competition.description || 'Deskripsi lengkap perlombaan akan segera diumumkan (TBA).'}</p>
                 </motion.div>
@@ -373,7 +373,7 @@ export default function CompetitionDetailPage() {
           {/* ════════════════════════════════════════
               2. DETAILS
               ════════════════════════════════════════ */}
-          <section className="relative bg-linear-to-b from-sky-100 via-sky-50 to-white py-12 md:py-16 overflow-hidden">
+          <section className="relative bg-linear-to-b from-sky-mid via-sky-bottom to-white py-12 md:py-16 overflow-hidden">
             {/* Subtle floating blobs in details section */}
             <MotionImage
               src="/assets/blob-round.png"
@@ -413,7 +413,7 @@ export default function CompetitionDetailPage() {
                           duration: 0.5,
                           ease: [0.16, 1, 0.3, 1] as const,
                         }}
-                        className="bg-white border border-slate-200 p-5 flex items-start gap-4 transition-all hover:border-slate-300 group"
+                        className="bg-white border border-astro-cyan-2 p-5 flex items-start gap-4 transition-all hover:border-astro-cyan-2 group"
                         style={{
                           clipPath:
                             'polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%)',
@@ -429,16 +429,16 @@ export default function CompetitionDetailPage() {
                           <card.icon className="w-5 h-5" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <span className="block text-10 font-bold text-slate-500 uppercase tracking-[0.15em]">
+                          <span className="block text-10 font-bold text-ink uppercase tracking-[0.15em]">
                             {card.label}
                           </span>
-                          <span className="block text-lg font-black text-slate-900 mt-1 truncate">
+                          <span className="block text-lg font-black text-astro-navy mt-1 truncate">
                             {card.value}
                           </span>
                           {/* Slot bar + sub text for Kuota card */}
                           {card.sub !== undefined && (
                             <>
-                              <Progress value={card.ratio} className={cn('mt-2 h-1 bg-slate-100', cat.accent === 'bg-emerald-500' && '[&>div]:bg-emerald-500', cat.accent === 'bg-orange-500' && '[&>div]:bg-orange-500', cat.accent === 'bg-cyan-500' && '[&>div]:bg-cyan-500')} />
+                              <Progress value={card.ratio} className={cn('mt-2 h-1 bg-surface', cat.accent === 'bg-emerald-500' && '[&>div]:bg-emerald-500', cat.accent === 'bg-orange-500' && '[&>div]:bg-orange-500', cat.accent === 'bg-astro-blue' && '[&>div]:bg-astro-blue')} />
                               <span
                                 className={`block text-10 font-bold uppercase tracking-wider mt-1 ${
                                   card.isLow
@@ -466,7 +466,7 @@ export default function CompetitionDetailPage() {
                         className="flex items-center gap-3"
                       >
                         <div className="block h-1.5 w-18 rounded-full bg-linear-to-r from-astro-gold via-astro-lime2 to-astro-blue" />
-                        <h2 className="text-xl md:text-2xl font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
+                        <h2 className="text-xl md:text-2xl font-black text-astro-navy uppercase tracking-tight flex items-center gap-2">
                           <Layers className="w-5 h-5 text-astro-cyan" />
                           Gelombang Pendaftaran
                         </h2>
@@ -484,21 +484,21 @@ export default function CompetitionDetailPage() {
                               key={batch.id || bIdx}
                               className={cn(
                                 "border p-4 bg-white transition-all",
-                                isOngoing ? "border-cyan-500 shadow-md ring-2 ring-cyan-500/20 bg-cyan-50/20" : "border-slate-200"
+                                isOngoing ? "border-astro-blue shadow-md ring-2 ring-astro-blue/20 bg-sky-bottom/20" : "border-astro-cyan-2"
                               )}
                               style={{ clipPath: 'polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%)' }}
                             >
                               <div className="flex items-center justify-between mb-2">
-                                <span className="text-xs font-black uppercase tracking-wider text-slate-900">{batch.name}</span>
+                                <span className="text-xs font-black uppercase tracking-wider text-astro-navy">{batch.name}</span>
                                 {isOngoing && <Badge className="bg-emerald-500 text-white text-9 font-extrabold uppercase py-0 px-2 h-4">Aktif Sekarang</Badge>}
-                                {isUpcoming && <Badge variant="secondary" className="text-9 font-bold text-cyan-600 py-0 px-2 h-4">Mendatang</Badge>}
-                                {isPast && <Badge variant="outline" className="text-9 text-slate-400 py-0 px-2 h-4">Berakhir</Badge>}
+                                {isUpcoming && <Badge variant="secondary" className="text-9 font-bold text-astro-blue py-0 px-2 h-4">Mendatang</Badge>}
+                                {isPast && <Badge variant="outline" className="text-9 text-ink py-0 px-2 h-4">Berakhir</Badge>}
                               </div>
-                              <div className="text-lg font-black text-slate-900 mb-2">
+                              <div className="text-lg font-black text-astro-navy mb-2">
                                 Rp {Number(batch.fee).toLocaleString('id-ID')}
                               </div>
-                              <div className="text-11 text-slate-500 flex items-center gap-1.5">
-                                <Clock className="w-3 h-3 text-slate-400" />
+                              <div className="text-11 text-ink flex items-center gap-1.5">
+                                <Clock className="w-3 h-3 text-ink" />
                                 {formatDateLong(batch.startDate)} s/d {formatDateLong(batch.endDate)}
                               </div>
                             </div>
@@ -510,7 +510,7 @@ export default function CompetitionDetailPage() {
                 </div>
 
                 {/* ── RIGHT COLUMN: Prizes & Action ── */}
-                <div className="lg:col-span-5 space-y-8 lg:border-l lg:border-slate-200 lg:pl-10">
+                <div className="lg:col-span-5 space-y-8 lg:border-l lg:border-astro-cyan-2 lg:pl-10">
                   <div className="space-y-6">
                     <motion.div
                       initial={reduce ? false : { opacity: 0, y: 16 }}
@@ -520,19 +520,19 @@ export default function CompetitionDetailPage() {
                       className="flex items-center gap-3"
                     >
                       <div className="block h-1.5 w-18 rounded-full bg-linear-to-r from-astro-gold via-astro-lime2 to-astro-blue" />
-                      <h2 className="text-xl md:text-2xl font-black text-slate-900 uppercase tracking-tight">
+                      <h2 className="text-xl md:text-2xl font-black text-astro-navy uppercase tracking-tight">
                         Hadiah Pemenang
                       </h2>
                     </motion.div>
 
                     {prizes.length === 0 ? (
                       <div
-                        className="bg-white border border-dashed border-slate-300 p-8 text-center"
+                        className="bg-white border border-dashed border-astro-cyan-2 p-8 text-center"
                         style={{ clipPath: 'polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%)' }}
                       >
-                        <Trophy className="w-8 h-8 mx-auto mb-2 text-slate-400" />
-                        <p className="font-black uppercase tracking-wider text-xs text-slate-700">Hadiah Pemenang Segera Diumumkan (TBA)</p>
-                        <p className="text-xs text-slate-500 mt-1">Detail hadiah dan apresiasi pemenang sedang dipersiapkan panitia.</p>
+                        <Trophy className="w-8 h-8 mx-auto mb-2 text-ink" />
+                        <p className="font-black uppercase tracking-wider text-xs text-ink">Hadiah Pemenang Segera Diumumkan (TBA)</p>
+                        <p className="text-xs text-ink mt-1">Detail hadiah dan apresiasi pemenang sedang dipersiapkan panitia.</p>
                       </div>
                     ) : (
                       <div className="grid grid-cols-1 gap-3">
@@ -547,7 +547,7 @@ export default function CompetitionDetailPage() {
                               duration: 0.5,
                               ease: [0.16, 1, 0.3, 1] as const,
                             }}
-                            className="bg-white border border-slate-200 p-4 transition-all hover:border-slate-300 group"
+                            className="bg-white border border-astro-cyan-2 p-4 transition-all hover:border-astro-cyan-2 group"
                             style={{
                               clipPath:
                                 'polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%)',
@@ -564,10 +564,10 @@ export default function CompetitionDetailPage() {
                                 <Trophy className="w-4 h-4" />
                               </div>
                               <div className="flex-1 min-w-0">
-                                <div className="text-10 font-bold text-slate-500 uppercase tracking-[0.15em]">
+                                <div className="text-10 font-bold text-ink uppercase tracking-[0.15em]">
                                   {item.rank}
                                 </div>
-                                <div className="text-sm font-black text-slate-900 mt-0.5 truncate">
+                                <div className="text-sm font-black text-astro-navy mt-0.5 truncate">
                                   {item.prize || 'TBA'}
                                 </div>
                               </div>
@@ -597,7 +597,7 @@ export default function CompetitionDetailPage() {
           {/* ════════════════════════════════════════
               2. GUIDEBOOK & KETENTUAN RESMI LOMBA
               ════════════════════════════════════════ */}
-          <section className="relative bg-slate-50/60 py-14 md:py-20 border-t border-slate-200/80 overflow-hidden">
+          <section className="relative bg-surface/60 py-14 md:py-20 border-t border-astro-cyan-2/80 overflow-hidden">
             <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <GuidebookArticle
                 sections={competition.guidebookSections || []}
@@ -630,7 +630,7 @@ export default function CompetitionDetailPage() {
           {/* ════════════════════════════════════════
               4. CTA
               ════════════════════════════════════════ */}
-          <section className="relative bg-linear-to-b from-white via-sky-50 to-slate-50 py-16 md:py-20 overflow-hidden">
+          <section className="relative bg-linear-to-b from-white via-sky-bottom to-surface py-16 md:py-20 overflow-hidden">
             {/* Background glow */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-astro-cyan/3 blur-[120px] rounded-full pointer-events-none" />
 
@@ -662,10 +662,10 @@ export default function CompetitionDetailPage() {
                 transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] as const }}
                 className="max-w-xl mx-auto space-y-4"
               >
-                <h2 className="text-2xl md:text-3xl font-black text-slate-900 uppercase tracking-tight">
+                <h2 className="text-2xl md:text-3xl font-black text-astro-navy uppercase tracking-tight">
                   Siap untuk Berkompetisi?
                 </h2>
-                <p className="text-sm md:text-base text-slate-500 leading-relaxed font-light">
+                <p className="text-sm md:text-base text-ink leading-relaxed font-light">
                   Daftarkan tim Anda sekarang sebelum kuota penuh. Pastikan Anda
                   telah membaca dan memahami rulebook perlombaan.
                 </p>
@@ -744,7 +744,7 @@ function DetailSkeleton() {
       <div className="flex min-h-screen flex-col justify-between bg-background">
         <main className="flex-grow">
           {/* Skeleton Hero */}
-          <section className="relative overflow-hidden bg-linear-to-b from-sky-400 via-sky-300 to-sky-100 pt-36 pb-20 md:pt-40 md:pb-28">
+          <section className="relative overflow-hidden bg-linear-to-b from-sky-top via-astro-cyan-2 to-sky-mid pt-36 pb-20 md:pt-40 md:pb-28">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
               <div className="space-y-6 lg:w-10/12 xl:w-3/4">
                 <Skeleton className="h-3 w-32 bg-white/40" />
@@ -762,7 +762,7 @@ function DetailSkeleton() {
           </section>
 
           {/* Skeleton Details */}
-          <section className="bg-linear-to-b from-sky-100 via-sky-50 to-white py-12 md:py-16">
+          <section className="bg-linear-to-b from-sky-mid via-sky-bottom to-white py-12 md:py-16">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
               <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
                 <div className="space-y-12 lg:col-span-7">
@@ -811,7 +811,7 @@ function DetailSkeleton() {
           </section>
 
           {/* Skeleton CTA */}
-          <section className="bg-linear-to-b from-white via-sky-50 to-slate-50 py-16 md:py-20">
+          <section className="bg-linear-to-b from-white via-sky-bottom to-surface py-16 md:py-20">
             <div className="mx-auto max-w-7xl space-y-6 px-4 text-center sm:px-6 lg:px-8">
               <div className="mx-auto max-w-xl space-y-4">
                 <Skeleton className="mx-auto h-8 w-72" />

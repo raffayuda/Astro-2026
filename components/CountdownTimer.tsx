@@ -65,12 +65,12 @@ export default function CountdownTimer({ deadline }: { deadline: string }) {
             <Block value={item.value} label={item.label} delay={item.delay} />
           ) : (
             <div className="rounded-xl bg-white shadow-soft flex min-w-[68px] flex-col items-center px-3 py-3 md:min-w-[88px] md:px-5 md:py-4">
-              <span className="text-2xl md:text-4xl font-black text-cyan-700/40 font-mono tracking-wider">--</span>
-              <span className="text-9 md:text-10 uppercase text-slate-500 tracking-[0.15em] mt-1.5 font-bold">{item.label}</span>
+              <span className="text-2xl md:text-4xl font-black text-astro-navy/40 font-mono tracking-wider">--</span>
+              <span className="text-9 md:text-10 uppercase text-ink tracking-[0.15em] mt-1.5 font-bold">{item.label}</span>
             </div>
           )}
           {i < items.length - 1 && (
-            <span className="text-slate-400 text-lg md:text-xl font-bold mb-4">:</span>
+            <span className="text-ink text-lg md:text-xl font-bold mb-4">:</span>
           )}
         </div>
       ))}

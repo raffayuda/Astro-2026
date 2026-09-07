@@ -12,7 +12,7 @@ export type SponsorTier = {
 }
 
 export const SPONSOR_TIERS: SponsorTier[] = [
-  { tier: "Platinum", face: "from-slate-50 to-slate-300" },
+  { tier: "Platinum", face: "from-surface to-astro-cyan-2" },
   { tier: "Gold", face: "from-amber-200 to-astro-gold" },
   { tier: "Silver", face: "from-zinc-100 to-zinc-300" },
   { tier: "Bronze", face: "from-orange-200 to-pastel-orange" },

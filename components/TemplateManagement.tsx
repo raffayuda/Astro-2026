@@ -357,7 +357,7 @@ export default function TemplateManagement({ competitionId }: Props) {
               href={templateImageUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-cyan-600 hover:text-cyan-700"
+              className="text-astro-blue hover:text-astro-navy"
             >
               {templateImageUrl}
             </a>
@@ -501,8 +501,8 @@ export default function TemplateManagement({ competitionId }: Props) {
                 <div
                   key={i}
                   onPointerDown={(e) => onPointerDown(e, i, 'move')}
-                  className={`absolute cursor-move border-2 border-cyan-500 bg-cyan-500/30 ${
-                    isDragging ? 'ring-2 ring-cyan-300 z-10' : ''
+                  className={`absolute cursor-move border-2 border-astro-blue bg-astro-blue/30 ${
+                    isDragging ? 'ring-2 ring-astro-cyan-2 z-10' : ''
                   }`}
                   style={{
                     left: `${of.x * previewScale}px`,
@@ -520,13 +520,13 @@ export default function TemplateManagement({ competitionId }: Props) {
                   {/* Drag handle: resize maxWidth */}
                   <span
                     onPointerDown={(e) => onPointerDown(e, i, 'resize')}
-                    className="absolute -right-1.5 top-1/2 h-5 w-3 -translate-y-1/2 cursor-ew-resize border border-cyan-300 bg-cyan-600/90"
+                    className="absolute -right-1.5 top-1/2 h-5 w-3 -translate-y-1/2 cursor-ew-resize border border-astro-cyan-2 bg-astro-blue/90"
                     style={{ touchAction: 'none' }}
                   />
                   {/* Drag handle: fontSize */}
                   <span
                     onPointerDown={(e) => onPointerDown(e, i, 'fontsize')}
-                    className="absolute -bottom-1.5 right-1/2 h-3 w-5 translate-x-1/2 cursor-ns-resize border border-cyan-300 bg-cyan-600/90"
+                    className="absolute -bottom-1.5 right-1/2 h-3 w-5 translate-x-1/2 cursor-ns-resize border border-astro-cyan-2 bg-astro-blue/90"
                     style={{ touchAction: 'none' }}
                   />
                 </div>

@@ -16,7 +16,7 @@ import { getEffectiveCompetitionFee } from '@/src/lib/competitions';
 const categoryConfig: Record<string, { accent: string; label: string; badgeClass: string }> = {
   akademik: { accent: 'bg-emerald-500', label: 'AKADEMIK', badgeClass: 'border-emerald-200 bg-emerald-50 text-emerald-700' },
   olahraga: { accent: 'bg-orange-500', label: 'OLAHRAGA', badgeClass: 'border-orange-200 bg-orange-50 text-orange-700' },
-  esports: { accent: 'bg-cyan-500', label: 'ESPORTS', badgeClass: 'border-cyan-200 bg-cyan-50 text-cyan-700' },
+  esports: { accent: 'bg-astro-blue', label: 'ESPORTS', badgeClass: 'border-astro-cyan-2 bg-sky-bottom text-astro-navy' },
   'kesenian-/-seni': { accent: 'bg-violet-500', label: 'KESENIAN', badgeClass: 'border-violet-200 bg-violet-50 text-violet-700' },
 };
 
@@ -50,13 +50,13 @@ export default function CompetitionCard({ competition, index }: Props) {
     >
       <Card
         className={cn(
-          "group rounded-lg overflow-hidden border-slate-200/80 shadow-sm transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md",
-          !isOpen && "bg-slate-50/50 opacity-90"
+          "group rounded-lg overflow-hidden border-astro-cyan-2/80 shadow-sm transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md",
+          !isOpen && "bg-surface/50 opacity-90"
         )}
       >
         {/* Top angular corner accent per category */}
         <div className="relative">
-          <div className={cn('absolute -top-px -left-px size-8', isOpen ? cat.accent : 'bg-slate-400')} style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }} />
+          <div className={cn('absolute -top-px -left-px size-8', isOpen ? cat.accent : 'bg-ink')} style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }} />
         </div>
 
         <CardContent className="flex flex-col gap-3 p-5 md:p-6">
@@ -66,7 +66,7 @@ export default function CompetitionCard({ competition, index }: Props) {
               <Badge variant="outline" className={cn('rounded-md border text-10 font-bold uppercase tracking-[0.15em]', cat.badgeClass)}>
                 {cat.label}
               </Badge>
-              <Badge variant="outline" className="rounded-md border-sky-200 bg-sky-50 text-9 font-bold uppercase tracking-[0.1em] text-sky-700">
+              <Badge variant="outline" className="rounded-md border-astro-cyan-2 bg-sky-bottom text-9 font-bold uppercase tracking-[0.1em] text-astro-navy">
                 {competition.origin === 'external' ? 'Eksternal' : 'Internal'}
               </Badge>
               {!isOpen && (

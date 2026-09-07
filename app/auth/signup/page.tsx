@@ -313,7 +313,7 @@ export default function SignupPage() {
                   </Button>
 
                   <div className="mb-4 flex justify-center">
-                    <div className="flex size-14 items-center justify-center rounded-full border border-cyan-200 bg-primary/10">
+                    <div className="flex size-14 items-center justify-center rounded-full border border-astro-cyan-2 bg-primary/10">
                       <KeyRound className="size-7 text-primary" />
                     </div>
                   </div>
@@ -392,7 +392,7 @@ export default function SignupPage() {
                 </p>
                 <Link
                   href={`/auth/verify-otp${email ? `?email=${encodeURIComponent(email)}` : ''}`}
-                  className="text-11 font-medium text-slate-500 hover:text-primary hover:underline"
+                  className="text-11 font-medium text-ink hover:text-primary hover:underline"
                 >
                   Sudah daftar tapi belum verifikasi OTP? Verifikasi di sini
                 </Link>

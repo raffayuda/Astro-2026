@@ -412,7 +412,7 @@ Terima kasih.`;
               </p>
             </div>
 
-            <div className="w-full rounded-xl border border-slate-100 bg-muted/50 p-5 text-left">
+            <div className="w-full rounded-xl border border-surface bg-muted/50 p-5 text-left">
               <h3 className="text-xs font-bold uppercase tracking-wider text-foreground">
                 Instruksi Pembayaran Bank Transfer
               </h3>

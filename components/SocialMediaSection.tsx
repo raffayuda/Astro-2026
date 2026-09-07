@@ -35,14 +35,14 @@ export default function SocialMediaSection({ priority = false }: { priority?: bo
   return (
     <section
       id="social"
-      className="bg-linear-to-b from-sky-top via-sky-mid to-white relative min-h-screen w-full overflow-hidden py-16 font-sans text-slate-900 md:py-24"
+      className="bg-linear-to-b from-sky-top via-sky-mid to-white relative min-h-screen w-full overflow-hidden py-16 font-sans text-astro-navy md:py-24"
     >
       <Bubbles preset="sparse" />
       <ChevronRibbon edge="top" />
       <ChevronRibbon edge="bottom" />
       <Pattern className="absolute inset-0 z-0 opacity-40" />
       {/* ── Subtle Sky Ambient Glow ── */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-cyan-300/20 rounded-full blur-[130px] pointer-events-none z-0" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-astro-cyan-2/20 rounded-full blur-[130px] pointer-events-none z-0" />
 
       {/* ── Subtle Sky Cloud Wisps ── */}
       <MotionImage
@@ -76,7 +76,7 @@ export default function SocialMediaSection({ priority = false }: { priority?: bo
             className="mb-4"
           >
             <Badge variant="outline" className="rounded-full bg-white shadow-soft-sm gap-2 border-white/80 px-4 py-2 text-xs font-black text-astro-blue">
-              <InstagramIcon className="size-3.5 text-slate-800" />
+              <InstagramIcon className="size-3.5 text-astro-navy" />
               @astrosttnf
             </Badge>
           </motion.div>
@@ -214,11 +214,11 @@ export default function SocialMediaSection({ priority = false }: { priority?: bo
         >
           <Button
             asChild
-            className="group gap-2.5 rounded-[18px] border-2 border-white/80 px-6 py-3.5 text-xs font-black uppercase tracking-wider text-white shadow-lg transition-all duration-300 active:scale-95"
+            className="group gap-2.5 rounded-xl border-2 border-white/80 px-6 py-3.5 text-xs font-black uppercase tracking-wider text-white shadow-lg transition-all duration-300 active:scale-95"
           >
             <a href="https://instagram.com/astrosttnf" target="_blank" rel="noopener noreferrer">
               <span>Ikuti @astrosttnf di Instagram</span>
-              <ArrowUpRight className="size-4 text-slate-400 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-white" />
+              <ArrowUpRight className="size-4 text-ink transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-white" />
             </a>
           </Button>
         </motion.div>

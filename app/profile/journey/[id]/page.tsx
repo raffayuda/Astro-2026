@@ -15,10 +15,10 @@ const MotionImage = motion.create(Image);
 /* Fallback color per year (DB doesn't store colors).
    Semua pakai biru sama seperti First Step (2023): cyan → sky. */
 const yearColors: Record<string, string> = {
-  '2023': 'from-cyan-500 to-sky-500',
-  '2024': 'from-cyan-500 to-sky-500',
-  '2025': 'from-cyan-500 to-sky-500',
-  '2026': 'from-cyan-500 to-sky-500',
+  '2023': 'from-astro-blue to-astro-blue',
+  '2024': 'from-astro-blue to-astro-blue',
+  '2025': 'from-astro-blue to-astro-blue',
+  '2026': 'from-astro-blue to-astro-blue',
 };
 
 export default function JourneyDetailPage() {
@@ -43,7 +43,7 @@ export default function JourneyDetailPage() {
       achievement: row.achievement || '',
       description: row.description || '',
       highlights: row.highlights || [],
-      color: yearColors[row.year || row.id] || 'from-cyan-500 to-sky-500',
+      color: yearColors[row.year || row.id] || 'from-astro-blue to-astro-blue',
     };
   }, [row]);
 
@@ -61,8 +61,8 @@ export default function JourneyDetailPage() {
   if (!data) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-white">
-        <div className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-slate-400">
-          <span className="size-4 animate-spin rounded-full border-2 border-slate-300 border-t-astro-cyan" />
+        <div className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-ink">
+          <span className="size-4 animate-spin rounded-full border-2 border-astro-cyan-2 border-t-astro-cyan" />
           Memuat...
         </div>
       </div>
@@ -184,13 +184,13 @@ export default function JourneyDetailPage() {
                 variants={fadeUp}
               >
                 <div className="w-16 h-[3px] bg-astro-cyan mb-5" />
-                <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight leading-[0.95] mb-6">
+                <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-astro-navy tracking-tight leading-[0.95] mb-6">
                   Tentang ASTRO
                   <br />
                   <span className="text-astro-cyan">{data.year}</span>
                 </h2>
 
-                <p className="text-sm md:text-base text-slate-600 leading-relaxed mb-10 max-w-2xl">
+                <p className="text-sm md:text-base text-ink leading-relaxed mb-10 max-w-2xl">
                   {data.description}
                 </p>
 
@@ -203,7 +203,7 @@ export default function JourneyDetailPage() {
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }}
                       transition={{ delay: i * 0.05 }}
-                      className="flex items-center gap-3 text-sm text-slate-700 bg-slate-50 border border-slate-200/60 px-4 py-3"
+                      className="flex items-center gap-3 text-sm text-ink bg-surface border border-astro-cyan-2/60 px-4 py-3"
                       style={{ clipPath: 'polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%)' }}
                     >
                       <span className="w-5 h-5 rounded-full bg-astro-cyan/10 text-astro-cyan flex items-center justify-center shrink-0">
@@ -225,7 +225,7 @@ export default function JourneyDetailPage() {
                 variants={fadeUp}
                 className="sticky top-28"
               >
-                <div className="bg-linear-to-br from-cyan-50 to-sky-50 border border-cyan-100/80 p-8"
+                <div className="bg-linear-to-br from-sky-bottom to-sky-bottom border border-sky-mid/80 p-8"
                   style={{ clipPath: 'polygon(16px 0, 100% 0, calc(100% - 16px) 100%, 0 100%)' }}
                 >
                   {/* Header */}
@@ -233,50 +233,50 @@ export default function JourneyDetailPage() {
                     <div className="w-10 h-10 rounded-full bg-astro-cyan flex items-center justify-center shrink-0">
                       <Award className="w-5 h-5 text-white" />
                     </div>
-                    <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider">Pencapaian</h3>
+                    <h3 className="text-sm font-black text-astro-navy uppercase tracking-wider">Pencapaian</h3>
                   </div>
 
                   {/* Achievement block */}
-                  <div className="bg-white/80 border border-cyan-100/80 p-5 mb-5"
+                  <div className="bg-white/80 border border-sky-mid/80 p-5 mb-5"
                     style={{ clipPath: 'polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%)' }}
                   >
                     <div className="flex items-start gap-3">
                       <Award className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
-                      <p className="text-sm font-bold text-slate-900">{data.achievement}</p>
+                      <p className="text-sm font-bold text-astro-navy">{data.achievement}</p>
                     </div>
                   </div>
 
                   {/* Mini stats grid */}
                   <div className="grid grid-cols-3 gap-3 mb-6">
-                    <div className="bg-white/80 border border-cyan-100/70 p-4 text-center"
+                    <div className="bg-white/80 border border-sky-mid/70 p-4 text-center"
                       style={{ clipPath: 'polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%)' }}
                     >
                       <Users className="w-4 h-4 text-astro-cyan mx-auto mb-1" />
-                      <p className="text-lg font-black text-slate-900">{data.participants > 0 ? data.participants.toLocaleString() : '-'}</p>
-                      <p className="text-8 font-bold text-slate-500 uppercase tracking-wider">Peserta</p>
+                      <p className="text-lg font-black text-astro-navy">{data.participants > 0 ? data.participants.toLocaleString() : '-'}</p>
+                      <p className="text-8 font-bold text-ink uppercase tracking-wider">Peserta</p>
                     </div>
-                    <div className="bg-white/80 border border-cyan-100/70 p-4 text-center"
+                    <div className="bg-white/80 border border-sky-mid/70 p-4 text-center"
                       style={{ clipPath: 'polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%)' }}
                     >
                       <Calendar className="w-4 h-4 text-astro-cyan mx-auto mb-1" />
-                      <p className="text-sm font-black text-slate-900 leading-tight">{data.date || '-'}</p>
-                      <p className="text-8 font-bold text-slate-500 uppercase tracking-wider">Hari Pelaksanaan</p>
+                      <p className="text-sm font-black text-astro-navy leading-tight">{data.date || '-'}</p>
+                      <p className="text-8 font-bold text-ink uppercase tracking-wider">Hari Pelaksanaan</p>
                     </div>
-                    <div className="bg-white/80 border border-cyan-100/70 p-4 text-center"
+                    <div className="bg-white/80 border border-sky-mid/70 p-4 text-center"
                       style={{ clipPath: 'polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%)' }}
                     >
                       <Target className="w-4 h-4 text-astro-cyan mx-auto mb-1" />
-                      <p className="text-lg font-black text-slate-900">{data.competitions}</p>
-                      <p className="text-8 font-bold text-slate-500 uppercase tracking-wider">Lomba</p>
+                      <p className="text-lg font-black text-astro-navy">{data.competitions}</p>
+                      <p className="text-8 font-bold text-ink uppercase tracking-wider">Lomba</p>
                     </div>
                   </div>
 
                   {/* Navigation between years */}
-                  <div className="flex justify-between items-center pt-5 border-t border-cyan-200/60">
+                  <div className="flex justify-between items-center pt-5 border-t border-astro-cyan-2/60">
                     {parseInt(data.year) > 2023 ? (
                       <Link
                         href={`/profile/journey/${String(parseInt(data.year) - 1)}`}
-                        className="inline-flex items-center gap-1.5 text-11 font-bold text-slate-500 hover:text-astro-cyan transition-colors group"
+                        className="inline-flex items-center gap-1.5 text-11 font-bold text-ink hover:text-astro-cyan transition-colors group"
                       >
                         <ArrowLeft className="w-3.5 h-3.5 transition-transform group-hover:-translate-x-0.5" />
                         {parseInt(data.year) - 1}
@@ -285,7 +285,7 @@ export default function JourneyDetailPage() {
                     {parseInt(data.year) < 2026 ? (
                       <Link
                         href={`/profile/journey/${String(parseInt(data.year) + 1)}`}
-                        className="inline-flex items-center gap-1.5 text-11 font-bold text-slate-500 hover:text-astro-cyan transition-colors group"
+                        className="inline-flex items-center gap-1.5 text-11 font-bold text-ink hover:text-astro-cyan transition-colors group"
                       >
                         {parseInt(data.year) + 1}
                         <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
@@ -307,17 +307,17 @@ export default function JourneyDetailPage() {
           >
             <div className="text-center mb-12">
               <div className="w-16 h-[3px] bg-astro-cyan mx-auto mb-4" />
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight mb-2">
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-astro-navy tracking-tight mb-2">
                 Dokumentasi
               </h2>
-              <p className="text-sm text-slate-500 font-light">Momen-momen berharga selama perjalanan ASTRO {data.year}</p>
+              <p className="text-sm text-ink font-light">Momen-momen berharga selama perjalanan ASTRO {data.year}</p>
             </div>
 
             {photos.length === 0 ? (
-              <div className="flex flex-col items-center justify-center border border-dashed border-slate-200 bg-slate-50/50 py-16 text-center"
+              <div className="flex flex-col items-center justify-center border border-dashed border-astro-cyan-2 bg-surface/50 py-16 text-center"
                 style={{ clipPath: 'polygon(12px 0, 100% 0, calc(100% - 12px) 100%, 0 100%)' }}>
-                <Camera className="mb-3 size-8 text-slate-300" />
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                <Camera className="mb-3 size-8 text-astro-cyan-2" />
+                <p className="text-xs font-bold text-ink uppercase tracking-wider">
                   Belum ada foto dokumentasi untuk ASTRO {data.year}
                 </p>
               </div>
@@ -333,7 +333,7 @@ export default function JourneyDetailPage() {
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.1 }}
                     whileHover={reduce ? {} : { y: -6 }}
-                    className="group relative block aspect-[4/3] cursor-pointer overflow-hidden border border-slate-200/80 bg-slate-100 hover:border-astro-cyan/40 text-left"
+                    className="group relative block aspect-[4/3] cursor-pointer overflow-hidden border border-astro-cyan-2/80 bg-surface hover:border-astro-cyan/40 text-left"
                     style={{ clipPath: 'polygon(12px 0, 100% 0, calc(100% - 12px) 100%, 0 100%)' }}
                   >
                     {/* eslint-disable-next-line @next/next/no-img-element */}

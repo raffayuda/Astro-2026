@@ -252,11 +252,11 @@ function FormFields({ form, setForm, isAdd, categories }: { form: any; setForm: 
       </Field>
       {!form.isFree && (
         <Field className="sm:col-span-2">
-          <div className="rounded-xl border border-cyan-500/30 bg-cyan-950/10 p-4 dark:bg-cyan-950/20">
+          <div className="rounded-xl border border-astro-blue/30 bg-astro-navy/10 p-4 dark:bg-astro-navy/20">
             <div className="flex items-center justify-between gap-3">
               <div className="space-y-0.5">
                 <Label htmlFor="toggle-has-batches" className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-foreground cursor-pointer">
-                  <Layers className="size-4 text-cyan-600" />
+                  <Layers className="size-4 text-astro-blue" />
                   Aktifkan Batch Pendaftaran (Harga Beda)
                 </Label>
                 <p className="text-11 text-muted-foreground leading-relaxed">
@@ -291,7 +291,7 @@ function FormFields({ form, setForm, isAdd, categories }: { form: any; setForm: 
             </div>
 
             {form.hasBatches && (
-              <div className="mt-4 space-y-3 border-t border-cyan-500/20 pt-3">
+              <div className="mt-4 space-y-3 border-t border-astro-blue/20 pt-3">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
                     Daftar Gelombang / Batch ({form.batches?.length || 0})
@@ -321,7 +321,7 @@ function FormFields({ form, setForm, isAdd, categories }: { form: any; setForm: 
                       };
                       update({ batches: [...currentBatches, newBatch] });
                     }}
-                    className="h-7 text-xs font-bold uppercase tracking-wider border-cyan-500/40 text-cyan-700 dark:text-cyan-400 hover:bg-cyan-500/10"
+                    className="h-7 text-xs font-bold uppercase tracking-wider border-astro-blue/40 text-astro-navy dark:text-astro-sky hover:bg-astro-blue/10"
                   >
                     <Plus className="size-3.5 mr-1" /> Tambah Batch
                   </Button>
@@ -355,7 +355,7 @@ function FormFields({ form, setForm, isAdd, categories }: { form: any; setForm: 
                                 </Badge>
                               )}
                               {isUpcoming && (
-                                <Badge variant="secondary" className="text-10 py-0 px-2 h-4 text-cyan-600 font-bold">
+                                <Badge variant="secondary" className="text-10 py-0 px-2 h-4 text-astro-blue font-bold">
                                   Mendatang
                                 </Badge>
                               )}
@@ -579,7 +579,7 @@ export default function KompetisiPage() {
 
   // Category manager state
   const [showCatManager, setShowCatManager] = useState(false);
-  const [catForm, setCatForm] = useState({ id: '', label: '', color: 'text-cyan-700 bg-cyan-50 border-cyan-200' });
+  const [catForm, setCatForm] = useState({ id: '', label: '', color: 'text-astro-navy bg-sky-bottom border-astro-cyan-2' });
   const [editingCatId, setEditingCatId] = useState<string | null>(null);
   const [catSaving, setCatSaving] = useState(false);
 
@@ -991,7 +991,7 @@ export default function KompetisiPage() {
     setCatSaving(true);
     try {
       await catSaveMutation.mutateAsync(catForm);
-      setCatForm({ id: '', label: '', color: 'text-cyan-700 bg-cyan-50 border-cyan-200' });
+      setCatForm({ id: '', label: '', color: 'text-astro-navy bg-sky-bottom border-astro-cyan-2' });
     } catch (err) { console.error(err); }
     setCatSaving(false);
   };
@@ -1049,59 +1049,59 @@ export default function KompetisiPage() {
 
       {/* Category Manager */}
       {showCatManager && (
-        <div className="bg-white border border-slate-200 relative p-5 space-y-4"
+        <div className="bg-white border border-astro-cyan-2 relative p-5 space-y-4"
           style={{ clipPath: 'polygon(14px 0, 100% 0, calc(100% - 14px) 100%, 0 100%)' }}
         >
           <div className="absolute -top-[1px] -left-[1px] w-8 h-8 bg-astro-cyan"
             style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }}
           />
           <div className="flex items-center justify-between">
-            <h2 className="text-sm font-black text-slate-900 uppercase tracking-tight">Kelola Kategori</h2>
+            <h2 className="text-sm font-black text-astro-navy uppercase tracking-tight">Kelola Kategori</h2>
             <button onClick={() => setShowCatManager(false)}
-              className="p-1 text-slate-400 hover:text-slate-600 cursor-pointer"><X className="w-4 h-4" /></button>
+              className="p-1 text-ink hover:text-ink cursor-pointer"><X className="w-4 h-4" /></button>
           </div>
 
           {/* Add/Edit form */}
           <div className="flex gap-3 items-end">
             <div className="flex-1">
-              <label className="text-10 font-bold text-slate-500 uppercase tracking-wider">Label</label>
+              <label className="text-10 font-bold text-ink uppercase tracking-wider">Label</label>
               <input value={catForm.label} onChange={(e) => setCatForm({ ...catForm, label: e.target.value, id: editingCatId ? catForm.id : e.target.value.toLowerCase().replace(/\s+/g, '-') })}
                 placeholder="Nama kategori"
-                className="w-full px-3 py-2 border border-slate-200 text-sm mt-1 focus:outline-none focus:border-astro-cyan"
+                className="w-full px-3 py-2 border border-astro-cyan-2 text-sm mt-1 focus:outline-none focus:border-astro-cyan"
                 style={{ clipPath: 'polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%)' }}
               />
             </div>
             {!editingCatId && (
               <div className="flex-1">
-                <label className="text-10 font-bold text-slate-500 uppercase tracking-wider">ID</label>
+                <label className="text-10 font-bold text-ink uppercase tracking-wider">ID</label>
                 <input value={catForm.id} onChange={(e) => setCatForm({ ...catForm, id: e.target.value })}
                   placeholder="slug-kategori"
-                  className="w-full px-3 py-2 border border-slate-200 text-sm mt-1 focus:outline-none focus:border-astro-cyan"
+                  className="w-full px-3 py-2 border border-astro-cyan-2 text-sm mt-1 focus:outline-none focus:border-astro-cyan"
                   style={{ clipPath: 'polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%)' }}
                 />
               </div>
             )}
             <select value={catForm.color} onChange={(e) => setCatForm({ ...catForm, color: e.target.value })}
-              className="flex-1 px-3 py-2 border border-slate-200 text-xs mt-5 focus:outline-none focus:border-astro-cyan cursor-pointer"
+              className="flex-1 px-3 py-2 border border-astro-cyan-2 text-xs mt-5 focus:outline-none focus:border-astro-cyan cursor-pointer"
               style={{ clipPath: 'polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%)' }}
             >
               <option value="text-emerald-700 bg-emerald-50 border-emerald-200">Hijau (Akademik)</option>
               <option value="text-orange-700 bg-orange-50 border-orange-200">Oranye (Olahraga)</option>
-              <option value="text-cyan-700 bg-cyan-50 border-cyan-200">Cyan (Esports)</option>
+              <option value="text-astro-navy bg-sky-bottom border-astro-cyan-2">Cyan (Esports)</option>
               <option value="text-purple-700 bg-purple-50 border-purple-200">Ungu</option>
               <option value="text-pink-700 bg-pink-50 border-pink-200">Pink</option>
-              <option value="text-sky-700 bg-sky-50 border-sky-200">Sky</option>
+              <option value="text-astro-navy bg-sky-bottom border-astro-cyan-2">Sky</option>
               <option value="text-amber-700 bg-amber-50 border-amber-200">Amber</option>
             </select>
             <button onClick={handleCatSave} disabled={catSaving}
-              className="px-4 py-2 bg-astro-cyan text-slate-950 font-bold text-xs tracking-wider uppercase hover:bg-cyan-400 disabled:bg-slate-200 disabled:text-slate-400 cursor-pointer"
+              className="px-4 py-2 bg-astro-cyan text-astro-navy font-bold text-xs tracking-wider uppercase hover:bg-astro-sky disabled:bg-astro-cyan-2 disabled:text-ink cursor-pointer"
               style={{ clipPath: 'polygon(5px 0, 100% 0, calc(100% - 5px) 100%, 0 100%)' }}
             >
               {catSaving ? <Spinner className="w-3 h-3" /> : editingCatId ? <Check className="w-3 h-3" /> : <Plus className="w-3 h-3" />}
             </button>
             {editingCatId && (
-              <button onClick={() => { setEditingCatId(null); setCatForm({ id: '', label: '', color: 'text-cyan-700 bg-cyan-50 border-cyan-200' }); }}
-                className="px-4 py-2 border border-slate-300 text-slate-600 font-bold text-xs tracking-wider uppercase hover:bg-slate-50 cursor-pointer"
+              <button onClick={() => { setEditingCatId(null); setCatForm({ id: '', label: '', color: 'text-astro-navy bg-sky-bottom border-astro-cyan-2' }); }}
+                className="px-4 py-2 border border-astro-cyan-2 text-ink font-bold text-xs tracking-wider uppercase hover:bg-surface cursor-pointer"
                 style={{ clipPath: 'polygon(5px 0, 100% 0, calc(100% - 5px) 100%, 0 100%)' }}
               >Batal</button>
             )}
@@ -1125,13 +1125,13 @@ export default function KompetisiPage() {
 
       {/* Add Form */}
       {showAdd && (
-        <div className="bg-white border border-slate-200 relative p-5 space-y-4"
+        <div className="bg-white border border-astro-cyan-2 relative p-5 space-y-4"
           style={{ clipPath: 'polygon(14px 0, 100% 0, calc(100% - 14px) 100%, 0 100%)' }}
         >
           <div className="absolute -top-[1px] -left-[1px] w-8 h-8 bg-astro-cyan"
             style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }}
           />
-          <h2 className="text-sm font-black text-slate-900 uppercase tracking-tight">Tambah Lomba Baru</h2>
+          <h2 className="text-sm font-black text-astro-navy uppercase tracking-tight">Tambah Lomba Baru</h2>
           <FormFields form={addForm} setForm={setAddForm} isAdd categories={categories} />
           <div className="flex gap-2 pt-2">
             <Button onClick={handleAdd} disabled={saving} className="rounded-md gap-1 text-xs font-bold uppercase tracking-wider">
@@ -1172,11 +1172,11 @@ export default function KompetisiPage() {
       <div className="grid grid-cols-1 gap-4">
         {paginated.map((comp) => {
           const cat = categories.find((c) => c.id === comp.category);
-          const catColor = cat?.color || 'bg-slate-50 text-slate-600 border-slate-200';
+          const catColor = cat?.color || 'bg-surface text-ink border-astro-cyan-2';
 
           return (
             <div key={comp.id}
-              className="bg-white border border-slate-200 relative"
+              className="bg-white border border-astro-cyan-2 relative"
               style={{ clipPath: 'polygon(14px 0, 100% 0, calc(100% - 14px) 100%, 0 100%)' }}
             >
               <div className="absolute -top-[1px] -left-[1px] w-8 h-8 bg-astro-cyan"
@@ -1185,7 +1185,7 @@ export default function KompetisiPage() {
               <div className="p-5">
                 {editingId === comp.id ? (
                   <div className="space-y-4">
-                    <h2 className="text-sm font-black text-slate-900 uppercase tracking-tight">Edit Lomba</h2>
+                    <h2 className="text-sm font-black text-astro-navy uppercase tracking-tight">Edit Lomba</h2>
                     <FormFields form={editForm} setForm={setEditForm} categories={categories} />
                     <div className="flex gap-2 pt-2">
                       <Button onClick={() => handleSave(comp.id)} disabled={saving} className="rounded-md gap-1 text-xs font-bold uppercase tracking-wider">
@@ -1218,7 +1218,7 @@ export default function KompetisiPage() {
                         >
                           {(comp as any).isFree === '1' || (comp as any).isFree === true ? 'Gratis' : 'Berbayar'}
                         </Badge>
-                        <Badge variant="outline" className="rounded-md border-sky-200 bg-sky-50 text-9 font-bold uppercase tracking-wider text-sky-700">
+                        <Badge variant="outline" className="rounded-md border-astro-cyan-2 bg-sky-bottom text-9 font-bold uppercase tracking-wider text-astro-navy">
                           {(comp as any).origin === 'external' ? 'Eksternal' : 'Internal'}
                         </Badge>
                         <Badge variant="outline" className={cn('rounded-md border text-9 font-bold uppercase tracking-wider',
@@ -1229,17 +1229,17 @@ export default function KompetisiPage() {
                           {comp.isActive ? 'Pendaftaran Dibuka' : 'Pendaftaran Ditutup'}
                         </Badge>
                         {((comp as any).hasBatches === true || (comp as any).hasBatches === '1') && (
-                          <Badge variant="outline" className="rounded-md border-cyan-300 bg-cyan-50 text-9 font-bold uppercase tracking-wider text-cyan-700 dark:bg-cyan-950/40 dark:text-cyan-400 gap-1">
+                          <Badge variant="outline" className="rounded-md border-astro-cyan-2 bg-sky-bottom text-9 font-bold uppercase tracking-wider text-astro-navy dark:bg-astro-navy/40 dark:text-astro-sky gap-1">
                             <Layers className="size-2.5" /> {(comp as any).batches?.length || 0} Batch
                           </Badge>
                         )}
                       </div>
                       {comp.tagline && (
-                        <p className="text-sm text-slate-500 font-light mb-2">{comp.tagline}</p>
+                        <p className="text-sm text-ink font-light mb-2">{comp.tagline}</p>
                       )}
-                      <div className="flex flex-wrap gap-x-5 gap-y-1.5 text-xs text-slate-600">
-                        <span className="flex items-center gap-1 font-semibold text-slate-900 dark:text-slate-100">
-                          <Coins className="w-3 h-3 text-cyan-600" />
+                      <div className="flex flex-wrap gap-x-5 gap-y-1.5 text-xs text-ink">
+                        <span className="flex items-center gap-1 font-semibold text-astro-navy dark:text-surface">
+                          <Coins className="w-3 h-3 text-astro-blue" />
                           {(() => {
                             if ((comp as any).isFree === '1' || (comp as any).isFree === true || comp.isFree) {
                               return 'Gratis';
@@ -1287,12 +1287,12 @@ export default function KompetisiPage() {
 
                 {/* ─── Timeline Manager ─── */}
                 {timelineOpen === comp.id && (
-                  <div className="border-t border-slate-200 mt-5 pt-5 space-y-4">
+                  <div className="border-t border-astro-cyan-2 mt-5 pt-5 space-y-4">
                     <div className="flex items-center justify-between">
-                      <h3 className="text-sm font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
+                      <h3 className="text-sm font-black text-astro-navy uppercase tracking-tight flex items-center gap-2">
                         <Clock className="w-4 h-4 text-astro-cyan" /> Timeline Lomba
                       </h3>
-                      <span className="text-10 text-slate-400 font-bold uppercase tracking-wider">
+                      <span className="text-10 text-ink font-bold uppercase tracking-wider">
                         {(timelineItems[comp.id] || []).length} item
                       </span>
                     </div>
@@ -1300,33 +1300,33 @@ export default function KompetisiPage() {
                     {/* Timeline list */}
                     <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
                       {(timelineItems[comp.id] || []).length === 0 && (
-                        <p className="text-xs text-slate-400 italic">Belum ada timeline. Tambah item baru di bawah.</p>
+                        <p className="text-xs text-ink italic">Belum ada timeline. Tambah item baru di bawah.</p>
                       )}
                       {(timelineItems[comp.id] || []).map((item, idx) => (
                         <div key={item.id}
-                          className="flex items-start gap-3 bg-slate-50 border border-slate-100 p-3 group"
+                          className="flex items-start gap-3 bg-surface border border-surface p-3 group"
                           style={{ clipPath: 'polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%)' }}
                         >
-                          <span className="flex-shrink-0 w-6 h-6 text-10 font-black bg-cyan-100 text-cyan-700 flex items-center justify-center"
+                          <span className="flex-shrink-0 w-6 h-6 text-10 font-black bg-sky-mid text-astro-navy flex items-center justify-center"
                             style={{ clipPath: 'polygon(3px 0, 100% 0, calc(100% - 3px) 100%, 0 100%)' }}
                           >
                             {idx + 1}
                           </span>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2">
-                              <span className="text-xs font-black text-slate-800 uppercase tracking-tight truncate">{item.title}</span>
-                              <span className="text-10 text-slate-400 font-bold whitespace-nowrap">{item.date}</span>
+                              <span className="text-xs font-black text-astro-navy uppercase tracking-tight truncate">{item.title}</span>
+                              <span className="text-10 text-ink font-bold whitespace-nowrap">{item.date}</span>
                             </div>
-                            <p className="text-11 text-slate-500 leading-relaxed line-clamp-1">{item.desc}</p>
+                            <p className="text-11 text-ink leading-relaxed line-clamp-1">{item.desc}</p>
                           </div>
                           <div className="flex gap-1 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
                             <button onClick={() => handleTlEdit(item)}
-                              className="p-1 text-slate-400 hover:text-astro-cyan cursor-pointer" title="Edit"
+                              className="p-1 text-ink hover:text-astro-cyan cursor-pointer" title="Edit"
                             >
                               <Pencil className="w-3 h-3" />
                             </button>
                             <button onClick={() => handleTlDelete(comp.id, item.id)}
-                              className="p-1 text-slate-400 hover:text-red-500 cursor-pointer" title="Hapus"
+                              className="p-1 text-ink hover:text-red-500 cursor-pointer" title="Hapus"
                             >
                               <X className="w-3 h-3" />
                             </button>
@@ -1338,29 +1338,29 @@ export default function KompetisiPage() {
                     {/* Add/Edit form */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div>
-                        <label className="text-10 font-bold text-slate-500 uppercase tracking-wider">Tanggal Mulai</label>
+                        <label className="text-10 font-bold text-ink uppercase tracking-wider">Tanggal Mulai</label>
                         <input type="date" value={tlDateRange.start}
                           onChange={(e) => setTlDateRange({ ...tlDateRange, start: e.target.value })}
-                          className="w-full px-3 py-2 border border-slate-200 text-xs mt-1 focus:outline-none focus:border-astro-cyan"
+                          className="w-full px-3 py-2 border border-astro-cyan-2 text-xs mt-1 focus:outline-none focus:border-astro-cyan"
                           style={{ clipPath: 'polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%)' }}
                         />
                       </div>
                       <div>
-                        <label className="text-10 font-bold text-slate-500 uppercase tracking-wider">Tanggal Akhir <span className="text-slate-400 font-normal normal-case tracking-normal">(opsional)</span></label>
+                        <label className="text-10 font-bold text-ink uppercase tracking-wider">Tanggal Akhir <span className="text-ink font-normal normal-case tracking-normal">(opsional)</span></label>
                         <input type="date" value={tlDateRange.end}
                           onChange={(e) => setTlDateRange({ ...tlDateRange, end: e.target.value })}
                           min={tlDateRange.start || undefined}
-                          className="w-full px-3 py-2 border border-slate-200 text-xs mt-1 focus:outline-none focus:border-astro-cyan"
+                          className="w-full px-3 py-2 border border-astro-cyan-2 text-xs mt-1 focus:outline-none focus:border-astro-cyan"
                           style={{ clipPath: 'polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%)' }}
                         />
                       </div>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 items-end">
                       <div>
-                        <label className="text-10 font-bold text-slate-500 uppercase tracking-wider">Judul</label>
+                        <label className="text-10 font-bold text-ink uppercase tracking-wider">Judul</label>
                         <input value={tlForm.title} onChange={(e) => setTlForm({ ...tlForm, title: e.target.value })}
                           placeholder="Pendaftaran Dibuka"
-                          className="w-full px-3 py-2 border border-slate-200 text-xs mt-1 focus:outline-none focus:border-astro-cyan"
+                          className="w-full px-3 py-2 border border-astro-cyan-2 text-xs mt-1 focus:outline-none focus:border-astro-cyan"
                           style={{ clipPath: 'polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%)' }}
                         />
                       </div>
@@ -1376,11 +1376,11 @@ export default function KompetisiPage() {
                       </div>
                     </div>
                     <div>
-                      <label className="text-10 font-bold text-slate-500 uppercase tracking-wider">Deskripsi</label>
+                      <label className="text-10 font-bold text-ink uppercase tracking-wider">Deskripsi</label>
                       <textarea value={tlForm.desc} onChange={(e) => setTlForm({ ...tlForm, desc: e.target.value })}
                         placeholder="Deskripsi item timeline..."
                         rows={2}
-                        className="w-full px-3 py-2 border border-slate-200 text-xs mt-1 focus:outline-none focus:border-astro-cyan"
+                        className="w-full px-3 py-2 border border-astro-cyan-2 text-xs mt-1 focus:outline-none focus:border-astro-cyan"
                         style={{ clipPath: 'polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%)' }}
                       />
                     </div>
@@ -1389,7 +1389,7 @@ export default function KompetisiPage() {
 
                 {/* ─── Winner Manager ─── */}
                 {winnerOpenId === comp.id && (
-                  <div className="border-t border-slate-200 mt-5 pt-5 space-y-4">
+                  <div className="border-t border-astro-cyan-2 mt-5 pt-5 space-y-4">
                     <WinnerManager competitionId={comp.id} />
                   </div>
                 )}

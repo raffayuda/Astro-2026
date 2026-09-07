@@ -32,14 +32,14 @@ interface Props {
 const categoryStyles: Record<string, string> = {
   akademik: 'border-emerald-200 bg-emerald-50 text-emerald-700',
   olahraga: 'border-orange-200 bg-orange-50 text-orange-700',
-  esports: 'border-cyan-200 bg-cyan-50 text-cyan-700',
+  esports: 'border-astro-cyan-2 bg-sky-bottom text-astro-navy',
 };
 
 const prizeColors = [
   'border-amber-200 bg-amber-50 text-amber-700',
-  'border-slate-200 bg-slate-100 text-slate-700',
+  'border-astro-cyan-2 bg-surface text-ink',
   'border-amber-200 bg-amber-50/80 text-amber-850',
-  'border-cyan-200 bg-cyan-50 text-cyan-700',
+  'border-astro-cyan-2 bg-sky-bottom text-astro-navy',
   'border-violet-200 bg-violet-50 text-violet-700',
 ];
 

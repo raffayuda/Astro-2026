@@ -146,7 +146,7 @@ export default function InviteAcceptPage({
   return (
     <div className="relative min-h-svh flex flex-col items-center justify-center p-4 overflow-hidden">
       {/* Sky Background */}
-      <div className="absolute inset-0 -z-10 bg-linear-to-b from-sky-400 via-sky-300 to-sky-100" />
+      <div className="absolute inset-0 -z-10 bg-linear-to-b from-sky-top via-astro-cyan-2 to-sky-mid" />
 
       {/* Cloud & Planet Decorative Elements */}
       <Image
@@ -192,7 +192,7 @@ export default function InviteAcceptPage({
               className="h-12 w-auto object-contain drop-shadow-md"
             />
           </Link>
-          <p className="mt-2 text-xs font-bold uppercase tracking-widest text-slate-800 drop-shadow-sm">
+          <p className="mt-2 text-xs font-bold uppercase tracking-widest text-astro-navy drop-shadow-sm">
             Aktivasi Akun Undangan
           </p>
         </div>
@@ -201,8 +201,8 @@ export default function InviteAcceptPage({
         {verifying && (
           <Card className="rounded-lg border-white/60 bg-white/90 backdrop-blur-md shadow-xl p-8 text-center">
             <div className="flex flex-col items-center justify-center py-6 gap-3">
-              <Spinner className="size-8 text-cyan-600" />
-              <p className="text-sm font-semibold text-slate-700">
+              <Spinner className="size-8 text-astro-blue" />
+              <p className="text-sm font-semibold text-ink">
                 Memverifikasi tautan undangan...
               </p>
             </div>
@@ -217,10 +217,10 @@ export default function InviteAcceptPage({
                 <AlertCircle className="size-8" />
               </div>
               <div>
-                <h2 className="text-lg font-black uppercase tracking-tight text-slate-900">
+                <h2 className="text-lg font-black uppercase tracking-tight text-astro-navy">
                   Undangan Tidak Valid
                 </h2>
-                <p className="mt-2 text-sm text-slate-600 leading-relaxed">
+                <p className="mt-2 text-sm text-ink leading-relaxed">
                   {errorReason}
                 </p>
               </div>
@@ -237,22 +237,22 @@ export default function InviteAcceptPage({
         {!verifying && !errorReason && invitation && (
           <Card className="rounded-lg border-white/70 bg-white/95 backdrop-blur-xl shadow-2xl relative overflow-hidden">
             <div
-              className="absolute -top-px -left-px size-10 bg-cyan-500"
+              className="absolute -top-px -left-px size-10 bg-astro-blue"
               style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }}
             />
 
             <CardContent className="p-6 sm:p-8">
               {/* Header inside card */}
               <div className="mb-6 text-center">
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-50 border border-cyan-200 text-cyan-800 text-11 font-bold uppercase tracking-wider mb-2">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sky-bottom border border-astro-cyan-2 text-astro-navy text-11 font-bold uppercase tracking-wider mb-2">
                   {invitation.role === 'admin'
                     ? 'Undangan Administrator'
                     : 'Undangan Peserta'}
                 </div>
-                <h1 className="text-xl sm:text-2xl font-black uppercase tracking-tight text-slate-900">
+                <h1 className="text-xl sm:text-2xl font-black uppercase tracking-tight text-astro-navy">
                   Selamat Datang di ASTRO 2026
                 </h1>
-                <p className="text-xs sm:text-sm text-slate-600 mt-1">
+                <p className="text-xs sm:text-sm text-ink mt-1">
                   Lengkapi data di bawah ini untuk mengaktifkan akun dan menentukan kata sandi Anda.
                 </p>
               </div>
@@ -262,12 +262,12 @@ export default function InviteAcceptPage({
                 <FieldGroup className="space-y-3.5">
                   {/* Email */}
                   <Field>
-                    <FieldLabel className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                    <FieldLabel className="text-xs font-bold text-ink uppercase tracking-wider">
                       Email Akun
                     </FieldLabel>
-                    <InputGroup className="h-10 bg-slate-50 border-slate-200">
+                    <InputGroup className="h-10 bg-surface border-astro-cyan-2">
                       <InputGroupAddon align="inline-start">
-                        <Mail className="size-4 text-slate-400" />
+                        <Mail className="size-4 text-ink" />
                       </InputGroupAddon>
                       <InputGroupInput
                         type="email"
@@ -276,11 +276,11 @@ export default function InviteAcceptPage({
                         disabled={!!invitation.email || submitting || success}
                         placeholder="nama@email.com"
                         required
-                        className="text-xs font-medium text-slate-900"
+                        className="text-xs font-medium text-astro-navy"
                       />
                     </InputGroup>
                     {invitation.email && (
-                      <p className="text-11 text-slate-500 mt-1">
+                      <p className="text-11 text-ink mt-1">
                         * Email ini telah ditentukan oleh administrator pengundang.
                       </p>
                     )}
@@ -288,12 +288,12 @@ export default function InviteAcceptPage({
 
                   {/* Nama Lengkap */}
                   <Field>
-                    <FieldLabel className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                    <FieldLabel className="text-xs font-bold text-ink uppercase tracking-wider">
                       Nama Lengkap
                     </FieldLabel>
-                    <InputGroup className="h-10 bg-slate-50 border-slate-200">
+                    <InputGroup className="h-10 bg-surface border-astro-cyan-2">
                       <InputGroupAddon align="inline-start">
-                        <User className="size-4 text-slate-400" />
+                        <User className="size-4 text-ink" />
                       </InputGroupAddon>
                       <InputGroupInput
                         type="text"
@@ -302,19 +302,19 @@ export default function InviteAcceptPage({
                         disabled={submitting || success}
                         placeholder="Masukkan nama lengkap Anda"
                         required
-                        className="text-xs font-medium text-slate-900"
+                        className="text-xs font-medium text-astro-navy"
                       />
                     </InputGroup>
                   </Field>
 
                   {/* Password Baru */}
                   <Field>
-                    <FieldLabel className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                    <FieldLabel className="text-xs font-bold text-ink uppercase tracking-wider">
                       Kata Sandi Baru
                     </FieldLabel>
-                    <InputGroup className="h-10 bg-slate-50 border-slate-200">
+                    <InputGroup className="h-10 bg-surface border-astro-cyan-2">
                       <InputGroupAddon align="inline-start">
-                        <Lock className="size-4 text-slate-400" />
+                        <Lock className="size-4 text-ink" />
                       </InputGroupAddon>
                       <InputGroupInput
                         type="password"
@@ -324,19 +324,19 @@ export default function InviteAcceptPage({
                         placeholder="Minimal 6 karakter"
                         required
                         minLength={6}
-                        className="text-xs font-medium text-slate-900"
+                        className="text-xs font-medium text-astro-navy"
                       />
                     </InputGroup>
                   </Field>
 
                   {/* Konfirmasi Password */}
                   <Field>
-                    <FieldLabel className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                    <FieldLabel className="text-xs font-bold text-ink uppercase tracking-wider">
                       Konfirmasi Kata Sandi
                     </FieldLabel>
-                    <InputGroup className="h-10 bg-slate-50 border-slate-200">
+                    <InputGroup className="h-10 bg-surface border-astro-cyan-2">
                       <InputGroupAddon align="inline-start">
-                        <Lock className="size-4 text-slate-400" />
+                        <Lock className="size-4 text-ink" />
                       </InputGroupAddon>
                       <InputGroupInput
                         type="password"
@@ -345,7 +345,7 @@ export default function InviteAcceptPage({
                         disabled={submitting || success}
                         placeholder="Ulangi kata sandi"
                         required
-                        className="text-xs font-medium text-slate-900"
+                        className="text-xs font-medium text-astro-navy"
                       />
                     </InputGroup>
                   </Field>
@@ -356,7 +356,7 @@ export default function InviteAcceptPage({
                   <Button
                     type="submit"
                     disabled={submitting || success}
-                    className="rounded-lg w-full h-11 bg-slate-950 hover:bg-slate-800 text-white font-black text-xs uppercase tracking-wider shadow-lg transition-all"
+                    className="rounded-lg w-full h-11 bg-astro-navy hover:bg-astro-navy text-white font-black text-xs uppercase tracking-wider shadow-lg transition-all"
                   >
                     {submitting ? (
                       <>
@@ -376,7 +376,7 @@ export default function InviteAcceptPage({
               </form>
 
               {/* Footer note */}
-              <p className="mt-5 text-center text-11 text-slate-500">
+              <p className="mt-5 text-center text-11 text-ink">
                 Akun yang dibuat melalui tautan ini langsung aktif dan terverifikasi secara resmi oleh panitia ASTRO 2026.
               </p>
             </CardContent>

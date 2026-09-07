@@ -336,7 +336,7 @@ export default function FormStep({
                   key={i}
                   className={
                     photoRequired
-                      ? "flex flex-col gap-2 rounded-[16px] border border-astro-cyan-2/60 bg-white/60 p-3"
+                      ? "flex flex-col gap-2 rounded-xl border border-astro-cyan-2/60 bg-white/60 p-3"
                       : undefined
                   }
                 >
@@ -503,7 +503,7 @@ export default function FormStep({
                                 onBlur={subField.handleBlur}
                                 onChange={(e) => subField.handleChange(e.target.value as never)}
                                 aria-invalid={!!err}
-                                className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring md:text-sm dark:bg-slate-900"
+                                className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring md:text-sm dark:bg-astro-navy"
                               >
                                 <option value="">-- Pilih {field.label} --</option>
                                 {(field.options || []).map((opt) => (
@@ -570,7 +570,7 @@ export default function FormStep({
             type="submit"
             disabled={isSubmitting}
             size="lg"
-            className="w-full rounded-[18px] text-sm font-black uppercase tracking-wider active:scale-95"
+            className="w-full rounded-xl text-sm font-black uppercase tracking-wider active:scale-95"
           >
             {isSubmitting ? (
               <>

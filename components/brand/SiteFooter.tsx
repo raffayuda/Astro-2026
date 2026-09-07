@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils"
 
 /**
  * Site footer — navy panel with social handles and contact details, per spec
- * sheet 2 (`bg-blue-900 p-8 text-white flex justify-between`).
+ * sheet 2 (`bg-astro-navy p-8 text-white flex justify-between`).
  *
  * Brand marks come from react-icons/fa6 because lucide-react v1 removed its
  * brand icon set; everything non-brand stays on lucide.

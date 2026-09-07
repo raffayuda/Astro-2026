@@ -495,8 +495,8 @@ export default function SponsorPage() {
                 className={cn(
                   "h-7 text-xs font-bold uppercase tracking-wider",
                   mpFilter === 'current'
-                    ? "bg-cyan-600 hover:bg-cyan-700 text-white"
-                    : "border-cyan-500/40 text-cyan-700 dark:text-cyan-400 hover:bg-cyan-50 dark:hover:bg-cyan-950/30"
+                    ? "bg-astro-blue hover:bg-astro-navy text-white"
+                    : "border-astro-blue/40 text-astro-navy dark:text-astro-sky hover:bg-sky-bottom dark:hover:bg-astro-navy/30"
                 )}
               >
                 ASTRO 2026 ({mediaPartners.filter(m => m.isCurrent).length})
@@ -589,7 +589,7 @@ export default function SponsorPage() {
                     <div className="flex items-center justify-between rounded-lg border border-border bg-muted/40 p-3">
                       <div className="space-y-0.5">
                         <Label htmlFor="mp-is-current" className="text-xs font-bold uppercase tracking-wider text-foreground cursor-pointer flex items-center gap-1.5">
-                          <Sparkles className="size-3.5 text-cyan-500" />
+                          <Sparkles className="size-3.5 text-astro-blue" />
                           Media Partner Event Saat Ini (ASTRO 2026)
                         </Label>
                         <p className="text-11 text-muted-foreground">
@@ -643,7 +643,7 @@ export default function SponsorPage() {
                     ) : null}
                     <span className="text-sm font-bold text-foreground">{m.name || '(tanpa nama)'}</span>
                     {m.isCurrent ? (
-                      <Badge className="bg-cyan-500/15 text-cyan-700 border-cyan-500/30 dark:text-cyan-400 text-10 font-bold">
+                      <Badge className="bg-astro-blue/15 text-astro-navy border-astro-blue/30 dark:text-astro-sky text-10 font-bold">
                         ASTRO 2026
                       </Badge>
                     ) : (
@@ -660,7 +660,7 @@ export default function SponsorPage() {
                       onClick={() => handleToggleMpCurrent(m)}
                       title={m.isCurrent ? "Ubah ke Periode Lalu" : "Jadikan Media Partner ASTRO 2026"}
                       aria-label={m.isCurrent ? "Ubah ke Periode Lalu" : "Jadikan Media Partner ASTRO 2026"}
-                      className={m.isCurrent ? "text-cyan-600 hover:text-amber-600" : "text-muted-foreground hover:text-cyan-600"}
+                      className={m.isCurrent ? "text-astro-blue hover:text-amber-600" : "text-muted-foreground hover:text-astro-blue"}
                     >
                       <Sparkles className="size-3.5" />
                     </Button>

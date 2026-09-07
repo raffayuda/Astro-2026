@@ -48,9 +48,9 @@ export default function RegistrationDetailActions({ registration }: Props) {
           variant="outline"
           size="sm"
           onClick={handlePrint}
-          className="rounded-lg text-xs font-bold uppercase gap-1.5 bg-white text-slate-800 hover:text-cyan-700 hover:border-cyan-400"
+          className="rounded-lg text-xs font-bold uppercase gap-1.5 bg-white text-astro-navy hover:text-astro-navy hover:border-astro-sky"
         >
-          <Printer className="size-3.5 text-cyan-600" /> Cetak Invoice
+          <Printer className="size-3.5 text-astro-blue" /> Cetak Invoice
         </Button>
 
         <Button

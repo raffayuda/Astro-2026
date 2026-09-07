@@ -73,7 +73,7 @@ export default function GuidebookSectionsBuilder({ sections, onChange }: Props) 
     <div className="space-y-4 rounded-xl border border-border bg-muted/20 p-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <BookOpen className="size-4 text-cyan-600 dark:text-cyan-400" />
+          <BookOpen className="size-4 text-astro-blue dark:text-astro-sky" />
           <span className="text-xs font-bold uppercase tracking-wider text-foreground">
             Artikel / Bagian Guidebook ({sections.length})
           </span>
@@ -83,7 +83,7 @@ export default function GuidebookSectionsBuilder({ sections, onChange }: Props) 
           variant="outline"
           size="sm"
           onClick={addSection}
-          className="rounded-md h-7 gap-1 border-cyan-500/40 text-xs font-bold uppercase tracking-wider text-cyan-700 hover:bg-cyan-500/10 dark:text-cyan-300"
+          className="rounded-md h-7 gap-1 border-astro-blue/40 text-xs font-bold uppercase tracking-wider text-astro-navy hover:bg-astro-blue/10 dark:text-astro-cyan-2"
         >
           <Plus className="size-3.5" /> Tambah Bagian
         </Button>
@@ -236,7 +236,7 @@ export default function GuidebookSectionsBuilder({ sections, onChange }: Props) 
                   </div>
                 ) : (
                   <div className="rounded-md border border-border/60 bg-muted/30 p-3 text-xs leading-relaxed">
-                    <p className="font-bold text-cyan-600 dark:text-cyan-400 uppercase text-11 mb-2 border-b border-border/40 pb-1">
+                    <p className="font-bold text-astro-blue dark:text-astro-sky uppercase text-11 mb-2 border-b border-border/40 pb-1">
                       {sec.title || "Tanpa Judul"}
                     </p>
                     <div className="whitespace-pre-line text-foreground/90">

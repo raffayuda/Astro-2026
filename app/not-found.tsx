@@ -119,7 +119,7 @@ export default function NotFound() {
               <Button
                 asChild
                 size="lg"
-                className="w-full rounded-[18px] px-6 text-xs font-black uppercase tracking-wider sm:w-auto"
+                className="w-full rounded-xl px-6 text-xs font-black uppercase tracking-wider sm:w-auto"
               >
                 <Link href="/">
                   <Home className="size-4" /> Kembali ke Beranda
@@ -130,7 +130,7 @@ export default function NotFound() {
                 asChild
                 variant="outline"
                 size="lg"
-                className="w-full rounded-[18px] border-white/80 bg-white/80 px-6 text-xs font-bold uppercase tracking-wider text-slate-800 shadow-sm hover:bg-white hover:text-slate-950 sm:w-auto"
+                className="w-full rounded-xl border-white/80 bg-white/80 px-6 text-xs font-bold uppercase tracking-wider text-astro-navy shadow-sm hover:bg-white hover:text-astro-navy sm:w-auto"
               >
                 <Link href="/#competitions">
                   <Trophy className="size-4 text-amber-500" /> Lihat Cabang
@@ -142,7 +142,7 @@ export default function NotFound() {
                 asChild
                 variant="ghost"
                 size="lg"
-                className="w-full sm:w-auto text-slate-700 hover:text-slate-950 hover:bg-white/40 text-xs font-bold uppercase tracking-wider px-4"
+                className="w-full sm:w-auto text-ink hover:text-astro-navy hover:bg-white/40 text-xs font-bold uppercase tracking-wider px-4"
               >
                 <Link href="/check-registration">
                   <Search className="size-4" /> Cek Tiket

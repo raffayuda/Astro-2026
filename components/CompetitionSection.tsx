@@ -65,12 +65,12 @@ export default function CompetitionSection({ competitions }: Props) {
         >
           <div>
             <div className="block h-1.5 w-18 rounded-full bg-linear-to-r from-astro-gold via-astro-lime2 to-astro-blue mb-3" />
-            <h2 className="font-title text-5xl md:text-6xl lg:text-7xl text-slate-900 leading-tight">
+            <h2 className="font-title text-5xl md:text-6xl lg:text-7xl text-astro-navy leading-tight">
               Pilih<br />
               <span className="text-astro-cyan">Lombamu</span>
             </h2>
           </div>
-          <p className="text-sm text-slate-600 max-w-xs leading-relaxed">
+          <p className="text-sm text-ink max-w-xs leading-relaxed">
             Tersedia berbagai cabang lomba seru dari tiga kategori berbeda.
           </p>
         </motion.div>

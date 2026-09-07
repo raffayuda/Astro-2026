@@ -159,17 +159,17 @@ export default function SertifikatPage() {
       {selectedComp && (
         <>
           {/* Generate Otomatis */}
-          <div className="flex items-center justify-between rounded-xl border border-cyan-100 bg-cyan-50/60 px-4 py-3">
+          <div className="flex items-center justify-between rounded-xl border border-sky-mid bg-sky-bottom/60 px-4 py-3">
             <div>
-              <p className="text-xs font-black uppercase tracking-wider text-cyan-800">Generate Otomatis</p>
-              <p className="text-10 text-cyan-700/80">
+              <p className="text-xs font-black uppercase tracking-wider text-astro-navy">Generate Otomatis</p>
+              <p className="text-10 text-astro-navy/80">
                 Hasilkan PDF sertifikat dari gambar template untuk semua pemenang.
               </p>
             </div>
             <Button
               onClick={handleGenerateAll}
               disabled={generateAllMut.isPending}
-              className="rounded-md gap-1.5 bg-cyan-500 px-4 py-2 text-10 font-black uppercase tracking-wider text-cyan-950 hover:bg-cyan-400"
+              className="rounded-md gap-1.5 bg-astro-blue px-4 py-2 text-10 font-black uppercase tracking-wider text-astro-navy hover:bg-astro-sky"
             >
               {generateAllMut.isPending ? <Spinner className="size-3.5" /> : <Download className="size-3.5" />}
               {generateAllMut.isPending ? 'Menggenerate...' : 'Generate Semua'}
@@ -201,7 +201,7 @@ export default function SertifikatPage() {
                           </Badge>
                         )}
                         {reg.certificateSent === '1' && (
-                          <Badge variant="outline" className="rounded-md gap-1 border-cyan-200 bg-cyan-50 font-bold text-cyan-600">
+                          <Badge variant="outline" className="rounded-md gap-1 border-astro-cyan-2 bg-sky-bottom font-bold text-astro-blue">
                             <Check className="size-3" /> Sertifikat terkirim
                           </Badge>
                         )}

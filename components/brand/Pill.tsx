@@ -9,7 +9,7 @@ const pillVariants = cva(
     variants: {
       tone: {
         white: "bg-white text-astro-navy shadow-soft-sm",
-        blue: "bg-linear-to-r from-astro-blue to-cyan-400 text-white shadow-soft-sm",
+        blue: "bg-linear-to-r from-astro-blue to-astro-sky text-white shadow-soft-sm",
         navy: "bg-astro-navy text-white shadow-soft-sm",
         gold: "bg-linear-to-r from-amber-400 to-astro-gold text-astro-navy shadow-soft-sm",
         pink: "bg-linear-to-r from-astro-pink to-pink-400 text-white shadow-soft-sm",

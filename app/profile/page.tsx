@@ -259,14 +259,14 @@ export default function ProfilePage() {
                       }}
                       className="flex flex-col gap-3"
                     >
-                      <div className="w-12 h-12 rounded-xl bg-cyan-50 border border-cyan-200/40 flex items-center justify-center text-astro-cyan flex-shrink-0">
+                      <div className="w-12 h-12 rounded-xl bg-sky-bottom border border-astro-cyan-2/40 flex items-center justify-center text-astro-cyan flex-shrink-0">
                         <Icon className="w-5 h-5" />
                       </div>
                       <div>
-                        <h4 className="text-sm font-bold text-slate-900 uppercase tracking-wider">
+                        <h4 className="text-sm font-bold text-astro-navy uppercase tracking-wider">
                           {feature.title}
                         </h4>
-                        <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+                        <p className="text-xs text-ink mt-1 leading-relaxed">
                           {feature.desc}
                         </p>
                       </div>
@@ -290,11 +290,11 @@ export default function ProfilePage() {
                     <div className="w-10 h-10 rounded-full bg-astro-cyan flex items-center justify-center shrink-0">
                       <Eye className="w-5 h-5 text-white" />
                     </div>
-                    <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">
+                    <h3 className="text-sm font-bold text-astro-navy uppercase tracking-wider">
                       Visi Kami
                     </h3>
                   </div>
-                  <p className="text-sm md:text-base text-slate-600 leading-relaxed">
+                  <p className="text-sm md:text-base text-ink leading-relaxed">
                     Menjadikan ASTRO 2026 sebagai festival mahasiswa yang
                     mengintegrasikan olahraga, pendidikan, dan kesenian dalam
                     semangat pelestarian budaya Nusantara guna menciptakan
@@ -315,7 +315,7 @@ export default function ProfilePage() {
                     <div className="w-10 h-10 rounded-full bg-astro-cyan flex items-center justify-center shrink-0">
                       <Target className="w-5 h-5 text-white" />
                     </div>
-                    <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">
+                    <h3 className="text-sm font-bold text-astro-navy uppercase tracking-wider">
                       Misi Kami
                     </h3>
                   </div>
@@ -329,7 +329,7 @@ export default function ProfilePage() {
                     ].map((item, i) => (
                       <li
                         key={i}
-                        className="flex items-start gap-4 text-sm text-slate-600 leading-relaxed"
+                        className="flex items-start gap-4 text-sm text-ink leading-relaxed"
                       >
                         <span className="w-6 h-6 rounded-full bg-astro-cyan/10 text-astro-cyan text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
                           {i + 1}
@@ -355,8 +355,8 @@ export default function ProfilePage() {
         <ChevronRibbon edge="bottom" />
         <Pattern className="absolute inset-0 z-0 opacity-30" />
         {/* Ambient radial glow */}
-        <div className="absolute top-1/3 -left-[20%] w-[40%] h-[50%] bg-cyan-500/5 blur-[120px] rounded-full pointer-events-none" />
-        <div className="absolute bottom-1/4 -right-[10%] w-[30%] h-[40%] bg-sky-500/5 blur-[100px] rounded-full pointer-events-none" />
+        <div className="absolute top-1/3 -left-[20%] w-[40%] h-[50%] bg-astro-blue/5 blur-[120px] rounded-full pointer-events-none" />
+        <div className="absolute bottom-1/4 -right-[10%] w-[30%] h-[40%] bg-astro-blue/5 blur-[100px] rounded-full pointer-events-none" />
 
         {/* Floating clouds */}
         <MotionImage
@@ -396,7 +396,7 @@ export default function ProfilePage() {
             transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
             className="text-center mb-20 md:mb-28"
           >
-            <span className="text-10 font-extrabold tracking-[0.25em] uppercase text-slate-400 mb-4 block">
+            <span className="text-10 font-extrabold tracking-[0.25em] uppercase text-ink mb-4 block">
               Milestones
             </span>
             <h2 className="font-title text-5xl md:text-7xl lg:text-8xl text-astro-navy leading-[0.9] mb-5">
@@ -436,7 +436,7 @@ export default function ProfilePage() {
                     <div
                       className={`rounded-xl bg-white shadow-soft relative h-full cursor-pointer overflow-hidden p-8 transition-all duration-500 hover:-translate-y-1 hover:shadow-soft-lg md:p-10 ${
                         isFuture
-                          ? "border-astro-cyan/20 bg-linear-to-br from-white to-cyan-50/30"
+                          ? "border-astro-cyan/20 bg-linear-to-br from-white to-sky-bottom/30"
                           : ""
                       }`}
                       style={{
@@ -446,7 +446,7 @@ export default function ProfilePage() {
                       }}
                     >
                       {/* Year watermark */}
-                      <div className="absolute -top-4 -right-2 text-title-sm font-black text-slate-900/[0.03] leading-none pointer-events-none select-none">
+                      <div className="absolute -top-4 -right-2 text-title-sm font-black text-astro-navy/[0.03] leading-none pointer-events-none select-none">
                         {j.year}
                       </div>
 
@@ -455,8 +455,8 @@ export default function ProfilePage() {
                         <span
                           className={`inline-flex items-center justify-center px-4 h-10 text-base font-black tracking-tight ${
                             isFuture
-                              ? "bg-astro-cyan text-white shadow-md shadow-cyan-500/20"
-                              : "bg-slate-100 text-slate-700 group-hover:bg-astro-cyan group-hover:text-white"
+                              ? "bg-astro-cyan text-white shadow-md shadow-astro-blue/20"
+                              : "bg-surface text-ink group-hover:bg-astro-cyan group-hover:text-white"
                           } transition-colors duration-300`}
                           style={{
                             clipPath:
@@ -480,7 +480,7 @@ export default function ProfilePage() {
 
                       {/* Theme */}
                       <h3
-                        className={`font-bold text-slate-900 leading-tight mb-4 ${
+                        className={`font-bold text-astro-navy leading-tight mb-4 ${
                           isLarge
                             ? "text-2xl md:text-3xl"
                             : "text-xl md:text-2xl"
@@ -490,13 +490,13 @@ export default function ProfilePage() {
                       </h3>
 
                       {/* Achievement */}
-                      <p className="text-sm md:text-base text-slate-600 leading-relaxed mb-6 max-w-lg">
+                      <p className="text-sm md:text-base text-ink leading-relaxed mb-6 max-w-lg">
                         {j.achievement}
                       </p>
 
                       {/* Stats + CTA */}
-                      <div className="flex items-center justify-between pt-4 border-t border-slate-100">
-                        <span className="flex items-center gap-1.5 text-11 font-bold text-slate-500 uppercase tracking-wider">
+                      <div className="flex items-center justify-between pt-4 border-t border-surface">
+                        <span className="flex items-center gap-1.5 text-11 font-bold text-ink uppercase tracking-wider">
                           <Users className="w-3.5 h-3.5 text-astro-cyan" />
                           {j.participants > 0
                             ? `${j.participants.toLocaleString()}+ Peserta`
@@ -530,7 +530,7 @@ export default function ProfilePage() {
             <Button
               onClick={() => setShowAllJourney(true)}
               size="lg"
-              className="rounded-lg bg-slate-900 text-xs font-bold uppercase tracking-wider text-white hover:-translate-y-0.5 hover:bg-slate-800 active:scale-[0.97]"
+              className="rounded-lg bg-astro-navy text-xs font-bold uppercase tracking-wider text-white hover:-translate-y-0.5 hover:bg-astro-navy active:scale-[0.97]"
             >
               <Calendar data-icon="inline-start" />
               <span>Lihat Semua Perjalanan</span>
@@ -549,11 +549,11 @@ export default function ProfilePage() {
           </DialogHeader>
 
           {/* Overlay header */}
-          <div className="relative overflow-hidden bg-linear-to-br from-sky-500 via-cyan-500 to-sky-600 p-8 md:p-12">
+          <div className="relative overflow-hidden bg-linear-to-br from-astro-blue via-astro-blue to-astro-blue p-8 md:p-12">
             <div className="absolute top-0 right-0 size-40 rounded-full bg-white/10 blur-[60px]" />
             <div className="absolute bottom-0 left-0 size-60 rounded-full bg-white/5 blur-[80px]" />
             <h2 className="font-title relative z-10 text-3xl leading-tight text-white md:text-5xl">
-              ASTRO <span className="text-cyan-200">Journey</span>
+              ASTRO <span className="text-astro-cyan-2">Journey</span>
             </h2>
             <p className="relative z-10 mt-2 max-w-lg text-sm text-white/70">
               Jelajahi setiap babak perjalanan ASTRO dari awal hingga sekarang.

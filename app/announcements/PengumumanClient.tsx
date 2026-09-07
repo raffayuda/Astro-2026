@@ -73,10 +73,10 @@ const categoryConfig: Record<
   },
   esports: {
     label: "ESPORTS",
-    color: "text-cyan-700",
-    bg: "bg-cyan-50",
-    border: "border-cyan-200",
-    accent: "bg-cyan-500",
+    color: "text-astro-navy",
+    bg: "bg-sky-bottom",
+    border: "border-astro-cyan-2",
+    accent: "bg-astro-blue",
   },
   "kesenian-/-seni": {
     label: "KESENIAN",
@@ -167,7 +167,7 @@ export default function PengumumanClient() {
   };
 
   return (
-    <section className="bg-linear-to-b from-sky-top via-sky-mid to-white relative min-h-screen overflow-hidden pt-24 pb-20 text-slate-900 md:pt-32">
+    <section className="bg-linear-to-b from-sky-top via-sky-mid to-white relative min-h-screen overflow-hidden pt-24 pb-20 text-astro-navy md:pt-32">
       <Bubbles preset="sparse" />
       <ChevronRibbon edge="top" />
       <ChevronRibbon edge="bottom" />
@@ -273,7 +273,7 @@ export default function PengumumanClient() {
                 <ToggleGroupItem
                   key={cat.value}
                   value={cat.value}
-                  className="rounded-[14px] border border-astro-cyan-2/80 bg-white/80 px-4 py-2 text-10 font-black tracking-[0.15em] uppercase text-astro-blue data-[state=on]:border-white data-[state=on]:bg-linear-to-b data-[state=on]:from-astro-blue data-[state=on]:to-astro-blue data-[state=on]:text-white data-[state=on]:shadow-sm"
+                  className="rounded-lg border border-astro-cyan-2/80 bg-white/80 px-4 py-2 text-10 font-black tracking-[0.15em] uppercase text-astro-blue data-[state=on]:border-white data-[state=on]:bg-linear-to-b data-[state=on]:from-astro-blue data-[state=on]:to-astro-blue data-[state=on]:text-white data-[state=on]:shadow-sm"
                 >
                   {cat.label}
                 </ToggleGroupItem>
@@ -293,7 +293,7 @@ export default function PengumumanClient() {
             <Skeleton className="h-4 w-40" />
           ) : (
             <>
-              <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+              <span className="text-xs font-bold text-ink uppercase tracking-wider">
                 {filtered.length} LOMBA DITEMUKAN
               </span>
               {selectedCategory !== "all" && (
@@ -367,7 +367,7 @@ export default function PengumumanClient() {
                     <div className="flex items-center justify-between">
                       <Badge
                         variant="outline"
-                          className={`rounded-[12px] border text-10 font-bold tracking-[0.15em] uppercase ${cat.bg} ${cat.color} ${cat.border}`}
+                          className={`rounded-lg border text-10 font-bold tracking-[0.15em] uppercase ${cat.bg} ${cat.color} ${cat.border}`}
                       >
                         {cat.label}
                       </Badge>
@@ -377,10 +377,10 @@ export default function PengumumanClient() {
                     </div>
 
                     {/* Title */}
-                    <h3 className="text-base md:text-lg font-black text-slate-900 uppercase leading-tight tracking-tight">
+                    <h3 className="text-base md:text-lg font-black text-astro-navy uppercase leading-tight tracking-tight">
                       {comp.title}
                     </h3>
-                    <p className="text-xs md:text-sm text-slate-600 leading-relaxed -mt-1">
+                    <p className="text-xs md:text-sm text-ink leading-relaxed -mt-1">
                       {comp.tagline}
                     </p>
 
@@ -389,13 +389,13 @@ export default function PengumumanClient() {
                       {comp.hasWinners ? (
                         <Button
                           onClick={() => openModal(comp)}
-                          className="w-full rounded-[14px] py-2.5 text-10 font-black tracking-[0.1em] uppercase"
+                          className="w-full rounded-lg py-2.5 text-10 font-black tracking-[0.1em] uppercase"
                         >
                           <Eye data-icon="inline-start" />
                           Lihat Juara
                         </Button>
                       ) : (
-                        <div className="w-full rounded-[14px] border border-astro-cyan-2/60 bg-white/55 py-2.5 text-center text-10 font-bold uppercase tracking-[0.1em] text-muted-foreground">
+                        <div className="w-full rounded-lg border border-astro-cyan-2/60 bg-white/55 py-2.5 text-center text-10 font-bold uppercase tracking-[0.1em] text-muted-foreground">
                           Belum Ada
                         </div>
                       )}

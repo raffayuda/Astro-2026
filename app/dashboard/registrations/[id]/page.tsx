@@ -10,7 +10,7 @@ import RegistrationDetailActions from './RegistrationDetailActions';
 
 const statusConfig: Record<string, { label: string; color: string; icon: any }> = {
   pending: { label: 'Pending', color: 'bg-amber-50 text-amber-700 border-amber-200', icon: XCircle },
-  detecting: { label: 'Detecting', color: 'bg-blue-50 text-blue-700 border-blue-200', icon: XCircle },
+  detecting: { label: 'Detecting', color: 'bg-sky-bottom text-astro-navy border-astro-cyan-2', icon: XCircle },
   paid: { label: 'Lunas', color: 'bg-emerald-50 text-emerald-700 border-emerald-200', icon: CheckCircle2 },
   failed: { label: 'Gagal', color: 'bg-red-50 text-red-700 border-red-200', icon: XCircle },
 };
@@ -70,18 +70,18 @@ export default async function RegistrationDetailPage({
         <div>
           <Link
             href="/dashboard/registrations"
-            className="text-xs font-bold text-slate-500 hover:text-astro-cyan uppercase tracking-wider transition-colors inline-flex items-center gap-1"
+            className="text-xs font-bold text-ink hover:text-astro-cyan uppercase tracking-wider transition-colors inline-flex items-center gap-1"
           >
             ← Kembali
           </Link>
-          <h1 className="text-xl md:text-2xl font-black text-slate-900 uppercase tracking-tight mt-2">
+          <h1 className="text-xl md:text-2xl font-black text-astro-navy uppercase tracking-tight mt-2">
             Detail Pendaftaran
           </h1>
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
           <div className="flex items-center gap-2">
-            <StatusIcon className={`w-4 h-4 ${statusConfig[reg.paymentStatus]?.color?.split(' ')[1] || 'text-slate-500'}`} />
+            <StatusIcon className={`w-4 h-4 ${statusConfig[reg.paymentStatus]?.color?.split(' ')[1] || 'text-ink'}`} />
             <span
               className={`px-3 py-1 text-10 font-bold uppercase tracking-wider border ${statusConfig[reg.paymentStatus]?.color || statusConfig.pending.color}`}
               style={{ clipPath: 'polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%)' }}
@@ -119,14 +119,14 @@ export default async function RegistrationDetailPage({
         {/* Main Info */}
         <div className="lg:col-span-2 space-y-6">
           {/* Identity */}
-          <div className="bg-white border border-slate-200 relative"
+          <div className="bg-white border border-astro-cyan-2 relative"
             style={{ clipPath: 'polygon(14px 0, 100% 0, calc(100% - 14px) 100%, 0 100%)' }}
           >
             <div className="absolute -top-[1px] -left-[1px] w-8 h-8 bg-astro-cyan"
               style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }}
             />
             <div className="p-5 md:p-6 space-y-5">
-              <h2 className="text-sm font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
+              <h2 className="text-sm font-black text-astro-navy uppercase tracking-tight flex items-center gap-2">
                 <User className="w-4 h-4 text-astro-cyan" />
                 {reg.type === 'team' ? 'Data Tim' : 'Data Peserta'}
               </h2>
@@ -135,25 +135,25 @@ export default async function RegistrationDetailPage({
                 {reg.type === 'team' ? (
                   <>
                     <div>
-                      <span className="text-10 font-bold text-slate-500 uppercase tracking-wider">Nama Tim</span>
-                      <p className="text-sm font-bold text-slate-900 mt-0.5">{reg.teamName}</p>
+                      <span className="text-10 font-bold text-ink uppercase tracking-wider">Nama Tim</span>
+                      <p className="text-sm font-bold text-astro-navy mt-0.5">{reg.teamName}</p>
                     </div>
                     <div>
-                      <span className="text-10 font-bold text-slate-500 uppercase tracking-wider">Ketua Tim</span>
-                      <p className="text-sm font-bold text-slate-900 mt-0.5">{reg.leaderName}</p>
+                      <span className="text-10 font-bold text-ink uppercase tracking-wider">Ketua Tim</span>
+                      <p className="text-sm font-bold text-astro-navy mt-0.5">{reg.leaderName}</p>
                     </div>
                     <div>
-                      <span className="text-10 font-bold text-slate-500 uppercase tracking-wider">Identitas Ketua</span>
-                      <p className="text-sm text-slate-700 mt-0.5">{reg.leaderIdentity}</p>
+                      <span className="text-10 font-bold text-ink uppercase tracking-wider">Identitas Ketua</span>
+                      <p className="text-sm text-ink mt-0.5">{reg.leaderIdentity}</p>
                     </div>
                     {reg.leaderPhotoUrl && (
                       <div>
-                        <span className="text-10 font-bold text-slate-500 uppercase tracking-wider">Foto Ketua</span>
+                        <span className="text-10 font-bold text-ink uppercase tracking-wider">Foto Ketua</span>
                         <a
                           href={reg.leaderPhotoUrl}
                           target="_blank"
                           rel="noreferrer"
-                          className="mt-1 block w-20 overflow-hidden rounded-md border border-slate-200"
+                          className="mt-1 block w-20 overflow-hidden rounded-md border border-astro-cyan-2"
                         >
                           <Image
                             src={reg.leaderPhotoUrl}
@@ -167,7 +167,7 @@ export default async function RegistrationDetailPage({
                     )}
                     {reg.memberDetails?.length ? (
                       <div className="sm:col-span-2">
-                        <span className="text-10 font-bold text-slate-500 uppercase tracking-wider">Anggota Tim</span>
+                        <span className="text-10 font-bold text-ink uppercase tracking-wider">Anggota Tim</span>
                         <div className="mt-2 flex flex-wrap gap-3">
                           {reg.memberDetails.map((m, i) => (
                             <div key={`${m.name}-${i}`} className="w-20">
@@ -178,43 +178,43 @@ export default async function RegistrationDetailPage({
                                     alt={m.name}
                                     width={80}
                                     height={80}
-                                    className="h-20 w-20 rounded-md border border-slate-200 object-cover"
+                                    className="h-20 w-20 rounded-md border border-astro-cyan-2 object-cover"
                                   />
                                 </a>
                               ) : (
-                                <div className="flex h-20 w-20 items-center justify-center rounded-md border border-dashed border-slate-200 text-10 text-slate-400">
+                                <div className="flex h-20 w-20 items-center justify-center rounded-md border border-dashed border-astro-cyan-2 text-10 text-ink">
                                   Tanpa foto
                                 </div>
                               )}
-                              <p className="mt-1 text-11 leading-tight text-slate-700">{m.name}</p>
+                              <p className="mt-1 text-11 leading-tight text-ink">{m.name}</p>
                             </div>
                           ))}
                         </div>
                       </div>
                     ) : reg.members ? (
                       <div className="sm:col-span-2">
-                        <span className="text-10 font-bold text-slate-500 uppercase tracking-wider">Anggota Tim</span>
-                        <p className="text-sm text-slate-700 mt-0.5 whitespace-pre-line">{reg.members}</p>
+                        <span className="text-10 font-bold text-ink uppercase tracking-wider">Anggota Tim</span>
+                        <p className="text-sm text-ink mt-0.5 whitespace-pre-line">{reg.members}</p>
                       </div>
                     ) : null}
                   </>
                 ) : (
                   <>
                     <div>
-                      <span className="text-10 font-bold text-slate-500 uppercase tracking-wider">Nama Lengkap</span>
-                      <p className="text-sm font-bold text-slate-900 mt-0.5">{reg.fullName}</p>
+                      <span className="text-10 font-bold text-ink uppercase tracking-wider">Nama Lengkap</span>
+                      <p className="text-sm font-bold text-astro-navy mt-0.5">{reg.fullName}</p>
                     </div>
                     <div>
-                      <span className="text-10 font-bold text-slate-500 uppercase tracking-wider">Nomor Identitas</span>
-                      <p className="text-sm text-slate-700 mt-0.5">{reg.identityNumber}</p>
+                      <span className="text-10 font-bold text-ink uppercase tracking-wider">Nomor Identitas</span>
+                      <p className="text-sm text-ink mt-0.5">{reg.identityNumber}</p>
                     </div>
                   </>
                 )}
                 <div>
-                  <span className="text-10 font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
+                  <span className="text-10 font-bold text-ink uppercase tracking-wider flex items-center gap-1">
                     <Building2 className="w-3 h-3" /> Sekolah / Instansi
                   </span>
-                  <p className="text-sm font-medium text-slate-900 mt-0.5">{reg.institution}</p>
+                  <p className="text-sm font-medium text-astro-navy mt-0.5">{reg.institution}</p>
                 </div>
               </div>
             </div>
@@ -222,11 +222,11 @@ export default async function RegistrationDetailPage({
 
           {/* Berkas & Informasi Khusus Lomba */}
           {reg.customFields && Object.keys(reg.customFields).length > 0 && (
-            <div className="bg-white border border-slate-200 relative"
+            <div className="bg-white border border-astro-cyan-2 relative"
               style={{ clipPath: 'polygon(14px 0, 100% 0, calc(100% - 14px) 100%, 0 100%)' }}
             >
               <div className="p-5 md:p-6 space-y-5">
-                <h2 className="text-sm font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
+                <h2 className="text-sm font-black text-astro-navy uppercase tracking-tight flex items-center gap-2">
                   <FileText className="w-4 h-4 text-astro-cyan" />
                   Berkas & Data Khusus Lomba
                 </h2>
@@ -240,7 +240,7 @@ export default async function RegistrationDetailPage({
                     if (isImg) {
                       return (
                         <div key={key} className="space-y-1.5 sm:col-span-2">
-                          <span className="text-10 font-bold text-slate-500 uppercase tracking-wider block">
+                          <span className="text-10 font-bold text-ink uppercase tracking-wider block">
                             {label}
                           </span>
                           <div className="flex items-center gap-3">
@@ -248,7 +248,7 @@ export default async function RegistrationDetailPage({
                               href={val}
                               target="_blank"
                               rel="noreferrer"
-                              className="block relative size-24 shrink-0 overflow-hidden rounded-md border border-slate-200 bg-slate-50 hover:opacity-90 transition-opacity"
+                              className="block relative size-24 shrink-0 overflow-hidden rounded-md border border-astro-cyan-2 bg-surface hover:opacity-90 transition-opacity"
                             >
                               <Image
                                 src={val}
@@ -268,7 +268,7 @@ export default async function RegistrationDetailPage({
                                 <ExternalLink className="size-3.5" />
                                 Buka Berkas / Foto Ukuran Penuh
                               </a>
-                              <p className="text-11 text-slate-500">
+                              <p className="text-11 text-ink">
                                 Berkas diunggah oleh pendaftar saat registrasi
                               </p>
                             </div>
@@ -279,10 +279,10 @@ export default async function RegistrationDetailPage({
 
                     return (
                       <div key={key} className="space-y-0.5">
-                        <span className="text-10 font-bold text-slate-500 uppercase tracking-wider block">
+                        <span className="text-10 font-bold text-ink uppercase tracking-wider block">
                           {label}
                         </span>
-                        <p className="text-sm text-slate-900 font-medium whitespace-pre-line">
+                        <p className="text-sm text-astro-navy font-medium whitespace-pre-line">
                           {String(val || '-')}
                         </p>
                       </div>
@@ -294,23 +294,23 @@ export default async function RegistrationDetailPage({
           )}
 
           {/* Contact */}
-          <div className="bg-white border border-slate-200 relative"
+          <div className="bg-white border border-astro-cyan-2 relative"
             style={{ clipPath: 'polygon(14px 0, 100% 0, calc(100% - 14px) 100%, 0 100%)' }}
           >
             <div className="p-5 md:p-6 space-y-4">
-              <h2 className="text-sm font-black text-slate-900 uppercase tracking-tight">Kontak</h2>
+              <h2 className="text-sm font-black text-astro-navy uppercase tracking-tight">Kontak</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <span className="text-10 font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
+                  <span className="text-10 font-bold text-ink uppercase tracking-wider flex items-center gap-1">
                     <Mail className="w-3 h-3" /> Email
                   </span>
-                  <p className="text-sm text-slate-900 mt-0.5">{reg.email}</p>
+                  <p className="text-sm text-astro-navy mt-0.5">{reg.email}</p>
                 </div>
                 <div>
-                  <span className="text-10 font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
+                  <span className="text-10 font-bold text-ink uppercase tracking-wider flex items-center gap-1">
                     <Phone className="w-3 h-3" /> WhatsApp
                   </span>
-                  <p className="text-sm text-slate-900 mt-0.5">{reg.whatsapp}</p>
+                  <p className="text-sm text-astro-navy mt-0.5">{reg.whatsapp}</p>
                 </div>
               </div>
             </div>
@@ -320,21 +320,21 @@ export default async function RegistrationDetailPage({
         {/* Sidebar */}
         <div className="space-y-6">
           {/* Competition Info */}
-          <div className="bg-white border border-slate-200 relative"
+          <div className="bg-white border border-astro-cyan-2 relative"
             style={{ clipPath: 'polygon(12px 0, 100% 0, calc(100% - 12px) 100%, 0 100%)' }}
           >
             <div className="p-5 space-y-4">
-              <h3 className="text-10 font-bold text-slate-500 uppercase tracking-[0.15em] flex items-center gap-1">
+              <h3 className="text-10 font-bold text-ink uppercase tracking-[0.15em] flex items-center gap-1">
                 <Tag className="w-3 h-3" /> Lomba
               </h3>
-              <p className="text-sm font-bold text-slate-900">{reg.competitionName}</p>
+              <p className="text-sm font-bold text-astro-navy">{reg.competitionName}</p>
               <div className="flex flex-wrap gap-1.5">
-                <span className="inline-flex items-center px-2 py-0.5 text-9 font-bold uppercase tracking-wider border bg-slate-50 text-slate-600 border-slate-200"
+                <span className="inline-flex items-center px-2 py-0.5 text-9 font-bold uppercase tracking-wider border bg-surface text-ink border-astro-cyan-2"
                   style={{ clipPath: 'polygon(3px 0, 100% 0, calc(100% - 3px) 100%, 0 100%)' }}
                 >
                   {reg.competitionCategory}
                 </span>
-                <span className="inline-flex items-center px-2 py-0.5 text-9 font-bold uppercase tracking-wider border bg-sky-50 text-sky-700 border-sky-200"
+                <span className="inline-flex items-center px-2 py-0.5 text-9 font-bold uppercase tracking-wider border bg-sky-bottom text-astro-navy border-astro-cyan-2"
                   style={{ clipPath: 'polygon(3px 0, 100% 0, calc(100% - 3px) 100%, 0 100%)' }}
                 >
                   <Globe className="w-2.5 h-2.5 mr-1" />
@@ -351,9 +351,9 @@ export default async function RegistrationDetailPage({
                 </span>
               </div>
               {reg.competitionFee > 0 && (
-                <div className="pt-3 border-t border-slate-100">
-                  <span className="text-10 font-bold text-slate-500 uppercase tracking-wider">Biaya</span>
-                  <p className="text-sm font-bold text-slate-900 mt-0.5">
+                <div className="pt-3 border-t border-surface">
+                  <span className="text-10 font-bold text-ink uppercase tracking-wider">Biaya</span>
+                  <p className="text-sm font-bold text-astro-navy mt-0.5">
                     Rp {reg.competitionFee.toLocaleString('id-ID')}
                   </p>
                 </div>
@@ -362,32 +362,32 @@ export default async function RegistrationDetailPage({
           </div>
 
           {/* Payment Info */}
-          <div className="bg-white border border-slate-200 relative"
+          <div className="bg-white border border-astro-cyan-2 relative"
             style={{ clipPath: 'polygon(12px 0, 100% 0, calc(100% - 12px) 100%, 0 100%)' }}
           >
             <div className="p-5 space-y-4">
-              <h3 className="text-10 font-bold text-slate-500 uppercase tracking-[0.15em] flex items-center gap-1">
+              <h3 className="text-10 font-bold text-ink uppercase tracking-[0.15em] flex items-center gap-1">
                 <Coins className="w-3 h-3" /> Pembayaran
               </h3>
               <div>
-                <span className="text-10 font-bold text-slate-500 uppercase tracking-wider">Referensi</span>
-                <p className="text-xs font-mono font-bold text-slate-900 mt-0.5">{reg.paymentReference || '—'}</p>
+                <span className="text-10 font-bold text-ink uppercase tracking-wider">Referensi</span>
+                <p className="text-xs font-mono font-bold text-astro-navy mt-0.5">{reg.paymentReference || '—'}</p>
               </div>
               <div>
-                <span className="text-10 font-bold text-slate-500 uppercase tracking-wider">Jumlah</span>
+                <span className="text-10 font-bold text-ink uppercase tracking-wider">Jumlah</span>
                 <p className="text-lg font-black text-astro-cyan mt-0.5">
                   Rp {reg.paymentAmount.toLocaleString('id-ID')}
                 </p>
               </div>
               <div>
-                <span className="text-10 font-bold text-slate-500 uppercase tracking-wider">Metode</span>
-                <p className="text-sm text-slate-900 mt-0.5 capitalize">{reg.paymentMethod || '—'}</p>
+                <span className="text-10 font-bold text-ink uppercase tracking-wider">Metode</span>
+                <p className="text-sm text-astro-navy mt-0.5 capitalize">{reg.paymentMethod || '—'}</p>
               </div>
               <div>
-                <span className="text-10 font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
+                <span className="text-10 font-bold text-ink uppercase tracking-wider flex items-center gap-1">
                   <CalendarDays className="w-3 h-3" /> Didaftarkan
                 </span>
-                <p className="text-sm text-slate-600 mt-0.5">
+                <p className="text-sm text-ink mt-0.5">
                   {reg.createdAt ? new Date(reg.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—'}
                 </p>
               </div>

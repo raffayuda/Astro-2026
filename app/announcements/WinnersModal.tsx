@@ -251,7 +251,7 @@ export default function WinnersModal({
         description={competitionTitle}
         titleClassName="sr-only"
         descriptionClassName="sr-only"
-        contentClassName="max-w-5xl gap-0 border border-border bg-linear-to-b from-blue-50/50 via-white to-white p-6 sm:p-8 md:p-10"
+        contentClassName="max-w-5xl gap-0 border border-border bg-linear-to-b from-sky-bottom/50 via-white to-white p-6 sm:p-8 md:p-10"
       >
         {loading ? (
           <div className="flex flex-col items-center justify-center gap-3 py-24 text-center">
@@ -321,13 +321,13 @@ export default function WinnersModal({
                   ))}
                 </div>
                 {prizes.find((p) => p.label.toLowerCase().includes('2') || p.label === 'Juara 2') && (
-                  <div className="mt-3 border-t border-slate-200/60 pt-3">
+                  <div className="mt-3 border-t border-astro-cyan-2/60 pt-3">
                     <span className="mb-1.5 block text-9 font-bold uppercase tracking-wider text-muted-foreground">Hadiah</span>
                     <ul className="space-y-1">
                       {splitPrizeItems(prizes.find((p) => p.label.toLowerCase().includes('2') || p.label === 'Juara 2')?.value || '').map((item, i) => (
                         <li key={i} className="flex items-start justify-center gap-1.5 text-left">
                           <Check className="mt-0.5 size-3 flex-shrink-0 text-astro-cyan" />
-                          <span className="text-11 font-bold leading-snug text-slate-700">{item}</span>
+                          <span className="text-11 font-bold leading-snug text-ink">{item}</span>
                         </li>
                       ))}
                     </ul>

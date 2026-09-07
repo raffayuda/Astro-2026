@@ -257,7 +257,7 @@ export default function ImportCommittee({ onImported }: { onImported?: () => voi
                       <Badge className={cn(
                         'rounded-md text-9 font-bold uppercase',
                         r.role.toUpperCase() === 'SC' || r.role.toUpperCase() === 'PO' || r.role.toUpperCase() === 'PI'
-                          ? 'bg-cyan-100 text-cyan-800'
+                          ? 'bg-sky-mid text-astro-navy'
                           : 'bg-muted text-muted-foreground'
                       )}>{r.role}</Badge>
                     </td>

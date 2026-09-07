@@ -140,8 +140,8 @@ function UserDetailModal({
                 className={cn(
                   "rounded-md border text-10 font-bold uppercase tracking-wider",
                   user.role === "admin"
-                    ? "border-cyan-200 bg-cyan-50 text-astro-cyan"
-                    : "border-slate-200 bg-muted text-muted-foreground",
+                    ? "border-astro-cyan-2 bg-sky-bottom text-astro-cyan"
+                    : "border-astro-cyan-2 bg-muted text-muted-foreground",
                 )}
               >
                 <Shield className="mr-1 size-3" />
@@ -567,7 +567,7 @@ export default function UsersPage() {
               });
               setInviteModalOpen(true);
             }}
-            className="rounded-lg text-xs font-bold uppercase tracking-wider border-cyan-200 text-cyan-700 bg-cyan-50 hover:bg-cyan-100 hover:text-cyan-800"
+            className="rounded-lg text-xs font-bold uppercase tracking-wider border-astro-cyan-2 text-astro-navy bg-sky-bottom hover:bg-sky-mid hover:text-astro-navy"
           >
             <UserPlus className="size-3.5 mr-1.5" /> Undang User
           </Button>
@@ -651,8 +651,8 @@ export default function UsersPage() {
                             className={cn(
                               "rounded-md border text-9 font-bold uppercase tracking-wider",
                               u.role === "admin"
-                                ? "border-cyan-200 bg-cyan-50 text-astro-cyan"
-                                : "border-slate-200 bg-muted text-muted-foreground",
+                                ? "border-astro-cyan-2 bg-sky-bottom text-astro-cyan"
+                                : "border-astro-cyan-2 bg-muted text-muted-foreground",
                             )}
                           >
                             {u.role}
@@ -782,7 +782,7 @@ export default function UsersPage() {
                             ? "bg-emerald-500"
                             : isRevoked
                               ? "bg-rose-500"
-                              : "bg-slate-300",
+                              : "bg-astro-cyan-2",
                       )}
                       style={{ clipPath: "polygon(0 0, 100% 0, 0 100%)" }}
                     />
@@ -801,8 +801,8 @@ export default function UsersPage() {
                               className={cn(
                                 "rounded-md border text-9 font-bold uppercase tracking-wider",
                                 inv.role === "admin"
-                                  ? "border-cyan-200 bg-cyan-50 text-astro-cyan"
-                                  : "border-slate-200 bg-muted text-muted-foreground",
+                                  ? "border-astro-cyan-2 bg-sky-bottom text-astro-cyan"
+                                  : "border-astro-cyan-2 bg-muted text-muted-foreground",
                               )}
                             >
                               {inv.role}
@@ -816,7 +816,7 @@ export default function UsersPage() {
                                 isAccepted &&
                                   "border-emerald-200 bg-emerald-50 text-emerald-700",
                                 isExpired &&
-                                  "border-slate-200 bg-slate-100 text-slate-500",
+                                  "border-astro-cyan-2 bg-surface text-ink",
                                 isRevoked &&
                                   "border-rose-200 bg-rose-50 text-rose-700",
                               )}

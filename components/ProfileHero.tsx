@@ -200,7 +200,7 @@ export default function ProfileHero() {
           <Button
             asChild
             size="lg"
-            className="rounded-[18px] border-2 border-white/80 px-8 py-4 text-sm font-black uppercase tracking-wider text-white shadow-sticker hover:-translate-y-0.5 active:scale-95"
+            className="rounded-xl border-2 border-white/80 px-8 py-4 text-sm font-black uppercase tracking-wider text-white shadow-sticker hover:-translate-y-0.5 active:scale-95"
           >
             <a href="#about-event">
               <span className="flex items-center gap-2">
@@ -212,7 +212,7 @@ export default function ProfileHero() {
             asChild
             size="lg"
             variant="secondary"
-            className="rounded-[18px] border-2 border-white/80 px-8 py-4 text-sm font-black uppercase tracking-wider shadow-glow-orange hover:-translate-y-0.5 active:scale-95"
+            className="rounded-xl border-2 border-white/80 px-8 py-4 text-sm font-black uppercase tracking-wider shadow-glow-orange hover:-translate-y-0.5 active:scale-95"
           >
             <a href="#contact">
               Contact Us
@@ -222,7 +222,7 @@ export default function ProfileHero() {
       </motion.div>
 
       {/* Bottom gradient fade to sky-100 */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 z-20 pointer-events-none bg-linear-to-b from-transparent to-sky-100" />
+      <div className="absolute bottom-0 left-0 right-0 h-32 z-20 pointer-events-none bg-linear-to-b from-transparent to-sky-mid" />
     </section>
   );
 }

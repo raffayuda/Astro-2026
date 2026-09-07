@@ -17,7 +17,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "border-white bg-linear-to-r from-astro-navy via-astro-blue to-cyan-400 text-white shadow-glow-blue hover:brightness-110 hover:shadow-soft-lg",
+          "border-white bg-linear-to-r from-astro-navy via-astro-blue to-astro-sky text-white shadow-glow-blue hover:brightness-110 hover:shadow-soft-lg",
         outline:
           "border-astro-cyan-2 bg-white text-astro-navy shadow-soft-sm hover:border-astro-blue hover:text-astro-blue aria-expanded:border-astro-blue aria-expanded:text-astro-blue",
         secondary:

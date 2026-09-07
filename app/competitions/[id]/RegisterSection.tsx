@@ -20,11 +20,11 @@ export default function RegisterSection({ competition }: Props) {
         <Button
           disabled
           size="lg"
-          className="rounded-lg mx-auto w-full max-w-md text-sm font-black uppercase tracking-wider opacity-60 cursor-not-allowed bg-slate-300 text-slate-600 hover:bg-slate-300 gap-2"
+          className="rounded-lg mx-auto w-full max-w-md text-sm font-black uppercase tracking-wider opacity-60 cursor-not-allowed bg-astro-cyan-2 text-ink hover:bg-astro-cyan-2 gap-2"
         >
           <Lock className="size-4" /> Pendaftaran Ditutup
         </Button>
-        <p className="text-xs text-slate-500">
+        <p className="text-xs text-ink">
           Mohon maaf, pendaftaran untuk kompetisi ini sedang tidak dibuka.
         </p>
       </div>
@@ -41,7 +41,7 @@ export default function RegisterSection({ competition }: Props) {
         >
           <Lock className="size-4" /> Kuota Penuh
         </Button>
-        <p className="text-xs text-slate-500">
+        <p className="text-xs text-ink">
           Kuota pendaftaran untuk kompetisi ini telah terisi penuh.
         </p>
       </div>
