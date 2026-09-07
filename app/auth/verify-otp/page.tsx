@@ -1,32 +1,47 @@
-'use client';
+"use client";
 
-import { Suspense, useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import Link from 'next/link';
-import Image from 'next/image';
-import { motion } from 'motion/react';
-import { ArrowLeft, Mail, KeyRound, CheckCircle2, Clock, RefreshCw } from 'lucide-react';
-import { authClient } from '@/src/lib/auth-client';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
-import { Input } from '@/components/ui/input';
-import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group';
-import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
-import { Spinner } from '@/components/ui/spinner';
+import { Suspense, useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
+import Image from "next/image";
+import { motion } from "motion/react";
+import {
+  ArrowLeft,
+  Mail,
+  KeyRound,
+  CheckCircle2,
+  Clock,
+  RefreshCw,
+} from "lucide-react";
+import { authClient } from "@/src/lib/auth-client";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
+import { Spinner } from "@/components/ui/spinner";
 
 function VerifyOtpContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const initialEmail = searchParams.get('email') || '';
+  const initialEmail = searchParams.get("email") || "";
 
   const [email, setEmail] = useState(initialEmail);
-  const [otp, setOtp] = useState('');
+  const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
   const [resending, setResending] = useState(false);
-  const [error, setError] = useState('');
-  const [message, setMessage] = useState('');
+  const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
   const [cooldown, setCooldown] = useState(0);
   const [success, setSuccess] = useState(false);
 
@@ -51,29 +66,30 @@ function VerifyOtpContent() {
 
   const handleResendOTP = async () => {
     if (cooldown > 0) return;
-    if (!email || !email.includes('@')) {
-      setError('Masukkan alamat email yang valid.');
+    if (!email || !email.includes("@")) {
+      setError("Masukkan alamat email yang valid.");
       return;
     }
 
     setResending(true);
-    setError('');
-    setMessage('');
+    setError("");
+    setMessage("");
 
     try {
-      const { error: resendError } = await authClient.emailOtp.sendVerificationOtp({
-        email: email.trim().toLowerCase(),
-        type: 'email-verification',
-      });
+      const { error: resendError } =
+        await authClient.emailOtp.sendVerificationOtp({
+          email: email.trim().toLowerCase(),
+          type: "email-verification",
+        });
 
       if (resendError) {
-        setError(resendError.message || 'Gagal mengirim ulang OTP');
+        setError(resendError.message || "Gagal mengirim ulang OTP");
       } else {
-        setMessage('Kode OTP baru telah dikirim ke email Anda.');
+        setMessage("Kode OTP baru telah dikirim ke email Anda.");
         startCooldown();
       }
     } catch {
-      setError('Terjadi kesalahan saat mengirim ulang OTP.');
+      setError("Terjadi kesalahan saat mengirim ulang OTP.");
     } finally {
       setResending(false);
     }
@@ -81,19 +97,19 @@ function VerifyOtpContent() {
 
   const handleVerifyOTP = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !email.includes('@')) {
-      setError('Masukkan email akun yang valid.');
+    if (!email || !email.includes("@")) {
+      setError("Masukkan email akun yang valid.");
       return;
     }
 
     if (otp.length !== 6) {
-      setError('Masukkan 6 digit kode OTP lengkap.');
+      setError("Masukkan 6 digit kode OTP lengkap.");
       return;
     }
 
     setLoading(true);
-    setError('');
-    setMessage('');
+    setError("");
+    setMessage("");
 
     try {
       const { error: verifyError } = await authClient.emailOtp.verifyEmail({
@@ -102,17 +118,19 @@ function VerifyOtpContent() {
       });
 
       if (verifyError) {
-        setError(verifyError.message || 'Kode OTP tidak valid atau sudah kadaluarsa.');
+        setError(
+          verifyError.message || "Kode OTP tidak valid atau sudah kadaluarsa.",
+        );
         setLoading(false);
         return;
       }
 
       setSuccess(true);
       setTimeout(() => {
-        router.push('/login?verified=true');
+        router.push("/login?verified=true");
       }, 2000);
     } catch {
-      setError('Terjadi kesalahan saat memverifikasi kode OTP.');
+      setError("Terjadi kesalahan saat memverifikasi kode OTP.");
     } finally {
       setLoading(false);
     }
@@ -129,9 +147,13 @@ function VerifyOtpContent() {
             Verifikasi Berhasil!
           </h2>
           <p className="mb-6 text-sm text-muted-foreground">
-            Email Anda telah berhasil diverifikasi. Mengalihkan ke halaman login...
+            Email Anda telah berhasil diverifikasi. Mengalihkan ke halaman
+            login...
           </p>
-          <Button asChild className="clip-angled text-xs font-black uppercase tracking-wider">
+          <Button
+            asChild
+            className="clip-angled text-xs font-black uppercase tracking-wider"
+          >
             <Link href="/login">Login Sekarang</Link>
           </Button>
         </CardContent>
@@ -148,14 +170,15 @@ function VerifyOtpContent() {
           className="mb-6 gap-1 text-xs font-bold uppercase tracking-wider text-muted-foreground hover:text-primary p-0"
         >
           <Link href="/login">
-            <ArrowLeft data-icon="inline-start" className="size-3.5" /> Kembali ke Login
+            <ArrowLeft data-icon="inline-start" className="size-3.5" /> Kembali
+            ke Login
           </Link>
         </Button>
 
         {/* Logo */}
         <div className="mb-4 flex justify-center">
           <Image
-            src="https://abhshprulipnmetfumrt.supabase.co/storage/v1/object/public/assets/logo-astro.png"
+            src="https://i.ibb.co.com/yvSvfLK/logo-astro.png"
             alt="ASTRO"
             width={64}
             height={64}
@@ -172,14 +195,21 @@ function VerifyOtpContent() {
         </p>
 
         {error && (
-          <Alert variant="destructive" className="clip-angled mb-5 border-border">
-            <AlertDescription className="text-xs font-medium">{error}</AlertDescription>
+          <Alert
+            variant="destructive"
+            className="clip-angled mb-5 border-border"
+          >
+            <AlertDescription className="text-xs font-medium">
+              {error}
+            </AlertDescription>
           </Alert>
         )}
 
         {message && (
           <Alert className="clip-angled mb-5 border-emerald-300 bg-emerald-50 text-emerald-800">
-            <AlertDescription className="text-xs font-medium">{message}</AlertDescription>
+            <AlertDescription className="text-xs font-medium">
+              {message}
+            </AlertDescription>
           </Alert>
         )}
 
@@ -217,7 +247,12 @@ function VerifyOtpContent() {
                 </span>
               </div>
               <div className="flex justify-center py-2">
-                <InputOTP maxLength={6} value={otp} onChange={setOtp} id="otp-input">
+                <InputOTP
+                  maxLength={6}
+                  value={otp}
+                  onChange={setOtp}
+                  id="otp-input"
+                >
                   <InputOTPGroup>
                     <InputOTPSlot index={0} />
                     <InputOTPSlot index={1} />
@@ -250,7 +285,9 @@ function VerifyOtpContent() {
 
           {/* Resend OTP button */}
           <div className="flex flex-col items-center gap-1 text-center pt-2">
-            <span className="text-xs text-muted-foreground">Tidak menerima kode atau kode kadaluarsa?</span>
+            <span className="text-xs text-muted-foreground">
+              Tidak menerima kode atau kode kadaluarsa?
+            </span>
             <Button
               type="button"
               variant="ghost"

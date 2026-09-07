@@ -6,6 +6,7 @@ import { CalendarDays, Coins, Mail, Phone, Building2, User, CheckCircle2, XCircl
 import Link from 'next/link';
 import Image from 'next/image';
 import PaymentStatusUpdate from './PaymentStatusUpdate';
+import RegistrationDetailActions from './RegistrationDetailActions';
 
 const statusConfig: Record<string, { label: string; color: string; icon: any }> = {
   pending: { label: 'Pending', color: 'bg-amber-50 text-amber-700 border-amber-200', icon: XCircle },
@@ -78,14 +79,39 @@ export default async function RegistrationDetailPage({
           </h1>
         </div>
 
-        <div className="flex items-center gap-2">
-          <StatusIcon className={`w-4 h-4 ${statusConfig[reg.paymentStatus]?.color?.split(' ')[1] || 'text-slate-500'}`} />
-          <span
-            className={`px-3 py-1 text-[10px] font-bold uppercase tracking-wider border ${statusConfig[reg.paymentStatus]?.color || statusConfig.pending.color}`}
-            style={{ clipPath: 'polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%)' }}
-          >
-            {statusConfig[reg.paymentStatus]?.label || reg.paymentStatus}
-          </span>
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex items-center gap-2">
+            <StatusIcon className={`w-4 h-4 ${statusConfig[reg.paymentStatus]?.color?.split(' ')[1] || 'text-slate-500'}`} />
+            <span
+              className={`px-3 py-1 text-[10px] font-bold uppercase tracking-wider border ${statusConfig[reg.paymentStatus]?.color || statusConfig.pending.color}`}
+              style={{ clipPath: 'polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%)' }}
+            >
+              {statusConfig[reg.paymentStatus]?.label || reg.paymentStatus}
+            </span>
+          </div>
+
+          <RegistrationDetailActions
+            registration={{
+              id: reg.id,
+              paymentReference: reg.paymentReference || reg.id.slice(0, 8),
+              paymentStatus: reg.paymentStatus,
+              paymentMethod: reg.paymentMethod,
+              paymentAmount: reg.paymentAmount || 0,
+              type: reg.type,
+              fullName: reg.fullName,
+              teamName: reg.teamName,
+              leaderName: reg.leaderName,
+              institution: reg.institution || '—',
+              email: reg.email,
+              whatsapp: reg.whatsapp,
+              members: reg.members,
+              memberDetails: reg.memberDetails as any,
+              customFields: reg.customFields as any,
+              competitionName: reg.competitionName,
+              competitionCategory: reg.competitionCategory,
+              createdAt: reg.createdAt,
+            }}
+          />
         </div>
       </div>
 

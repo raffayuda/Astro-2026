@@ -7,11 +7,12 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import FormStep from "./FormStep";
 import PaymentStep from "./PaymentStep";
-import { ArrowLeft, Trophy, Lock } from "lucide-react";
+import { ArrowLeft, Trophy, Lock, RotateCcw, Sparkles } from "lucide-react";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
+import { toast } from "sonner";
 import { useCompetition, useRegistration } from "@/src/lib/hooks/use-queries";
 import { toIsoString } from "@/lib/date";
 
@@ -128,10 +129,63 @@ export default function RegistrationPage({
     customFields: {} as Record<string, any>,
   });
 
+  const [draftRestored, setDraftRestored] = useState(false);
+
   useEffect(() => {
-    params.then((p) => setResolvedId(p.id));
-    setRegIdFromQuery(new URLSearchParams(window.location.search).get("regId"));
+    params.then((p) => {
+      setResolvedId(p.id);
+      const qRegId = typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("regId") : null;
+      if (qRegId) {
+        setRegIdFromQuery(qRegId);
+      } else if (typeof window !== "undefined") {
+        try {
+          // Check if there is an active pending registration in localStorage
+          const storedRegId = localStorage.getItem(`astro_active_reg_${p.id}`);
+          if (storedRegId) {
+            setRegIdFromQuery(storedRegId);
+            const newUrl = `${window.location.pathname}?regId=${encodeURIComponent(storedRegId)}`;
+            window.history.replaceState(null, "", newUrl);
+            return;
+          }
+
+          // Otherwise restore draft form inputs if available
+          const rawDraft = localStorage.getItem(`astro_reg_draft_${p.id}`);
+          if (rawDraft) {
+            const draft = JSON.parse(rawDraft);
+            if (draft?.values) {
+              setFormData((prev) => ({ ...prev, ...draft.values }));
+              if (draft.regType) setRegType(draft.regType);
+              setDraftRestored(true);
+            }
+          }
+        } catch {}
+      }
+    });
   }, [params]);
+
+  const handleResetDraft = () => {
+    if (!resolvedId || typeof window === "undefined") return;
+    try {
+      localStorage.removeItem(`astro_reg_draft_${resolvedId}`);
+      localStorage.removeItem(`astro_active_reg_${resolvedId}`);
+    } catch {}
+    setFormData({
+      fullName: "",
+      teamName: "",
+      institution: "",
+      identityNumber: "",
+      leaderName: "",
+      leaderIdentity: "",
+      leaderPhotoUrl: "",
+      email: "",
+      whatsapp: "",
+      members: "",
+      memberDetails: [],
+      customFields: {},
+    });
+    setDraftRestored(false);
+    toast.info("Draf formulir telah direset");
+  };
 
   const { data: c, isLoading: compLoading, isError: compError } = useCompetition(resolvedId ?? "");
   const { data: existingReg } = useRegistration(regIdFromQuery ?? "");
@@ -217,8 +271,21 @@ export default function RegistrationPage({
       ),
       customFields: r.customFields || {},
     });
-    setStep(1); // Stay on form step with pre-filled data
-  }, [existingReg]);
+    // If registration is already paid or pending payment, navigate straight to payment step (success or QRIS)
+    if (r.paymentStatus === 'paid') {
+      setStep(2);
+      if (resolvedId && typeof window !== "undefined") {
+        try {
+          localStorage.removeItem(`astro_active_reg_${resolvedId}`);
+          localStorage.removeItem(`astro_reg_draft_${resolvedId}`);
+        } catch {}
+      }
+    } else if (r.paymentStatus === 'pending' && (r.paymentLinkUrl || r.paymentCode || r.paymentReference)) {
+      setStep(2);
+    } else {
+      setStep(1);
+    }
+  }, [existingReg, resolvedId]);
 
   const fetching = compLoading || !resolvedId;
   const notFound = compError || (!fetching && !competition);
@@ -306,6 +373,28 @@ export default function RegistrationPage({
     setPaymentLinkUrl(linkUrl ?? null);
     setPaymentExpiresAt(expiresAt ?? null);
     setStep(2);
+    if (resolvedId && typeof window !== "undefined") {
+      try {
+        localStorage.setItem(`astro_active_reg_${resolvedId}`, regId);
+        const newUrl = `${window.location.pathname}?regId=${encodeURIComponent(regId)}`;
+        window.history.replaceState(null, "", newUrl);
+      } catch {}
+    }
+  };
+
+  const handleBackToForm = () => {
+    setStep(1);
+    setRegistrationId(null);
+    setPaymentReference(null);
+    setPaymentLinkUrl(null);
+    setPaymentExpiresAt(null);
+    setRegIdFromQuery(null);
+    if (resolvedId && typeof window !== "undefined") {
+      try {
+        localStorage.removeItem(`astro_active_reg_${resolvedId}`);
+        window.history.replaceState(null, "", window.location.pathname);
+      } catch {}
+    }
   };
 
   const fadeUp = {
@@ -608,17 +697,37 @@ export default function RegistrationPage({
                     animate="center"
                     exit="exit"
                   >
+                    {draftRestored && !registrationId && (
+                      <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-cyan-200 bg-cyan-50/80 px-4 py-3 text-sm text-cyan-900 shadow-sm backdrop-blur-sm">
+                        <div className="flex items-center gap-2.5">
+                          <Sparkles className="size-4 text-cyan-600 shrink-0" />
+                          <span>
+                            <strong>Draf formulir dipulihkan.</strong> Data input terakhir Anda telah dimuat kembali otomatis.
+                          </span>
+                        </div>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={handleResetDraft}
+                          className="h-7 text-xs font-bold text-cyan-800 hover:bg-cyan-100 hover:text-cyan-900 gap-1.5"
+                        >
+                          <RotateCcw className="size-3" />
+                          Reset Formulir
+                        </Button>
+                      </div>
+                    )}
                     <FormStep
-                      // Remount once an existing registration is hydrated so the
-                      // form picks up the prefilled values (incl. player photos).
-                      key={registrationId ?? "new"}
+                      // Remount once an existing registration is hydrated or draft is restored
+                      // so the form picks up the prefilled values (incl. player photos).
+                      key={registrationId ? `reg-${registrationId}` : draftRestored ? "draft-restored" : "new"}
                       competition={competition as any}
                       isTeam={isTeam}
                       regType={regType}
                       formData={formData}
                       setFormData={setFormData}
                       onContinue={handleFormSubmit}
-                      existingRegId={registrationId}
+                      existingRegId={existingReg && (existingReg as any).paymentStatus === 'paid' ? null : registrationId}
                       existingRef={paymentReference}
                       existingPaymentLinkUrl={paymentLinkUrl}
                       existingPaymentExpiresAt={paymentExpiresAt}
@@ -642,7 +751,7 @@ export default function RegistrationPage({
                       paymentReference={paymentReference || ""}
                       paymentLinkUrl={paymentLinkUrl}
                       paymentExpiresAt={paymentExpiresAt}
-                      onBack={() => setStep(1)}
+                      onBack={handleBackToForm}
                     />
                   </motion.div>
                 )}

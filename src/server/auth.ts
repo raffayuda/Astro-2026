@@ -74,7 +74,7 @@ export const auth = betterAuth({
           html: `
             <div style="font-family: Arial, sans-serif; max-width: 480px; margin: 0 auto; padding: 32px 24px; background: #f8fafc; border-radius: 16px;">
               <div style="text-align: center; margin-bottom: 24px;">
-                <img src="https://abhshprulipnmetfumrt.supabase.co/storage/v1/object/public/assets/logo-astro.png" alt="ASTRO" style="height: 48px;" />
+                <img src="https://i.ibb.co.com/yvSvfLK/logo-astro.png" alt="ASTRO" style="height: 48px;" />
               </div>
               <h1 style="font-size: 20px; font-weight: 900; color: #0f172a; text-align: center; text-transform: uppercase; letter-spacing: 0.02em; margin-bottom: 8px;">
                 Kode OTP
@@ -95,8 +95,8 @@ export const auth = betterAuth({
                 Kode ini berlaku selama <strong style="color: #64748b;">10 menit</strong>. Jangan bagikan kode ini kepada siapa pun.
               </p>
               <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 24px 0;" />
-              <p style="font-size: 11px; color: #cbd5e1; text-align: center;">
-                ASTRO 2026 — Ajang Lomba Pelajar Tingkat Nasional
+              <p style="font-size: 11px; color: #94a3b8; text-align: center; margin: 0;">
+                © 2026 ASTRO. All rights reserved.
               </p>
             </div>
           `,

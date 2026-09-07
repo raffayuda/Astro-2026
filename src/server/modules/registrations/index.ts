@@ -1,6 +1,6 @@
 import { Elysia, t, status } from 'elysia';
 import { authPlugin } from '@/src/server/plugins/auth';
-import { registrationCreateSchema, registrationListQuerySchema } from './model';
+import { registrationCreateSchema, registrationListQuerySchema, registrationCheckSchema } from './model';
 import * as service from './service';
 
 /** CSV export requires a plain text/csv response. */
@@ -18,12 +18,17 @@ function csvResponse(content: string) {
  *
  * - GET list: requires auth; admins see all, non-admins only their own.
  * - POST create: anonymous (no-account registration).
+ * - POST check: public lookup by reference, ID, email, or phone.
  * - PATCH: whitelisted by caller identity (admin vs self-service).
  * - stats/export: admin-only.
  * - winners: public.
  */
 export const registrationsModule = new Elysia({ prefix: '/registrations' })
   .use(authPlugin)
+
+  .post('/check', async ({ body }) => service.checkRegistrationStatus(body.query), {
+    body: registrationCheckSchema,
+  })
 
   .get('/', async ({ query, user }) => {
     const result = await service.listRegistrations(
@@ -107,4 +112,13 @@ export const registrationsModule = new Elysia({ prefix: '/registrations' })
     params: t.Object({ id: t.String() }),
     body: t.Record(t.String(), t.Any()),
     optional: true,
+  })
+
+  .delete('/:id', async ({ params }) => {
+    const result = await service.deleteRegistration(params.id);
+    if (result.kind === 'notfound') return status(404, { error: 'Not found' });
+    return { success: true };
+  }, {
+    admin: true,
+    params: t.Object({ id: t.String() }),
   });

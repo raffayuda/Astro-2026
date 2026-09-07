@@ -173,6 +173,8 @@ export const registrations = pgTable(
     paymentLinkId: uuid("payment_link_id"),
     paymentLinkUrl: text("payment_link_url"),
     paymentExpiresAt: timestamp("payment_expires_at"),
+    paymentCode: text("payment_code"), // QRIS string or payment code
+    paymentCodeType: text("payment_code_type"), // 'QR_TEXT' | etc.
     // Winner
     isWinner: text("is_winner").default("0"), // '0' | '1'
     winnerRank: text("winner_rank"), // '1' | '2' | '3' | null

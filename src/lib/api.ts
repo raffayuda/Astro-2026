@@ -124,6 +124,9 @@ export const apiHelpers = {
     get: (id: string) => unwrap(api.registrations({ id }).get()),
     create: (body: unknown) => unwrap(api.registrations.post(body as never)),
     update: (id: string, body: unknown) => unwrap(api.registrations({ id }).patch(body as never)),
+    check: (query: string) =>
+      unwrap(api.registrations.check.post({ query } as never)),
+    delete: (id: string) => unwrap(api.registrations({ id }).delete()),
     stats: () => unwrap(api.registrations.stats.get()),
     winners: (competitionId: string) =>
       unwrap(api.registrations.winners.get({ query: { competitionId } })),

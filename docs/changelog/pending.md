@@ -69,3 +69,44 @@
 [22:45] - [src/server/modules/sponsors/index.ts] - [FIX] - Add sponsorUpdateSchema to prevent defaults from overwriting sponsor tier, isCurrent, and sortOrder
 [22:45] - [src/server/modules/media-partners/index.ts] - [FIX] - Add partnerUpdateSchema to prevent defaults from overwriting media partner isCurrent and sortOrder
 [22:45] - [src/db/restore-competitions.ts] - [ADD] - Restore all competition details (AGT, Cerdas Cermat, Futsal Internal, Badminton, Mobile Legends) in database
+[22:58] - [src/server/modules/registrations/model.ts] - [ADD] - Add registrationCheckSchema for public registration search
+[22:58] - [src/server/modules/registrations/service.ts] - [ADD] - Add checkRegistrationStatus supporting invoice reference, ID, email, and phone
+[22:58] - [src/server/modules/registrations/index.ts] - [ADD] - Expose POST /registrations/check public endpoint
+[22:58] - [src/lib/api.ts] - [ADD] - Add apiHelpers.registrations.check method
+[22:58] - [app/check-registration/page.tsx] - [UPDATE] - Upgrade Cek Pendaftaran with guest search bar, ?ref= URL param support, custom fields modal review, CP WhatsApp direct chat, and print invoice button
+[23:25] - [src/server/modules/payments/sumopod.ts] - [FIX] - Add default payment_method_type_code (QRIS) required by SumoPod multi-method merchant and extract err.data on HTTPError
+[23:25] - [src/server/modules/registrations/service.ts] - [UPDATE] - Record paymentMethod channel used from SumoPod response
+[23:45] - [next.config.ts] - [UPDATE] - Add allowedDevOrigins for astro.oktaa.my.id and permit Cloudflare tunnel domain in CSP connect-src
+[23:50] - [src/server/modules/registrations/service.ts] - [FIX] - Allow admin to update both SELF_SERVICE_FIELDS and ADMIN_FIELDS to prevent 'empty' rejection when logged in as admin
+[00:30] - [src/server/modules/registrations/service.ts] - [ADD] - Implement deleteRegistration with slot rollback and cascade deletion of uploaded Supabase files
+[00:30] - [src/server/modules/registrations/index.ts] - [ADD] - Expose DELETE /api/registrations/:id endpoint for admin
+[00:30] - [src/lib/api.ts] - [ADD] - Add apiHelpers.registrations.delete method
+[00:30] - [app/dashboard/registrations/page.tsx] - [UPDATE] - Add delete button with ResponsiveAlertDialog confirmation on registration rows
+[00:30] - [app/dashboard/registrations/[id]/RegistrationDetailActions.tsx] - [ADD] - Add RegistrationDetailActions with print invoice and delete registration buttons
+[00:30] - [components/PrintableInvoice.tsx] - [ADD] - Implement official high-end ASTRO 2026 A4 printable invoice document with clean typography, QR verification code, status stamps, and breakdown table
+[00:30] - [app/check-registration/page.tsx] - [UPDATE] - Integrate PrintableInvoice into check-registration page and modal with direct Cetak Invoice action
+[00:45] - [app/dashboard/registrations/page.tsx] - [FIX] - Fix React hook order violation and restore complete header and status color mapping
+[00:45] - [app/globals.css] - [UPDATE] - Add bulletproof @media print rules isolating #astro-print-portal to prevent blank printed pages
+[00:45] - [components/PrintableInvoice.tsx] - [FIX] - Introduce PrintPortal appending directly to document.body and eliminate invalid styled-jsx
+[00:45] - [app/dashboard/registrations/[id]/RegistrationDetailActions.tsx] - [UPDATE] - Connect Cetak Invoice to PrintPortal
+[01:05] - [src/db/migrations/0028_add_payment_code_fields.sql] - [ADD] - Add payment_code and payment_code_type columns to registrations table
+[01:05] - [src/db/schema/index.ts] - [UPDATE] - Define paymentCode and paymentCodeType in registrations schema
+[01:05] - [src/server/modules/payments/model.ts] - [UPDATE] - Support payment.canceled and payment.cancelled webhook events mapped to failed status
+[01:05] - [src/server/modules/payments/sumopod.ts] - [ADD] - Implement fetchPublicPaymentCheckout for live status sync with SumoPod
+[01:05] - [src/server/modules/registrations/service.ts] - [UPDATE] - Persist payment_code from SumoPod and implement active checkout status sync in getRegistration and checkRegistrationStatus
+[01:05] - [components/QrisDisplay.tsx] - [ADD] - Implement official ASTRO In-App QRIS component with countdown timer, amount, and PNG download
+[01:05] - [app/register/[id]/PaymentStep.tsx] - [UPDATE] - Embed QrisDisplay, handle live cancellation/failure without infinite loading, and enable direct invoice printing on success
+[01:05] - [app/register/[id]/page.tsx] - [UPDATE] - Directly open PaymentStep when user returns with pending registration
+[01:10] - [app/register/[id]/FormStep.tsx] - [UPDATE] - Auto-save form inputs to localStorage on any change so page refresh preserves participant input
+[01:10] - [app/register/[id]/page.tsx] - [UPDATE] - Restore draft inputs on mount with notification banner & reset button, persist active registration in URL and localStorage to keep payment QRIS alive on refresh, and handle back navigation
+[01:10] - [app/register/[id]/PaymentStep.tsx] - [UPDATE] - Automatically clean up draft and active registration cache once payment is confirmed paid
+[01:21] - [components/QrisDisplay.tsx] - [UPDATE] - Redesign QRIS card to clean minimalist layout with embedded ASTRO logo in the center of the QR code, compact tagihan typography, and high-DPI download support
+[01:25] - [components/QrisDisplay.tsx] - [UPDATE] - Upgrade QRIS display into an official professional national standard merchant card with ASPI header, merchant credentials, live status indicator, and official supported networks strip
+[01:31] - [src/server/modules/registrations/service.ts] - [FIX] - Synchronize exact customer-charged total amount (including SumoPod customer fee) from SumoPod checkout API so tagihan matches QRIS payload
+[01:31] - [components/QrisDisplay.tsx] - [UPDATE] - Simplify card layout: remove dark header, clean merchant identity to Astro 2026, keep display tagihan, QR with logo, countdown, aksi cepat, and pita jaringan
+[01:36] - [app/register/[id]/page.tsx] - [FIX] - Fix bug where successful payment kicked user back to Step 1 instead of Step 2 (verified success), and prevent passing paid registrationId to FormStep to eliminate 403 locked error
+[01:36] - [app/register/[id]/PaymentStep.tsx] - [ADD] - Add 'Daftarkan Peserta / Tim Lainnya' action button on paid state screen
+[11:06] - [src/server/modules/registrations/service.ts] - [UPDATE] - Integrate full official invoice into confirmation email with itemized breakdown table, verified status badge, metadata, and direct PDF print link
+[11:07] - [src/server/modules/registrations/service.ts] - [UPDATE] - Replace email confirmation footer with clean copyright notice (© 2026 ASTRO. All rights reserved.)
+[11:07] - [src/server/auth.ts] - [UPDATE] - Replace OTP email footer with clean copyright notice (© 2026 ASTRO. All rights reserved.)
+

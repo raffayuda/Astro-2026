@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { authClient } from '@/src/lib/auth-client';
 import Link from 'next/link';
-import { Search, ChevronRight } from 'lucide-react';
+import { Search, ChevronRight, Trash2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group';
@@ -26,23 +26,31 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import Pagination from '@/components/Pagination';
-import { useCompetitions, useRegistrations } from '@/src/lib/hooks/use-queries';
+import { useCompetitions, useRegistrations, queryKeys } from '@/src/lib/hooks/use-queries';
+import { useQueryClient } from '@tanstack/react-query';
+import { apiHelpers } from '@/src/lib/api';
+import { toast } from 'sonner';
+import { ResponsiveAlertDialog } from '@/components/responsive-alert-dialog';
 import { cn } from '@/lib/utils';
 
 const PAGE_SIZE = 10;
 
 const statusColors: Record<string, string> = {
-  pending: 'border-amber-200 bg-amber-50 text-amber-700',
-  detecting: 'border-blue-200 bg-blue-50 text-blue-700',
-  paid: 'border-emerald-200 bg-emerald-50 text-emerald-700',
-  failed: 'border-red-200 bg-red-50 text-red-700',
+  paid: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20',
+  detecting: 'bg-blue-500/10 text-blue-600 border-blue-500/20',
+  pending: 'bg-amber-500/10 text-amber-600 border-amber-500/20',
+  failed: 'bg-red-500/10 text-red-600 border-red-500/20',
 };
 
 export default function RegistrationsPage() {
+  const queryClient = useQueryClient();
   const [tab, setTab] = useState<'all' | 'mine'>('all');
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [lombaFilter, setLombaFilter] = useState('');
+  const [page, setPage] = useState(1);
+  const [regToDelete, setRegToDelete] = useState<any | null>(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   const { data: allCompetitions } = useCompetitions();
   const { data: regPage, isLoading: loading } = useRegistrations({ pageSize: 100 });
@@ -61,9 +69,9 @@ export default function RegistrationsPage() {
 
   const displayed = tab === 'mine' ? myRegistrations : registrations;
 
-  const [page, setPage] = useState(1);
   const filtered = displayed.filter((reg: any) => {
-    const matchSearch = !search ||
+    const matchSearch =
+      !search ||
       reg.fullName?.toLowerCase().includes(search.toLowerCase()) ||
       reg.teamName?.toLowerCase().includes(search.toLowerCase()) ||
       reg.email?.toLowerCase().includes(search.toLowerCase());
@@ -73,6 +81,28 @@ export default function RegistrationsPage() {
   });
   const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
+  const resetFilters = () => {
+    setSearch('');
+    setStatusFilter('');
+    setLombaFilter('');
+  };
+
+  const handleDelete = async () => {
+    if (!regToDelete) return;
+    setDeleteLoading(true);
+    try {
+      await apiHelpers.registrations.delete(regToDelete.id);
+      toast.success('Pendaftaran berhasil dihapus');
+      queryClient.invalidateQueries({ queryKey: queryKeys.registrations.all });
+      setRegToDelete(null);
+    } catch (err) {
+      console.error(err);
+      toast.error(err instanceof Error ? err.message : 'Gagal menghapus pendaftaran');
+    } finally {
+      setDeleteLoading(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
@@ -80,12 +110,6 @@ export default function RegistrationsPage() {
       </div>
     );
   }
-
-  const resetFilters = () => {
-    setSearch('');
-    setStatusFilter('');
-    setLombaFilter('');
-  };
 
   return (
     <div className="space-y-6">
@@ -98,30 +122,33 @@ export default function RegistrationsPage() {
 
       {/* Tabs */}
       <Tabs value={tab} onValueChange={(v) => { setTab(v as 'all' | 'mine'); setPage(1); }}>
-        <TabsList className="bg-muted">
-          <TabsTrigger value="all" onClick={() => resetFilters()}>Semua Pendaftaran</TabsTrigger>
-          <TabsTrigger value="mine" onClick={() => resetFilters()}>Pendaftaran Saya</TabsTrigger>
+        <TabsList className="clip-angled-sm">
+          <TabsTrigger value="all" className="clip-angled-sm text-xs font-bold uppercase tracking-wider" onClick={() => resetFilters()}>
+            Semua ({registrations.length})
+          </TabsTrigger>
+          {userEmail && (
+            <TabsTrigger value="mine" className="clip-angled-sm text-xs font-bold uppercase tracking-wider" onClick={() => resetFilters()}>
+              Pendaftaran Saya ({myRegistrations.length})
+            </TabsTrigger>
+          )}
         </TabsList>
       </Tabs>
 
-      {/* Filters */}
-      <div className="flex flex-col gap-3 sm:flex-row">
-        <div className="relative flex-1">
-          <InputGroup className="clip-angled h-10 border-border bg-white">
-            <InputGroupAddon align="inline-start">
-              <Search className="size-3.5 text-muted-foreground" />
-            </InputGroupAddon>
-            <InputGroupInput
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Cari nama, tim, atau email..."
-              className="text-xs font-medium"
-            />
-          </InputGroup>
-        </div>
+      {/* Filter Bar */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+        <InputGroup className="clip-angled-sm flex-1 bg-background">
+          <InputGroupAddon>
+            <Search className="size-4 text-muted-foreground" />
+          </InputGroupAddon>
+          <InputGroupInput
+            placeholder="Cari nama, tim, atau email..."
+            value={search}
+            onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+          />
+        </InputGroup>
 
-        <Select value={statusFilter || undefined} onValueChange={(v) => setStatusFilter(v === 'all' ? '' : v)}>
-          <SelectTrigger className="clip-angled-sm h-10 w-full bg-white sm:w-44">
+        <Select value={statusFilter || undefined} onValueChange={(v) => { setStatusFilter(v === 'all' ? '' : v); setPage(1); }}>
+          <SelectTrigger className="clip-angled-sm w-full bg-background sm:w-40">
             <SelectValue placeholder="Semua Status" />
           </SelectTrigger>
           <SelectContent>
@@ -129,21 +156,23 @@ export default function RegistrationsPage() {
               <SelectItem value="all">Semua Status</SelectItem>
               <SelectItem value="pending">Pending</SelectItem>
               <SelectItem value="detecting">Detecting</SelectItem>
-              <SelectItem value="paid">Paid</SelectItem>
-              <SelectItem value="failed">Failed</SelectItem>
+              <SelectItem value="paid">Lunas</SelectItem>
+              <SelectItem value="failed">Gagal</SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>
 
-        <Select value={lombaFilter || undefined} onValueChange={(v) => setLombaFilter(v === 'all' ? '' : v)}>
-          <SelectTrigger className="clip-angled-sm h-10 w-full bg-white sm:w-56">
+        <Select value={lombaFilter || undefined} onValueChange={(v) => { setLombaFilter(v === 'all' ? '' : v); setPage(1); }}>
+          <SelectTrigger className="clip-angled-sm w-full bg-background sm:w-48">
             <SelectValue placeholder="Semua Lomba" />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
               <SelectItem value="all">Semua Lomba</SelectItem>
               {(allCompetitions ?? []).map((c: any) => (
-                <SelectItem key={c.id} value={c.title}>{c.title}</SelectItem>
+                <SelectItem key={c.id} value={c.title}>
+                  {c.title}
+                </SelectItem>
               ))}
             </SelectGroup>
           </SelectContent>
@@ -162,7 +191,7 @@ export default function RegistrationsPage() {
                 <TableHead className="hidden px-5 md:table-cell">Lomba</TableHead>
                 <TableHead className="px-5">Status</TableHead>
                 <TableHead className="hidden px-5 text-right md:table-cell">Tanggal</TableHead>
-                <TableHead className="w-10 px-5 text-right"></TableHead>
+                <TableHead className="w-20 px-5 text-right"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody className="divide-y divide-border">
@@ -175,7 +204,7 @@ export default function RegistrationsPage() {
               ) : (
                 paginated.map((reg: any, i: number) => (
                   <TableRow key={reg.id} className="hover:bg-muted/50">
-                    <TableCell className="px-5 py-3.5 font-mono text-xs text-muted-foreground">{i + 1}</TableCell>
+                    <TableCell className="px-5 py-3.5 font-mono text-xs text-muted-foreground">{(page - 1) * PAGE_SIZE + i + 1}</TableCell>
                     <TableCell className="px-5 py-3.5">
                       <code className="font-mono text-xs font-bold text-foreground">
                         {reg.paymentReference || '—'}
@@ -201,11 +230,22 @@ export default function RegistrationsPage() {
                       </span>
                     </TableCell>
                     <TableCell className="px-5 py-3.5 text-right">
-                      <Button asChild variant="ghost" size="icon-sm" className="text-muted-foreground hover:text-primary">
-                        <Link href={`/dashboard/registrations/${reg.id}`} aria-label={`Detail ${reg.id}`}>
-                          <ChevronRight />
-                        </Link>
-                      </Button>
+                      <div className="flex items-center justify-end gap-1">
+                        <Button
+                          variant="ghost"
+                          size="icon-sm"
+                          className="text-muted-foreground hover:text-red-600 hover:bg-red-50"
+                          onClick={() => setRegToDelete(reg)}
+                          title="Hapus Pendaftaran"
+                        >
+                          <Trash2 className="size-4" />
+                        </Button>
+                        <Button asChild variant="ghost" size="icon-sm" className="text-muted-foreground hover:text-primary">
+                          <Link href={`/dashboard/registrations/${reg.id}`} aria-label={`Detail ${reg.id}`}>
+                            <ChevronRight />
+                          </Link>
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))
@@ -216,6 +256,26 @@ export default function RegistrationsPage() {
       </div>
 
       <Pagination currentPage={page} totalItems={filtered.length} pageSize={PAGE_SIZE} onPageChange={setPage} />
+
+      <ResponsiveAlertDialog
+        open={!!regToDelete}
+        onOpenChange={(open) => !open && setRegToDelete(null)}
+        title="Hapus Pendaftaran?"
+        description={
+          regToDelete ? (
+            <span>
+              Apakah Anda yakin ingin menghapus pendaftaran untuk{' '}
+              <strong>{regToDelete.type === 'team' ? regToDelete.teamName : regToDelete.fullName}</strong>{' '}
+              (Ref: <code className="font-mono">{regToDelete.paymentReference || regToDelete.id.slice(0, 8)}</code>)? Tindakan ini akan menghapus data pendaftar dan berkas terkait secara permanen.
+            </span>
+          ) : null
+        }
+        confirmText="Ya, Hapus"
+        cancelText="Batal"
+        destructive
+        loading={deleteLoading}
+        onConfirm={handleDelete}
+      />
     </div>
   );
 }

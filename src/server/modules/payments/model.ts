@@ -7,7 +7,14 @@ import { z } from 'zod';
  * `order_id` is checked separately for the events we actually act on.
  */
 export const sumoPodWebhookSchema = z.object({
-  event_type: z.enum(['payment.completed', 'payment.failed', 'payment.expired', 'payment.test']),
+  event_type: z.enum([
+    'payment.completed',
+    'payment.failed',
+    'payment.expired',
+    'payment.canceled',
+    'payment.cancelled',
+    'payment.test',
+  ]),
   data: z
     .object({
       payment_id: z.string().optional(),
@@ -30,4 +37,6 @@ export const EVENT_TO_STATUS: Record<string, string> = {
   'payment.completed': 'paid',
   'payment.failed': 'failed',
   'payment.expired': 'expired',
+  'payment.canceled': 'failed',
+  'payment.cancelled': 'failed',
 };

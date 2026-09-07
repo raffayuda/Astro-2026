@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 import { useForm } from "@tanstack/react-form";
 import { ChevronRight, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -130,6 +130,28 @@ export default function FormStep({
       }
     },
   });
+
+  // Auto-save form inputs to localStorage on any change so refresh won't lose data
+  useEffect(() => {
+    const sub = form.store.subscribe(() => {
+      const current = form.state.values;
+      if (current && competition?.id && typeof window !== "undefined") {
+        try {
+          localStorage.setItem(
+            `astro_reg_draft_${competition.id}`,
+            JSON.stringify({ values: current, regType }),
+          );
+        } catch {}
+      }
+    });
+    return () => {
+      if (typeof sub === "function") {
+        (sub as any)();
+      } else if (sub && typeof (sub as any).unsubscribe === "function") {
+        (sub as any).unsubscribe();
+      }
+    };
+  }, [form, competition?.id, regType]);
 
   const renderField = (
     name: Exclude<keyof RegistrationFormValues, "memberDetails" | "customFields">,

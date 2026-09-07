@@ -40,6 +40,13 @@ export const registrationListQuerySchema = paginationSchema.extend({
 
 export type RegistrationListQuery = z.infer<typeof registrationListQuerySchema>;
 
+/** Public check registration body. */
+export const registrationCheckSchema = z.object({
+  query: z.string().min(2, 'Kata kunci pencarian minimal 2 karakter'),
+});
+
+export type RegistrationCheckInput = z.infer<typeof registrationCheckSchema>;
+
 /** Fields an anonymous participant may self-edit, pre-payment only. */
 export const SELF_SERVICE_FIELDS = [
   'fullName',

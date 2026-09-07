@@ -27,9 +27,47 @@ export type SumoPodPayment = {
   fee: number;
   net_amount: number;
   payment_link_url: string;
+  payment_code?: string | null;
+  payment_code_type?: string | null;
+  payment_channel_used?: string | null;
   status: string;
   expires_at: string;
 };
+
+export type SumoPodPublicCheckout = {
+  status: 'pending' | 'completed' | 'canceled' | 'expired' | string;
+  order_id: string;
+  amount: number;
+  currency: string;
+  expires_at: string;
+  payment_code?: string | null;
+  payment_code_type?: string | null;
+  payment_channel_used?: string | null;
+  success_return_url?: string | null;
+  cancel_return_url?: string | null;
+  logo_url?: string | null;
+  merchant_name?: string | null;
+};
+
+/**
+ * Fetch live public checkout state directly from SumoPod.
+ * Useful for active sync when polling or checking status.
+ */
+export async function fetchPublicPaymentCheckout(
+  paymentId: string,
+): Promise<SumoPodPublicCheckout | null> {
+  if (!paymentId) return null;
+  try {
+    return await ky
+      .get(`${SUMOPOD_BASE_URL}/public/payments/${encodeURIComponent(paymentId)}/checkout`, {
+        timeout: 8_000,
+        retry: 0,
+      })
+      .json<SumoPodPublicCheckout>();
+  } catch {
+    return null;
+  }
+}
 
 export class SumoPodError extends Error {
   constructor(message: string, public status: number, public body: unknown) {
@@ -62,9 +100,14 @@ export async function createPayment(input: CreatePaymentInput): Promise<SumoPodP
     expires_in_hours: input.expiresInHours ?? 24,
   };
 
+  const paymentMethod =
+    input.paymentMethodTypeCode ||
+    process.env.SUMOPOD_DEFAULT_PAYMENT_METHOD ||
+    'QRIS';
+
   if (successUrl) payload.success_return_url = successUrl;
   if (cancelUrl) payload.cancel_return_url = cancelUrl;
-  if (input.paymentMethodTypeCode) payload.payment_method_type_code = input.paymentMethodTypeCode;
+  if (paymentMethod) payload.payment_method_type_code = paymentMethod;
 
   if (input.amount < 1000) {
     throw new SumoPodError(
@@ -85,12 +128,15 @@ export async function createPayment(input: CreatePaymentInput): Promise<SumoPodP
       .json<SumoPodPayment>();
   } catch (err) {
     if (err instanceof HTTPError) {
-      const rawText = await err.response.text().catch(() => '');
-      let body: any = null;
-      try {
-        body = JSON.parse(rawText);
-      } catch {
-        body = rawText;
+      let body: any = (err as any).data;
+      let rawText = '';
+      if (!body) {
+        rawText = await err.response.text().catch(() => '');
+        try {
+          body = JSON.parse(rawText);
+        } catch {
+          body = rawText;
+        }
       }
       console.error('SumoPod API error detail:', {
         status: err.response.status,
