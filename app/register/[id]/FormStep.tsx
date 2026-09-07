@@ -240,7 +240,7 @@ export default function FormStep({
         </p>
       </div>
 
-      <Card className="astro-card relative">
+      <Card className="rounded-xl bg-white shadow-soft relative">
         <div
           className="absolute -top-px -left-px size-8 bg-primary"
           style={{ clipPath: "polygon(0 0, 100% 0, 0 100%)" }}

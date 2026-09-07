@@ -68,7 +68,7 @@ export default function SkeletonImage({
   return (
     <div className={cn('relative overflow-hidden bg-slate-900/60', className)}>
       {!loaded && (
-        <div className={cn('absolute inset-0 z-10 h-full w-full shimmer', skeletonClassName)} />
+        <div className={cn('absolute inset-0 z-10 h-full w-full animate-pulse bg-astro-cyan-2/40', skeletonClassName)} />
       )}
       {fill ? (
         <Image

@@ -99,7 +99,7 @@ export default function Navbar() {
         className={cn(
           'fixed inset-x-0 top-0 z-50 flex h-16 items-center justify-between transition-all duration-300 md:h-[72px]',
           isScrolled
-            ? 'astro-pill mx-4 mt-3 border-white/80 bg-white/75 shadow-[0_10px_28px_rgba(49,87,255,0.18)] md:mx-8'
+            ? 'rounded-full bg-white shadow-soft-sm mx-4 mt-3 border-white/80 bg-white/75 shadow-[0_10px_28px_rgba(49,87,255,0.18)] md:mx-8'
             : 'mt-0 rounded-none border-transparent bg-transparent'
         )}
       >
@@ -116,7 +116,7 @@ export default function Navbar() {
               height={44}
               className="h-9 w-auto object-contain transition-transform duration-300 group-hover:scale-105 md:h-11"
             />
-            <span className={cn('font-masterpiece text-sm tracking-wide transition-colors duration-300 md:text-base', isScrolled ? 'text-[#3157ff]' : 'text-foreground md:text-white')}>
+            <span className={cn('font-title text-sm tracking-wide transition-colors duration-300 md:text-base', isScrolled ? 'text-[#3157ff]' : 'text-foreground md:text-white')}>
               ASTRO 2026
             </span>
           </button>
@@ -226,7 +226,7 @@ export default function Navbar() {
               <SheetHeader className="border-b border-border p-5">
                 <div className="flex items-center gap-2">
                   <Image src="/assets/logo-astro.png" alt="ASTRO Logo" width={32} height={32} className="h-8 w-auto object-contain" />
-                  <SheetTitle className="font-masterpiece text-xs">ASTRO 2026</SheetTitle>
+                  <SheetTitle className="font-title text-xs">ASTRO 2026</SheetTitle>
                 </div>
                 <SheetDescription className="sr-only">Menu navigasi ASTRO 2026</SheetDescription>
               </SheetHeader>
@@ -268,7 +268,7 @@ export default function Navbar() {
 
                 <div className="mt-auto">
                   <Separator className="mb-4" />
-                  <div className="astro-card flex flex-col gap-0.5 p-2">
+                  <div className="rounded-xl bg-white shadow-soft flex flex-col gap-0.5 p-2">
                     {isLoggedIn ? (
                       <>
                         <Button variant="ghost" className="justify-start gap-3 px-3.5 py-3 text-xs font-bold tracking-wider" onClick={() => { router.push('/check-registration'); setIsMobileOpen(false); }}>

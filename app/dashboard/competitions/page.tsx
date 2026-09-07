@@ -226,7 +226,7 @@ function FormFields({ form, setForm, isAdd, categories }: { form: any; setForm: 
         </ToggleGroup>
         {!form.isFree && (
           <>
-            <InputGroup className="clip-angled-sm mt-2 h-10 border-border bg-background">
+            <InputGroup className="rounded-md mt-2 h-10 border-border bg-background">
               <InputGroupAddon align="inline-start"><span className="text-sm font-bold text-muted-foreground">Rp</span></InputGroupAddon>
               <InputGroupInput
                 type="text"
@@ -515,7 +515,7 @@ function FormFields({ form, setForm, isAdd, categories }: { form: any; setForm: 
             variant="outline"
             size="sm"
             onClick={() => update('prizes', [...form.prizes, { label: `Juara ${form.prizes.length + 1}`, value: '' }])}
-            className="clip-angled-sm gap-1.5 self-start border-dashed text-[10px] font-bold uppercase tracking-wider text-muted-foreground hover:text-primary"
+            className="rounded-md gap-1.5 self-start border-dashed text-[10px] font-bold uppercase tracking-wider text-muted-foreground hover:text-primary"
           >
             <Plus data-icon="inline-start" className="size-3" /> Tambah Hadiah
           </Button>
@@ -1038,10 +1038,10 @@ export default function KompetisiPage() {
           <p className="mt-1 text-sm font-light text-muted-foreground">{competitions.length} lomba terdaftar</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={() => { setShowCatManager(!showCatManager); setShowAdd(false); setEditingId(null); }} className="clip-angled text-xs font-bold uppercase tracking-wider">
+          <Button variant="outline" onClick={() => { setShowCatManager(!showCatManager); setShowAdd(false); setEditingId(null); }} className="rounded-lg text-xs font-bold uppercase tracking-wider">
             <Tag data-icon="inline-start" /> Kelola Kategori
           </Button>
-          <Button onClick={() => { setShowAdd(!showAdd); setEditingId(null); }} className="clip-angled text-xs font-bold uppercase tracking-wider">
+          <Button onClick={() => { setShowAdd(!showAdd); setEditingId(null); }} className="rounded-lg text-xs font-bold uppercase tracking-wider">
             <Plus data-icon="inline-start" /> Tambah Lomba
           </Button>
         </div>
@@ -1134,10 +1134,10 @@ export default function KompetisiPage() {
           <h2 className="text-sm font-black text-slate-900 uppercase tracking-tight">Tambah Lomba Baru</h2>
           <FormFields form={addForm} setForm={setAddForm} isAdd categories={categories} />
           <div className="flex gap-2 pt-2">
-            <Button onClick={handleAdd} disabled={saving} className="clip-angled-sm gap-1 text-xs font-bold uppercase tracking-wider">
+            <Button onClick={handleAdd} disabled={saving} className="rounded-md gap-1 text-xs font-bold uppercase tracking-wider">
               {saving ? <Spinner data-icon="inline-start" /> : <Check data-icon="inline-start" />} Simpan
             </Button>
-            <Button variant="outline" onClick={() => setShowAdd(false)} className="clip-angled-sm gap-1 text-xs font-bold uppercase tracking-wider">
+            <Button variant="outline" onClick={() => setShowAdd(false)} className="rounded-md gap-1 text-xs font-bold uppercase tracking-wider">
               <X data-icon="inline-start" /> Batal
             </Button>
           </div>
@@ -1147,7 +1147,7 @@ export default function KompetisiPage() {
       {/* Search + Sort */}
       <div className="flex flex-col gap-3 sm:flex-row">
         <div className="max-w-xs flex-1">
-          <InputGroup className="clip-angled h-10 border-border bg-background">
+          <InputGroup className="rounded-lg h-10 border-border bg-background">
             <InputGroupAddon align="inline-start">
               <Search className="size-3.5 text-muted-foreground" />
             </InputGroupAddon>
@@ -1161,7 +1161,7 @@ export default function KompetisiPage() {
             { key: 'az', label: 'A-Z' },
             { key: 'za', label: 'Z-A' },
           ].map((opt) => (
-            <ToggleGroupItem key={opt.key} value={opt.key} className="clip-angled-sm px-3 py-2 text-[10px] font-bold uppercase tracking-wider">
+            <ToggleGroupItem key={opt.key} value={opt.key} className="rounded-md px-3 py-2 text-[10px] font-bold uppercase tracking-wider">
               {opt.label}
             </ToggleGroupItem>
           ))}
@@ -1188,10 +1188,10 @@ export default function KompetisiPage() {
                     <h2 className="text-sm font-black text-slate-900 uppercase tracking-tight">Edit Lomba</h2>
                     <FormFields form={editForm} setForm={setEditForm} categories={categories} />
                     <div className="flex gap-2 pt-2">
-                      <Button onClick={() => handleSave(comp.id)} disabled={saving} className="clip-angled-sm gap-1 text-xs font-bold uppercase tracking-wider">
+                      <Button onClick={() => handleSave(comp.id)} disabled={saving} className="rounded-md gap-1 text-xs font-bold uppercase tracking-wider">
                         {saving ? <Spinner data-icon="inline-start" /> : <Check data-icon="inline-start" />} Simpan
                       </Button>
-                      <Button variant="outline" onClick={handleCancelEdit} className="clip-angled-sm gap-1 text-xs font-bold uppercase tracking-wider">
+                      <Button variant="outline" onClick={handleCancelEdit} className="rounded-md gap-1 text-xs font-bold uppercase tracking-wider">
                         <X data-icon="inline-start" /> Batal
                       </Button>
                     </div>
@@ -1201,27 +1201,27 @@ export default function KompetisiPage() {
                     <div className="flex-1 min-w-0">
                       <div className="mb-2 flex flex-wrap items-center gap-2">
                         <h3 className="text-base font-black uppercase tracking-tight text-foreground">{comp.title}</h3>
-                        <Badge variant="outline" className={cn('clip-angled-sm border text-[10px] font-bold uppercase tracking-wider', catColor)}>
+                        <Badge variant="outline" className={cn('rounded-md border text-[10px] font-bold uppercase tracking-wider', catColor)}>
                           {cat?.label || comp.category}
                         </Badge>
-                        <Badge variant="outline" className="clip-angled-sm border-purple-200 bg-purple-50 text-[9px] font-bold uppercase tracking-wider text-purple-700">
+                        <Badge variant="outline" className="rounded-md border-purple-200 bg-purple-50 text-[9px] font-bold uppercase tracking-wider text-purple-700">
                           {comp.type === 'both'
                             ? 'Tim & Individu'
                             : comp.type === 'team'
                               ? 'Tim'
                               : 'Individu'}
                         </Badge>
-                        <Badge variant="outline" className={cn('clip-angled-sm border text-[9px] font-bold uppercase tracking-wider',
+                        <Badge variant="outline" className={cn('rounded-md border text-[9px] font-bold uppercase tracking-wider',
                           (comp as any).isFree === '1' || (comp as any).isFree === true
                             ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
                             : 'border-amber-200 bg-amber-50 text-amber-700')}
                         >
                           {(comp as any).isFree === '1' || (comp as any).isFree === true ? 'Gratis' : 'Berbayar'}
                         </Badge>
-                        <Badge variant="outline" className="clip-angled-sm border-sky-200 bg-sky-50 text-[9px] font-bold uppercase tracking-wider text-sky-700">
+                        <Badge variant="outline" className="rounded-md border-sky-200 bg-sky-50 text-[9px] font-bold uppercase tracking-wider text-sky-700">
                           {(comp as any).origin === 'external' ? 'Eksternal' : 'Internal'}
                         </Badge>
-                        <Badge variant="outline" className={cn('clip-angled-sm border text-[9px] font-bold uppercase tracking-wider',
+                        <Badge variant="outline" className={cn('rounded-md border text-[9px] font-bold uppercase tracking-wider',
                           comp.isActive
                             ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
                             : 'border-red-200 bg-red-50 text-red-600')}
@@ -1229,7 +1229,7 @@ export default function KompetisiPage() {
                           {comp.isActive ? 'Pendaftaran Dibuka' : 'Pendaftaran Ditutup'}
                         </Badge>
                         {((comp as any).hasBatches === true || (comp as any).hasBatches === '1') && (
-                          <Badge variant="outline" className="clip-angled-sm border-cyan-300 bg-cyan-50 text-[9px] font-bold uppercase tracking-wider text-cyan-700 dark:bg-cyan-950/40 dark:text-cyan-400 gap-1">
+                          <Badge variant="outline" className="rounded-md border-cyan-300 bg-cyan-50 text-[9px] font-bold uppercase tracking-wider text-cyan-700 dark:bg-cyan-950/40 dark:text-cyan-400 gap-1">
                             <Layers className="size-2.5" /> {(comp as any).batches?.length || 0} Batch
                           </Badge>
                         )}

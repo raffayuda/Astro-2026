@@ -36,7 +36,7 @@ export default function Footer() {
                 height={48}
                 className="w-10 h-10 md:w-12 md:h-12 object-contain"
               />
-              <span className="font-masterpiece text-xl md:text-2xl font-black tracking-tight bg-linear-to-r from-slate-950 via-slate-800 to-cyan-600 bg-clip-text text-transparent">
+              <span className="font-title text-xl md:text-2xl font-black tracking-tight bg-linear-to-r from-slate-950 via-slate-800 to-cyan-600 bg-clip-text text-transparent">
                 ASTRO 2026
               </span>
             </div>

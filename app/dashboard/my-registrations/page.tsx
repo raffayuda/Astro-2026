@@ -53,7 +53,7 @@ export default function MyRegistrationsPage() {
       </div>
 
       {registrations.length === 0 ? (
-        <Empty className="clip-angled-lg border border-border bg-background p-12">
+        <Empty className="rounded-xl border border-border bg-background p-12">
           <EmptyHeader>
             <EmptyMedia variant="icon"><ClipboardList /></EmptyMedia>
             <EmptyTitle className="text-sm">Belum ada pendaftaran.</EmptyTitle>
@@ -65,7 +65,7 @@ export default function MyRegistrationsPage() {
           </EmptyHeader>
         </Empty>
       ) : (
-        <div className="clip-angled-lg overflow-hidden border border-border bg-background">
+        <div className="rounded-xl overflow-hidden border border-border bg-background">
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
@@ -84,7 +84,7 @@ export default function MyRegistrationsPage() {
                       <code className="font-mono text-xs text-muted-foreground">{reg.paymentReference || '—'}</code>
                     </TableCell>
                     <TableCell className="px-5 py-3.5">
-                      <Badge variant="outline" className={cn('clip-angled-sm border text-[10px] font-bold uppercase tracking-wider', statusColors[reg.paymentStatus] || 'border-slate-200 bg-muted text-muted-foreground')}>
+                      <Badge variant="outline" className={cn('rounded-md border text-[10px] font-bold uppercase tracking-wider', statusColors[reg.paymentStatus] || 'border-slate-200 bg-muted text-muted-foreground')}>
                         {reg.paymentStatus}
                       </Badge>
                     </TableCell>

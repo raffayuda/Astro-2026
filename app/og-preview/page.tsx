@@ -31,7 +31,7 @@ export default function OgPreview() {
               <Image src="/assets/logo-astro.svg" alt="Astro Logo" fill className="object-contain" />
             </div>
             
-            <h1 className="text-[160px] font-black leading-[0.85] tracking-tight drop-shadow-2xl font-masterpiece flex items-center gap-8">
+            <h1 className="text-[160px] font-black leading-[0.85] tracking-tight drop-shadow-2xl font-title flex items-center gap-8">
               <span
                 className="bg-linear-to-b from-slate-100 via-slate-300 to-slate-500 bg-clip-text text-transparent"
                 style={{
@@ -53,7 +53,7 @@ export default function OgPreview() {
           </div>
 
           {/* Subtitle / Tagline */}
-          <div className="mt-4 font-masterpiece leading-snug drop-shadow-[0_2px_12px_rgba(0,0,0,0.15)] text-center">
+          <div className="mt-4 font-title leading-snug drop-shadow-[0_2px_12px_rgba(0,0,0,0.15)] text-center">
             <span className="text-[40px] text-white/95 block tracking-wide">
               Where Innovation
             </span>

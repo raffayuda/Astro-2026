@@ -138,7 +138,7 @@ function VerifyOtpContent() {
 
   if (success) {
     return (
-      <Card className="clip-angled-lg border border-white/40 bg-background/80 p-8 text-center backdrop-blur-xl md:p-10">
+      <Card className="rounded-xl border border-white/40 bg-background/80 p-8 text-center backdrop-blur-xl md:p-10">
         <CardContent className="flex flex-col items-center p-0">
           <div className="mb-4 flex size-16 items-center justify-center rounded-full border border-emerald-300 bg-emerald-100">
             <CheckCircle2 className="size-8 text-emerald-600" />
@@ -152,7 +152,7 @@ function VerifyOtpContent() {
           </p>
           <Button
             asChild
-            className="clip-angled text-xs font-black uppercase tracking-wider"
+            className="rounded-lg text-xs font-black uppercase tracking-wider"
           >
             <Link href="/login">Login Sekarang</Link>
           </Button>
@@ -162,7 +162,7 @@ function VerifyOtpContent() {
   }
 
   return (
-    <Card className="clip-angled-lg border border-white/40 bg-background/80 p-8 backdrop-blur-xl md:p-10">
+    <Card className="rounded-xl border border-white/40 bg-background/80 p-8 backdrop-blur-xl md:p-10">
       <CardContent className="p-0">
         <Button
           asChild
@@ -197,7 +197,7 @@ function VerifyOtpContent() {
         {error && (
           <Alert
             variant="destructive"
-            className="clip-angled mb-5 border-border"
+            className="rounded-lg mb-5 border-border"
           >
             <AlertDescription className="text-xs font-medium">
               {error}
@@ -206,7 +206,7 @@ function VerifyOtpContent() {
         )}
 
         {message && (
-          <Alert className="clip-angled mb-5 border-emerald-300 bg-emerald-50 text-emerald-800">
+          <Alert className="rounded-lg mb-5 border-emerald-300 bg-emerald-50 text-emerald-800">
             <AlertDescription className="text-xs font-medium">
               {message}
             </AlertDescription>
@@ -270,7 +270,7 @@ function VerifyOtpContent() {
           <Button
             type="submit"
             disabled={loading || otp.length !== 6}
-            className="clip-angled text-xs font-black uppercase tracking-wider"
+            className="rounded-lg text-xs font-black uppercase tracking-wider"
           >
             {loading ? (
               <>
@@ -327,7 +327,7 @@ export default function VerifyOtpPage() {
         >
           <Suspense
             fallback={
-              <Card className="clip-angled-lg border border-white/40 bg-background/80 p-8 text-center backdrop-blur-xl">
+              <Card className="rounded-xl border border-white/40 bg-background/80 p-8 text-center backdrop-blur-xl">
                 <Spinner className="size-6 text-primary mx-auto" />
               </Card>
             }

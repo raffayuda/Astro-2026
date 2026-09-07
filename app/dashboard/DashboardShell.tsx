@@ -89,7 +89,7 @@ export default function DashboardShell({ children, role, userName }: Props) {
               height={36}
               className="size-8 object-contain"
             />
-            <span className="font-masterpiece text-lg text-sidebar-foreground">
+            <span className="font-title text-lg text-sidebar-foreground">
               ASTRO 2026
             </span>
           </Link>
@@ -127,7 +127,7 @@ export default function DashboardShell({ children, role, userName }: Props) {
 
         <SidebarFooter>
           <Separator className="mb-2" />
-          <div className="astro-card flex items-center gap-3 px-4 py-3">
+          <div className="rounded-xl bg-white shadow-soft flex items-center gap-3 px-4 py-3">
             <Avatar className="size-8 bg-primary text-primary-foreground">
               <AvatarFallback className="text-sm font-black">
                 {userName.charAt(0).toUpperCase()}
@@ -164,7 +164,7 @@ export default function DashboardShell({ children, role, userName }: Props) {
           </Link>
         </header>
 
-        <main className="astro-sky-soft flex-1 overflow-auto p-4 lg:p-8">
+        <main className="bg-linear-to-b from-sky-bottom via-white to-white flex-1 overflow-auto p-4 lg:p-8">
           {children}
         </main>
       </SidebarInset>

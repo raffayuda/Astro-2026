@@ -388,7 +388,7 @@ Terima kasih.`;
               type="submit"
               disabled={loading}
               size="lg"
-              className="clip-angled w-full text-base shadow-[0_0_20px_rgba(6,182,212,0.3)]"
+              className="rounded-lg w-full text-base shadow-[0_0_20px_rgba(6,182,212,0.3)]"
             >
               {loading ? (
                 <>
@@ -461,7 +461,7 @@ Terima kasih.`;
               <span className="font-bold text-foreground">Penting:</span> Simpan bukti transfer Anda. Setelah melakukan pembayaran, Anda wajib melakukan konfirmasi dengan mengirimkan bukti transfer ke Contact Person melalui WhatsApp menggunakan tombol di bawah ini.
             </div>
 
-            <Button asChild size="lg" className="clip-angled w-full bg-emerald-500 text-white shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:bg-emerald-400">
+            <Button asChild size="lg" className="rounded-lg w-full bg-emerald-500 text-white shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:bg-emerald-400">
               <a href={getWhatsAppLink()} target="_blank" rel="noopener noreferrer">
                 <MessageCircle data-icon="inline-start" />
                 Konfirmasi Pembayaran (WhatsApp)

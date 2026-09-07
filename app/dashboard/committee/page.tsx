@@ -374,16 +374,16 @@ export default function CommitteePage() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" onClick={() => setShowImport(true)} className="clip-angled-sm gap-2 font-bold uppercase tracking-wider">
+          <Button variant="outline" onClick={() => setShowImport(true)} className="rounded-md gap-2 font-bold uppercase tracking-wider">
             <UploadCloud className="size-4" /> Import CSV
           </Button>
           <Button variant="outline" onClick={() => {
             setReorderList([...divisions]);
             setShowReorderModal(true);
-          }} className="clip-angled-sm gap-2 font-bold uppercase tracking-wider border-amber-200 text-amber-700 bg-amber-50 hover:bg-amber-100 hover:text-amber-800">
+          }} className="rounded-md gap-2 font-bold uppercase tracking-wider border-amber-200 text-amber-700 bg-amber-50 hover:bg-amber-100 hover:text-amber-800">
             <ArrowUpDown className="size-4" /> Atur Urutan
           </Button>
-          <Button variant="outline" onClick={() => setShowDivManager(true)} className="clip-angled-sm gap-2 font-bold uppercase tracking-wider">
+          <Button variant="outline" onClick={() => setShowDivManager(true)} className="rounded-md gap-2 font-bold uppercase tracking-wider">
             <Building2 className="size-4" /> Kelola Divisi
           </Button>
           <Button onClick={() => {
@@ -402,7 +402,7 @@ export default function CommitteePage() {
               linkedin: "",
             });
             setShowAdd(true);
-          }} className="clip-angled-sm gap-2 font-bold uppercase tracking-wider">
+          }} className="rounded-md gap-2 font-bold uppercase tracking-wider">
             <Plus className="size-4" /> Tambah
           </Button>
         </div>
@@ -450,7 +450,7 @@ export default function CommitteePage() {
               variant="ghost"
               size="sm"
               onClick={() => { setSearch(""); setFilterRole(""); setFilterDivision(""); setPage(1); }}
-              className="clip-angled-sm gap-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground"
+              className="rounded-md gap-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground"
             >
               <X className="size-3" /> Reset
             </Button>
@@ -481,7 +481,7 @@ export default function CommitteePage() {
             variant="destructive"
             size="sm"
             onClick={handleBulkDelete}
-            className="clip-angled-sm ml-auto gap-1 text-[10px] font-bold uppercase tracking-wider"
+            className="rounded-md ml-auto gap-1 text-[10px] font-bold uppercase tracking-wider"
           >
             <Trash2 className="size-3.5" /> Hapus Terpilih
           </Button>
@@ -490,7 +490,7 @@ export default function CommitteePage() {
 
       {/* Import CSV/Excel */}
       {showImport && (
-        <Card className="clip-angled relative border-border">
+        <Card className="rounded-lg relative border-border">
           <div className="absolute -top-px -left-px size-8 bg-primary" style={{ clipPath: "polygon(0 0, 100% 0, 0 100%)" }} />
           <CardContent className="space-y-4 p-5">
             <div className="flex items-center justify-between">
@@ -504,7 +504,7 @@ export default function CommitteePage() {
 
       {/* Division Manager */}
       {showDivManager && (
-        <Card className="clip-angled relative border-border">
+        <Card className="rounded-lg relative border-border">
           <div className="absolute -top-px -left-px size-8 bg-primary" style={{ clipPath: "polygon(0 0, 100% 0, 0 100%)" }} />
           <CardContent className="space-y-4 p-5">
             <div className="flex items-center justify-between">
@@ -576,7 +576,7 @@ export default function CommitteePage() {
       )}
 
       {showAdd && (
-        <Card className="clip-angled relative border-border">
+        <Card className="rounded-lg relative border-border">
           <div className="absolute -top-px -left-px size-8 bg-primary" style={{ clipPath: "polygon(0 0, 100% 0, 0 100%)" }} />
           <CardContent className="space-y-4 p-5">
             <h2 className="text-sm font-black uppercase tracking-tight text-foreground">
@@ -800,10 +800,10 @@ export default function CommitteePage() {
               </Field>
             </FieldGroup>
             <div className="flex gap-2 pt-2">
-              <Button onClick={handleSave} disabled={saving} className="clip-angled-sm gap-1 text-xs font-bold uppercase tracking-wider">
+              <Button onClick={handleSave} disabled={saving} className="rounded-md gap-1 text-xs font-bold uppercase tracking-wider">
                 {saving ? <Spinner data-icon="inline-start" /> : <Check data-icon="inline-start" />} Simpan
               </Button>
-              <Button variant="outline" className="clip-angled-sm gap-1 text-xs font-bold uppercase tracking-wider"
+              <Button variant="outline" className="rounded-md gap-1 text-xs font-bold uppercase tracking-wider"
                 onClick={() => {
                   setShowAdd(false);
                   setEditingId(null);
@@ -830,7 +830,7 @@ export default function CommitteePage() {
 
       <div className="grid grid-cols-1 gap-3">
         {paginated.map((item) => (
-          <Card key={item.id} className="clip-angled group relative overflow-hidden border border-border bg-card p-4 transition-all hover:border-primary/50 hover:shadow-md">
+          <Card key={item.id} className="rounded-lg group relative overflow-hidden border border-border bg-card p-4 transition-all hover:border-primary/50 hover:shadow-md">
             <div className="absolute -top-px -left-px size-6 bg-primary/20 transition-colors group-hover:bg-primary" style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }} />
             <CardContent className="flex items-center justify-between gap-4 p-0">
               <div className="flex items-center gap-3">
@@ -859,7 +859,7 @@ export default function CommitteePage() {
                   <div className="mt-0.5 flex gap-2">
                     <span className="text-[10px] font-semibold text-muted-foreground">{item.role}</span>
                     {item.isLeader === "1" && (
-                      <Badge variant="outline" className="clip-angled-sm border-amber-200 bg-amber-50 text-[9px] font-bold uppercase text-amber-700">
+                      <Badge variant="outline" className="rounded-md border-amber-200 bg-amber-50 text-[9px] font-bold uppercase text-amber-700">
                         Koordinator
                       </Badge>
                     )}
@@ -906,7 +906,7 @@ export default function CommitteePage() {
       {/* Modal Reorder Divisi */}
       {showReorderModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <Card className="w-full max-w-md clip-angled relative border-border shadow-2xl">
+          <Card className="w-full max-w-md rounded-lg relative border-border shadow-2xl">
             <div className="absolute -top-px -left-px size-8 bg-amber-500" style={{ clipPath: "polygon(0 0, 100% 0, 0 100%)" }} />
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-4">

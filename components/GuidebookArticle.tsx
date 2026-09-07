@@ -199,7 +199,7 @@ export default function GuidebookArticle({
           <Button
             asChild
             size="sm"
-            className="clip-angled-sm gap-1.5 self-start font-bold uppercase tracking-wider bg-cyan-600 hover:bg-cyan-500 text-white shadow-md transition-all sm:self-auto"
+            className="rounded-md gap-1.5 self-start font-bold uppercase tracking-wider bg-cyan-600 hover:bg-cyan-500 text-white shadow-md transition-all sm:self-auto"
           >
             <a href={rulebookUrl} target="_blank" rel="noopener noreferrer">
               <FileText className="size-3.5" />
@@ -221,7 +221,7 @@ export default function GuidebookArticle({
                 type="button"
                 onClick={() => setActiveTab(idx)}
                 className={cn(
-                  "clip-angled-sm group relative flex shrink-0 items-center gap-2 border px-4 py-2 text-xs font-bold uppercase tracking-wider transition-all",
+                  "rounded-md group relative flex shrink-0 items-center gap-2 border px-4 py-2 text-xs font-bold uppercase tracking-wider transition-all",
                   isActive
                     ? "border-cyan-500/60 bg-cyan-500/15 text-cyan-700 dark:text-cyan-300 shadow-sm"
                     : "border-border/60 bg-muted/40 text-muted-foreground hover:border-border hover:bg-muted hover:text-foreground"
@@ -355,7 +355,7 @@ export default function GuidebookArticle({
               </div>
             </div>
             {waUrl && (
-              <Button asChild size="sm" variant="outline" className="clip-angled-sm border-emerald-500/40 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-500/10 text-xs font-bold">
+              <Button asChild size="sm" variant="outline" className="rounded-md border-emerald-500/40 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-500/10 text-xs font-bold">
                 <a href={waUrl} target="_blank" rel="noopener noreferrer">
                   Chat WA
                 </a>
@@ -383,7 +383,7 @@ export default function GuidebookArticle({
                 </p>
               </div>
             </div>
-            <Button asChild size="sm" className="clip-angled-sm bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold uppercase tracking-wider">
+            <Button asChild size="sm" className="rounded-md bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold uppercase tracking-wider">
               <a href={rulebookUrl} target="_blank" rel="noopener noreferrer">
                 Buka <ExternalLink className="size-3 ml-1" />
               </a>

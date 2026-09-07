@@ -205,7 +205,7 @@ function LoginForm() {
   };
 
   return (
-    <Card className="clip-angled-lg border border-white/40 bg-background/80 p-8 backdrop-blur-xl md:p-10">
+    <Card className="rounded-xl border border-white/40 bg-background/80 p-8 backdrop-blur-xl md:p-10">
       <CardContent className="p-0">
         {/* Logo */}
         <div className="mb-6 flex justify-center">
@@ -230,14 +230,14 @@ function LoginForm() {
             </p>
 
             {successMsg && (
-              <Alert className="clip-angled mb-5 border-emerald-300 bg-emerald-50 text-emerald-800">
+              <Alert className="rounded-lg mb-5 border-emerald-300 bg-emerald-50 text-emerald-800">
                 <CheckCircle2 className="size-4 text-emerald-600 mr-1" />
                 <AlertDescription className="text-xs font-medium">{successMsg}</AlertDescription>
               </Alert>
             )}
 
             {error && (
-              <Alert variant="destructive" className="clip-angled mb-5 border-border">
+              <Alert variant="destructive" className="rounded-lg mb-5 border-border">
                 <AlertCircle className="size-4 mr-1" />
                 <AlertDescription className="text-xs font-medium leading-relaxed">
                   {error}
@@ -252,7 +252,7 @@ function LoginForm() {
                         setOtpError('');
                         setOtpMessage('');
                       }}
-                      className="clip-angled-sm text-xs font-bold uppercase bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                      className="rounded-md text-xs font-bold uppercase bg-destructive text-destructive-foreground hover:bg-destructive/90"
                     >
                       <KeyRound className="size-3.5 mr-1" /> Masukkan Kode OTP
                     </Button>
@@ -281,7 +281,7 @@ function LoginForm() {
                   <FieldLabel htmlFor="password" required>
                     Password
                   </FieldLabel>
-                  <InputGroup className="clip-angled-sm h-10 border-border bg-background">
+                  <InputGroup className="rounded-md h-10 border-border bg-background">
                     <InputGroupInput
                       id="password"
                       type={showPassword ? 'text' : 'password'}
@@ -311,7 +311,7 @@ function LoginForm() {
                 type="submit"
                 disabled={loading}
                 size="lg"
-                className="clip-angled text-sm font-black uppercase tracking-wider active:scale-[0.98]"
+                className="rounded-lg text-sm font-black uppercase tracking-wider active:scale-[0.98]"
               >
                 {loading ? (
                   <>
@@ -364,13 +364,13 @@ function LoginForm() {
             </p>
 
             {otpError && (
-              <Alert variant="destructive" className="clip-angled mb-5 border-border">
+              <Alert variant="destructive" className="rounded-lg mb-5 border-border">
                 <AlertDescription className="text-xs font-medium">{otpError}</AlertDescription>
               </Alert>
             )}
 
             {otpMessage && (
-              <Alert className="clip-angled mb-5 border-emerald-300 bg-emerald-50 text-emerald-800">
+              <Alert className="rounded-lg mb-5 border-emerald-300 bg-emerald-50 text-emerald-800">
                 <AlertDescription className="text-xs font-medium">{otpMessage}</AlertDescription>
               </Alert>
             )}
@@ -424,7 +424,7 @@ function LoginForm() {
               <Button
                 type="submit"
                 disabled={otpLoading || otp.length !== 6}
-                className="clip-angled text-xs font-black uppercase tracking-wider"
+                className="rounded-lg text-xs font-black uppercase tracking-wider"
               >
                 {otpLoading ? (
                   <>
@@ -507,7 +507,7 @@ export default function LoginPage() {
         >
           <Suspense
             fallback={
-              <Card className="clip-angled-lg border border-white/40 bg-background/80 p-8 text-center backdrop-blur-xl">
+              <Card className="rounded-xl border border-white/40 bg-background/80 p-8 text-center backdrop-blur-xl">
                 <Spinner className="size-6 text-primary mx-auto" />
               </Card>
             }

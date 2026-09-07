@@ -44,7 +44,7 @@ export default function TimelineSection({ timeline }: Props) {
           transition={{ duration: 0.5 }}
         >
           <div className="flex justify-center mb-3">
-            <div className="accent-line" />
+            <div className="block h-1.5 w-18 rounded-full bg-linear-to-r from-astro-gold via-astro-lime2 to-astro-blue" />
           </div>
           <div className="flex justify-center mb-3">
             <Badge
@@ -55,7 +55,7 @@ export default function TimelineSection({ timeline }: Props) {
               Jadwal Bersifat Tentatif
             </Badge>
           </div>
-          <h2 className="font-masterpiece text-5xl md:text-6xl lg:text-7xl text-slate-900 mb-3 leading-tight">
+          <h2 className="font-title text-5xl md:text-6xl lg:text-7xl text-slate-900 mb-3 leading-tight">
             Timeline <span className="text-astro-cyan">Event</span>
           </h2>
           <p className="text-sm md:text-base text-slate-600 font-semibold leading-relaxed max-w-xl mx-auto">

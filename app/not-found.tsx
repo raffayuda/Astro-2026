@@ -7,6 +7,7 @@ import { Home, Trophy, Search, ArrowLeft, Sparkles } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
+import { Pattern } from "@/components/brand"
 
 const MotionImage = motion.create(Image);
 
@@ -14,8 +15,8 @@ export default function NotFound() {
   const reduce = useReducedMotion();
 
   return (
-    <div className="astro-sky astro-frame-y astro-bubble-field min-h-screen flex flex-col overflow-hidden">
-      <div className="astro-pattern absolute inset-0 opacity-35" />
+    <div className="bg-linear-to-b from-sky-top via-sky-mid to-white astro-frame-y astro-bubble-field min-h-screen flex flex-col overflow-hidden">
+      <Pattern className="absolute inset-0 opacity-35" />
       <Navbar />
 
       <main className="relative flex-1 flex items-center justify-center pt-24 pb-16 px-4 sm:px-6 lg:px-8">
@@ -88,15 +89,15 @@ export default function NotFound() {
             initial={reduce ? false : { opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="astro-card flex flex-col gap-6 p-8"
+            className="rounded-xl bg-white shadow-soft flex flex-col gap-6 p-8"
           >
             {/* Big 404 Headline with Masterpiece Font */}
             <div className="relative">
-              <h1 className="astro-title-chrome font-masterpiece text-8xl leading-none select-none sm:text-9xl md:text-[11rem]">
+              <h1 className="astro-title-chrome font-title text-8xl leading-none select-none sm:text-9xl md:text-[11rem]">
                 404
               </h1>
               <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-                <span className="font-masterpiece text-8xl sm:text-9xl md:text-[11rem] leading-none text-transparent bg-clip-text bg-linear-to-b from-white via-white/80 to-sky-200/50 opacity-90">
+                <span className="font-title text-8xl sm:text-9xl md:text-[11rem] leading-none text-transparent bg-clip-text bg-linear-to-b from-white via-white/80 to-sky-200/50 opacity-90">
                   404
                 </span>
               </div>

@@ -183,7 +183,7 @@ export default function PaymentStep({
                 Pendaftaran dan pembayaran kamu telah diterima dan kuota slot lomba telah resmi terkunci.
               </p>
               <div className="flex justify-center">
-                <div className="accent-line" />
+                <div className="block h-1.5 w-18 rounded-full bg-linear-to-r from-astro-gold via-astro-lime2 to-astro-blue" />
               </div>
             </div>
 
@@ -191,7 +191,7 @@ export default function PaymentStep({
               <Button
                 onClick={handlePrint}
                 size="lg"
-                className="clip-angled w-full text-sm font-black uppercase tracking-wider bg-slate-900 text-white hover:bg-slate-800 gap-2 shadow-md active:scale-95"
+                className="rounded-lg w-full text-sm font-black uppercase tracking-wider bg-slate-900 text-white hover:bg-slate-800 gap-2 shadow-md active:scale-95"
               >
                 <Printer className="size-4 text-cyan-400" />
                 Cetak Bukti Pendaftaran / Invoice
@@ -201,7 +201,7 @@ export default function PaymentStep({
                 onClick={() => router.push(`/check-registration?regId=${registrationId}`)}
                 variant="outline"
                 size="lg"
-                className="clip-angled w-full text-xs font-bold uppercase tracking-wider gap-2"
+                className="rounded-lg w-full text-xs font-bold uppercase tracking-wider gap-2"
               >
                 <CheckCircle2 className="size-4 text-emerald-600" />
                 Lihat di Menu Cek Pendaftaran
@@ -251,7 +251,7 @@ export default function PaymentStep({
               <Button
                 onClick={onBack}
                 size="lg"
-                className="clip-angled w-full text-xs font-black uppercase tracking-wider gap-2 bg-cyan-600 text-white hover:bg-cyan-500 active:scale-95"
+                className="rounded-lg w-full text-xs font-black uppercase tracking-wider gap-2 bg-cyan-600 text-white hover:bg-cyan-500 active:scale-95"
               >
                 <RotateCcw className="size-4" />
                 Ulangi Pendaftaran & Dapatkan QRIS Baru
@@ -262,7 +262,7 @@ export default function PaymentStep({
                   asChild
                   variant="outline"
                   size="lg"
-                  className="clip-angled w-full text-xs font-bold uppercase tracking-wider gap-2 border-slate-300"
+                  className="rounded-lg w-full text-xs font-bold uppercase tracking-wider gap-2 border-slate-300"
                 >
                   <a href={waHref} target="_blank" rel="noopener noreferrer">
                     <MessageCircle className="size-4 text-emerald-600" />
@@ -299,7 +299,7 @@ export default function PaymentStep({
                 untuk mengamankan kuota slot pendaftaran di <strong>{competition.title}</strong>.
               </p>
               <div className="flex justify-center">
-                <div className="accent-line" />
+                <div className="block h-1.5 w-18 rounded-full bg-linear-to-r from-astro-gold via-astro-lime2 to-astro-blue" />
               </div>
             </div>
 
@@ -334,7 +334,7 @@ export default function PaymentStep({
                   <Button
                     asChild
                     size="lg"
-                    className="clip-angled w-full text-sm font-black uppercase tracking-wider active:scale-95"
+                    className="rounded-lg w-full text-sm font-black uppercase tracking-wider active:scale-95"
                   >
                     <a href={resolvedLinkUrl} target="_blank" rel="noopener noreferrer">
                       Bayar Sekarang Melalui SumoPod
@@ -344,7 +344,7 @@ export default function PaymentStep({
                 </div>
               </div>
             ) : (
-              <Alert className="clip-angled max-w-lg mx-auto border-amber-200 bg-amber-50/50 text-amber-800">
+              <Alert className="rounded-lg max-w-lg mx-auto border-amber-200 bg-amber-50/50 text-amber-800">
                 <AlertDescription className="flex items-center gap-2 text-xs font-medium">
                   <AlertCircle className="size-4 shrink-0" />
                   Pendaftaran tercatat, menunggu konfirmasi gateway pembayaran...
@@ -354,7 +354,7 @@ export default function PaymentStep({
 
             {/* Live Auto-detection status alert */}
             <div className="max-w-md mx-auto space-y-3">
-              <Alert className="clip-angled border-sky-200 bg-sky-50/50 text-sky-800">
+              <Alert className="rounded-lg border-sky-200 bg-sky-50/50 text-sky-800">
                 <AlertDescription className="flex items-center gap-2 text-[11px] font-medium">
                   <Spinner className="size-3.5 shrink-0" />
                   <span>Sistem memantau pembayaran secara otomatis. Halaman ini akan berganti seketika setelah pembayaran Anda terverifikasi.</span>
@@ -365,7 +365,7 @@ export default function PaymentStep({
                 variant="outline"
                 size="lg"
                 onClick={onBack}
-                className="clip-angled w-full text-xs font-bold uppercase tracking-wider"
+                className="rounded-lg w-full text-xs font-bold uppercase tracking-wider"
               >
                 <ArrowLeft data-icon="inline-start" />
                 Kembali ke Form Pendaftaran

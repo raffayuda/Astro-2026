@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/empty";
 import type { Competition, CategoryType } from "@/types/astro";
 import CompetitionCard from "./CompetitionCard";
+import { Pattern } from "@/components/brand"
 
 const MotionImage = motion.create(Image);
 
@@ -90,10 +91,10 @@ export default function AboutSection({ competitions }: Props) {
   return (
     <section
       id="competitions"
-      className="astro-sky-soft astro-bubble-field relative overflow-hidden py-20 md:py-28"
+      className="bg-linear-to-b from-sky-bottom via-white to-white astro-bubble-field relative overflow-hidden py-20 md:py-28"
     >
       {/* Background — seamless transition from Hero's sky fade */}
-      <div className="astro-pattern absolute inset-0 -z-10 opacity-35" />
+      <Pattern className="absolute inset-0 -z-10 opacity-35" />
       <div className="pointer-events-none absolute top-0 left-0 size-[500px] rounded-full bg-[#66f4bd]/18 blur-[120px]" />
       <div className="pointer-events-none absolute right-0 bottom-0 size-[500px] rounded-full bg-[#3157ff]/10 blur-[120px]" />
 
@@ -223,8 +224,8 @@ export default function AboutSection({ competitions }: Props) {
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
             >
-              <div className="accent-line mb-3" />
-              <h2 className="font-masterpiece text-4xl leading-tight text-[#18345f] md:text-5xl lg:text-6xl">
+              <div className="block h-1.5 w-18 rounded-full bg-linear-to-r from-astro-gold via-astro-lime2 to-astro-blue mb-3" />
+              <h2 className="font-title text-4xl leading-tight text-[#18345f] md:text-5xl lg:text-6xl">
                 Pilih
                 <br />
                 <span className="astro-title-chrome">Lombamu</span>
@@ -240,7 +241,7 @@ export default function AboutSection({ competitions }: Props) {
             {/* Row 1: Search + Origin */}
             <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
               <div className="relative flex-1 sm:max-w-xs">
-                <InputGroup className="astro-pill h-11 border-white/80 bg-white/80">
+                <InputGroup className="rounded-full bg-white shadow-soft-sm h-11 border-white/80 bg-white/80">
                   <InputGroupAddon align="inline-start">
                     <Search className="size-3.5 text-muted-foreground" />
                   </InputGroupAddon>
@@ -329,7 +330,7 @@ export default function AboutSection({ competitions }: Props) {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
               >
-                <Empty className="astro-card py-16">
+                <Empty className="rounded-xl bg-white shadow-soft py-16">
                   <EmptyHeader>
                     <EmptyTitle className="text-base font-black uppercase tracking-wider">
                       Tidak Ditemukan

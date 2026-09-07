@@ -73,7 +73,7 @@ export function SiteFooter({
                 height={44}
                 className="size-11 object-contain"
               />
-              <span className="font-masterpiece text-2xl uppercase leading-none">
+              <span className="font-title text-2xl uppercase leading-none">
                 Astro 2026
               </span>
             </Link>

@@ -126,7 +126,7 @@ export default function SertifikatPage() {
 
       {/* Select competition */}
       {competitions.length === 0 ? (
-        <Empty className="clip-angled-lg border border-border bg-background p-8">
+        <Empty className="rounded-xl border border-border bg-background p-8">
           <EmptyHeader>
             <EmptyMedia variant="icon"><Trophy /></EmptyMedia>
             <EmptyTitle className="text-sm">Belum ada lomba dengan sertifikat aktif.</EmptyTitle>
@@ -139,7 +139,7 @@ export default function SertifikatPage() {
             <Field>
               <FieldLabel className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground" required>Pilih Lomba</FieldLabel>
               <Select value={selectedComp} onValueChange={(v) => { setSelectedComp(v); setPage(1); }}>
-                <SelectTrigger className="clip-angled-sm h-10 w-full bg-background">
+                <SelectTrigger className="rounded-md h-10 w-full bg-background">
                   <SelectValue placeholder="-- Pilih Lomba --" />
                 </SelectTrigger>
                 <SelectContent>
@@ -169,7 +169,7 @@ export default function SertifikatPage() {
             <Button
               onClick={handleGenerateAll}
               disabled={generateAllMut.isPending}
-              className="clip-angled-sm gap-1.5 bg-cyan-500 px-4 py-2 text-[10px] font-black uppercase tracking-wider text-cyan-950 hover:bg-cyan-400"
+              className="rounded-md gap-1.5 bg-cyan-500 px-4 py-2 text-[10px] font-black uppercase tracking-wider text-cyan-950 hover:bg-cyan-400"
             >
               {generateAllMut.isPending ? <Spinner className="size-3.5" /> : <Download className="size-3.5" />}
               {generateAllMut.isPending ? 'Menggenerate...' : 'Generate Semua'}
@@ -187,7 +187,7 @@ export default function SertifikatPage() {
             {paginated.map((reg) => {
               const name = reg.fullName || reg.teamName || reg.leaderName || '-';
               return (
-                <Card key={reg.id} className="clip-angled relative border-border p-4">
+                <Card key={reg.id} className="rounded-lg relative border-border p-4">
                   <CardContent className="flex items-center justify-between gap-4 p-0">
                     <div className="min-w-0 flex-1">
                       <span className="text-sm font-bold text-foreground">{name}</span>
@@ -196,12 +196,12 @@ export default function SertifikatPage() {
                         <span className="text-border">|</span>
                         {reg.type === 'team' ? 'Tim' : 'Individu'}
                         {reg.isWinner === '1' && (
-                          <Badge variant="outline" className="clip-angled-sm gap-1 border-emerald-200 bg-emerald-50 font-bold text-emerald-600">
+                          <Badge variant="outline" className="rounded-md gap-1 border-emerald-200 bg-emerald-50 font-bold text-emerald-600">
                             <Trophy className="size-3" /> Juara {reg.winnerRank}
                           </Badge>
                         )}
                         {reg.certificateSent === '1' && (
-                          <Badge variant="outline" className="clip-angled-sm gap-1 border-cyan-200 bg-cyan-50 font-bold text-cyan-600">
+                          <Badge variant="outline" className="rounded-md gap-1 border-cyan-200 bg-cyan-50 font-bold text-cyan-600">
                             <Check className="size-3" /> Sertifikat terkirim
                           </Badge>
                         )}
@@ -225,7 +225,7 @@ export default function SertifikatPage() {
                         <Button
                           onClick={() => sendCertificate(reg)}
                           disabled={sending || reg.certificateSent === '1'}
-                          className={cn('clip-angled-sm text-[10px] font-bold uppercase tracking-wider', reg.certificateSent === '1' && 'border border-emerald-200 bg-emerald-50 text-emerald-600 hover:bg-emerald-50')}
+                          className={cn('rounded-md text-[10px] font-bold uppercase tracking-wider', reg.certificateSent === '1' && 'border border-emerald-200 bg-emerald-50 text-emerald-600 hover:bg-emerald-50')}
                           size="sm"
                         >
                           {reg.certificateSent === '1' ? 'Terkirim' : 'Kirim'}

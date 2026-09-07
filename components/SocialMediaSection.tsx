@@ -5,6 +5,7 @@ import { motion, useReducedMotion } from 'motion/react';
 import { ArrowUpRight } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Pattern } from "@/components/brand"
 
 const MotionImage = motion.create(Image);
 
@@ -34,9 +35,9 @@ export default function SocialMediaSection({ priority = false }: { priority?: bo
   return (
     <section
       id="social"
-      className="astro-sky astro-frame-y astro-bubble-field relative min-h-screen w-full overflow-hidden py-16 font-sans text-slate-900 md:py-24"
+      className="bg-linear-to-b from-sky-top via-sky-mid to-white astro-frame-y astro-bubble-field relative min-h-screen w-full overflow-hidden py-16 font-sans text-slate-900 md:py-24"
     >
-      <div className="astro-pattern absolute inset-0 z-0 opacity-40" />
+      <Pattern className="absolute inset-0 z-0 opacity-40" />
       {/* ── Subtle Sky Ambient Glow ── */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-cyan-300/20 rounded-full blur-[130px] pointer-events-none z-0" />
 
@@ -71,7 +72,7 @@ export default function SocialMediaSection({ priority = false }: { priority?: bo
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
             className="mb-4"
           >
-            <Badge variant="outline" className="astro-pill gap-2 border-white/80 px-4 py-2 text-xs font-black text-[#3157ff]">
+            <Badge variant="outline" className="rounded-full bg-white shadow-soft-sm gap-2 border-white/80 px-4 py-2 text-xs font-black text-[#3157ff]">
               <InstagramIcon className="size-3.5 text-slate-800" />
               @astrosttnf
             </Badge>
@@ -82,7 +83,7 @@ export default function SocialMediaSection({ priority = false }: { priority?: bo
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-            className="font-masterpiece text-3xl font-extrabold leading-tight tracking-tight text-[#18345f] sm:text-5xl md:text-6xl lg:text-7xl"
+            className="font-title text-3xl font-extrabold leading-tight tracking-tight text-[#18345f] sm:text-5xl md:text-6xl lg:text-7xl"
           >
             Lebih Dekat. Lebih Seru.<br />
             <span className="astro-title-chrome font-normal italic">Lebih ASTRO.</span>
@@ -93,7 +94,7 @@ export default function SocialMediaSection({ priority = false }: { priority?: bo
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="astro-pill mx-auto mt-4 w-fit px-5 py-2 text-xs font-black tracking-wide text-[#3157ff] sm:text-sm md:text-base"
+            className="rounded-full bg-white shadow-soft-sm mx-auto mt-4 w-fit px-5 py-2 text-xs font-black tracking-wide text-[#3157ff] sm:text-sm md:text-base"
           >
             Official Media Hub & Interactive Feed ASTRO 2026
           </motion.p>
@@ -157,7 +158,7 @@ export default function SocialMediaSection({ priority = false }: { priority?: bo
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.3 }}
-          className="astro-card z-20 grid w-full max-w-6xl gap-x-14 gap-y-10 p-6 md:grid-cols-2 md:p-9"
+          className="rounded-xl bg-white shadow-soft z-20 grid w-full max-w-6xl gap-x-14 gap-y-10 p-6 md:grid-cols-2 md:p-9"
         >
           {/* Spec Item 1 */}
           <div className="flex flex-col gap-2 border-b border-[#83cfff]/45 pb-8 md:border-b-0 md:pb-0">

@@ -20,7 +20,7 @@ export default function RegisterSection({ competition }: Props) {
         <Button
           disabled
           size="lg"
-          className="clip-angled mx-auto w-full max-w-md text-sm font-black uppercase tracking-wider opacity-60 cursor-not-allowed bg-slate-300 text-slate-600 hover:bg-slate-300 gap-2"
+          className="rounded-lg mx-auto w-full max-w-md text-sm font-black uppercase tracking-wider opacity-60 cursor-not-allowed bg-slate-300 text-slate-600 hover:bg-slate-300 gap-2"
         >
           <Lock className="size-4" /> Pendaftaran Ditutup
         </Button>
@@ -37,7 +37,7 @@ export default function RegisterSection({ competition }: Props) {
         <Button
           disabled
           size="lg"
-          className="clip-angled mx-auto w-full max-w-md text-sm font-black uppercase tracking-wider opacity-60 cursor-not-allowed bg-amber-200 text-amber-800 hover:bg-amber-200 gap-2"
+          className="rounded-lg mx-auto w-full max-w-md text-sm font-black uppercase tracking-wider opacity-60 cursor-not-allowed bg-amber-200 text-amber-800 hover:bg-amber-200 gap-2"
         >
           <Lock className="size-4" /> Kuota Penuh
         </Button>
@@ -53,7 +53,7 @@ export default function RegisterSection({ competition }: Props) {
       <Button
         onClick={() => router.push(`/register/${competition.id}`)}
         size="lg"
-        className="clip-angled mx-auto w-full max-w-md text-sm font-black uppercase tracking-wider active:scale-95"
+        className="rounded-lg mx-auto w-full max-w-md text-sm font-black uppercase tracking-wider active:scale-95"
       >
         Daftar {competition.title}
       </Button>

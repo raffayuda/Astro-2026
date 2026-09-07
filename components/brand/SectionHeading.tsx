@@ -37,11 +37,11 @@ export function SectionHeading({
       )}
 
       {chrome ? (
-        <ChromeText as="h2" depth="md" className="text-4xl sm:text-5xl lg:text-6xl">
+        <ChromeText as="h2" depth="md" className="text-subtitle sm:text-title">
           {title}
         </ChromeText>
       ) : (
-        <h2 className="font-masterpiece text-3xl uppercase leading-tight text-astro-navy sm:text-4xl lg:text-5xl">
+        <h2 className="font-title text-subtitle uppercase text-astro-navy">
           {title}
         </h2>
       )}

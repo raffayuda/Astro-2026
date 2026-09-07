@@ -4,6 +4,7 @@ import Image from "next/image";
 import { motion, useReducedMotion } from "motion/react";
 import { ArrowDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Pattern } from "@/components/brand"
 
 const MotionImage = motion.create(Image);
 
@@ -27,9 +28,9 @@ export default function ProfileHero() {
   return (
     <section
       id="home"
-      className="astro-sky astro-frame-y astro-bubble-field relative flex min-h-[100svh] flex-col items-center justify-start overflow-hidden pt-[18svh] md:pt-[15svh]"
+      className="bg-linear-to-b from-sky-top via-sky-mid to-white astro-frame-y astro-bubble-field relative flex min-h-[100svh] flex-col items-center justify-start overflow-hidden pt-[18svh] md:pt-[15svh]"
     >
-      <div className="astro-pattern absolute inset-0 z-0 opacity-55" />
+      <Pattern className="absolute inset-0 z-0 opacity-55" />
       {/* ─── CLOUD IMAGES ─── */}
       {/* Big cloud top-left */}
       <MotionImage
@@ -149,7 +150,7 @@ export default function ProfileHero() {
         initial="hidden"
         animate="visible"
       >
-        <motion.div variants={fadeUp} className="astro-pill mx-auto mb-8 flex w-fit items-center gap-4 px-5 py-3">
+        <motion.div variants={fadeUp} className="rounded-full bg-white shadow-soft-sm mx-auto mb-8 flex w-fit items-center gap-4 px-5 py-3">
           <Image
             src="/assets/logo-astro.png"
             alt="ASTRO 2026"
@@ -164,7 +165,7 @@ export default function ProfileHero() {
         </motion.div>
         {/* ─── MAIN TITLE ─── */}
         <motion.div variants={fadeUp} className="mb-6 md:mb-0 md:-mt-6">
-          <h1 className="text-massive mb-0">
+          <h1 className="font-title text-6xl font-black uppercase leading-none sm:text-7xl lg:text-8xl mb-0">
             <span
               className="astro-title-chrome block"
             >
@@ -178,7 +179,7 @@ export default function ProfileHero() {
           </h1>
 
           {/* Tagline - Split Creative */}
-          <p className="mt-6 font-masterpiece leading-snug drop-shadow-[0_2px_12px_rgba(0,0,0,0.08)]">
+          <p className="mt-6 font-title leading-snug drop-shadow-[0_2px_12px_rgba(0,0,0,0.08)]">
             <span className="text-3xl sm:text-4xl md:text-5xl text-white/95 block">
               Where Innovation
             </span>

@@ -84,7 +84,7 @@ export default function ProfilePage() {
       </div>
 
       {message && (
-        <Alert variant={messageType === 'success' ? 'default' : 'destructive'} className="clip-angled border-border">
+        <Alert variant={messageType === 'success' ? 'default' : 'destructive'} className="rounded-lg border-border">
           <AlertDescription className="text-xs font-medium">
             {messageType === 'success' ? <Check className="mr-1 inline size-3.5" /> : null}
             {message}
@@ -93,7 +93,7 @@ export default function ProfilePage() {
       )}
 
       {/* Email */}
-      <Card className="clip-angled relative overflow-hidden border-border">
+      <Card className="rounded-lg relative overflow-hidden border-border">
         <div className="absolute -top-px -left-px size-8 bg-primary" style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }} />
         <CardContent className="space-y-5 p-6">
           <h2 className="text-sm font-black uppercase tracking-tight text-foreground">Email</h2>
@@ -107,7 +107,7 @@ export default function ProfilePage() {
       </Card>
 
       {/* Change Password */}
-      <Card className="clip-angled border-border">
+      <Card className="rounded-lg border-border">
         <CardContent className="space-y-5 p-6">
           <h2 className="text-sm font-black uppercase tracking-tight text-foreground">Ubah Password</h2>
 
@@ -150,7 +150,7 @@ export default function ProfilePage() {
               </div>
             </FieldGroup>
 
-            <Button type="submit" disabled={saving} className="clip-angled text-xs font-black uppercase tracking-wider">
+            <Button type="submit" disabled={saving} className="rounded-lg text-xs font-black uppercase tracking-wider">
               {saving ? <Spinner data-icon="inline-start" /> : <Save data-icon="inline-start" />}
               {saving ? 'Menyimpan...' : 'Simpan Password Baru'}
             </Button>

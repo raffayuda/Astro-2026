@@ -20,7 +20,7 @@ export function PricePill({
         className
       )}
     >
-      <span className="font-masterpiece text-2xl leading-none">{amount}</span>
+      <span className="font-title text-2xl leading-none">{amount}</span>
       {unit && (
         <span className="text-sm font-bold uppercase tracking-wide">/{unit}</span>
       )}

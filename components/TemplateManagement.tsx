@@ -293,7 +293,7 @@ export default function TemplateManagement({ competitionId }: Props) {
           <Button
             size="sm"
             variant="outline"
-            className="clip-angled-sm text-[10px] font-black uppercase tracking-wider"
+            className="rounded-md text-[10px] font-black uppercase tracking-wider"
             onClick={handleSaveTemplate}
             disabled={createTemplateMut.isPending}
           >
@@ -310,7 +310,7 @@ export default function TemplateManagement({ competitionId }: Props) {
                 key={t.id}
                 size="sm"
                 variant="outline"
-                className="clip-angled-sm text-[10px] font-black uppercase tracking-wider"
+                className="rounded-md text-[10px] font-black uppercase tracking-wider"
                 onClick={() => handleRemoveTemplate(t.id)}
                 disabled={deletingTemplateId === t.id}
               >
@@ -336,7 +336,7 @@ export default function TemplateManagement({ competitionId }: Props) {
           />
           <label htmlFor="template-upload" className="flex-shrink-0 cursor-pointer">
             <Button asChild size="sm" variant="outline" disabled={uploadingTemplate}
-              className="clip-angled-sm gap-1 text-[10px] font-black uppercase tracking-wider">
+              className="rounded-md gap-1 text-[10px] font-black uppercase tracking-wider">
               <span>
                 {uploadingTemplate ? <Spinner className="size-3" /> : <Upload className="size-3" />}
                 {uploadingTemplate ? 'Mengunggah...' : 'Upload Gambar'}
@@ -372,7 +372,7 @@ export default function TemplateManagement({ competitionId }: Props) {
             Text Overlay Fields
           </Label>
           <Button size="sm" variant="outline"
-            className="clip-angled-sm gap-1 text-[10px] font-black uppercase tracking-wider"
+            className="rounded-md gap-1 text-[10px] font-black uppercase tracking-wider"
             onClick={handleAddOverlayField}>
             <Plus className="size-3" /> Tambah Field
           </Button>

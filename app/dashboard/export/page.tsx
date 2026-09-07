@@ -44,7 +44,7 @@ export default function ExportPage() {
         </p>
       </div>
 
-      <Card className="clip-angled-lg relative overflow-hidden border-border">
+      <Card className="rounded-xl relative overflow-hidden border-border">
         <div className="absolute -top-px -left-px size-8 bg-primary" style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }} />
         <CardContent className="space-y-6 p-6 md:p-8">
           <div className="flex items-center gap-3">
@@ -75,7 +75,7 @@ export default function ExportPage() {
             onClick={handleExport}
             disabled={loading}
             size="lg"
-            className="clip-angled text-sm font-black uppercase tracking-wider active:scale-[0.98]"
+            className="rounded-lg text-sm font-black uppercase tracking-wider active:scale-[0.98]"
           >
             {loading ? (
               <>

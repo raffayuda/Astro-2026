@@ -52,7 +52,7 @@ const surfaceVariants = cva("relative", {
 export type SurfaceProps = React.ComponentProps<"div"> &
   VariantProps<typeof surfaceVariants> & { asChild?: boolean }
 
-/** The single card/panel primitive. Replaces the old `.astro-card` global class. */
+/** The single card/panel primitive. Replaces the old `.rounded-xl bg-white shadow-soft` global class. */
 export function Surface({
   className,
   tone,

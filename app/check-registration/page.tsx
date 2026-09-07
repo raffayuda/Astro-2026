@@ -308,9 +308,9 @@ function CheckRegistrationContent() {
         {/* Header */}
         <div className="mb-8 text-center">
           <div className="mb-3 flex justify-center">
-            <div className="accent-line" />
+            <div className="block h-1.5 w-18 rounded-full bg-linear-to-r from-astro-gold via-astro-lime2 to-astro-blue" />
           </div>
-          <h1 className="font-masterpiece mb-2 bg-linear-to-b from-slate-800 via-slate-900 to-black bg-clip-text text-4xl leading-tight text-transparent md:text-5xl">
+          <h1 className="font-title mb-2 bg-linear-to-b from-slate-800 via-slate-900 to-black bg-clip-text text-4xl leading-tight text-transparent md:text-5xl">
             Cek Pendaftaran
           </h1>
           <p className="mx-auto max-w-md text-xs md:text-sm font-normal text-slate-700">
@@ -320,7 +320,7 @@ function CheckRegistrationContent() {
 
         {/* ─── QUICK SEARCH BOX (BISA UNTUK UMUM / TANPA LOGIN) ─── */}
         <div className="mb-8">
-          <Card className="clip-angled-lg border-2 border-white/60 bg-white/90 p-2 shadow-xl backdrop-blur-md">
+          <Card className="rounded-xl border-2 border-white/60 bg-white/90 p-2 shadow-xl backdrop-blur-md">
             <form onSubmit={handleSearchSubmit} className="flex flex-col gap-2 sm:flex-row">
               <div className="relative flex-1">
                 <Search className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-slate-400" />
@@ -336,7 +336,7 @@ function CheckRegistrationContent() {
                 <Button
                   type="submit"
                   disabled={searchLoading || !query.trim()}
-                  className="clip-angled h-12 gap-2 bg-cyan-600 px-6 text-xs font-black uppercase tracking-wider text-white hover:bg-cyan-500 shadow-md"
+                  className="rounded-lg h-12 gap-2 bg-cyan-600 px-6 text-xs font-black uppercase tracking-wider text-white hover:bg-cyan-500 shadow-md"
                 >
                   {searchLoading ? (
                     <Spinner className="size-4 text-white" />
@@ -350,7 +350,7 @@ function CheckRegistrationContent() {
                     type="button"
                     variant="outline"
                     onClick={handleClearSearch}
-                    className="clip-angled h-12 border-slate-300 px-3 text-slate-600 hover:text-slate-900"
+                    className="rounded-lg h-12 border-slate-300 px-3 text-slate-600 hover:text-slate-900"
                     title="Reset Pencarian"
                   >
                     <RotateCcw className="size-4" />
@@ -371,7 +371,7 @@ function CheckRegistrationContent() {
 
         {/* ─── SEARCH ERROR ALERT ─── */}
         {searchError && (
-          <Alert variant="destructive" className="clip-angled mb-6 border-red-200 bg-red-50 text-red-800">
+          <Alert variant="destructive" className="rounded-lg mb-6 border-red-200 bg-red-50 text-red-800">
             <AlertCircle className="size-4" />
             <AlertDescription className="text-xs font-medium">
               {searchError}
@@ -393,7 +393,7 @@ function CheckRegistrationContent() {
             </div>
 
             {searchResults.length === 0 ? (
-              <Empty className="clip-angled-lg border border-slate-200 bg-white/95 p-8 text-center shadow-md">
+              <Empty className="rounded-xl border border-slate-200 bg-white/95 p-8 text-center shadow-md">
                 <EmptyHeader>
                   <EmptyMedia variant="icon">
                     <HelpCircle className="size-8 text-amber-500" />
@@ -409,14 +409,14 @@ function CheckRegistrationContent() {
                       variant="outline"
                       size="sm"
                       onClick={handleClearSearch}
-                      className="clip-angled text-xs font-bold uppercase"
+                      className="rounded-lg text-xs font-bold uppercase"
                     >
                       Coba Kata Kunci Lain
                     </Button>
                     <Button
                       asChild
                       size="sm"
-                      className="clip-angled text-xs font-bold uppercase bg-cyan-600 hover:bg-cyan-500"
+                      className="rounded-lg text-xs font-bold uppercase bg-cyan-600 hover:bg-cyan-500"
                     >
                       <Link href="/#competitions">
                         Daftar Lomba Baru <ArrowRight className="size-3 ml-1" />
@@ -463,7 +463,7 @@ function CheckRegistrationContent() {
                 <Spinner className="size-6 text-cyan-700" />
               </div>
             ) : accountRegistrations.length === 0 ? (
-              <Empty className="clip-angled-lg border border-slate-200 bg-white/90 p-6 text-center shadow-sm">
+              <Empty className="rounded-xl border border-slate-200 bg-white/90 p-6 text-center shadow-sm">
                 <EmptyHeader>
                   <EmptyTitle className="text-xs font-bold text-slate-800">
                     Belum Ada Pendaftaran Terhubung
@@ -472,7 +472,7 @@ function CheckRegistrationContent() {
                     Akun ini belum memiliki riwayat pendaftaran lomba aktif.
                   </EmptyDescription>
                   <EmptyContent className="mt-3">
-                    <Button asChild size="sm" className="clip-angled text-xs font-bold uppercase bg-cyan-600 hover:bg-cyan-500">
+                    <Button asChild size="sm" className="rounded-lg text-xs font-bold uppercase bg-cyan-600 hover:bg-cyan-500">
                       <Link href="/#competitions">Pilih & Daftar Lomba</Link>
                     </Button>
                   </EmptyContent>
@@ -518,7 +518,7 @@ function CheckRegistrationContent() {
             </div>
             <div className="mt-4 pt-3 border-t border-slate-200/80 flex items-center justify-between">
               <span className="text-[11px] text-slate-600">Sudah memiliki akun ASTRO?</span>
-              <Button asChild size="sm" variant="outline" className="clip-angled text-xs font-bold uppercase gap-1.5">
+              <Button asChild size="sm" variant="outline" className="rounded-lg text-xs font-bold uppercase gap-1.5">
                 <Link href="/login">
                   <LogIn className="size-3" /> Masuk Akun
                 </Link>
@@ -580,7 +580,7 @@ function CheckRegistrationContent() {
                   const cfg = statusConfig[selectedReg.paymentStatus] || statusConfig.pending;
                   const Icon = cfg.icon;
                   return (
-                    <Badge variant="outline" className={cn("clip-angled-sm gap-1 border px-2.5 py-1 text-[10px] font-bold uppercase", cfg.color)}>
+                    <Badge variant="outline" className={cn("rounded-md gap-1 border px-2.5 py-1 text-[10px] font-bold uppercase", cfg.color)}>
                       <Icon className="size-3" />
                       {cfg.label}
                     </Badge>
@@ -639,7 +639,7 @@ function CheckRegistrationContent() {
                   <Button
                     onClick={() => router.push(`/register/${selectedReg.competitionId}?regId=${selectedReg.id}`)}
                     size="sm"
-                    className="clip-angled mt-2 w-full bg-emerald-600 text-xs font-black uppercase text-white hover:bg-emerald-500"
+                    className="rounded-lg mt-2 w-full bg-emerald-600 text-xs font-black uppercase text-white hover:bg-emerald-500"
                   >
                     <CreditCard className="size-3.5 mr-1" /> Lanjutkan Pembayaran Sekarang
                   </Button>
@@ -807,7 +807,7 @@ function CheckRegistrationContent() {
                   <Button
                     asChild
                     size="sm"
-                    className="clip-angled gap-1.5 bg-emerald-600 text-xs font-bold text-white hover:bg-emerald-500 self-start sm:self-auto"
+                    className="rounded-lg gap-1.5 bg-emerald-600 text-xs font-bold text-white hover:bg-emerald-500 self-start sm:self-auto"
                   >
                     <a
                       href={`https://wa.me/${selectedReg.competitionContactWhatsapp.replace(/\D/g, "")}?text=${encodeURIComponent(
@@ -829,7 +829,7 @@ function CheckRegistrationContent() {
             variant="outline"
             size="sm"
             onClick={() => handlePrint(selectedReg)}
-            className="clip-angled gap-1.5 text-xs font-bold text-slate-800 hover:text-cyan-700 hover:border-cyan-400 bg-white shadow-xs"
+            className="rounded-lg gap-1.5 text-xs font-bold text-slate-800 hover:text-cyan-700 hover:border-cyan-400 bg-white shadow-xs"
           >
             <Printer className="size-3.5 text-cyan-600" /> Cetak Bukti Invoice
           </Button>
@@ -837,7 +837,7 @@ function CheckRegistrationContent() {
             variant="outline"
             size="sm"
             onClick={() => setSelectedReg(null)}
-            className="clip-angled text-xs font-bold uppercase"
+            className="rounded-lg text-xs font-bold uppercase"
           >
             Tutup
           </Button>
@@ -871,7 +871,7 @@ function RegistrationCard({
   const Icon = cfg.icon;
 
   return (
-    <Card className="clip-angled relative border-slate-200 bg-white shadow-sm hover:shadow-md transition-shadow">
+    <Card className="rounded-lg relative border-slate-200 bg-white shadow-sm hover:shadow-md transition-shadow">
       <div
         className="absolute -top-px -left-px size-8 bg-cyan-600"
         style={{ clipPath: "polygon(0 0, 100% 0, 0 100%)" }}
@@ -925,7 +925,7 @@ function RegistrationCard({
             <Badge
               variant="outline"
               className={cn(
-                "clip-angled-sm gap-1 border px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider",
+                "rounded-md gap-1 border px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider",
                 cfg.color,
               )}
             >
@@ -937,7 +937,7 @@ function RegistrationCard({
               {reg.paymentStatus === "pending" && (
                 <Button
                   size="sm"
-                  className="clip-angled h-8 gap-1 text-[10px] font-black uppercase bg-emerald-600 text-white hover:bg-emerald-500 shadow-sm"
+                  className="rounded-lg h-8 gap-1 text-[10px] font-black uppercase bg-emerald-600 text-white hover:bg-emerald-500 shadow-sm"
                   onClick={() => router.push(`/register/${reg.competitionId}?regId=${reg.id}`)}
                 >
                   <CreditCard className="size-3" /> Bayar
@@ -948,7 +948,7 @@ function RegistrationCard({
                 <Button
                   variant="outline"
                   size="sm"
-                  className="clip-angled h-8 gap-1 text-[10px] font-bold uppercase text-slate-700 hover:text-cyan-700 hover:border-cyan-300"
+                  className="rounded-lg h-8 gap-1 text-[10px] font-bold uppercase text-slate-700 hover:text-cyan-700 hover:border-cyan-300"
                   onClick={onPrint}
                   title="Cetak Bukti Pendaftaran / Invoice"
                 >
@@ -959,7 +959,7 @@ function RegistrationCard({
               <Button
                 variant="outline"
                 size="sm"
-                className="clip-angled h-8 gap-1 text-[10px] font-bold uppercase text-slate-700 hover:text-cyan-700 hover:border-cyan-300"
+                className="rounded-lg h-8 gap-1 text-[10px] font-bold uppercase text-slate-700 hover:text-cyan-700 hover:border-cyan-300"
                 onClick={onOpenDetail}
               >
                 <FileText className="size-3" /> Detail

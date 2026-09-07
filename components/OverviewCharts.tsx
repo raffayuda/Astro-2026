@@ -54,7 +54,7 @@ export default function OverviewCharts() {
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
       {/* Bar Chart — Pendaftar Per Lomba */}
-      <Card className="clip-angled-lg border-border lg:col-span-3">
+      <Card className="rounded-xl border-border lg:col-span-3">
         <CardHeader className="border-b border-border">
           <CardTitle className="text-sm font-black uppercase tracking-tight">
             Pendaftar Per Lomba
@@ -90,7 +90,7 @@ export default function OverviewCharts() {
       </Card>
 
       {/* Pie Chart — Status Pembayaran */}
-      <Card className="clip-angled-lg border-border lg:col-span-2">
+      <Card className="rounded-xl border-border lg:col-span-2">
         <CardHeader className="border-b border-border">
           <CardTitle className="text-sm font-black uppercase tracking-tight">
             Status Pembayaran

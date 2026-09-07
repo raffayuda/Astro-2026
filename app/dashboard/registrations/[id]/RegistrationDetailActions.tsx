@@ -48,7 +48,7 @@ export default function RegistrationDetailActions({ registration }: Props) {
           variant="outline"
           size="sm"
           onClick={handlePrint}
-          className="clip-angled text-xs font-bold uppercase gap-1.5 bg-white text-slate-800 hover:text-cyan-700 hover:border-cyan-400"
+          className="rounded-lg text-xs font-bold uppercase gap-1.5 bg-white text-slate-800 hover:text-cyan-700 hover:border-cyan-400"
         >
           <Printer className="size-3.5 text-cyan-600" /> Cetak Invoice
         </Button>
@@ -57,7 +57,7 @@ export default function RegistrationDetailActions({ registration }: Props) {
           variant="outline"
           size="sm"
           onClick={() => setDeleteOpen(true)}
-          className="clip-angled text-xs font-bold uppercase gap-1.5 border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300"
+          className="rounded-lg text-xs font-bold uppercase gap-1.5 border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300"
         >
           <Trash2 className="size-3.5" /> Hapus
         </Button>

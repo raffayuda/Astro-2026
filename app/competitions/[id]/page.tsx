@@ -298,21 +298,21 @@ export default function CompetitionDetailPage() {
                   transition={{ delay: 0.05 }}
                   className="mb-5 flex flex-wrap items-center gap-1.5"
                 >
-                  <Badge variant="outline" className={cn('clip-angled-sm border px-2.5 py-1 text-[10px] font-bold tracking-[0.15em] uppercase', cat.bg, cat.color, cat.border)}>
+                  <Badge variant="outline" className={cn('rounded-md border px-2.5 py-1 text-[10px] font-bold tracking-[0.15em] uppercase', cat.bg, cat.color, cat.border)}>
                     {cat.label}
                   </Badge>
-                  <Badge variant="outline" className="clip-angled-sm border-sky-200 bg-sky-50 px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.1em] text-sky-700">
+                  <Badge variant="outline" className="rounded-md border-sky-200 bg-sky-50 px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.1em] text-sky-700">
                     {competition.origin === 'external' ? 'Eksternal' : 'Internal'}
                   </Badge>
-                  <Badge variant="outline" className={cn('clip-angled-sm border px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.1em]',
+                  <Badge variant="outline" className={cn('rounded-md border px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.1em]',
                     competition.isFree ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-amber-200 bg-amber-50 text-amber-700')}>
                     {competition.isFree ? 'Gratis' : 'Berbayar'}
                   </Badge>
-                  <Badge variant="outline" className="clip-angled-sm border-purple-200 bg-purple-50 px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.1em] text-purple-700">
+                  <Badge variant="outline" className="rounded-md border-purple-200 bg-purple-50 px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.1em] text-purple-700">
                     {competition.type === 'both' ? 'Tim & Individu' : competition.type === 'team' ? 'Tim' : 'Individu'}
                   </Badge>
                   {competition.isActive === false && (
-                    <Badge variant="outline" className="clip-angled-sm border-red-200 bg-red-50 px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.1em] text-red-600">
+                    <Badge variant="outline" className="rounded-md border-red-200 bg-red-50 px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.1em] text-red-600">
                       Pendaftaran Ditutup
                     </Badge>
                   )}
@@ -325,7 +325,7 @@ export default function CompetitionDetailPage() {
                   whileInView="visible"
                   viewport={{ once: true }}
                   transition={{ delay: 0.1 }}
-                  className="text-display mb-4 bg-linear-to-r from-sky-900 via-cyan-800 to-slate-800 bg-clip-text text-transparent"
+                  className="text-3xl font-extrabold uppercase leading-tight sm:text-4xl lg:text-5xl mb-4 bg-linear-to-r from-sky-900 via-cyan-800 to-slate-800 bg-clip-text text-transparent"
                 >
                   {competition.title}
                 </motion.h1>
@@ -351,7 +351,7 @@ export default function CompetitionDetailPage() {
                   whileInView="visible"
                   viewport={{ once: true }}
                   transition={{ delay: 0.2 }}
-                  className="accent-line mb-6"
+                  className="block h-1.5 w-18 rounded-full bg-linear-to-r from-astro-gold via-astro-lime2 to-astro-blue mb-6"
                 />
 
                 {/* Description */}
@@ -465,7 +465,7 @@ export default function CompetitionDetailPage() {
                         transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] as const }}
                         className="flex items-center gap-3"
                       >
-                        <div className="accent-line" />
+                        <div className="block h-1.5 w-18 rounded-full bg-linear-to-r from-astro-gold via-astro-lime2 to-astro-blue" />
                         <h2 className="text-xl md:text-2xl font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
                           <Layers className="w-5 h-5 text-astro-cyan" />
                           Gelombang Pendaftaran
@@ -519,7 +519,7 @@ export default function CompetitionDetailPage() {
                       transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] as const }}
                       className="flex items-center gap-3"
                     >
-                      <div className="accent-line" />
+                      <div className="block h-1.5 w-18 rounded-full bg-linear-to-r from-astro-gold via-astro-lime2 to-astro-blue" />
                       <h2 className="text-xl md:text-2xl font-black text-slate-900 uppercase tracking-tight">
                         Hadiah Pemenang
                       </h2>
@@ -582,7 +582,7 @@ export default function CompetitionDetailPage() {
                   <div className="rounded-xl border border-border/80 bg-muted/20 p-5 space-y-4">
                     <RegisterSection competition={competition} />
                     {competition.rulebookUrl && (
-                      <Button asChild variant="outline" size="sm" className="clip-angled-sm w-full gap-2 text-xs font-bold uppercase tracking-wider">
+                      <Button asChild variant="outline" size="sm" className="rounded-md w-full gap-2 text-xs font-bold uppercase tracking-wider">
                         <a href={competition.rulebookUrl} target="_blank" rel="noopener noreferrer">
                           <FileText className="size-3.5" /> Buka Guidebook (PDF)
                         </a>
@@ -671,7 +671,7 @@ export default function CompetitionDetailPage() {
                 </p>
                 {/* Accent line centered */}
                 <div className="flex justify-center">
-                  <div className="accent-line" />
+                  <div className="block h-1.5 w-18 rounded-full bg-linear-to-r from-astro-gold via-astro-lime2 to-astro-blue" />
                 </div>
               </motion.div>
 
@@ -686,24 +686,24 @@ export default function CompetitionDetailPage() {
 
                 <div className="flex w-full max-w-md flex-col justify-center gap-3 sm:flex-row">
                   {competition.rulebookUrl ? (
-                    <Button asChild variant="outline" className="clip-angled w-full text-xs font-bold uppercase tracking-wider sm:w-1/2">
+                    <Button asChild variant="outline" className="rounded-lg w-full text-xs font-bold uppercase tracking-wider sm:w-1/2">
                       <a href={competition.rulebookUrl} target="_blank" rel="noopener noreferrer">
                         <FileText data-icon="inline-start" /> Baca Rulebook
                       </a>
                     </Button>
                   ) : (
-                    <Button disabled variant="outline" className="clip-angled w-full text-xs font-bold uppercase tracking-wider opacity-60 cursor-not-allowed sm:w-1/2">
+                    <Button disabled variant="outline" className="rounded-lg w-full text-xs font-bold uppercase tracking-wider opacity-60 cursor-not-allowed sm:w-1/2">
                       <FileText data-icon="inline-start" /> Rulebook (TBA)
                     </Button>
                   )}
                   {competition.contactPerson?.whatsapp ? (
-                    <Button asChild variant="outline" className="clip-angled w-full text-xs font-bold uppercase tracking-wider hover:border-emerald-500 hover:text-emerald-700 sm:w-1/2">
+                    <Button asChild variant="outline" className="rounded-lg w-full text-xs font-bold uppercase tracking-wider hover:border-emerald-500 hover:text-emerald-700 sm:w-1/2">
                       <a href={`https://wa.me/${competition.contactPerson.whatsapp}`} target="_blank" rel="noopener noreferrer">
                         <MessageCircle data-icon="inline-start" /> Hubungi CP
                       </a>
                     </Button>
                   ) : (
-                    <Button disabled variant="outline" className="clip-angled w-full text-xs font-bold uppercase tracking-wider opacity-60 cursor-not-allowed sm:w-1/2">
+                    <Button disabled variant="outline" className="rounded-lg w-full text-xs font-bold uppercase tracking-wider opacity-60 cursor-not-allowed sm:w-1/2">
                       <MessageCircle data-icon="inline-start" /> CP (TBA)
                     </Button>
                   )}
@@ -748,7 +748,7 @@ function DetailSkeleton() {
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
               <div className="space-y-6 lg:w-10/12 xl:w-3/4">
                 <Skeleton className="h-3 w-32 bg-white/40" />
-                <Skeleton className="clip-angled-sm h-4 w-24 bg-white/40" />
+                <Skeleton className="rounded-md h-4 w-24 bg-white/40" />
                 <Skeleton className="h-12 w-3/4 bg-white/30" />
                 <Skeleton className="h-4 w-1/2 bg-white/30" />
                 <Skeleton className="h-0.5 w-10 bg-white/30" />
@@ -768,8 +768,8 @@ function DetailSkeleton() {
                 <div className="space-y-12 lg:col-span-7">
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     {[1, 2, 3, 4].map((i) => (
-                      <div key={i} className="clip-angled flex items-start gap-4 border border-border/50 bg-background/60 p-5">
-                        <Skeleton className="clip-angled-sm size-11 border border-border bg-muted" />
+                      <div key={i} className="rounded-lg flex items-start gap-4 border border-border/50 bg-background/60 p-5">
+                        <Skeleton className="rounded-md size-11 border border-border bg-muted" />
                         <div className="flex-1 space-y-2">
                           <Skeleton className="h-3 w-20" />
                           <Skeleton className="h-5 w-32" />
@@ -781,10 +781,10 @@ function DetailSkeleton() {
                     <Skeleton className="h-5 w-40" />
                     <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
                       {[1, 2, 3].map((i) => (
-                        <div key={i} className="clip-angled border border-border/50 bg-background/60 p-5">
+                        <div key={i} className="rounded-lg border border-border/50 bg-background/60 p-5">
                           <Skeleton className="mb-4 h-1 w-8" />
                           <div className="flex items-center gap-3">
-                            <Skeleton className="clip-angled-sm size-8 border border-border bg-muted" />
+                            <Skeleton className="rounded-md size-8 border border-border bg-muted" />
                             <div className="space-y-1">
                               <Skeleton className="h-3 w-12" />
                               <Skeleton className="h-4 w-28" />
@@ -800,7 +800,7 @@ function DetailSkeleton() {
                   <div className="space-y-3">
                     {[1, 2, 3, 4, 5].map((i) => (
                       <div key={i} className="flex items-start gap-4">
-                        <Skeleton className="clip-angled-sm size-7" />
+                        <Skeleton className="rounded-md size-7" />
                         <Skeleton className="h-4 flex-1" />
                       </div>
                     ))}
@@ -819,10 +819,10 @@ function DetailSkeleton() {
                 <div className="flex justify-center"><Skeleton className="h-0.5 w-10" /></div>
               </div>
               <div className="flex flex-col items-center gap-4">
-                <Skeleton className="clip-angled h-12 w-64" />
+                <Skeleton className="rounded-lg h-12 w-64" />
                 <div className="flex w-full max-w-md justify-center gap-3">
-                  <Skeleton className="clip-angled h-10 w-1/2" />
-                  <Skeleton className="clip-angled h-10 w-1/2" />
+                  <Skeleton className="rounded-lg h-10 w-1/2" />
+                  <Skeleton className="rounded-lg h-10 w-1/2" />
                 </div>
               </div>
             </div>

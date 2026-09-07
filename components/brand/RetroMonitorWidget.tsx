@@ -72,7 +72,7 @@ export function RetroMonitorWidget({
                     isSelected && "ring-3 ring-white"
                   )}
                 >
-                  <span className="font-masterpiece text-base uppercase leading-none">
+                  <span className="font-title text-base uppercase leading-none">
                     {t.tier}
                   </span>
                   {t.price && (

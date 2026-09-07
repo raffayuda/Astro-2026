@@ -3,6 +3,7 @@
 import { motion, useReducedMotion } from 'motion/react';
 import { CalendarDays, Clock } from 'lucide-react';
 import type { TimelineItem } from '@/types/astro';
+import { Pattern } from "@/components/brand"
 
 interface Props {
   timeline: TimelineItem[];
@@ -30,8 +31,8 @@ export default function CompetitionTimeline({ timeline, lineColor, categoryColor
   const reduce = useReducedMotion();
 
   return (
-    <section className="astro-sky-soft astro-bubble-field relative overflow-hidden py-16 md:py-20">
-      <div className="astro-pattern absolute inset-0 z-0 opacity-25" />
+    <section className="bg-linear-to-b from-sky-bottom via-white to-white astro-bubble-field relative overflow-hidden py-16 md:py-20">
+      <Pattern className="absolute inset-0 z-0 opacity-25" />
       {/* Subtle background glow */}
       <div className="absolute top-1/2 left-1/2 size-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#66f4bd]/12 blur-[150px] pointer-events-none" />
 
@@ -177,7 +178,7 @@ function TimelineCard({
 }) {
   return (
     <div
-      className={`astro-card transition-all duration-200 w-full max-w-md relative group hover:border-[#3157ff]/45 ${
+      className={`rounded-xl bg-white shadow-soft transition-all duration-200 w-full max-w-md relative group hover:border-[#3157ff]/45 ${
         align === 'right' ? 'text-right' : 'text-left'
       }`}
     >

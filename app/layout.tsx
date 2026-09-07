@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
-import { Plus_Jakarta_Sans, Geist } from "next/font/google";
+import {
+  Alexandria,
+  Lexend_Exa,
+  Plus_Jakarta_Sans,
+  Geist,
+} from "next/font/google";
 import { Toaster } from "sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Providers } from "@/src/lib/providers";
@@ -18,9 +22,19 @@ const plusJakartaSans = Plus_Jakarta_Sans({
   display: "swap",
 });
 
-const masterpiece = localFont({
-  src: "../public/fonts/Masterpiece.ttf",
-  variable: "--font-masterpiece",
+// Display title face — used by the chrome hero wordmarks.
+const alexandria = Alexandria({
+  variable: "--font-alexandria",
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  display: "swap",
+});
+
+// Secondary display face — used by section subtitles.
+const lexendExa = Lexend_Exa({
+  variable: "--font-lexend-exa",
+  subsets: ["latin"],
+  weight: ["400", "700"],
   display: "swap",
 });
 
@@ -200,8 +214,9 @@ export default function RootLayout({
       className={cn(
         "h-full",
         "antialiased",
+        alexandria.variable,
+        lexendExa.variable,
         plusJakartaSans.variable,
-        masterpiece.variable,
         "font-sans",
         geist.variable,
       )}

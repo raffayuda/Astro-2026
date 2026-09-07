@@ -139,13 +139,13 @@ export default function JourneyPage() {
           <p className="mt-1 text-sm font-light text-muted-foreground">{items.length} perjalanan</p>
         </div>
         <Button onClick={() => { setShowAdd(!showAdd); setEditingId(null); setForm({ year: '', theme: '', participants: 0, date: '', competitionsCount: 0, achievement: '', description: '', highlights: '', sortOrder: 0 }); }}
-          className="clip-angled text-xs font-bold uppercase tracking-wider">
+          className="rounded-lg text-xs font-bold uppercase tracking-wider">
           <Plus data-icon="inline-start" /> Tambah Journey
         </Button>
       </div>
 
       {showAdd && (
-        <Card className="clip-angled relative border-border">
+        <Card className="rounded-lg relative border-border">
           <div className="absolute -top-px -left-px size-8 bg-primary" style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }} />
           <CardContent className="space-y-4 p-5">
             <h2 className="text-sm font-black uppercase tracking-tight text-foreground">{editingId ? 'Edit' : 'Tambah'} Journey</h2>
@@ -188,10 +188,10 @@ export default function JourneyPage() {
               </Field>
             </FieldGroup>
             <div className="flex gap-2 pt-2">
-              <Button onClick={handleSave} disabled={saving} className="clip-angled-sm gap-1 text-xs font-bold uppercase tracking-wider">
+              <Button onClick={handleSave} disabled={saving} className="rounded-md gap-1 text-xs font-bold uppercase tracking-wider">
                 {saving ? <Spinner data-icon="inline-start" /> : <Check data-icon="inline-start" />} Simpan
               </Button>
-              <Button variant="outline" className="clip-angled-sm gap-1 text-xs font-bold uppercase tracking-wider"
+              <Button variant="outline" className="rounded-md gap-1 text-xs font-bold uppercase tracking-wider"
                 onClick={() => { setShowAdd(false); setEditingId(null); setForm({ year: '', theme: '', participants: 0, date: '', competitionsCount: 0, achievement: '', description: '', highlights: '', sortOrder: 0 }); }}>
                 <X data-icon="inline-start" /> Batal
               </Button>
@@ -202,11 +202,11 @@ export default function JourneyPage() {
 
       <div className="grid grid-cols-1 gap-3">
         {paginated.map((item) => (
-          <Card key={item.id} className="clip-angled group relative overflow-hidden border border-border bg-card p-4 transition-all hover:border-primary/50 hover:shadow-md">
+          <Card key={item.id} className="rounded-lg group relative overflow-hidden border border-border bg-card p-4 transition-all hover:border-primary/50 hover:shadow-md">
             <div className="absolute -top-px -left-px size-6 bg-primary/20 transition-colors group-hover:bg-primary" style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }} />
             <CardContent className="flex items-center justify-between gap-4 p-0">
               <div className="flex items-center gap-3">
-                <Badge variant="secondary" className="clip-angled-sm bg-muted px-2.5 py-1 text-xs font-black text-foreground">{item.year || item.id}</Badge>
+                <Badge variant="secondary" className="rounded-md bg-muted px-2.5 py-1 text-xs font-black text-foreground">{item.year || item.id}</Badge>
                 <span className="text-sm font-bold text-foreground">{item.theme}</span>
                 <span className="text-[11px] text-muted-foreground">{item.participants} peserta</span>
               </div>
@@ -322,7 +322,7 @@ function JourneyPhotoManager({ journey }: { journey: Journey }) {
         />
         <label className="flex-shrink-0 cursor-pointer">
           <Button asChild size="sm" variant="outline" disabled={uploading}
-            className="clip-angled-sm gap-1 text-[10px] font-bold uppercase tracking-wider">
+            className="rounded-md gap-1 text-[10px] font-bold uppercase tracking-wider">
             <span>
               {uploading ? <Loader2 className="size-3 animate-spin" /> : <ImagePlus className="size-3" />}
               {uploading ? 'Mengunggah...' : 'Upload Foto'}
@@ -333,7 +333,7 @@ function JourneyPhotoManager({ journey }: { journey: Journey }) {
       </div>
       <button
         onClick={handleAddByUrl}
-        className="clip-angled-sm mt-2 inline-flex items-center gap-1.5 border border-border bg-muted px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+        className="rounded-md mt-2 inline-flex items-center gap-1.5 border border-border bg-muted px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
       >
         <Link2 className="size-3" /> Tambah dari URL
       </button>
@@ -345,7 +345,7 @@ function JourneyPhotoManager({ journey }: { journey: Journey }) {
       ) : photos.length > 0 ? (
         <div className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-5">
           {photos.map((p) => (
-            <div key={p.id} className="clip-angled-sm group relative aspect-[4/3] overflow-hidden border border-border bg-muted">
+            <div key={p.id} className="rounded-md group relative aspect-[4/3] overflow-hidden border border-border bg-muted">
               <button
                 type="button"
                 onClick={() => setPreviewImage(p.url)}

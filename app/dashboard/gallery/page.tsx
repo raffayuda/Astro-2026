@@ -169,10 +169,10 @@ export default function GalleryPage() {
           <p className="mt-1 text-sm font-light text-muted-foreground">{items.length} foto</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={() => { setShowCatManager(!showCatManager); setShowAdd(false); }} className="clip-angled text-xs font-bold uppercase tracking-wider">
+          <Button variant="outline" onClick={() => { setShowCatManager(!showCatManager); setShowAdd(false); }} className="rounded-lg text-xs font-bold uppercase tracking-wider">
             <Tag data-icon="inline-start" /> Kelola Kategori
           </Button>
-          <Button onClick={() => { setShowAdd(!showAdd); setShowCatManager(false); setEditingId(null); setForm({ title: '', category: categories[0]?.slug || '', imageUrl: '', year: 'ASTRO 2025', likesCount: 0, sortOrder: 0 }); }} className="clip-angled text-xs font-bold uppercase tracking-wider">
+          <Button onClick={() => { setShowAdd(!showAdd); setShowCatManager(false); setEditingId(null); setForm({ title: '', category: categories[0]?.slug || '', imageUrl: '', year: 'ASTRO 2025', likesCount: 0, sortOrder: 0 }); }} className="rounded-lg text-xs font-bold uppercase tracking-wider">
             <Plus data-icon="inline-start" /> Tambah Foto
           </Button>
         </div>
@@ -180,7 +180,7 @@ export default function GalleryPage() {
 
       {/* Category Manager */}
       {showCatManager && (
-        <Card className="clip-angled relative border-border">
+        <Card className="rounded-lg relative border-border">
           <div className="absolute -top-px -left-px size-8 bg-primary" style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }} />
           <CardContent className="space-y-4 p-5">
             <div className="flex items-center justify-between">
@@ -234,7 +234,7 @@ export default function GalleryPage() {
       )}
 
       {showAdd && (
-        <Card className="clip-angled relative border-border">
+        <Card className="rounded-lg relative border-border">
           <div className="absolute -top-px -left-px size-8 bg-primary" style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }} />
           <CardContent className="space-y-4 p-5">
             <h2 className="text-sm font-black uppercase tracking-tight text-foreground">{editingId ? 'Edit' : 'Tambah'} Foto</h2>
@@ -275,7 +275,7 @@ export default function GalleryPage() {
               <div className="flex items-center gap-3">
                 <label className="cursor-pointer">
                   <span className={cn(
-                    "clip-angled-sm inline-block border border-border px-4 py-2 text-xs font-bold uppercase tracking-wider transition-colors",
+                    "rounded-md inline-block border border-border px-4 py-2 text-xs font-bold uppercase tracking-wider transition-colors",
                     uploading ? "bg-primary text-primary-foreground opacity-70 cursor-not-allowed" : "bg-muted text-muted-foreground hover:bg-accent"
                   )}>
                     {uploading ? "Mengunggah..." : "Upload File"}
@@ -306,7 +306,7 @@ export default function GalleryPage() {
               </div>
             </Field>
             {form.imageUrl && (
-              <div className="clip-angled-sm flex items-center gap-3 border border-border bg-muted/50 p-3">
+              <div className="rounded-md flex items-center gap-3 border border-border bg-muted/50 p-3">
                 <button
                   type="button"
                   onClick={() => setPreviewImage(form.imageUrl)}
@@ -319,10 +319,10 @@ export default function GalleryPage() {
               </div>
             )}
             <div className="flex gap-2 pt-2">
-              <Button onClick={handleSave} disabled={saving} className="clip-angled-sm gap-1 text-xs font-bold uppercase tracking-wider">
+              <Button onClick={handleSave} disabled={saving} className="rounded-md gap-1 text-xs font-bold uppercase tracking-wider">
                 {saving ? <Spinner data-icon="inline-start" /> : <Check data-icon="inline-start" />} Simpan
               </Button>
-              <Button variant="outline" className="clip-angled-sm gap-1 text-xs font-bold uppercase tracking-wider"
+              <Button variant="outline" className="rounded-md gap-1 text-xs font-bold uppercase tracking-wider"
                 onClick={() => { setShowAdd(false); setEditingId(null); setForm({ title: '', category: categories[0]?.slug || '', imageUrl: '', year: 'ASTRO 2025', likesCount: 0, sortOrder: 0 }); }}>
                 <X data-icon="inline-start" /> Batal
               </Button>
@@ -333,7 +333,7 @@ export default function GalleryPage() {
 
       <div className="grid grid-cols-1 gap-3">
         {paginated.map((item) => (
-          <Card key={item.id} className="clip-angled group relative overflow-hidden border border-border bg-card p-4 transition-all hover:border-primary/50 hover:shadow-md">
+          <Card key={item.id} className="rounded-lg group relative overflow-hidden border border-border bg-card p-4 transition-all hover:border-primary/50 hover:shadow-md">
             <div className="absolute -top-px -left-px size-6 bg-primary/20 transition-colors group-hover:bg-primary" style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }} />
             <CardContent className="flex items-center justify-between gap-4 p-0">
               <div className="flex items-center gap-3">

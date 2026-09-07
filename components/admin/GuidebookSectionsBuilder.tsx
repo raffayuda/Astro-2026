@@ -83,7 +83,7 @@ export default function GuidebookSectionsBuilder({ sections, onChange }: Props) 
           variant="outline"
           size="sm"
           onClick={addSection}
-          className="clip-angled-sm h-7 gap-1 border-cyan-500/40 text-xs font-bold uppercase tracking-wider text-cyan-700 hover:bg-cyan-500/10 dark:text-cyan-300"
+          className="rounded-md h-7 gap-1 border-cyan-500/40 text-xs font-bold uppercase tracking-wider text-cyan-700 hover:bg-cyan-500/10 dark:text-cyan-300"
         >
           <Plus className="size-3.5" /> Tambah Bagian
         </Button>

@@ -11,6 +11,7 @@ import SkeletonImage from '@/components/SkeletonImage';
 import { cn } from '@/lib/utils';
 import { normalizeImageUrl } from '@/components/ImportCommittee';
 import { useGalleryPhotos, useGalleryCategories } from '@/src/lib/hooks/use-queries';
+import { Pattern } from "@/components/brand"
 
 const MotionImage = motion.create(Image);
 
@@ -87,8 +88,8 @@ export default function EventGallerySection() {
   }, [selectedPhotoIndex, filteredPhotos.length]);
 
   return (
-    <section id="gallery" className="astro-sky-soft astro-bubble-field relative overflow-hidden py-24 text-slate-900 md:py-32">
-      <div className="astro-pattern absolute inset-0 z-0 opacity-25" />
+    <section id="gallery" className="bg-linear-to-b from-sky-bottom via-white to-white astro-bubble-field relative overflow-hidden py-24 text-slate-900 md:py-32">
+      <Pattern className="absolute inset-0 z-0 opacity-25" />
       {/* ─── SKY BACKGROUND GLOWS ─── */}
       <div className="pointer-events-none absolute top-1/2 left-1/2 z-0 size-[850px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-300/25 blur-[140px]" />
 
@@ -125,12 +126,12 @@ export default function EventGallerySection() {
         {/* ── Section Header ── */}
         <div className="mx-auto mb-10 flex max-w-7xl flex-col items-center px-4 text-center sm:px-6 lg:px-8">
           <div className="mb-3 flex justify-center">
-            <div className="accent-line" />
+            <div className="block h-1.5 w-18 rounded-full bg-linear-to-r from-astro-gold via-astro-lime2 to-astro-blue" />
           </div>
-          <h2 className="font-masterpiece mb-3 text-4xl leading-tight tracking-tight text-[#18345f] sm:text-5xl md:text-6xl">
+          <h2 className="font-title mb-3 text-4xl leading-tight tracking-tight text-[#18345f] sm:text-5xl md:text-6xl">
             EVENT <span className="astro-title-chrome">GALLERY</span>
           </h2>
-          <p className="astro-pill mx-auto mb-6 max-w-xl px-5 py-2 text-xs font-black leading-relaxed text-[#3157ff] md:text-sm">
+          <p className="rounded-full bg-white shadow-soft-sm mx-auto mb-6 max-w-xl px-5 py-2 text-xs font-black leading-relaxed text-[#3157ff] md:text-sm">
             Kumpulan momen berharga, dokumentasi keseruan lomba, seminar, dan perayaan kemenangan ASTRO dari masa ke masa.
           </p>
 
@@ -205,7 +206,7 @@ export default function EventGallerySection() {
 
                         {/* Year Badge */}
                         <div className="absolute top-3 left-3 z-20 flex items-center gap-2">
-                          <Badge className="clip-angled-sm bg-astro-cyan text-[10px] font-black uppercase tracking-wider text-slate-950 shadow-md">
+                          <Badge className="rounded-md bg-astro-cyan text-[10px] font-black uppercase tracking-wider text-slate-950 shadow-md">
                             {photoItem.year}
                           </Badge>
                         </div>
@@ -251,7 +252,7 @@ export default function EventGallerySection() {
               <div className="flex items-center gap-3">
                 {isPhotoReady ? (
                   <>
-                    <Badge className="clip-angled-sm bg-astro-cyan text-[11px] font-black uppercase tracking-wider text-slate-950 shadow-sm">
+                    <Badge className="rounded-md bg-astro-cyan text-[11px] font-black uppercase tracking-wider text-slate-950 shadow-sm">
                       {photo.year}
                     </Badge>
                     <span className="text-xs font-bold uppercase tracking-widest text-slate-300">
@@ -260,8 +261,8 @@ export default function EventGallerySection() {
                   </>
                 ) : (
                   <>
-                    <div className="h-5 w-14 rounded bg-slate-800/80 shimmer clip-angled-sm" />
-                    <div className="h-4 w-24 rounded bg-slate-800/80 shimmer" />
+                    <div className="h-5 w-14 rounded bg-astro-cyan-2/40 animate-pulse rounded-md" />
+                    <div className="h-4 w-24 rounded bg-astro-cyan-2/40 animate-pulse" />
                   </>
                 )}
               </div>
@@ -341,8 +342,8 @@ export default function EventGallerySection() {
                   </>
                 ) : (
                   <>
-                    <div className="h-6 w-48 sm:w-72 rounded bg-slate-800/80 shimmer mb-1.5" />
-                    <div className="h-4 w-36 sm:w-48 rounded bg-slate-800/80 shimmer" />
+                    <div className="h-6 w-48 sm:w-72 rounded bg-astro-cyan-2/40 animate-pulse mb-1.5" />
+                    <div className="h-4 w-36 sm:w-48 rounded bg-astro-cyan-2/40 animate-pulse" />
                   </>
                 )}
               </div>
@@ -352,7 +353,7 @@ export default function EventGallerySection() {
                   <ZoomIn className="size-3.5 text-sky-300" /> HD Documentation
                 </div>
               ) : (
-                <div className="hidden sm:block h-7 w-32 rounded bg-slate-800/80 shimmer" />
+                <div className="hidden sm:block h-7 w-32 rounded bg-astro-cyan-2/40 animate-pulse" />
               )}
             </div>
           </motion.div>

@@ -128,14 +128,14 @@ export default function FAQPage() {
           <h1 className="text-2xl font-black uppercase tracking-tight text-foreground">FAQ</h1>
           <p className="mt-1 text-sm font-light text-muted-foreground">{faqs.length} pertanyaan</p>
         </div>
-        <Button onClick={() => setShowAdd(!showAdd)} className="clip-angled text-xs font-bold uppercase tracking-wider">
+        <Button onClick={() => setShowAdd(!showAdd)} className="rounded-lg text-xs font-bold uppercase tracking-wider">
           <Plus data-icon="inline-start" /> Tambah FAQ
         </Button>
       </div>
 
       {/* Add Form */}
       {showAdd && (
-        <Card className="clip-angled border-border">
+        <Card className="rounded-lg border-border">
           <CardContent className="p-5">
             <h2 className="text-sm font-black uppercase tracking-tight text-foreground">Tambah FAQ Baru</h2>
             <FieldGroup className="mt-4 gap-3">
@@ -157,11 +157,11 @@ export default function FAQPage() {
                 />
               </Field>
               <div className="flex gap-2">
-                <Button onClick={handleAdd} disabled={saving} className="clip-angled-sm text-xs font-bold uppercase tracking-wider">
+                <Button onClick={handleAdd} disabled={saving} className="rounded-md text-xs font-bold uppercase tracking-wider">
                   {saving ? <Spinner data-icon="inline-start" /> : null}
                   {saving ? 'Menyimpan...' : 'Simpan'}
                 </Button>
-                <Button variant="outline" onClick={() => setShowAdd(false)} className="clip-angled-sm text-xs font-bold uppercase tracking-wider">
+                <Button variant="outline" onClick={() => setShowAdd(false)} className="rounded-md text-xs font-bold uppercase tracking-wider">
                   Batal
                 </Button>
               </div>
@@ -171,7 +171,7 @@ export default function FAQPage() {
       )}
 
       {/* FAQ List */}
-      <Card className="clip-angled-lg border-border">
+      <Card className="rounded-xl border-border">
         <CardContent className="divide-y divide-border p-0">
           {faqPaginated.map((faq, idx) => (
             <div key={faq.id} className="p-5">

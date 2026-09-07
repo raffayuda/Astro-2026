@@ -99,9 +99,9 @@ export default function FAQSection({ faqs }: Props) {
           transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] as const }}
         >
           <div className="mb-3 flex justify-center">
-            <div className="accent-line" />
+            <div className="block h-1.5 w-18 rounded-full bg-linear-to-r from-astro-gold via-astro-lime2 to-astro-blue" />
           </div>
-          <h2 className="font-masterpiece mb-3 text-5xl leading-tight text-slate-900 md:text-6xl lg:text-7xl">
+          <h2 className="font-title mb-3 text-5xl leading-tight text-slate-900 md:text-6xl lg:text-7xl">
             Frequently Asked <span className="text-sky-500">Questions</span>
           </h2>
           <p className="text-sm font-light leading-relaxed text-slate-600 md:text-base">
@@ -120,7 +120,7 @@ export default function FAQSection({ faqs }: Props) {
             >
               <AccordionItem
                 value={`item-${idx}`}
-                className="clip-angled mb-3 overflow-hidden border border-border bg-white transition-all duration-200 data-[state=open]:border-primary/40 data-[state=open]:shadow-sm"
+                className="rounded-lg mb-3 overflow-hidden border border-border bg-white transition-all duration-200 data-[state=open]:border-primary/40 data-[state=open]:shadow-sm"
               >
                 <AccordionTrigger className="gap-4 p-5 text-sm font-bold tracking-tight hover:no-underline md:p-6 md:text-base">
                   {faq.q}
@@ -141,15 +141,15 @@ export default function FAQSection({ faqs }: Props) {
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          <Card className="clip-angled-lg inline-flex flex-col items-center gap-3 border border-border bg-white p-8 shadow-sm">
-            <div className="clip-angled-sm border border-pink-200 bg-linear-to-tr from-amber-50 via-rose-50 to-purple-50 p-3">
+          <Card className="rounded-xl inline-flex flex-col items-center gap-3 border border-border bg-white p-8 shadow-sm">
+            <div className="rounded-md border border-pink-200 bg-linear-to-tr from-amber-50 via-rose-50 to-purple-50 p-3">
               <FaInstagram className="size-6 text-pink-600" />
             </div>
             <div>
               <p className="text-sm font-black uppercase tracking-wider text-foreground">Masih punya pertanyaan?</p>
               <p className="mt-1 text-sm font-light text-muted-foreground">Hubungi kami langsung melalui Direct Message Instagram.</p>
             </div>
-            <Button asChild variant="default" className="clip-angled bg-linear-to-r from-purple-600 via-pink-600 to-rose-500 text-white text-xs font-black uppercase tracking-wider hover:opacity-90 active:scale-95 shadow-md">
+            <Button asChild variant="default" className="rounded-lg bg-linear-to-r from-purple-600 via-pink-600 to-rose-500 text-white text-xs font-black uppercase tracking-wider hover:opacity-90 active:scale-95 shadow-md">
               <a href="https://instagram.com/astrosttnf" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
                 <FaInstagram className="size-4" /> Hubungi @astrosttnf
               </a>

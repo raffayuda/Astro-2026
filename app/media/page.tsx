@@ -9,7 +9,7 @@ export const metadata = {
 
 export default function MediaPage() {
   return (
-    <main className="min-h-screen astro-sky">
+    <main className="min-h-screen bg-linear-to-b from-sky-top via-sky-mid to-white">
       <Navbar />
       <SocialMediaSection priority />
       <Footer />

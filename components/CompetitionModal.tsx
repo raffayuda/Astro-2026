@@ -179,7 +179,7 @@ export default function CompetitionModal({ competition, onClose }: Props) {
             router.push(`/register/${competition.id}`);
           }}
           size="lg"
-          className="clip-angled w-full text-base shadow-[0_0_20px_rgba(6,182,212,0.4)] hover:shadow-[0_0_30px_rgba(6,182,212,0.6)]"
+          className="rounded-lg w-full text-base shadow-[0_0_20px_rgba(6,182,212,0.4)] hover:shadow-[0_0_30px_rgba(6,182,212,0.6)]"
         >
           Daftar {competition.title}
         </Button>

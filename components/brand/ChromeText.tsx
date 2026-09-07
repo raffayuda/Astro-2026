@@ -4,31 +4,48 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
-const DEPTH = {
+/** Stacked hard shadows for the glossy "chrome" treatment. */
+const CHROME_DEPTH = {
   sm: "0 1px 0 #ffffff, 0 3px 0 #93c5fd, 0 5px 0 #3b82f6, 0 7px 0 #1e3a8a, 0 10px 14px rgba(30,58,138,0.3)",
   md: "0 2px 0 #ffffff, 0 4px 0 #93c5fd, 0 7px 0 #3b82f6, 0 10px 0 #1e3a8a, 0 14px 20px rgba(30,58,138,0.32)",
   lg: "0 3px 0 #ffffff, 0 6px 0 #93c5fd, 0 10px 0 #3b82f6, 0 13px 0 #1e3a8a, 0 18px 26px rgba(30,58,138,0.35)",
 } as const
 
-const STROKE = { sm: "2px", md: "2px", lg: "3px" } as const
+/** Soft single drop shadow for the outlined treatment. */
+const OUTLINE_DEPTH = {
+  sm: "0 3px 6px rgba(30,58,138,0.25)",
+  md: "0 5px 10px rgba(30,58,138,0.28)",
+  lg: "0 8px 16px rgba(30,58,138,0.3)",
+} as const
+
+const STROKE = { sm: "3px", md: "5px", lg: "7px" } as const
 
 export type ChromeTextProps<T extends React.ElementType = "span"> = {
   as?: T
-  depth?: keyof typeof DEPTH
+  /**
+   * `chrome`  — stacked gloss layers, for the big hero wordmarks.
+   * `outline` — solid blue fill with a thick white outline, for names and
+   *             section heroes (the committee-card treatment).
+   */
+  variant?: "chrome" | "outline"
+  depth?: "sm" | "md" | "lg"
   className?: string
   children?: React.ReactNode
 }
 
 /**
- * Glossy stacked-chrome display type — the "ASTRO GOT TALENT" / "Contact Person"
- * headline treatment from the source artwork.
+ * Display type in Alexandria.
  *
  * Stacked text-shadow layers and -webkit-text-stroke have no Tailwind utility
  * equivalent, so they are applied as inline style here. That keeps the recipe in
- * one component instead of a global CSS class or a bracket soup at each call site.
+ * one component rather than a global CSS class or bracket soup at each call site.
+ *
+ * Size, weight, line-height and tracking come from the `text-title`,
+ * `text-title-sm` and `text-subtitle` theme tokens.
  */
 export function ChromeText<T extends React.ElementType = "span">({
   as,
+  variant = "chrome",
   depth = "md",
   className,
   children,
@@ -36,18 +53,21 @@ export function ChromeText<T extends React.ElementType = "span">({
 }: ChromeTextProps<T> &
   Omit<React.ComponentPropsWithoutRef<T>, keyof ChromeTextProps<T>>) {
   const Comp = (as ?? "span") as React.ElementType
+  const isOutline = variant === "outline"
 
   return (
     <Comp
       data-slot="chrome-text"
+      data-variant={variant}
       className={cn(
-        "font-masterpiece uppercase leading-none text-sky-bottom",
+        "font-title uppercase",
+        isOutline ? "text-astro-blue" : "text-sky-bottom",
         className
       )}
       style={{
         WebkitTextStroke: `${STROKE[depth]} #ffffff`,
         paintOrder: "stroke fill",
-        textShadow: DEPTH[depth],
+        textShadow: isOutline ? OUTLINE_DEPTH[depth] : CHROME_DEPTH[depth],
       }}
       {...rest}
     >

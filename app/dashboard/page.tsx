@@ -66,7 +66,7 @@ export default async function DashboardOverview() {
 
   return (
     <div className="flex flex-col gap-8">
-      <div className="astro-panel p-6 text-white">
+      <div className="rounded-xl bg-linear-to-br from-astro-navy via-astro-blue to-blue-400 shadow-soft-lg p-6 text-white">
         <h1 className="text-2xl font-black uppercase tracking-tight text-white">Overview</h1>
         <p className="mt-1 text-sm font-semibold text-white/85">
           Ringkasan data pendaftaran ASTRO 2026
@@ -78,7 +78,7 @@ export default async function DashboardOverview() {
         {stats.map((stat) => {
           const Icon = stat.icon;
           return (
-            <Card key={stat.label} className="astro-card">
+            <Card key={stat.label} className="rounded-xl bg-white shadow-soft">
               <CardContent className="flex items-start gap-4 p-5">
                 <div className={cn('border p-3', stat.color)} style={{ clipPath: 'polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%)' }}>
                   <Icon className="size-5" />
@@ -99,7 +99,7 @@ export default async function DashboardOverview() {
       <OverviewCharts />
 
       {/* Per Competition Table */}
-      <Card className="astro-card">
+      <Card className="rounded-xl bg-white shadow-soft">
         <CardHeader>
           <CardTitle className="text-sm font-black uppercase tracking-tight">
             Pendaftar Per Lomba

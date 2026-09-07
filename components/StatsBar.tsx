@@ -59,7 +59,7 @@ export default function StatsBar({ data }: Props) {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.08, duration: 0.4, ease: [0.16, 1, 0.3, 1] as const }}
-                className="astro-card group px-6 py-6 text-center transition-all duration-200 ease-in-out hover:-translate-y-0.5 hover:bg-white md:py-8"
+                className="rounded-xl bg-white shadow-soft group px-6 py-6 text-center transition-all duration-200 ease-in-out hover:-translate-y-0.5 hover:bg-white md:py-8"
               >
                 <Icon className="mx-auto mb-2 size-5 text-[#3157ff] opacity-80 transition-opacity group-hover:opacity-100" />
                 <div className="text-2xl md:text-3xl font-black text-[#18345f] tracking-tight">

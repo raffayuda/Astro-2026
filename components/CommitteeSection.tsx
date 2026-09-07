@@ -10,6 +10,7 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { cn } from "@/lib/utils";
 import { normalizeImageUrl } from "@/components/ImportCommittee";
 import SkeletonImage from "@/components/SkeletonImage";
+import { Pattern } from "@/components/brand";
 import {
   useCommitteeMembers,
   useCommitteeDivisions,
@@ -245,9 +246,9 @@ export default function CommitteeSection() {
   return (
     <section
       id="committee"
-      className="astro-sky-soft astro-bubble-field relative overflow-hidden py-20 text-slate-900 md:py-28"
+      className="bg-linear-to-b from-sky-bottom via-white to-white astro-bubble-field relative overflow-hidden py-20 text-slate-900 md:py-28"
     >
-      <div className="astro-pattern absolute inset-0 z-0 opacity-25" />
+      <Pattern className="absolute inset-0 z-0 opacity-25" />
       {/* ─── SKY BACKGROUND GLOWS ─── */}
       <div className="pointer-events-none absolute top-1/2 left-1/2 z-0 size-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-300/20 blur-[140px]" />
 
@@ -293,12 +294,12 @@ export default function CommitteeSection() {
         {/* ── Section Header ── */}
         <div className="text-center mb-10">
           <div className="flex justify-center mb-3">
-            <div className="accent-line" />
+            <div className="block h-1.5 w-18 rounded-full bg-linear-to-r from-astro-gold via-astro-lime2 to-astro-blue" />
           </div>
-          <h2 className="font-masterpiece text-4xl md:text-5xl lg:text-6xl text-[#18345f] leading-tight mb-3">
+          <h2 className="font-title text-4xl md:text-5xl lg:text-6xl text-[#18345f] leading-tight mb-3">
             Our <span className="astro-title-chrome">Committee</span>
           </h2>
-          <p className="astro-pill mx-auto max-w-xl px-5 py-2 text-sm font-semibold text-[#3157ff] md:text-base">
+          <p className="rounded-full bg-white shadow-soft-sm mx-auto max-w-xl px-5 py-2 text-sm font-semibold text-[#3157ff] md:text-base">
             Tim panitia penggerak ASTRO 2026 yang bekerja keras untuk kesuksesan
             acara ini.
           </p>
@@ -336,7 +337,7 @@ export default function CommitteeSection() {
                 <Badge
                   variant="secondary"
                   className={cn(
-                    "clip-angled-sm text-[10px] font-bold",
+                    "rounded-md text-[10px] font-bold",
                     activeDivision === div.slug
                       ? "bg-sky-50 text-astro-cyan"
                       : "bg-white/40 text-muted-foreground",
@@ -352,7 +353,7 @@ export default function CommitteeSection() {
         {/* ── Division Header & Controls ── */}
         <div className="flex items-center justify-between gap-4 mb-6 px-2 sm:px-4">
           <div className="flex items-center gap-2">
-            <span className="astro-pill px-4 py-1.5 text-xs font-black uppercase tracking-widest text-[#3157ff]">
+            <span className="rounded-full bg-white shadow-soft-sm px-4 py-1.5 text-xs font-black uppercase tracking-widest text-[#3157ff]">
               {currentDivision?.displayName || activeDivision}
             </span>
             <span className="hidden sm:inline-block text-[11px] font-medium text-slate-500">
@@ -541,13 +542,13 @@ export default function CommitteeSection() {
               <div className="flex items-center justify-between pb-3">
                 <div className="flex items-center gap-2">
                   {isMemberReady ? (
-                    <Badge className="clip-angled-sm bg-astro-cyan text-[11px] font-black uppercase tracking-wider text-slate-950 shadow-sm">
+                    <Badge className="rounded-md bg-astro-cyan text-[11px] font-black uppercase tracking-wider text-slate-950 shadow-sm">
                       {currentDivision?.shortDisplay ||
                         currentDivision?.name ||
                         activeDivision}
                     </Badge>
                   ) : (
-                    <div className="h-5 w-28 rounded bg-slate-800/80 shimmer clip-angled-sm" />
+                    <div className="h-5 w-28 rounded bg-astro-cyan-2/40 animate-pulse rounded-md" />
                   )}
                 </div>
                 <Button
@@ -627,11 +628,11 @@ export default function CommitteeSection() {
                   </>
                 ) : (
                   <div className="flex flex-col items-center justify-center py-1">
-                    <div className="h-5 w-44 rounded bg-slate-800/80 shimmer mb-2" />
-                    <div className="h-4 w-28 rounded bg-slate-800/80 shimmer mb-2" />
-                    <div className="h-3 w-40 rounded bg-slate-800/80 shimmer mb-2" />
-                    <div className="h-4 w-60 rounded bg-slate-800/80 shimmer mb-2" />
-                    <div className="h-3 w-24 rounded bg-slate-800/80 shimmer" />
+                    <div className="h-5 w-44 rounded bg-astro-cyan-2/40 animate-pulse mb-2" />
+                    <div className="h-4 w-28 rounded bg-astro-cyan-2/40 animate-pulse mb-2" />
+                    <div className="h-3 w-40 rounded bg-astro-cyan-2/40 animate-pulse mb-2" />
+                    <div className="h-4 w-60 rounded bg-astro-cyan-2/40 animate-pulse mb-2" />
+                    <div className="h-3 w-24 rounded bg-astro-cyan-2/40 animate-pulse" />
                   </div>
                 )}
               </div>

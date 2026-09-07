@@ -24,6 +24,7 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import WinnersModal from "./WinnersModal";
 import { apiHelpers } from "@/src/lib/api";
 import { queryKeys } from "@/src/lib/hooks/use-queries";
+import { Pattern } from "@/components/brand"
 
 type CategoryType = "akademik" | "olahraga" | "esports" | "kesenian-/-seni";
 
@@ -166,8 +167,8 @@ export default function PengumumanClient() {
   };
 
   return (
-    <section className="astro-sky astro-frame-y astro-bubble-field relative min-h-screen overflow-hidden pt-24 pb-20 text-slate-900 md:pt-32">
-      <div className="astro-pattern absolute inset-0 z-0 opacity-35" />
+    <section className="bg-linear-to-b from-sky-top via-sky-mid to-white astro-frame-y astro-bubble-field relative min-h-screen overflow-hidden pt-24 pb-20 text-slate-900 md:pt-32">
+      <Pattern className="absolute inset-0 z-0 opacity-35" />
       {/* Floating blobs — seperti hero halaman detail lomba */}
       <MotionImage
         src="/assets/blob-round.png" alt="" width={112} height={112}
@@ -212,13 +213,13 @@ export default function PengumumanClient() {
         {/* Header */}
         <div className="text-center mb-8">
           <div className="flex justify-center mb-3">
-            <div className="accent-line" />
+            <div className="block h-1.5 w-18 rounded-full bg-linear-to-r from-astro-gold via-astro-lime2 to-astro-blue" />
           </div>
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="font-masterpiece text-5xl md:text-6xl lg:text-7xl text-[#18345f] leading-tight mb-3"
+            className="font-title text-5xl md:text-6xl lg:text-7xl text-[#18345f] leading-tight mb-3"
           >
             Pengumuman
             <br />
@@ -230,7 +231,7 @@ export default function PengumumanClient() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="astro-pill mx-auto max-w-lg px-5 py-2 text-sm font-semibold leading-relaxed text-[#3157ff] md:text-base"
+            className="rounded-full bg-white shadow-soft-sm mx-auto max-w-lg px-5 py-2 text-sm font-semibold leading-relaxed text-[#3157ff] md:text-base"
           >
             Selamat kepada para pemenang di setiap cabang lomba ASTRO 2026!
           </motion.p>
@@ -244,7 +245,7 @@ export default function PengumumanClient() {
           className="flex flex-col items-stretch justify-center gap-3 mb-10 sm:flex-row sm:items-center"
         >
           <div className="relative w-full sm:max-w-xs">
-            <InputGroup className="astro-pill h-11 border-white/80 bg-white/80">
+            <InputGroup className="rounded-full bg-white shadow-soft-sm h-11 border-white/80 bg-white/80">
               <InputGroupAddon align="inline-start">
                 <Search className="size-3.5 text-muted-foreground" />
               </InputGroupAddon>
@@ -312,7 +313,7 @@ export default function PengumumanClient() {
             {Array.from({ length: SKELETON_COUNT }).map((_, index) => (
               <div
                 key={index}
-                className="astro-card group flex flex-col gap-3 p-5 md:p-6"
+                className="rounded-xl bg-white shadow-soft group flex flex-col gap-3 p-5 md:p-6"
               >
                 <div className="flex items-center justify-between">
                   <Skeleton className="h-5 w-24" />
@@ -348,7 +349,7 @@ export default function PengumumanClient() {
                     delay: Math.min(index * 0.05, 0.3),
                     ease: [0.16, 1, 0.3, 1],
                   }}
-                  className="astro-card group transition-all duration-200 ease-in-out hover:-translate-y-1 hover:border-[#3157ff]/45"
+                  className="rounded-xl bg-white shadow-soft group transition-all duration-200 ease-in-out hover:-translate-y-1 hover:border-[#3157ff]/45"
                 >
                   {/* Corner accent */}
                   <div className="relative">

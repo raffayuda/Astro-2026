@@ -134,7 +134,7 @@ export default function SponsorSection({ variant = 'home', id = 'sponsor' }: Spo
           <div className="flex justify-center mb-3">
             <div className="w-[60px] h-[4px] bg-linear-to-r from-sky-400 to-slate-900 skew-x-[-12deg]" />
           </div>
-          <h2 className="font-masterpiece text-5xl md:text-6xl lg:text-7xl text-slate-900 mb-3 leading-tight">
+          <h2 className="font-title text-5xl md:text-6xl lg:text-7xl text-slate-900 mb-3 leading-tight">
             Didukung <span className="text-sky-500">Oleh</span>
           </h2>
           <p className="text-[11px] sm:text-xs md:text-sm font-semibold tracking-[0.25em] md:tracking-[0.35em] text-slate-700 uppercase">
@@ -210,7 +210,7 @@ export default function SponsorSection({ variant = 'home', id = 'sponsor' }: Spo
                       rel="noopener noreferrer"
                       className="inline-flex"
                     >
-                      <Button className="clip-angled-sm bg-sky-600 hover:bg-sky-700 text-white font-bold uppercase tracking-wider text-xs gap-1.5 shadow-md">
+                      <Button className="rounded-md bg-sky-600 hover:bg-sky-700 text-white font-bold uppercase tracking-wider text-xs gap-1.5 shadow-md">
                         <MessageSquare className="size-3.5" /> Hubungi Syafiq (WhatsApp)
                       </Button>
                     </a>
@@ -218,12 +218,12 @@ export default function SponsorSection({ variant = 'home', id = 'sponsor' }: Spo
                       href={SPONSOR_CP.emailLink}
                       className="inline-flex"
                     >
-                      <Button variant="outline" className="clip-angled-sm border-sky-300 bg-white/80 text-sky-800 hover:bg-sky-50 font-bold uppercase tracking-wider text-xs gap-1.5">
+                      <Button variant="outline" className="rounded-md border-sky-300 bg-white/80 text-sky-800 hover:bg-sky-50 font-bold uppercase tracking-wider text-xs gap-1.5">
                         <Mail className="size-3.5" /> Kirim Email
                       </Button>
                     </a>
                     <Link href="/profile#sponsor">
-                      <Button variant="ghost" className="clip-angled-sm text-slate-600 hover:text-slate-900 font-bold uppercase tracking-wider text-xs gap-1.5">
+                      <Button variant="ghost" className="rounded-md text-slate-600 hover:text-slate-900 font-bold uppercase tracking-wider text-xs gap-1.5">
                         Lihat Mitra Terdahulu <ArrowRight className="size-3.5" />
                       </Button>
                     </Link>
@@ -285,7 +285,7 @@ export default function SponsorSection({ variant = 'home', id = 'sponsor' }: Spo
                         <Button
                           variant="outline"
                           size="sm"
-                          className="clip-angled-sm border-sky-300/80 bg-white/90 text-sky-900 hover:bg-sky-50 font-bold uppercase tracking-wider text-xs gap-2 shadow-xs"
+                          className="rounded-md border-sky-300/80 bg-white/90 text-sky-900 hover:bg-sky-50 font-bold uppercase tracking-wider text-xs gap-2 shadow-xs"
                         >
                           <MessageSquare className="size-3.5 text-emerald-600" />
                           <span>Hubungi {cp.name}</span>

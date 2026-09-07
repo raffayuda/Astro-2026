@@ -242,7 +242,7 @@ export default function WinnerManager({ competitionId }: WinnerManagerProps) {
          <Button
            size="sm"
            variant={activeTab === 'winners' ? 'default' : 'outline'}
-           className="clip-angled-sm text-[10px] font-black uppercase tracking-wider"
+           className="rounded-md text-[10px] font-black uppercase tracking-wider"
            onClick={() => setActiveTab('winners')}
          >
            <Users className="size-3.5" /> Juara & Peserta
@@ -250,7 +250,7 @@ export default function WinnerManager({ competitionId }: WinnerManagerProps) {
          <Button
            size="sm"
            variant={activeTab === 'templates' ? 'default' : 'outline'}
-           className="clip-angled-sm text-[10px] font-black uppercase tracking-wider"
+           className="rounded-md text-[10px] font-black uppercase tracking-wider"
            onClick={() => setActiveTab('templates')}
          >
            <FileText className="size-3.5" /> Template Sertifikat
@@ -294,14 +294,14 @@ export default function WinnerManager({ competitionId }: WinnerManagerProps) {
                         <Badge variant="secondary" className="rounded bg-muted text-[8px] font-bold uppercase tracking-wider text-muted-foreground">Tim</Badge>
                       )}
                       {isWinner && (
-                        <Badge variant="outline" className={cn('clip-angled-sm gap-0.5 border text-[9px] font-bold uppercase tracking-wider',
+                        <Badge variant="outline" className={cn('rounded-md gap-0.5 border text-[9px] font-bold uppercase tracking-wider',
                           isDraft ? 'border-amber-300 bg-amber-200 text-amber-900' : 'border-amber-200 bg-amber-100 text-amber-800')}>
                           <Trophy className="size-2.5" /> Juara {eff.winnerRank}
                           {isDraft && <span className="ml-0.5 text-[7px] opacity-60">(draft)</span>}
                         </Badge>
                       )}
                       {isSent && (
-                        <Badge variant="outline" className="clip-angled-sm gap-0.5 border border-emerald-200 bg-emerald-100 text-[9px] font-bold uppercase tracking-wider text-emerald-800">
+                        <Badge variant="outline" className="rounded-md gap-0.5 border border-emerald-200 bg-emerald-100 text-[9px] font-bold uppercase tracking-wider text-emerald-800">
                           <Check className="size-2.5" /> Terkirim
                         </Badge>
                       )}
@@ -331,7 +331,7 @@ export default function WinnerManager({ competitionId }: WinnerManagerProps) {
 
                     {/* Send button */}
                     <Button onClick={() => sendCertificate(reg)} disabled={saving} size="sm"
-                      className={cn('clip-angled-sm gap-1 text-[9px] font-bold uppercase tracking-wider', isSent && 'bg-muted text-muted-foreground hover:bg-muted')}>
+                      className={cn('rounded-md gap-1 text-[9px] font-bold uppercase tracking-wider', isSent && 'bg-muted text-muted-foreground hover:bg-muted')}>
                       <Send data-icon="inline-start" className="size-2.5" /> {isSent ? 'Kirim Ulang' : 'Kirim'}
                     </Button>
                   </div>
@@ -372,7 +372,7 @@ export default function WinnerManager({ competitionId }: WinnerManagerProps) {
                   />
                   <label className="flex-shrink-0 cursor-pointer">
                     <Button asChild size="sm" variant="outline" disabled={newCert[reg.id]?.uploading}
-                      className="clip-angled-sm gap-1 text-[9px] font-bold uppercase tracking-wider">
+                      className="rounded-md gap-1 text-[9px] font-bold uppercase tracking-wider">
                       <span>
                         {newCert[reg.id]?.uploading ? <Spinner className="size-3" /> : <Upload className="size-3" />}
                         {newCert[reg.id]?.uploading ? 'Mengunggah...' : 'Upload'}
@@ -411,7 +411,7 @@ export default function WinnerManager({ competitionId }: WinnerManagerProps) {
 
       {/* Sticky Bottom Bulk Save */}
       {hasChanges && (
-        <div className="clip-angled sticky bottom-0 -mx-1 -mb-1 border-t-2 border-amber-300 bg-background p-4 shadow-lg">
+        <div className="rounded-lg sticky bottom-0 -mx-1 -mb-1 border-t-2 border-amber-300 bg-background p-4 shadow-lg">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs font-black uppercase tracking-tight text-foreground">
@@ -421,11 +421,11 @@ export default function WinnerManager({ competitionId }: WinnerManagerProps) {
             </div>
             <div className="flex gap-2">
               <Button variant="outline" onClick={() => { setDraftChanges({}); toast.info('Perubahan dibatalkan'); }}
-                disabled={saving} className="clip-angled-sm gap-1 text-xs font-bold uppercase tracking-wider">
+                disabled={saving} className="rounded-md gap-1 text-xs font-bold uppercase tracking-wider">
                 <X data-icon="inline-start" className="size-3.5" /> Batal
               </Button>
               <Button onClick={handleSaveAll} disabled={saving}
-                className="clip-angled-sm gap-1.5 bg-amber-500 text-xs font-black uppercase tracking-wider text-amber-950 hover:bg-amber-400">
+                className="rounded-md gap-1.5 bg-amber-500 text-xs font-black uppercase tracking-wider text-amber-950 hover:bg-amber-400">
                 {saving ? <Spinner data-icon="inline-start" className="size-3.5" /> : <Save data-icon="inline-start" className="size-3.5" />}
                 {saving ? 'Menyimpan...' : 'Simpan Semua'}
               </Button>
@@ -440,7 +440,7 @@ export default function WinnerManager({ competitionId }: WinnerManagerProps) {
           <Button
             onClick={handleGenerateAll}
             disabled={generateAllMut.isPending}
-            className="clip-angled-sm w-full gap-2 bg-cyan-500 px-6 py-4 text-xs font-black uppercase tracking-wider text-cyan-950 hover:bg-cyan-400"
+            className="rounded-md w-full gap-2 bg-cyan-500 px-6 py-4 text-xs font-black uppercase tracking-wider text-cyan-950 hover:bg-cyan-400"
           >
             {generateAllMut.isPending ? <Spinner className="size-4" /> : <Download className="size-4" />}
             Generate Otomatis untuk Semua Juara

@@ -134,7 +134,7 @@ export default function JourneyDetailPage() {
                 >
                   ASTRO {data.year}
                 </span>
-                <h1 className="font-masterpiece text-4xl md:text-6xl lg:text-7xl text-white leading-[0.95] drop-shadow-lg">
+                <h1 className="font-title text-4xl md:text-6xl lg:text-7xl text-white leading-[0.95] drop-shadow-lg">
                   {data.theme}
                 </h1>
               </div>

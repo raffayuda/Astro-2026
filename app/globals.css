@@ -15,7 +15,8 @@
   /* ── Fonts ── */
   --font-sans: var(--font-sans);
   --font-display: var(--font-plus-jakarta-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-masterpiece: var(--font-masterpiece);
+  --font-title: var(--font-alexandria), ui-sans-serif, system-ui, sans-serif;
+  --font-subtitle: var(--font-lexend-exa), ui-sans-serif, system-ui, sans-serif;
   /* Plus Jakarta Sans for every heading and stat figure. Masterpiece stays
      reserved for the big chrome hero wordmarks, where its display weight works;
      at small sizes in dashboard tables it is unreadable. */
@@ -74,7 +75,29 @@
   /* Micro-label size used by talent chips and stat captions. */
   --text-2xs: 0.625rem;
 
+  /* ── Display type scale ──
+     v4 lets a font-size token carry its own line-height, letter-spacing and
+     weight, so `text-title` applies the whole spec as a single utility. Sizes
+     are clamped: the spec's fixed px is the desktop ceiling. */
+  --text-title: clamp(2.75rem, 11vw, 162.55px);
+  --text-title--line-height: 1;
+  --text-title--letter-spacing: -0.06em;
+  --text-title--font-weight: 700;
+
+  /* Secondary title step, for names and section heroes. */
+  --text-title-sm: clamp(2.25rem, 9vw, 126.06px);
+  --text-title-sm--line-height: 1;
+  --text-title-sm--letter-spacing: -0.06em;
+  --text-title-sm--font-weight: 700;
+
+  --text-subtitle: clamp(1.375rem, 4vw, 35.05px);
+  --text-subtitle--line-height: 1;
+  --text-subtitle--letter-spacing: -0.19em;
+  --text-subtitle--font-weight: 700;
+
   --animate-shimmer: shimmer 2.5s ease-in-out infinite;
+  --animate-hero-rise: hero-rise 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-bubble-drift: bubble-drift 9s ease-in-out infinite;
 
   /* ── Radius ramp: literal px so class names and token values agree ──
      Tailwind v4 ships lg=8px/md=6px; the old calc(--radius * n) ramp gave lg=16px/
@@ -223,22 +246,6 @@ body {
    Brand utilities — v4 `@utility`, so variants (hover:, md:, …) compose
    ═══════════════════════════════════════════════════════════════════ */
 
-/* ── Sky grounds ── */
-@utility astro-sky {
-  background:
-    radial-gradient(circle at 12% 18%, rgba(255, 255, 255, 0.9), transparent 11rem),
-    radial-gradient(circle at 86% 12%, rgba(250, 204, 21, 0.18), transparent 14rem),
-    radial-gradient(circle at 74% 80%, rgba(255, 255, 255, 0.55), transparent 18rem),
-    linear-gradient(180deg, #7ec8f5 0%, #9dd8f8 30%, #b8e4fb 62%, #e8f6fe 100%);
-}
-
-@utility astro-sky-soft {
-  background:
-    radial-gradient(circle at 15% 10%, rgba(255, 255, 255, 0.7), transparent 16rem),
-    radial-gradient(circle at 90% 20%, rgba(147, 197, 253, 0.35), transparent 20rem),
-    linear-gradient(180deg, #e8f6fe 0%, #f5fbff 55%, #ffffff 100%);
-}
-
 /* ── Cloud/dot texture overlay ── */
 @utility astro-pattern {
   background-image:
@@ -246,42 +253,6 @@ body {
     linear-gradient(135deg, rgba(147, 197, 253, 0.18) 25%, transparent 25%),
     linear-gradient(225deg, rgba(59, 130, 246, 0.12) 25%, transparent 25%);
   background-size: 2.8rem 2.8rem, 4rem 4rem, 4rem 4rem;
-}
-
-/* ── Surface card. `astro-card` is the legacy alias applied at ~30 sites.
-      Borderless + soft shadow, per the component style guide. ── */
-@utility astro-sticker {
-  border-radius: var(--radius-xl);
-  background: #ffffff;
-  box-shadow: var(--shadow-soft);
-}
-
-@utility astro-card {
-  border-radius: var(--radius-xl);
-  background: #ffffff;
-  box-shadow: var(--shadow-soft);
-}
-
-/* ── Inverted blue gradient panel (dashboard page headers) ── */
-@utility astro-panel {
-  border-radius: var(--radius-xl);
-  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 55%, #60a5fa 100%);
-  box-shadow: var(--shadow-soft-lg);
-}
-
-/* ── Pill / chip ── */
-@utility astro-pill {
-  border-radius: 9999px;
-  background: #ffffff;
-  box-shadow: var(--shadow-soft-sm);
-}
-
-/* ── Poster-style bordered sticker, for surfaces that want the hard offset ── */
-@utility astro-sticker-hard {
-  border: 3px solid var(--color-astro-navy);
-  border-radius: var(--radius-xl);
-  background: #ffffff;
-  box-shadow: var(--shadow-sticker), var(--shadow-gloss);
 }
 
 /* ── Glossy chrome display type.
@@ -409,104 +380,6 @@ body {
     right: -1.5rem;
     bottom: 12%;
     animation-delay: -4s;
-  }
-}
-
-/* ── Radius normalizers. Legacy names kept: ~80 dashboard call sites use them. ── */
-@utility clip-angled {
-  border-radius: var(--radius-lg);
-}
-
-@utility clip-angled-sm {
-  border-radius: var(--radius-md);
-}
-
-@utility clip-angled-lg {
-  border-radius: var(--radius-xl);
-}
-
-/* ── Accent rules ── */
-@utility accent-line {
-  width: 72px;
-  height: 6px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, #facc15, #a3e635, #3b82f6);
-  box-shadow: 0 3px 0 rgba(30, 58, 138, 0.35);
-}
-
-@utility accent-line-wide {
-  width: 140px;
-  height: 5px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, #facc15, #a3e635, #93c5fd, #3b82f6);
-  box-shadow: 0 3px 0 rgba(30, 58, 138, 0.3);
-}
-
-/* ── Display type scales ── */
-@utility text-massive {
-  font-size: clamp(4rem, 15vw, 12rem);
-  font-weight: 900;
-  line-height: 0.85;
-  letter-spacing: 0;
-  text-transform: uppercase;
-  font-family: var(--font-masterpiece), var(--font-plus-jakarta-sans), sans-serif;
-  text-wrap: balance;
-}
-
-@utility text-display {
-  font-size: clamp(2rem, 5vw, 4.5rem);
-  font-weight: 800;
-  line-height: 0.95;
-  letter-spacing: 0;
-  text-transform: uppercase;
-  text-wrap: balance;
-}
-
-/* ── Misc ── */
-@utility shimmer {
-  background: linear-gradient(
-    110deg,
-    rgba(147, 197, 253, 0.18) 8%,
-    rgba(147, 197, 253, 0.45) 18%,
-    rgba(147, 197, 253, 0.18) 33%
-  );
-  background-size: 200% 100%;
-  animation: shimmer 1.8s ease-in-out infinite;
-}
-
-@utility animate-hero-rise {
-  animation: hero-rise 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-@utility diagonal-divider-down {
-  position: relative;
-
-  &::after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: -2%;
-    right: -2%;
-    height: 80px;
-    background: inherit;
-    transform: rotate(-1.5deg);
-    transform-origin: bottom right;
-  }
-}
-
-@utility diagonal-divider-up {
-  position: relative;
-
-  &::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -2%;
-    right: -2%;
-    height: 80px;
-    background: inherit;
-    transform: rotate(1.5deg);
-    transform-origin: top left;
   }
 }
 

@@ -21,6 +21,7 @@ const MotionImage = motion.create(Image);
 import { getEffectiveCompetitionFee } from "@/src/lib/competitions";
 
 import type { CompetitionCustomField } from "@/types/astro";
+import { Pattern } from "@/components/brand"
 
 interface CompetitionData {
   id: string;
@@ -310,9 +311,9 @@ export default function RegistrationPage({
         <Navbar />
         <div className="min-h-screen flex items-center justify-center bg-background">
           <div className="space-y-4 text-center">
-            <h1 className="text-display text-foreground">404</h1>
+            <h1 className="text-3xl font-extrabold uppercase leading-tight sm:text-4xl lg:text-5xl text-foreground">404</h1>
             <p className="text-muted-foreground">Lomba tidak ditemukan.</p>
-            <Button asChild className="clip-angled text-xs font-black uppercase tracking-wider">
+            <Button asChild className="rounded-lg text-xs font-black uppercase tracking-wider">
               <Link href="/#competitions">
                 <ArrowLeft data-icon="inline-start" /> Kembali ke Lomba
               </Link>
@@ -328,13 +329,13 @@ export default function RegistrationPage({
     return (
       <>
         <Navbar />
-        <div className="astro-sky-soft astro-bubble-field min-h-screen flex items-center justify-center px-4 py-20">
-          <div className="astro-card p-8 sm:p-12 max-w-lg w-full text-center space-y-6">
+        <div className="bg-linear-to-b from-sky-bottom via-white to-white astro-bubble-field min-h-screen flex items-center justify-center px-4 py-20">
+          <div className="rounded-xl bg-white shadow-soft p-8 sm:p-12 max-w-lg w-full text-center space-y-6">
             <div className="size-16 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto ring-8 ring-red-50">
               <Lock className="size-8" />
             </div>
             <div className="space-y-2">
-              <Badge variant="outline" className="clip-angled-sm border-red-200 bg-red-50 text-[10px] font-bold uppercase tracking-wider text-red-600">
+              <Badge variant="outline" className="rounded-md border-red-200 bg-red-50 text-[10px] font-bold uppercase tracking-wider text-red-600">
                 Pendaftaran Ditutup
               </Badge>
               <h1 className="text-2xl font-black uppercase tracking-tight text-foreground">
@@ -345,12 +346,12 @@ export default function RegistrationPage({
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
-              <Button asChild variant="outline" className="clip-angled text-xs font-bold uppercase tracking-wider flex-1">
+              <Button asChild variant="outline" className="rounded-lg text-xs font-bold uppercase tracking-wider flex-1">
                 <Link href={`/competitions/${competition.id}`}>
                   Detail Lomba
                 </Link>
               </Button>
-              <Button asChild className="clip-angled text-xs font-bold uppercase tracking-wider flex-1">
+              <Button asChild className="rounded-lg text-xs font-bold uppercase tracking-wider flex-1">
                 <Link href="/#competitions">
                   <ArrowLeft data-icon="inline-start" /> Lomba Lainnya
                 </Link>
@@ -436,11 +437,11 @@ export default function RegistrationPage({
     <>
       <Navbar />
 
-      <div className="min-h-screen flex flex-col justify-between astro-sky-soft">
+      <div className="min-h-screen flex flex-col justify-between bg-linear-to-b from-sky-bottom via-white to-white">
         <main className="flex-grow">
           {/* ─── HEADER ─── */}
-          <section className="astro-sky astro-frame-y astro-bubble-field relative overflow-hidden pt-36 pb-14 md:pt-40 md:pb-18">
-            <div className="astro-pattern absolute inset-0 z-0 opacity-35" />
+          <section className="bg-linear-to-b from-sky-top via-sky-mid to-white astro-frame-y astro-bubble-field relative overflow-hidden pt-36 pb-14 md:pt-40 md:pb-18">
+            <Pattern className="absolute inset-0 z-0 opacity-35" />
             {/* ─── SKY BACKGROUND ─── */}
             <div className="absolute inset-0 -z-10 " />
 
@@ -544,7 +545,7 @@ export default function RegistrationPage({
               >
                 <Badge
                   variant="outline"
-                  className={`clip-angled-sm border px-3 py-1.5 text-[10px] font-bold tracking-[0.15em] uppercase ${cat.bg} ${cat.color} ${cat.border}`}
+                  className={`rounded-md border px-3 py-1.5 text-[10px] font-bold tracking-[0.15em] uppercase ${cat.bg} ${cat.color} ${cat.border}`}
                 >
                   {cat.label}
                 </Badge>
@@ -563,14 +564,14 @@ export default function RegistrationPage({
                 initial="hidden"
                 animate="visible"
                 variants={fadeUp}
-                className="accent-line mb-4"
+                className="block h-1.5 w-18 rounded-full bg-linear-to-r from-astro-gold via-astro-lime2 to-astro-blue mb-4"
               />
 
               <motion.p
                 initial="hidden"
                 animate="visible"
                 variants={fadeUp}
-                className="astro-pill flex w-fit items-center gap-1.5 px-4 py-2 text-sm font-semibold text-[#18345f]"
+                className="rounded-full bg-white shadow-soft-sm flex w-fit items-center gap-1.5 px-4 py-2 text-sm font-semibold text-[#18345f]"
               >
                 <Trophy className="w-4 h-4 text-astro-cyan" />
                 Biaya Pendaftaran:{" "}
@@ -597,7 +598,7 @@ export default function RegistrationPage({
                   <span className="text-[10px] font-black uppercase tracking-wider text-slate-500">
                     Pilih Kategori Pendaftaran:
                   </span>
-                  <div className="astro-pill flex overflow-hidden border-white/80 bg-white/75">
+                  <div className="rounded-full bg-white shadow-soft-sm flex overflow-hidden border-white/80 bg-white/75">
                     {(['individual', 'team'] as const).map((t) => (
                       <button
                         key={t}
@@ -699,7 +700,7 @@ export default function RegistrationPage({
           </section>
 
           {/* ─── CONTENT ─── */}
-          <section className="astro-sky-soft relative overflow-hidden pb-20 md:pb-28">
+          <section className="bg-linear-to-b from-sky-bottom via-white to-white relative overflow-hidden pb-20 md:pb-28">
             <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
               <AnimatePresence mode="wait">
                 {step === 1 ? (

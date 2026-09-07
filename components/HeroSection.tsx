@@ -147,7 +147,7 @@ export default function HeroSection({ eventConfig }: Props) {
       <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 text-center animate-hero-rise">
         {/* ─── MAIN TITLE ─── */}
         <div className="mb-2 sm:mb-3">
-          <h1 className="font-masterpiece font-black tracking-tight leading-[0.82] uppercase mb-0 text-[clamp(3.5rem,7.5vw,7.5rem)]">
+          <h1 className="font-title font-black tracking-tight leading-[0.82] uppercase mb-0 text-[clamp(3.5rem,7.5vw,7.5rem)]">
             <span
               className="block bg-linear-to-b from-slate-300 via-slate-400 to-slate-600 bg-clip-text text-transparent drop-shadow-[0_4px_30px_rgba(0,0,0,0.15)]"
               style={{
@@ -167,7 +167,7 @@ export default function HeroSection({ eventConfig }: Props) {
           </h1>
 
           {/* Tagline - Split Creative */}
-          <p className="mt-2 sm:mt-3 font-masterpiece leading-snug drop-shadow-[0_2px_12px_rgba(0,0,0,0.08)]">
+          <p className="mt-2 sm:mt-3 font-title leading-snug drop-shadow-[0_2px_12px_rgba(0,0,0,0.08)]">
             <span className="text-xl sm:text-2xl md:text-3xl text-white/95 block">
               Where Innovation
             </span>

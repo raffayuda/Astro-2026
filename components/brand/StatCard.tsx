@@ -46,7 +46,7 @@ export function StatCard({
       )}
 
       {metric && (
-        <p className="font-masterpiece text-3xl leading-none text-astro-navy">
+        <p className="font-title text-3xl leading-none text-astro-navy">
           {metric}
         </p>
       )}

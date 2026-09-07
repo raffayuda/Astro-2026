@@ -13,7 +13,7 @@ export function AccentLine({
   return (
     <span
       aria-hidden
-      data-slot="accent-line"
+      data-slot="block h-1.5 w-18 rounded-full bg-linear-to-r from-astro-gold via-astro-lime2 to-astro-blue"
       className={cn(
         "block rounded-full bg-linear-to-r from-astro-gold via-astro-lime2 to-astro-blue",
         wide ? "h-1.5 w-35" : "h-1.5 w-18",

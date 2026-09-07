@@ -14,6 +14,7 @@ import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 import { Spinner } from '@/components/ui/spinner';
+import { Pattern } from "@/components/brand"
 
 type Step = 'form' | 'otp' | 'success';
 
@@ -176,22 +177,22 @@ export default function SignupPage() {
   // ─── SUCCESS ───
   if (step === 'success') {
     return (
-      <div className="astro-sky astro-frame-y astro-bubble-field flex min-h-screen flex-col">
-        <div className="astro-pattern absolute inset-0 opacity-35" />
+      <div className="bg-linear-to-b from-sky-top via-sky-mid to-white astro-frame-y astro-bubble-field flex min-h-screen flex-col">
+        <Pattern className="absolute inset-0 opacity-35" />
         <div className="flex flex-1 items-center justify-center px-4">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             className="w-full max-w-md"
           >
-            <Card className="astro-card p-8 text-center md:p-10">
+            <Card className="rounded-xl bg-white shadow-soft p-8 text-center md:p-10">
               <CardContent className="flex flex-col items-center p-0">
                 <div className="mb-4 flex size-16 items-center justify-center rounded-full border border-emerald-300 bg-emerald-100">
                   <CheckCircle2 className="size-8 text-emerald-600" />
                 </div>
                 <h2 className="mb-2 text-xl font-black uppercase tracking-tight text-foreground">Pendaftaran Berhasil!</h2>
                 <p className="mb-6 text-sm text-muted-foreground">Silakan login dengan akun baru Anda.</p>
-                <Button asChild className="clip-angled text-xs font-black uppercase tracking-wider">
+                <Button asChild className="rounded-lg text-xs font-black uppercase tracking-wider">
                   <Link href="/login">Login Sekarang</Link>
                 </Button>
               </CardContent>
@@ -203,8 +204,8 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="astro-sky astro-frame-y astro-bubble-field flex min-h-screen flex-col">
-      <div className="astro-pattern absolute inset-0 opacity-35" />
+    <div className="bg-linear-to-b from-sky-top via-sky-mid to-white astro-frame-y astro-bubble-field flex min-h-screen flex-col">
+      <Pattern className="absolute inset-0 opacity-35" />
       <div className="relative z-10 flex flex-1 items-center justify-center px-4">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -212,7 +213,7 @@ export default function SignupPage() {
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className="w-full max-w-md"
         >
-          <Card className="astro-card p-8 md:p-10">
+          <Card className="rounded-xl bg-white shadow-soft p-8 md:p-10">
             <CardContent className="p-0">
               <Button asChild variant="link" className="mb-6 gap-1 text-xs font-bold uppercase tracking-wider text-muted-foreground hover:text-primary">
                 <Link href="/login">
@@ -231,7 +232,7 @@ export default function SignupPage() {
                   </p>
 
                   {error && (
-                    <Alert variant="destructive" className="clip-angled mb-5 border-border">
+                    <Alert variant="destructive" className="rounded-lg mb-5 border-border">
                       <AlertDescription className="text-xs font-medium leading-relaxed">
                         {error}
                       </AlertDescription>
@@ -246,7 +247,7 @@ export default function SignupPage() {
                               setMessage('Silakan masukkan kode OTP Anda atau kirim ulang kode baru di bawah.');
                               handleResendOTP();
                             }}
-                            className="clip-angled-sm text-xs font-bold uppercase bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                            className="rounded-md text-xs font-bold uppercase bg-destructive text-destructive-foreground hover:bg-destructive/90"
                           >
                             <KeyRound className="size-3.5 mr-1" /> Masukkan Kode OTP Sekarang
                           </Button>
@@ -271,7 +272,7 @@ export default function SignupPage() {
                       </Field>
                     </FieldGroup>
 
-                    <Button type="submit" disabled={loading} size="lg" className="clip-angled text-sm font-black uppercase tracking-wider">
+                    <Button type="submit" disabled={loading} size="lg" className="rounded-lg text-sm font-black uppercase tracking-wider">
                       {loading ? (
                         <>
                           <Spinner data-icon="inline-start" />
@@ -320,13 +321,13 @@ export default function SignupPage() {
                   <p className="mb-6 text-center text-sm font-bold text-foreground">{email}</p>
 
                   {message && (
-                    <Alert className="clip-angled mb-5 border-border bg-primary/5 text-primary">
+                    <Alert className="rounded-lg mb-5 border-border bg-primary/5 text-primary">
                       <AlertDescription className="text-xs font-medium">{message}</AlertDescription>
                     </Alert>
                   )}
 
                   {error && (
-                    <Alert variant="destructive" className="clip-angled mb-5 border-border">
+                    <Alert variant="destructive" className="rounded-lg mb-5 border-border">
                       <AlertDescription className="text-xs font-medium">{error}</AlertDescription>
                     </Alert>
                   )}
@@ -345,7 +346,7 @@ export default function SignupPage() {
                     onClick={handleVerifyOTP}
                     disabled={loading || otp.length !== 6}
                     size="lg"
-                    className="clip-angled w-full text-sm font-black uppercase tracking-wider"
+                    className="rounded-lg w-full text-sm font-black uppercase tracking-wider"
                   >
                     {loading ? (
                       <>

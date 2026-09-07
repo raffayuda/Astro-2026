@@ -113,7 +113,7 @@ function UserDetailModal({
     >
       <div className="space-y-5">
         {/* User Card Info */}
-        <div className="clip-angled group relative overflow-hidden border border-border bg-card p-4 shadow-sm transition-all hover:border-primary/50">
+        <div className="rounded-lg group relative overflow-hidden border border-border bg-card p-4 shadow-sm transition-all hover:border-primary/50">
           <div
             className="absolute -top-px -left-px size-7 bg-primary"
             style={{ clipPath: "polygon(0 0, 100% 0, 0 100%)" }}
@@ -138,7 +138,7 @@ function UserDetailModal({
               <Badge
                 variant="outline"
                 className={cn(
-                  "clip-angled-sm border text-[10px] font-bold uppercase tracking-wider",
+                  "rounded-md border text-[10px] font-bold uppercase tracking-wider",
                   user.role === "admin"
                     ? "border-cyan-200 bg-cyan-50 text-astro-cyan"
                     : "border-slate-200 bg-muted text-muted-foreground",
@@ -150,7 +150,7 @@ function UserDetailModal({
               <Badge
                 variant="outline"
                 className={cn(
-                  "clip-angled-sm border text-[10px] font-bold uppercase tracking-wider",
+                  "rounded-md border text-[10px] font-bold uppercase tracking-wider",
                   user.emailVerified
                     ? "border-emerald-200 bg-emerald-50 text-emerald-700"
                     : "border-amber-200 bg-amber-50 text-amber-700",
@@ -190,7 +190,7 @@ function UserDetailModal({
             <Spinner className="size-5 text-primary" />
           </div>
         ) : registrations.length === 0 ? (
-          <div className="clip-angled border border-dashed border-border bg-muted/30 py-8 text-center">
+          <div className="rounded-lg border border-dashed border-border bg-muted/30 py-8 text-center">
             <p className="text-xs italic text-muted-foreground">
               User ini belum terdaftar pada lomba/event manapun.
             </p>
@@ -205,7 +205,7 @@ function UserDetailModal({
               return (
                 <div
                   key={reg.id}
-                  className="clip-angled group relative overflow-hidden border border-border bg-card p-4 transition-all hover:border-primary/50 hover:shadow-md"
+                  className="rounded-lg group relative overflow-hidden border border-border bg-card p-4 transition-all hover:border-primary/50 hover:shadow-md"
                 >
                   <div
                     className={cn(
@@ -235,7 +235,7 @@ function UserDetailModal({
                       <Badge
                         variant="outline"
                         className={cn(
-                          "clip-angled-sm border text-[9px] font-bold uppercase tracking-wider",
+                          "rounded-md border text-[9px] font-bold uppercase tracking-wider",
                           isPaid &&
                             "border-emerald-200 bg-emerald-50 text-emerald-700",
                           isPending &&
@@ -310,7 +310,7 @@ function UserDetailModal({
         )}
 
         <div className="flex justify-end pt-2">
-          <Button variant="outline" onClick={onClose} className="clip-angled-sm">
+          <Button variant="outline" onClick={onClose} className="rounded-md">
             Tutup
           </Button>
         </div>
@@ -567,13 +567,13 @@ export default function UsersPage() {
               });
               setInviteModalOpen(true);
             }}
-            className="clip-angled text-xs font-bold uppercase tracking-wider border-cyan-200 text-cyan-700 bg-cyan-50 hover:bg-cyan-100 hover:text-cyan-800"
+            className="rounded-lg text-xs font-bold uppercase tracking-wider border-cyan-200 text-cyan-700 bg-cyan-50 hover:bg-cyan-100 hover:text-cyan-800"
           >
             <UserPlus className="size-3.5 mr-1.5" /> Undang User
           </Button>
           <Button
             onClick={() => setModal({ mode: "create" })}
-            className="clip-angled text-xs font-bold uppercase tracking-wider"
+            className="rounded-lg text-xs font-bold uppercase tracking-wider"
           >
             <Plus data-icon="inline-start" /> Tambah Manual
           </Button>
@@ -589,11 +589,11 @@ export default function UsersPage() {
           setInvitePage(1);
         }}
       >
-        <TabsList className="clip-angled border border-border bg-muted/50 p-1">
-          <TabsTrigger value="users" className="clip-angled-sm gap-2">
+        <TabsList className="rounded-lg border border-border bg-muted/50 p-1">
+          <TabsTrigger value="users" className="rounded-md gap-2">
             <Users className="size-3.5" /> Daftar Akun ({users.length})
           </TabsTrigger>
-          <TabsTrigger value="invitations" className="clip-angled-sm gap-2">
+          <TabsTrigger value="invitations" className="rounded-md gap-2">
             <LinkIcon className="size-3.5" /> Tautan Undangan ({invitations.length})
           </TabsTrigger>
         </TabsList>
@@ -604,7 +604,7 @@ export default function UsersPage() {
         <div className="space-y-4">
           {/* Search */}
           <div className="max-w-xs">
-            <InputGroup className="clip-angled h-10 border-border bg-background">
+            <InputGroup className="rounded-lg h-10 border-border bg-background">
               <InputGroupAddon align="inline-start">
                 <Search className="size-3.5 text-muted-foreground" />
               </InputGroupAddon>
@@ -623,14 +623,14 @@ export default function UsersPage() {
           {/* User Items List */}
           <div className="grid grid-cols-1 gap-3">
             {paginatedUsers.length === 0 ? (
-              <div className="clip-angled border border-border bg-card p-8 text-center text-sm text-muted-foreground">
+              <div className="rounded-lg border border-border bg-card p-8 text-center text-sm text-muted-foreground">
                 {search ? "Tidak ditemukan user yang cocok." : "Belum ada user."}
               </div>
             ) : (
               paginatedUsers.map((u: User) => (
                 <Card
                   key={u.id}
-                  className="clip-angled group relative overflow-hidden border border-border bg-card p-4 transition-all hover:border-primary/50 hover:shadow-md"
+                  className="rounded-lg group relative overflow-hidden border border-border bg-card p-4 transition-all hover:border-primary/50 hover:shadow-md"
                 >
                   <div
                     className="absolute -top-px -left-px size-6 bg-primary/20 transition-colors group-hover:bg-primary"
@@ -649,7 +649,7 @@ export default function UsersPage() {
                           <Badge
                             variant="outline"
                             className={cn(
-                              "clip-angled-sm border text-[9px] font-bold uppercase tracking-wider",
+                              "rounded-md border text-[9px] font-bold uppercase tracking-wider",
                               u.role === "admin"
                                 ? "border-cyan-200 bg-cyan-50 text-astro-cyan"
                                 : "border-slate-200 bg-muted text-muted-foreground",
@@ -660,7 +660,7 @@ export default function UsersPage() {
                           <Badge
                             variant="outline"
                             className={cn(
-                              "clip-angled-sm border text-[9px] font-bold uppercase tracking-wider",
+                              "rounded-md border text-[9px] font-bold uppercase tracking-wider",
                               u.emailVerified
                                 ? "border-emerald-200 bg-emerald-50 text-emerald-700"
                                 : "border-amber-200 bg-amber-50 text-amber-700",
@@ -737,7 +737,7 @@ export default function UsersPage() {
         <div className="space-y-4">
           {/* Search */}
           <div className="max-w-xs">
-            <InputGroup className="clip-angled h-10 border-border bg-background">
+            <InputGroup className="rounded-lg h-10 border-border bg-background">
               <InputGroupAddon align="inline-start">
                 <Search className="size-3.5 text-muted-foreground" />
               </InputGroupAddon>
@@ -756,7 +756,7 @@ export default function UsersPage() {
           {/* Invitation Items List */}
           <div className="grid grid-cols-1 gap-3">
             {paginatedInvitations.length === 0 ? (
-              <div className="clip-angled border border-border bg-card p-8 text-center text-sm text-muted-foreground">
+              <div className="rounded-lg border border-border bg-card p-8 text-center text-sm text-muted-foreground">
                 {inviteSearch
                   ? "Tidak ditemukan tautan undangan yang cocok."
                   : "Belum ada tautan undangan yang dibuat."}
@@ -771,7 +771,7 @@ export default function UsersPage() {
                 return (
                   <Card
                     key={inv.id}
-                    className="clip-angled group relative overflow-hidden border border-border bg-card p-4 transition-all hover:border-primary/50 hover:shadow-md"
+                    className="rounded-lg group relative overflow-hidden border border-border bg-card p-4 transition-all hover:border-primary/50 hover:shadow-md"
                   >
                     <div
                       className={cn(
@@ -799,7 +799,7 @@ export default function UsersPage() {
                             <Badge
                               variant="outline"
                               className={cn(
-                                "clip-angled-sm border text-[9px] font-bold uppercase tracking-wider",
+                                "rounded-md border text-[9px] font-bold uppercase tracking-wider",
                                 inv.role === "admin"
                                   ? "border-cyan-200 bg-cyan-50 text-astro-cyan"
                                   : "border-slate-200 bg-muted text-muted-foreground",
@@ -810,7 +810,7 @@ export default function UsersPage() {
                             <Badge
                               variant="outline"
                               className={cn(
-                                "clip-angled-sm border text-[9px] font-bold uppercase tracking-wider",
+                                "rounded-md border text-[9px] font-bold uppercase tracking-wider",
                                 isPending &&
                                   "border-amber-200 bg-amber-50 text-amber-700",
                                 isAccepted &&
@@ -860,7 +860,7 @@ export default function UsersPage() {
                             variant="outline"
                             size="sm"
                             onClick={() => copyToClipboard(inv.inviteUrl, inv.id)}
-                            className="clip-angled-sm text-xs font-bold"
+                            className="rounded-md text-xs font-bold"
                           >
                             {copiedId === inv.id ? (
                               <>
@@ -1019,7 +1019,7 @@ export default function UsersPage() {
             >
               Batal
             </Button>
-            <Button type="submit" disabled={saving} className="clip-angled-sm">
+            <Button type="submit" disabled={saving} className="rounded-md">
               {saving ? <Spinner data-icon="inline-start" /> : null}
               {saving ? "Menyimpan..." : "Simpan"}
             </Button>
@@ -1059,7 +1059,7 @@ export default function UsersPage() {
               <FieldLabel className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                 Tautan Pendaftaran
               </FieldLabel>
-              <InputGroup className="clip-angled">
+              <InputGroup className="rounded-lg">
                 <InputGroupInput
                   readOnly
                   value={createdInviteLink}
@@ -1096,7 +1096,7 @@ export default function UsersPage() {
                     sendEmail: false,
                   });
                 }}
-                className="clip-angled-sm text-xs"
+                className="rounded-md text-xs"
               >
                 Buat Tautan Lain
               </Button>
@@ -1106,7 +1106,7 @@ export default function UsersPage() {
                   setInviteModalOpen(false);
                   setCreatedInviteLink(null);
                 }}
-                className="clip-angled-sm text-xs font-bold"
+                className="rounded-md text-xs font-bold"
               >
                 Selesai
               </Button>
@@ -1202,7 +1202,7 @@ export default function UsersPage() {
               <Button
                 type="submit"
                 disabled={creatingInvite}
-                className="clip-angled-sm text-xs font-bold"
+                className="rounded-md text-xs font-bold"
               >
                 {creatingInvite ? <Spinner data-icon="inline-start" /> : null}
                 {creatingInvite ? "Membuat Tautan..." : "Buat Tautan Undangan"}

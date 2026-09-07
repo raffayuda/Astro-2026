@@ -30,6 +30,7 @@ import {
   SectionHeading,
   SectionShell,
   SiteFooter,
+  Subtitle,
   StatCard,
   Surface,
   TALENT_CATEGORIES,
@@ -235,7 +236,7 @@ function Spec({
   return (
     <section className="flex flex-col gap-4">
       <div className="flex flex-col gap-1">
-        <h3 className="font-masterpiece text-xl uppercase text-astro-navy">
+        <h3 className="font-heading text-xl font-extrabold uppercase tracking-tight text-astro-navy">
           {title}
         </h3>
         {hint && (
@@ -317,28 +318,77 @@ export function DesignSystemClient() {
 
           <Spec
             title="Typography"
-            hint="Masterpiece for display type, Geist for body copy."
+            hint="Alexandria for display titles, Lexend Exa for subtitles, Plus Jakarta Sans for headings, Geist for body."
           >
-            <div className="flex flex-col gap-5">
-              <ChromeText as="p" depth="lg" className="text-5xl">
-                Chrome LG
-              </ChromeText>
-              <ChromeText as="p" depth="md" className="text-4xl">
-                Chrome MD
-              </ChromeText>
-              <ChromeText as="p" depth="sm" className="text-3xl">
-                Chrome SM
-              </ChromeText>
-              <p className="font-masterpiece text-3xl uppercase text-astro-navy">
-                Masterpiece display
-              </p>
-              <p className="text-base text-ink">
-                Geist body copy, used for all running text, form labels and
-                table content.
-              </p>
-              <p className="text-2xs font-bold uppercase tracking-widest text-muted-foreground">
-                Micro label / text-2xs
-              </p>
+            <div className="flex flex-col gap-8">
+              <div className="flex flex-col gap-2">
+                <p className="text-2xs font-bold uppercase tracking-widest text-muted-foreground">
+                  text-title &mdash; Alexandria 700 / 162.55px ceiling / -6% tracking
+                </p>
+                <ChromeText as="p" depth="lg" className="text-title">
+                  Astro
+                </ChromeText>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <p className="text-2xs font-bold uppercase tracking-widest text-muted-foreground">
+                  text-title-sm &mdash; Alexandria 700 / 126.06px ceiling
+                </p>
+                <ChromeText
+                  as="p"
+                  variant="outline"
+                  depth="md"
+                  className="text-title-sm"
+                >
+                  Firtiansyah
+                </ChromeText>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <p className="text-2xs font-bold uppercase tracking-widest text-muted-foreground">
+                  text-subtitle &mdash; Lexend Exa 700 / 35.05px ceiling / -19% tracking
+                </p>
+                <Subtitle>Ruang Tanpa Sekat</Subtitle>
+              </div>
+
+              <div className="flex flex-col gap-3">
+                <p className="text-2xs font-bold uppercase tracking-widest text-muted-foreground">
+                  Chrome depth &mdash; gloss stack vs. outline
+                </p>
+                <div className="flex flex-wrap items-end gap-6">
+                  {(["sm", "md", "lg"] as const).map((d) => (
+                    <ChromeText key={d} as="p" depth={d} className="text-4xl">
+                      Chrome {d}
+                    </ChromeText>
+                  ))}
+                </div>
+                <div className="flex flex-wrap items-end gap-6">
+                  {(["sm", "md", "lg"] as const).map((d) => (
+                    <ChromeText
+                      key={d}
+                      as="p"
+                      variant="outline"
+                      depth={d}
+                      className="text-4xl"
+                    >
+                      Outline {d}
+                    </ChromeText>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-2 border-t border-astro-cyan-2/40 pt-5">
+                <p className="font-heading text-2xl font-extrabold text-astro-navy">
+                  Plus Jakarta Sans &mdash; headings and stat figures
+                </p>
+                <p className="text-base text-ink">
+                  Geist body copy, used for all running text, form labels and
+                  table content.
+                </p>
+                <p className="text-2xs font-bold uppercase tracking-widest text-muted-foreground">
+                  Micro label / text-2xs
+                </p>
+              </div>
             </div>
           </Spec>
 
@@ -497,7 +547,7 @@ export function DesignSystemClient() {
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {SURFACE_TONES.map((tone) => (
                 <Surface key={tone} tone={tone} pad="md" interactive>
-                  <p className="font-masterpiece text-lg uppercase">{tone}</p>
+                  <p className="font-heading text-lg font-extrabold uppercase">{tone}</p>
                   <p className="text-xs font-medium opacity-80">tone {tone}</p>
                 </Surface>
               ))}

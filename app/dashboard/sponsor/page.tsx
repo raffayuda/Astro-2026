@@ -248,10 +248,10 @@ export default function SponsorPage() {
       {/* Tabs */}
       <Tabs value={tab} onValueChange={(v) => { setTab(v as 'sponsor' | 'media-partner'); setShowSpAdd(false); setShowMpAdd(false); }}>
         <TabsList className="bg-muted">
-          <TabsTrigger value="sponsor" className="clip-angled-sm gap-2">
+          <TabsTrigger value="sponsor" className="rounded-md gap-2">
             <Star className="size-3.5" /> Sponsor ({sponsors.length})
           </TabsTrigger>
-          <TabsTrigger value="media-partner" className="clip-angled-sm gap-2">
+          <TabsTrigger value="media-partner" className="rounded-md gap-2">
             <Share2 className="size-3.5" /> Media Partner ({mediaPartners.length})
           </TabsTrigger>
         </TabsList>
@@ -300,7 +300,7 @@ export default function SponsorPage() {
                   setSpReorderList([...sponsors]);
                   setShowSpReorderModal(true);
                 }}
-                className="clip-angled text-xs font-bold uppercase tracking-wider border-amber-200 text-amber-700 bg-amber-50 hover:bg-amber-100 hover:text-amber-800"
+                className="rounded-lg text-xs font-bold uppercase tracking-wider border-amber-200 text-amber-700 bg-amber-50 hover:bg-amber-100 hover:text-amber-800"
               >
                 <ArrowUpDown className="size-4 mr-2" /> Atur Urutan
               </Button>
@@ -310,7 +310,7 @@ export default function SponsorPage() {
                   setSpEditingId(null);
                   setSpForm({ name: '', tier: 'gold', website: '', logo: '', isCurrent: spFilter === 'current' });
                 }}
-                className="clip-angled text-xs font-bold uppercase tracking-wider"
+                className="rounded-lg text-xs font-bold uppercase tracking-wider"
               >
                 <Plus data-icon="inline-start" /> Tambah Sponsor
               </Button>
@@ -318,7 +318,7 @@ export default function SponsorPage() {
           </div>
 
           {showSpAdd && (
-            <Card className="clip-angled relative mb-5 border-border">
+            <Card className="rounded-lg relative mb-5 border-border">
               <div className="absolute -top-px -left-px size-8 bg-primary" style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }} />
               <CardContent className="space-y-4 p-5">
                 <h2 className="text-sm font-black uppercase tracking-tight text-foreground">{spEditingId ? 'Edit' : 'Tambah'} Sponsor</h2>
@@ -351,7 +351,7 @@ export default function SponsorPage() {
                     <div className="flex items-center gap-3">
                       <label className="cursor-pointer">
                         <span className={cn(
-                          "clip-angled-sm inline-block border border-border px-4 py-2 text-xs font-bold uppercase tracking-wider transition-colors",
+                          "rounded-md inline-block border border-border px-4 py-2 text-xs font-bold uppercase tracking-wider transition-colors",
                           spUploading ? "bg-primary text-primary-foreground opacity-70 cursor-not-allowed" : "bg-muted text-muted-foreground hover:bg-accent"
                         )}>
                           {spUploading ? "Mengunggah..." : "Pilih File"}
@@ -404,7 +404,7 @@ export default function SponsorPage() {
                 </FieldGroup>
 
                 {spForm.logo && (
-                  <div className="clip-angled-sm flex items-center gap-3 border border-border bg-muted/50 p-3">
+                  <div className="rounded-md flex items-center gap-3 border border-border bg-muted/50 p-3">
                     <button type="button" onClick={() => setPreviewImage(spForm.logo)} className="overflow-hidden rounded transition-opacity hover:opacity-80">
                       <Image src={spForm.logo} alt="Preview" width={40} height={40} unoptimized className="size-10 object-contain" />
                     </button>
@@ -416,10 +416,10 @@ export default function SponsorPage() {
                 )}
 
                 <div className="flex gap-2 pt-2">
-                  <Button onClick={handleSpSave} disabled={spSaving} className="clip-angled-sm gap-1 text-xs font-bold uppercase tracking-wider">
+                  <Button onClick={handleSpSave} disabled={spSaving} className="rounded-md gap-1 text-xs font-bold uppercase tracking-wider">
                     {spSaving ? <Spinner data-icon="inline-start" /> : <Check data-icon="inline-start" />} Simpan
                   </Button>
-                  <Button variant="outline" className="clip-angled-sm gap-1 text-xs font-bold uppercase tracking-wider"
+                  <Button variant="outline" className="rounded-md gap-1 text-xs font-bold uppercase tracking-wider"
                     onClick={() => { setShowSpAdd(false); setSpEditingId(null); setSpForm({ name: '', tier: 'gold', website: '', logo: '', isCurrent: false }); }}>
                     Batal
                   </Button>
@@ -430,7 +430,7 @@ export default function SponsorPage() {
 
           <div className="grid grid-cols-1 gap-3">
             {spPaginated.map((s) => (
-              <Card key={s.id} className="clip-angled group relative overflow-hidden border border-border bg-card p-4 transition-all hover:border-primary/50 hover:shadow-md">
+              <Card key={s.id} className="rounded-lg group relative overflow-hidden border border-border bg-card p-4 transition-all hover:border-primary/50 hover:shadow-md">
                 <div className="absolute -top-px -left-px size-6 bg-primary/20 transition-colors group-hover:bg-primary" style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }} />
                 <CardContent className="flex items-center justify-between gap-4 p-0">
                   <div className="flex items-center gap-3">
@@ -517,7 +517,7 @@ export default function SponsorPage() {
                   setMpReorderList([...mediaPartners]);
                   setShowMpReorderModal(true);
                 }}
-                className="clip-angled text-xs font-bold uppercase tracking-wider border-amber-200 text-amber-700 bg-amber-50 hover:bg-amber-100 hover:text-amber-800"
+                className="rounded-lg text-xs font-bold uppercase tracking-wider border-amber-200 text-amber-700 bg-amber-50 hover:bg-amber-100 hover:text-amber-800"
               >
                 <ArrowUpDown className="size-4 mr-2" /> Atur Urutan
               </Button>
@@ -527,7 +527,7 @@ export default function SponsorPage() {
                   setMpEditingId(null);
                   setMpForm({ name: '', website: '', logo: '', isCurrent: mpFilter === 'current' });
                 }}
-                className="clip-angled text-xs font-bold uppercase tracking-wider"
+                className="rounded-lg text-xs font-bold uppercase tracking-wider"
               >
                 <Plus data-icon="inline-start" /> Tambah Media Partner
               </Button>
@@ -535,7 +535,7 @@ export default function SponsorPage() {
           </div>
 
           {showMpAdd && (
-            <Card className="clip-angled relative mb-5 border-border">
+            <Card className="rounded-lg relative mb-5 border-border">
               <div className="absolute -top-px -left-px size-8 bg-primary" style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }} />
               <CardContent className="space-y-4 p-5">
                 <h2 className="text-sm font-black uppercase tracking-tight text-foreground">{mpEditingId ? 'Edit' : 'Tambah'} Media Partner</h2>
@@ -553,7 +553,7 @@ export default function SponsorPage() {
                     <div className="flex items-center gap-3">
                       <label className="cursor-pointer">
                         <span className={cn(
-                          "clip-angled-sm inline-block border border-border px-4 py-2 text-xs font-bold uppercase tracking-wider transition-colors",
+                          "rounded-md inline-block border border-border px-4 py-2 text-xs font-bold uppercase tracking-wider transition-colors",
                           mpUploading ? "bg-primary text-primary-foreground opacity-70 cursor-not-allowed" : "bg-muted text-muted-foreground hover:bg-accent"
                         )}>
                           {mpUploading ? "Mengunggah..." : "Pilih File"}
@@ -606,7 +606,7 @@ export default function SponsorPage() {
                 </FieldGroup>
 
                 {mpForm.logo && (
-                  <div className="clip-angled-sm flex items-center gap-3 border border-border bg-muted/50 p-3">
+                  <div className="rounded-md flex items-center gap-3 border border-border bg-muted/50 p-3">
                     <button type="button" onClick={() => setPreviewImage(mpForm.logo)} className="overflow-hidden rounded transition-opacity hover:opacity-80">
                       <Image src={mpForm.logo} alt="Preview" width={40} height={40} unoptimized className="size-10 object-contain" />
                     </button>
@@ -618,10 +618,10 @@ export default function SponsorPage() {
                 )}
 
                 <div className="flex gap-2 pt-2">
-                  <Button onClick={handleMpSave} disabled={mpSaving} className="clip-angled-sm gap-1 text-xs font-bold uppercase tracking-wider">
+                  <Button onClick={handleMpSave} disabled={mpSaving} className="rounded-md gap-1 text-xs font-bold uppercase tracking-wider">
                     {mpSaving ? <Spinner data-icon="inline-start" /> : <Check data-icon="inline-start" />} Simpan
                   </Button>
-                  <Button variant="outline" className="clip-angled-sm gap-1 text-xs font-bold uppercase tracking-wider"
+                  <Button variant="outline" className="rounded-md gap-1 text-xs font-bold uppercase tracking-wider"
                     onClick={() => { setShowMpAdd(false); setMpEditingId(null); setMpForm({ name: '', website: '', logo: '', isCurrent: false }); }}>
                     Batal
                   </Button>
@@ -632,7 +632,7 @@ export default function SponsorPage() {
 
           <div className="grid grid-cols-1 gap-3">
             {mpPaginated.map((m) => (
-              <Card key={m.id} className="clip-angled group relative overflow-hidden border border-border bg-card p-4 transition-all hover:border-primary/50 hover:shadow-md">
+              <Card key={m.id} className="rounded-lg group relative overflow-hidden border border-border bg-card p-4 transition-all hover:border-primary/50 hover:shadow-md">
                 <div className="absolute -top-px -left-px size-6 bg-primary/20 transition-colors group-hover:bg-primary" style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }} />
                 <CardContent className="flex items-center justify-between gap-4 p-0">
                   <div className="flex items-center gap-3">
@@ -689,7 +689,7 @@ export default function SponsorPage() {
       {/* Modal Reorder Sponsor */}
       {showSpReorderModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <Card className="w-full max-w-md clip-angled relative border-border shadow-2xl">
+          <Card className="w-full max-w-md rounded-lg relative border-border shadow-2xl">
             <div className="absolute -top-px -left-px size-8 bg-amber-500" style={{ clipPath: "polygon(0 0, 100% 0, 0 100%)" }} />
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-4">
@@ -737,7 +737,7 @@ export default function SponsorPage() {
       {/* Modal Reorder Media Partner */}
       {showMpReorderModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <Card className="w-full max-w-md clip-angled relative border-border shadow-2xl">
+          <Card className="w-full max-w-md rounded-lg relative border-border shadow-2xl">
             <div className="absolute -top-px -left-px size-8 bg-amber-500" style={{ clipPath: "polygon(0 0, 100% 0, 0 100%)" }} />
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-4">

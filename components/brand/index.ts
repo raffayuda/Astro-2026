@@ -10,6 +10,7 @@ export { Bubbles } from "./Bubbles"
 export { ChevronRibbon } from "./ChevronRibbon"
 export { ChromeText } from "./ChromeText"
 export { CtaButton } from "./CtaButton"
+export { Pattern } from "./Pattern"
 export { Pill, pillVariants, type PillProps } from "./Pill"
 export { PricePill } from "./PricePill"
 export { RetroMonitorWidget, SPONSOR_TIERS, type SponsorTier } from "./RetroMonitorWidget"
@@ -24,6 +25,7 @@ export {
 } from "./SiteFooter"
 export { SkyBackdrop } from "./SkyBackdrop"
 export { StatCard } from "./StatCard"
+export { Subtitle } from "./Subtitle"
 export { Surface, surfaceVariants, type SurfaceProps } from "./Surface"
 export {
   TALENT_CATEGORIES,

@@ -30,7 +30,7 @@ const pillVariants = cva(
 export type PillProps = React.ComponentProps<"span"> &
   VariantProps<typeof pillVariants>
 
-/** Rounded label chip. Replaces the old `.astro-pill` global class. */
+/** Rounded label chip. Replaces the old `.rounded-full bg-white shadow-soft-sm` global class. */
 export function Pill({ className, tone, size, ...props }: PillProps) {
   return (
     <span

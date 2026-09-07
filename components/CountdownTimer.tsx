@@ -27,7 +27,7 @@ function Block({ value, label, delay }: { value: number; label: string; delay: n
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay, duration: 0.5, ease: [0.16, 1, 0.3, 1] as const }}
-      className="astro-card flex min-w-[68px] flex-col items-center px-3 py-3 md:min-w-[88px] md:px-5 md:py-4"
+      className="rounded-xl bg-white shadow-soft flex min-w-[68px] flex-col items-center px-3 py-3 md:min-w-[88px] md:px-5 md:py-4"
     >
       <span className="font-mono text-2xl font-black leading-none tracking-wider text-[#3157ff] tabular-nums md:text-4xl">
         {String(value).padStart(2, '0')}
@@ -64,7 +64,7 @@ export default function CountdownTimer({ deadline }: { deadline: string }) {
           {mounted ? (
             <Block value={item.value} label={item.label} delay={item.delay} />
           ) : (
-            <div className="astro-card flex min-w-[68px] flex-col items-center px-3 py-3 md:min-w-[88px] md:px-5 md:py-4">
+            <div className="rounded-xl bg-white shadow-soft flex min-w-[68px] flex-col items-center px-3 py-3 md:min-w-[88px] md:px-5 md:py-4">
               <span className="text-2xl md:text-4xl font-black text-cyan-700/40 font-mono tracking-wider">--</span>
               <span className="text-[9px] md:text-[10px] uppercase text-slate-500 tracking-[0.15em] mt-1.5 font-bold">{item.label}</span>
             </div>

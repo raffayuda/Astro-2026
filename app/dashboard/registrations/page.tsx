@@ -122,12 +122,12 @@ export default function RegistrationsPage() {
 
       {/* Tabs */}
       <Tabs value={tab} onValueChange={(v) => { setTab(v as 'all' | 'mine'); setPage(1); }}>
-        <TabsList className="clip-angled-sm">
-          <TabsTrigger value="all" className="clip-angled-sm text-xs font-bold uppercase tracking-wider" onClick={() => resetFilters()}>
+        <TabsList className="rounded-md">
+          <TabsTrigger value="all" className="rounded-md text-xs font-bold uppercase tracking-wider" onClick={() => resetFilters()}>
             Semua ({registrations.length})
           </TabsTrigger>
           {userEmail && (
-            <TabsTrigger value="mine" className="clip-angled-sm text-xs font-bold uppercase tracking-wider" onClick={() => resetFilters()}>
+            <TabsTrigger value="mine" className="rounded-md text-xs font-bold uppercase tracking-wider" onClick={() => resetFilters()}>
               Pendaftaran Saya ({myRegistrations.length})
             </TabsTrigger>
           )}
@@ -136,7 +136,7 @@ export default function RegistrationsPage() {
 
       {/* Filter Bar */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-        <InputGroup className="clip-angled-sm flex-1 bg-background">
+        <InputGroup className="rounded-md flex-1 bg-background">
           <InputGroupAddon>
             <Search className="size-4 text-muted-foreground" />
           </InputGroupAddon>
@@ -148,7 +148,7 @@ export default function RegistrationsPage() {
         </InputGroup>
 
         <Select value={statusFilter || undefined} onValueChange={(v) => { setStatusFilter(v === 'all' ? '' : v); setPage(1); }}>
-          <SelectTrigger className="clip-angled-sm w-full bg-background sm:w-40">
+          <SelectTrigger className="rounded-md w-full bg-background sm:w-40">
             <SelectValue placeholder="Semua Status" />
           </SelectTrigger>
           <SelectContent>
@@ -163,7 +163,7 @@ export default function RegistrationsPage() {
         </Select>
 
         <Select value={lombaFilter || undefined} onValueChange={(v) => { setLombaFilter(v === 'all' ? '' : v); setPage(1); }}>
-          <SelectTrigger className="clip-angled-sm w-full bg-background sm:w-48">
+          <SelectTrigger className="rounded-md w-full bg-background sm:w-48">
             <SelectValue placeholder="Semua Lomba" />
           </SelectTrigger>
           <SelectContent>
@@ -180,7 +180,7 @@ export default function RegistrationsPage() {
       </div>
 
       {/* Table */}
-      <div className="clip-angled-lg overflow-hidden border border-border bg-background">
+      <div className="rounded-xl overflow-hidden border border-border bg-background">
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
@@ -220,7 +220,7 @@ export default function RegistrationsPage() {
                       <span className="text-sm text-foreground">{reg.competitionName}</span>
                     </TableCell>
                     <TableCell className="px-5 py-3.5">
-                      <Badge variant="outline" className={cn('clip-angled-sm border text-[10px] font-bold uppercase tracking-wider', statusColors[reg.paymentStatus] || statusColors.pending)}>
+                      <Badge variant="outline" className={cn('rounded-md border text-[10px] font-bold uppercase tracking-wider', statusColors[reg.paymentStatus] || statusColors.pending)}>
                         {reg.paymentStatus}
                       </Badge>
                     </TableCell>

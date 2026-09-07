@@ -207,7 +207,7 @@ export default function ImportCommittee({ onImported }: { onImported?: () => voi
               <Button
                 onClick={handleImport}
                 disabled={importing}
-                className="clip-angled-sm gap-1 text-xs font-bold uppercase tracking-wider"
+                className="rounded-md gap-1 text-xs font-bold uppercase tracking-wider"
               >
                 {importing ? <Loader2 className="size-3 animate-spin" /> : <UploadCloud className="size-3" />}
                 {importing ? 'Mengimport...' : 'Import Sekarang'}
@@ -215,7 +215,7 @@ export default function ImportCommittee({ onImported }: { onImported?: () => voi
               <Button
                 variant="outline"
                 onClick={() => { setRows(null); setFileName(''); }}
-                className="clip-angled-sm gap-1 text-xs font-bold uppercase tracking-wider"
+                className="rounded-md gap-1 text-xs font-bold uppercase tracking-wider"
               >
                 <X className="size-3" /> Batal
               </Button>
@@ -232,7 +232,7 @@ export default function ImportCommittee({ onImported }: { onImported?: () => voi
           {/* Ringkasan divisi */}
           <div className="flex flex-wrap gap-1.5">
             {Object.entries(groupByDivision).map(([div, count]) => (
-              <Badge key={div} variant="secondary" className="clip-angled-sm gap-1 px-2.5 py-1 text-[10px] font-bold">
+              <Badge key={div} variant="secondary" className="rounded-md gap-1 px-2.5 py-1 text-[10px] font-bold">
                 {div} · {count}
               </Badge>
             ))}
@@ -255,7 +255,7 @@ export default function ImportCommittee({ onImported }: { onImported?: () => voi
                     <td className="px-3 py-2 font-semibold text-foreground">{r.name}</td>
                     <td className="px-3 py-2">
                       <Badge className={cn(
-                        'clip-angled-sm text-[9px] font-bold uppercase',
+                        'rounded-md text-[9px] font-bold uppercase',
                         r.role.toUpperCase() === 'SC' || r.role.toUpperCase() === 'PO' || r.role.toUpperCase() === 'PI'
                           ? 'bg-cyan-100 text-cyan-800'
                           : 'bg-muted text-muted-foreground'

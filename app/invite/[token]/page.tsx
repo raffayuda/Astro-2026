@@ -199,7 +199,7 @@ export default function InviteAcceptPage({
 
         {/* State 1: Verifying */}
         {verifying && (
-          <Card className="clip-angled border-white/60 bg-white/90 backdrop-blur-md shadow-xl p-8 text-center">
+          <Card className="rounded-lg border-white/60 bg-white/90 backdrop-blur-md shadow-xl p-8 text-center">
             <div className="flex flex-col items-center justify-center py-6 gap-3">
               <Spinner className="size-8 text-cyan-600" />
               <p className="text-sm font-semibold text-slate-700">
@@ -211,7 +211,7 @@ export default function InviteAcceptPage({
 
         {/* State 2: Invalid / Expired */}
         {!verifying && errorReason && (
-          <Card className="clip-angled border-white/60 bg-white/90 backdrop-blur-md shadow-xl p-6 sm:p-8 text-center">
+          <Card className="rounded-lg border-white/60 bg-white/90 backdrop-blur-md shadow-xl p-6 sm:p-8 text-center">
             <div className="flex flex-col items-center justify-center gap-4">
               <div className="flex size-14 items-center justify-center rounded-full bg-red-100 text-red-600">
                 <AlertCircle className="size-8" />
@@ -225,7 +225,7 @@ export default function InviteAcceptPage({
                 </p>
               </div>
               <div className="pt-2 w-full">
-                <Button asChild className="clip-angled w-full font-bold uppercase tracking-wider text-xs">
+                <Button asChild className="rounded-lg w-full font-bold uppercase tracking-wider text-xs">
                   <Link href="/">Kembali ke Beranda</Link>
                 </Button>
               </div>
@@ -235,7 +235,7 @@ export default function InviteAcceptPage({
 
         {/* State 3: Valid & Ready to Fill */}
         {!verifying && !errorReason && invitation && (
-          <Card className="clip-angled border-white/70 bg-white/95 backdrop-blur-xl shadow-2xl relative overflow-hidden">
+          <Card className="rounded-lg border-white/70 bg-white/95 backdrop-blur-xl shadow-2xl relative overflow-hidden">
             <div
               className="absolute -top-px -left-px size-10 bg-cyan-500"
               style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }}
@@ -356,7 +356,7 @@ export default function InviteAcceptPage({
                   <Button
                     type="submit"
                     disabled={submitting || success}
-                    className="clip-angled w-full h-11 bg-slate-950 hover:bg-slate-800 text-white font-black text-xs uppercase tracking-wider shadow-lg transition-all"
+                    className="rounded-lg w-full h-11 bg-slate-950 hover:bg-slate-800 text-white font-black text-xs uppercase tracking-wider shadow-lg transition-all"
                   >
                     {submitting ? (
                       <>

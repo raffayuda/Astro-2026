@@ -64,8 +64,8 @@ export default function CompetitionSection({ competitions }: Props) {
           transition={{ duration: 0.5 }}
         >
           <div>
-            <div className="accent-line mb-3" />
-            <h2 className="font-masterpiece text-5xl md:text-6xl lg:text-7xl text-slate-900 leading-tight">
+            <div className="block h-1.5 w-18 rounded-full bg-linear-to-r from-astro-gold via-astro-lime2 to-astro-blue mb-3" />
+            <h2 className="font-title text-5xl md:text-6xl lg:text-7xl text-slate-900 leading-tight">
               Pilih<br />
               <span className="text-astro-cyan">Lombamu</span>
             </h2>
@@ -78,7 +78,7 @@ export default function CompetitionSection({ competitions }: Props) {
         {/* Filters */}
         <div className="mb-8 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
           <div className="relative w-full sm:max-w-xs">
-            <InputGroup className="clip-angled h-10 border-border bg-background">
+            <InputGroup className="rounded-lg h-10 border-border bg-background">
               <InputGroupAddon align="inline-start">
                 <Search className="size-3.5 text-muted-foreground" />
               </InputGroupAddon>
@@ -94,7 +94,7 @@ export default function CompetitionSection({ competitions }: Props) {
           <div className="flex flex-wrap gap-1">
             <ToggleGroup type="single" value={selectedCategory} onValueChange={(v) => v && setSelectedCategory(v as CategoryType | 'all')} spacing={1}>
               {CATEGORIES.map((cat) => (
-                <ToggleGroupItem key={cat.value} value={cat.value} className="clip-angled px-4 py-2 text-[10px] font-bold uppercase tracking-[0.15em]">
+                <ToggleGroupItem key={cat.value} value={cat.value} className="rounded-lg px-4 py-2 text-[10px] font-bold uppercase tracking-[0.15em]">
                   {cat.label}
                 </ToggleGroupItem>
               ))}
@@ -123,7 +123,7 @@ export default function CompetitionSection({ competitions }: Props) {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
             >
-              <Empty className="clip-angled-lg border border-border bg-background py-20 shadow-sm">
+              <Empty className="rounded-xl border border-border bg-background py-20 shadow-sm">
                 <EmptyHeader>
                   <EmptyTitle className="text-lg font-black uppercase tracking-wider">Tidak Ditemukan</EmptyTitle>
                   <EmptyDescription>Coba kata kunci atau filter lain.</EmptyDescription>

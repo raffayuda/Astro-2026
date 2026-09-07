@@ -48,7 +48,7 @@ export function ScheduleCard({
       <div className="flex items-center gap-3 border-l-4 border-astro-gold p-4">
         <Icon className={cn("size-6 shrink-0", color)} aria-hidden />
         <div className="min-w-0">
-          <p className="font-masterpiece text-lg leading-tight text-astro-navy">
+          <p className="font-title text-lg leading-tight text-astro-navy">
             {dateLabel}
           </p>
           <p className="mt-0.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
