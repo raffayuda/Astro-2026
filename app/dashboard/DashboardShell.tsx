@@ -79,8 +79,8 @@ export default function DashboardShell({ children, role, userName }: Props) {
 
   return (
     <SidebarProvider>
-      <Sidebar collapsible="offcanvas">
-        <SidebarHeader className="border-b border-sidebar-border">
+      <Sidebar collapsible="offcanvas" className="border-r border-[#83cfff]/55 bg-[#effaff]/95">
+        <SidebarHeader className="border-b border-[#83cfff]/55 bg-white/60">
           <Link href="/dashboard" className="flex items-center gap-3 px-2 py-1">
             <Image
               src="/assets/logo-astro.png"
@@ -109,7 +109,7 @@ export default function DashboardShell({ children, role, userName }: Props) {
                         isActive={isActive(item.href)}
                         className={cn(
                           isActive(item.href) &&
-                            'bg-primary/10 text-primary hover:bg-primary/15 hover:text-primary border border-primary/20'
+                            'border border-[#83cfff]/70 bg-gradient-to-b from-[#28aaff]/15 to-[#3157ff]/10 text-[#3157ff] hover:bg-[#e8f8ff] hover:text-[#3157ff]'
                         )}
                       >
                         <Link href={item.href}>
@@ -127,7 +127,7 @@ export default function DashboardShell({ children, role, userName }: Props) {
 
         <SidebarFooter>
           <Separator className="mb-2" />
-          <div className="flex items-center gap-3 rounded-lg bg-sidebar-accent/50 px-4 py-3">
+          <div className="astro-card flex items-center gap-3 px-4 py-3">
             <Avatar className="size-8 bg-primary text-primary-foreground">
               <AvatarFallback className="text-sm font-black">
                 {userName.charAt(0).toUpperCase()}
@@ -153,7 +153,7 @@ export default function DashboardShell({ children, role, userName }: Props) {
       </Sidebar>
 
       <SidebarInset>
-        <header className="flex h-16 items-center gap-4 border-b border-border bg-background px-4 lg:px-6">
+        <header className="flex h-16 items-center gap-4 border-b border-[#83cfff]/55 bg-white/70 px-4 shadow-[0_8px_24px_rgba(49,87,255,0.08)] backdrop-blur-xl lg:px-6">
           <SidebarTrigger className="md:hidden" />
           <div className="flex-1" />
           <Link
@@ -164,7 +164,7 @@ export default function DashboardShell({ children, role, userName }: Props) {
           </Link>
         </header>
 
-        <main className="flex-1 overflow-auto p-4 lg:p-8">
+        <main className="astro-sky-soft flex-1 overflow-auto p-4 lg:p-8">
           {children}
         </main>
       </SidebarInset>

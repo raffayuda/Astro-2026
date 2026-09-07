@@ -328,8 +328,8 @@ export default function RegistrationPage({
     return (
       <>
         <Navbar />
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-sky-100/60 via-background to-background px-4 py-20">
-          <div className="clip-angled border border-border bg-card/90 backdrop-blur-md p-8 sm:p-12 max-w-lg w-full text-center space-y-6 shadow-lg">
+        <div className="astro-sky-soft astro-bubble-field min-h-screen flex items-center justify-center px-4 py-20">
+          <div className="astro-card p-8 sm:p-12 max-w-lg w-full text-center space-y-6">
             <div className="size-16 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto ring-8 ring-red-50">
               <Lock className="size-8" />
             </div>
@@ -436,10 +436,11 @@ export default function RegistrationPage({
     <>
       <Navbar />
 
-      <div className="min-h-screen flex flex-col justify-between bg-white">
+      <div className="min-h-screen flex flex-col justify-between astro-sky-soft">
         <main className="flex-grow">
           {/* ─── HEADER ─── */}
-          <section className="relative pt-36 pb-14 md:pt-40 md:pb-18 overflow-hidden bg-gradient-to-b from-sky-400 via-sky-300 to-sky-100">
+          <section className="astro-sky astro-frame-y astro-bubble-field relative overflow-hidden pt-36 pb-14 md:pt-40 md:pb-18">
+            <div className="astro-pattern absolute inset-0 z-0 opacity-35" />
             {/* ─── SKY BACKGROUND ─── */}
             <div className="absolute inset-0 -z-10 " />
 
@@ -553,7 +554,7 @@ export default function RegistrationPage({
                 initial="hidden"
                 animate="visible"
                 variants={fadeUp}
-                className="text-xl md:text-3xl font-black uppercase tracking-tight mb-2 bg-gradient-to-r from-sky-900 via-cyan-800 to-slate-800 bg-clip-text text-transparent"
+                className="astro-title-chrome text-xl md:text-3xl font-black uppercase tracking-tight mb-2"
               >
                 Pendaftaran {competition.title}
               </motion.h1>
@@ -569,7 +570,7 @@ export default function RegistrationPage({
                 initial="hidden"
                 animate="visible"
                 variants={fadeUp}
-                className="text-sm text-slate-600 font-light flex items-center gap-1.5"
+                className="astro-pill flex w-fit items-center gap-1.5 px-4 py-2 text-sm font-semibold text-[#18345f]"
               >
                 <Trophy className="w-4 h-4 text-astro-cyan" />
                 Biaya Pendaftaran:{" "}
@@ -596,7 +597,7 @@ export default function RegistrationPage({
                   <span className="text-[10px] font-black uppercase tracking-wider text-slate-500">
                     Pilih Kategori Pendaftaran:
                   </span>
-                  <div className="flex overflow-hidden rounded-full border border-slate-300 bg-white/70 shadow-sm">
+                  <div className="astro-pill flex overflow-hidden border-white/80 bg-white/75">
                     {(['individual', 'team'] as const).map((t) => (
                       <button
                         key={t}
@@ -698,7 +699,7 @@ export default function RegistrationPage({
           </section>
 
           {/* ─── CONTENT ─── */}
-          <section className="relative bg-gradient-to-b from-sky-100 via-sky-50 to-white pb-20 md:pb-28 overflow-hidden">
+          <section className="astro-sky-soft relative overflow-hidden pb-20 md:pb-28">
             <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
               <AnimatePresence mode="wait">
                 {step === 1 ? (

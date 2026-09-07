@@ -176,14 +176,15 @@ export default function SignupPage() {
   // ─── SUCCESS ───
   if (step === 'success') {
     return (
-      <div className="flex min-h-screen flex-col bg-gradient-to-b from-sky-400 via-sky-300 to-sky-100">
+      <div className="astro-sky astro-frame-y astro-bubble-field flex min-h-screen flex-col">
+        <div className="astro-pattern absolute inset-0 opacity-35" />
         <div className="flex flex-1 items-center justify-center px-4">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             className="w-full max-w-md"
           >
-            <Card className="clip-angled-lg border border-white/40 bg-background/80 p-8 text-center backdrop-blur-xl md:p-10">
+            <Card className="astro-card p-8 text-center md:p-10">
               <CardContent className="flex flex-col items-center p-0">
                 <div className="mb-4 flex size-16 items-center justify-center rounded-full border border-emerald-300 bg-emerald-100">
                   <CheckCircle2 className="size-8 text-emerald-600" />
@@ -202,7 +203,8 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-gradient-to-b from-sky-400 via-sky-300 to-sky-100">
+    <div className="astro-sky astro-frame-y astro-bubble-field flex min-h-screen flex-col">
+      <div className="astro-pattern absolute inset-0 opacity-35" />
       <div className="relative z-10 flex flex-1 items-center justify-center px-4">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -210,7 +212,7 @@ export default function SignupPage() {
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className="w-full max-w-md"
         >
-          <Card className="clip-angled-lg border border-white/40 bg-background/80 p-8 backdrop-blur-xl md:p-10">
+          <Card className="astro-card p-8 md:p-10">
             <CardContent className="p-0">
               <Button asChild variant="link" className="mb-6 gap-1 text-xs font-bold uppercase tracking-wider text-muted-foreground hover:text-primary">
                 <Link href="/login">

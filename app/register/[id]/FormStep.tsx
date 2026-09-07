@@ -227,20 +227,20 @@ export default function FormStep({
         e.stopPropagation();
         form.handleSubmit();
       }}
-      className="space-y-8"
+      className="flex flex-col gap-8"
     >
       {/* Section title */}
       <div>
-        <h2 className="text-lg font-black uppercase tracking-tight text-foreground">
+        <h2 className="text-lg font-black uppercase tracking-tight text-[#18345f]">
           Data Pendaftaran
         </h2>
-        <p className="mt-1 text-xs font-light text-muted-foreground">
+        <p className="mt-1 text-xs font-semibold text-[#3157ff]/75">
           Isi data dengan benar untuk pendaftaran lomba{" "}
           <strong>{competition.title}</strong>.
         </p>
       </div>
 
-      <Card className="clip-angled relative border-border">
+      <Card className="astro-card relative">
         <div
           className="absolute -top-px -left-px size-8 bg-primary"
           style={{ clipPath: "polygon(0 0, 100% 0, 0 100%)" }}
@@ -336,7 +336,7 @@ export default function FormStep({
                   key={i}
                   className={
                     photoRequired
-                      ? "space-y-2 rounded-md border border-border/70 p-3"
+                      ? "flex flex-col gap-2 rounded-[16px] border border-[#83cfff]/60 bg-white/60 p-3"
                       : undefined
                   }
                 >
@@ -570,7 +570,7 @@ export default function FormStep({
             type="submit"
             disabled={isSubmitting}
             size="lg"
-            className="clip-angled w-full text-sm font-black uppercase tracking-wider active:scale-95"
+            className="w-full rounded-[18px] text-sm font-black uppercase tracking-wider active:scale-95"
           >
             {isSubmitting ? (
               <>

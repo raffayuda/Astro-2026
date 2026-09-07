@@ -99,7 +99,7 @@ export default function Navbar() {
         className={cn(
           'fixed inset-x-0 top-0 z-50 flex h-16 items-center justify-between transition-all duration-300 md:h-[72px]',
           isScrolled
-            ? 'mx-4 mt-3 rounded-xl border border-white/40 bg-background/70 shadow-lg shadow-black/5 backdrop-blur-xl md:mx-8'
+            ? 'astro-pill mx-4 mt-3 border-white/80 bg-white/75 shadow-[0_10px_28px_rgba(49,87,255,0.18)] md:mx-8'
             : 'mt-0 rounded-none border-transparent bg-transparent'
         )}
       >
@@ -116,7 +116,7 @@ export default function Navbar() {
               height={44}
               className="h-9 w-auto object-contain transition-transform duration-300 group-hover:scale-105 md:h-11"
             />
-            <span className={cn('font-masterpiece text-sm tracking-wide transition-colors duration-300 md:text-base', isScrolled ? 'text-foreground' : 'text-foreground md:text-white')}>
+            <span className={cn('font-masterpiece text-sm tracking-wide transition-colors duration-300 md:text-base', isScrolled ? 'text-[#3157ff]' : 'text-foreground md:text-white')}>
               ASTRO 2026
             </span>
           </button>
@@ -130,10 +130,10 @@ export default function Navbar() {
                 key={link.label}
                 onClick={() => scrollTo(link.href)}
                 className={cn(
-                  'relative flex h-9 items-center rounded-lg px-3.5 text-[11px] font-extrabold uppercase tracking-[0.12em] transition-all duration-200',
+                  'relative flex h-9 items-center rounded-[14px] px-3.5 text-[11px] font-extrabold uppercase tracking-[0.12em] transition-all duration-200',
                   isScrolled
-                    ? 'text-muted-foreground hover:bg-muted hover:text-foreground'
-                    : 'text-slate-800 hover:bg-white/10 hover:text-white md:text-white/90'
+                    ? 'text-[#3157ff]/75 hover:bg-[#e8f8ff] hover:text-[#3157ff]'
+                    : 'text-slate-800 hover:bg-white/20 hover:text-white md:text-white/90'
                 )}
               >
                 {link.label}
@@ -145,7 +145,7 @@ export default function Navbar() {
             variant="default"
             size="sm"
             onClick={() => router.push(isProfilePage ? '/' : '/profile')}
-            className="clip-angled gap-1.5 border border-cyan-300 text-[10px] font-black uppercase tracking-wider shadow-md hover:bg-cyan-400 hover:shadow-cyan-500/30 active:scale-95"
+            className="rounded-[16px] border-2 border-white/70 text-[10px] font-black uppercase tracking-wider shadow-md hover:shadow-cyan-500/30 active:scale-95"
             title={isProfilePage ? 'Ke Halaman Utama Portal Lomba ASTRO' : 'Ke Halaman Company Profile ASTRO'}
           >
             {isProfilePage ? <Trophy className="text-slate-950" /> : <Building2 className="text-slate-950" />}
@@ -205,7 +205,7 @@ export default function Navbar() {
             variant="default"
             size="sm"
             onClick={handleDaftar}
-            className="clip-angled text-[11px] font-black uppercase tracking-wider shadow-md active:scale-95"
+            className="rounded-[16px] border-2 border-white/70 text-[11px] font-black uppercase tracking-wider shadow-md active:scale-95"
           >
             Daftar
           </Button>
@@ -222,7 +222,7 @@ export default function Navbar() {
                 <Menu />
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-80 bg-background/95 p-0 backdrop-blur-2xl">
+            <SheetContent side="right" className="w-80 bg-[#effaff]/95 p-0 backdrop-blur-2xl">
               <SheetHeader className="border-b border-border p-5">
                 <div className="flex items-center gap-2">
                   <Image src="/assets/logo-astro.png" alt="ASTRO Logo" width={32} height={32} className="h-8 w-auto object-contain" />
@@ -237,7 +237,7 @@ export default function Navbar() {
                   <p className="mb-2 text-[10px] font-extrabold uppercase tracking-wider text-muted-foreground">Pindah Web Portal</p>
                   <Button
                     variant="default"
-                    className="clip-angled w-full items-center justify-between px-4 py-3 text-xs font-black uppercase tracking-wider shadow-md"
+                    className="rounded-[16px] w-full items-center justify-between px-4 py-3 text-xs font-black uppercase tracking-wider shadow-md"
                     onClick={() => {
                       router.push(isProfilePage ? '/' : '/profile');
                       setIsMobileOpen(false);
@@ -258,7 +258,7 @@ export default function Navbar() {
                     <button
                       key={link.label}
                       onClick={() => scrollTo(link.href)}
-                      className="group flex items-center justify-between rounded-xl px-4 py-3 text-left text-xs font-extrabold tracking-wider text-muted-foreground transition-all hover:bg-muted hover:text-foreground"
+                      className="group flex items-center justify-between rounded-[16px] px-4 py-3 text-left text-xs font-extrabold tracking-wider text-muted-foreground transition-all hover:bg-white hover:text-[#3157ff]"
                     >
                       <span>{link.label}</span>
                       <span className="size-1.5 rounded-sm bg-primary opacity-0 transition-opacity group-hover:opacity-100" />
@@ -268,7 +268,7 @@ export default function Navbar() {
 
                 <div className="mt-auto">
                   <Separator className="mb-4" />
-                  <div className="flex flex-col gap-0.5 rounded-xl bg-muted/50 p-2">
+                  <div className="astro-card flex flex-col gap-0.5 p-2">
                     {isLoggedIn ? (
                       <>
                         <Button variant="ghost" className="justify-start gap-3 px-3.5 py-3 text-xs font-bold tracking-wider" onClick={() => { router.push('/check-registration'); setIsMobileOpen(false); }}>
@@ -292,7 +292,7 @@ export default function Navbar() {
 
                   <Button
                     variant="default"
-                    className="mt-3 w-full rounded-xl py-3.5 text-xs font-black uppercase tracking-wider shadow-md active:scale-95"
+                    className="mt-3 w-full rounded-[16px] py-3.5 text-xs font-black uppercase tracking-wider shadow-md active:scale-95"
                     onClick={handleDaftar}
                   >
                     Daftar Sekarang

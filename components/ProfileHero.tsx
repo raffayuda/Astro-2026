@@ -27,8 +27,9 @@ export default function ProfileHero() {
   return (
     <section
       id="home"
-      className="relative min-h-[100svh] flex bg-gradient-to-b from-sky-400 via-sky-300 to-sky-100 flex-col items-center justify-start overflow-hidden pt-[18svh] md:pt-[15svh]"
+      className="astro-sky astro-frame-y astro-bubble-field relative flex min-h-[100svh] flex-col items-center justify-start overflow-hidden pt-[18svh] md:pt-[15svh]"
     >
+      <div className="astro-pattern absolute inset-0 z-0 opacity-55" />
       {/* ─── CLOUD IMAGES ─── */}
       {/* Big cloud top-left */}
       <MotionImage
@@ -148,24 +149,29 @@ export default function ProfileHero() {
         initial="hidden"
         animate="visible"
       >
+        <motion.div variants={fadeUp} className="astro-pill mx-auto mb-8 flex w-fit items-center gap-4 px-5 py-3">
+          <Image
+            src="/assets/logo-astro.png"
+            alt="ASTRO 2026"
+            width={56}
+            height={56}
+            className="size-12 object-contain"
+            priority
+          />
+          <span className="text-xs font-black uppercase tracking-[0.18em] text-[#3157ff]">
+            Company Profile
+          </span>
+        </motion.div>
         {/* ─── MAIN TITLE ─── */}
         <motion.div variants={fadeUp} className="mb-6 md:mb-0 md:-mt-6">
           <h1 className="text-massive mb-0">
             <span
-              className="block bg-gradient-to-b from-slate-300 via-slate-400 to-slate-600 bg-clip-text text-transparent drop-shadow-[0_4px_30px_rgba(0,0,0,0.15)]"
-              style={{
-                textShadow:
-                  "0 2px 0 #cbd5e1, 0 4px 0 #94a3b8, 0 6px 0 #64748b, 0 8px 20px rgba(0,0,0,0.3)",
-              }}
+              className="astro-title-chrome block"
             >
               ASTRO
             </span>
             <span
-              className="block bg-gradient-to-b from-slate-200 via-slate-500 to-slate-800 bg-clip-text text-transparent"
-              style={{
-                textShadow:
-                  "0 2px 0 #e2e8f0, 0 4px 0 #94a3b8, 0 6px 0 #475569, 0 8px 0 #1e293b, 0 12px 30px rgba(0,0,0,0.35)",
-              }}
+              className="astro-title-chrome block"
             >
               2026
             </span>
@@ -176,7 +182,7 @@ export default function ProfileHero() {
             <span className="text-3xl sm:text-4xl md:text-5xl text-white/95 block">
               Where Innovation
             </span>
-            <span className="text-4xl sm:text-5xl md:text-6xl bg-gradient-to-r from-yellow-200 via-orange-200 to-pink-200 bg-clip-text text-transparent block -mt-1">
+            <span className="-mt-1 block bg-gradient-to-r from-[#f8ff7a] via-[#d9f64a] to-white bg-clip-text text-4xl text-transparent sm:text-5xl md:text-6xl">
               Meets the Stars
             </span>
           </p>
@@ -187,7 +193,7 @@ export default function ProfileHero() {
           variants={fadeUp}
           className="flex justify-center mb-8 md:mb-10"
         >
-          <div className="w-24 h-[3px] bg-white/40 rounded-full" />
+          <div className="h-[5px] w-28 rounded-full bg-[#d9f64a] shadow-[0_3px_0_rgba(49,87,255,0.35)]" />
         </motion.div>
 
         {/* CTA - Solid Parallelogram Buttons */}
@@ -198,10 +204,10 @@ export default function ProfileHero() {
           <Button
             asChild
             size="lg"
-            className="skew-x-[-8deg] rounded-none border-2 border-sky-300 bg-sky-600 px-8 py-4 text-sm font-black uppercase tracking-wider text-white shadow-[0_8px_30px_rgba(2,132,199,0.4)] hover:-translate-y-0.5 hover:bg-sky-500 hover:shadow-[0_12px_40px_rgba(2,132,199,0.5)] active:scale-95"
+            className="rounded-[18px] border-2 border-white/80 px-8 py-4 text-sm font-black uppercase tracking-wider text-white shadow-[0_12px_28px_rgba(49,87,255,0.3)] hover:-translate-y-0.5 active:scale-95"
           >
             <a href="#about-event">
-              <span className="flex items-center gap-2 skew-x-[8deg]">
+              <span className="flex items-center gap-2">
                 <ArrowDown className="size-4" /> Explore Now
               </span>
             </a>
@@ -209,10 +215,11 @@ export default function ProfileHero() {
           <Button
             asChild
             size="lg"
-            className="skew-x-[-8deg] rounded-none border-2 border-slate-400 bg-slate-700 px-8 py-4 text-sm font-bold uppercase tracking-wider text-white shadow-[0_8px_30px_rgba(0,0,0,0.3)] hover:-translate-y-0.5 hover:bg-slate-600 hover:shadow-[0_12px_40px_rgba(0,0,0,0.35)] active:scale-95"
+            variant="secondary"
+            className="rounded-[18px] border-2 border-white/80 px-8 py-4 text-sm font-black uppercase tracking-wider shadow-[0_12px_28px_rgba(217,246,74,0.24)] hover:-translate-y-0.5 active:scale-95"
           >
             <a href="#contact">
-              <span className="block skew-x-[8deg]">Contact Us</span>
+              Contact Us
             </a>
           </Button>
         </motion.div>

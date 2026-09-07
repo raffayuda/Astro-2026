@@ -14,7 +14,8 @@ export default function NotFound() {
   const reduce = useReducedMotion();
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-sky-400 via-sky-300 to-sky-100 overflow-hidden">
+    <div className="astro-sky astro-frame-y astro-bubble-field min-h-screen flex flex-col overflow-hidden">
+      <div className="astro-pattern absolute inset-0 opacity-35" />
       <Navbar />
 
       <main className="relative flex-1 flex items-center justify-center pt-24 pb-16 px-4 sm:px-6 lg:px-8">
@@ -87,14 +88,14 @@ export default function NotFound() {
             initial={reduce ? false : { opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="space-y-6"
+            className="astro-card flex flex-col gap-6 p-8"
           >
             {/* Big 404 Headline with Masterpiece Font */}
             <div className="relative">
-              <h1 className="font-masterpiece text-8xl sm:text-9xl md:text-[11rem] leading-none text-white drop-shadow-[0_8px_24px_rgba(14,165,233,0.35)] select-none">
+              <h1 className="astro-title-chrome font-masterpiece text-8xl leading-none select-none sm:text-9xl md:text-[11rem]">
                 404
               </h1>
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
                 <span className="font-masterpiece text-8xl sm:text-9xl md:text-[11rem] leading-none text-transparent bg-clip-text bg-gradient-to-b from-white via-white/80 to-sky-200/50 opacity-90">
                   404
                 </span>
@@ -102,11 +103,11 @@ export default function NotFound() {
             </div>
 
             {/* Description */}
-            <div className="space-y-2 max-w-md mx-auto">
-              <h2 className="text-xl sm:text-2xl font-black uppercase tracking-tight text-slate-900">
+            <div className="mx-auto flex max-w-md flex-col gap-2">
+              <h2 className="text-xl font-black uppercase tracking-tight text-[#18345f] sm:text-2xl">
                 Halaman Tidak Ditemukan
               </h2>
-              <p className="text-sm sm:text-base text-slate-700 leading-relaxed font-medium">
+              <p className="text-sm font-medium leading-relaxed text-[#18345f]/72 sm:text-base">
                 Sepertinya rute atau koordinat yang Anda tuju telah berpindah
                 atau berada di luar orbit sistem ASTRO 2026.
               </p>
@@ -114,7 +115,7 @@ export default function NotFound() {
 
             {/* Accent divider */}
             <div className="flex justify-center py-1">
-              <div className="h-1 w-14 bg-gradient-to-r from-cyan-400 to-sky-600 rounded-full" />
+              <div className="h-1 w-14 rounded-full bg-[#d9f64a] shadow-[0_3px_0_rgba(49,87,255,0.22)]" />
             </div>
 
             {/* Action Buttons */}
@@ -122,7 +123,7 @@ export default function NotFound() {
               <Button
                 asChild
                 size="lg"
-                className="clip-angled w-full sm:w-auto bg-slate-900 text-white hover:bg-slate-800 shadow-lg shadow-black/10 text-xs font-black uppercase tracking-wider px-6"
+                className="w-full rounded-[18px] px-6 text-xs font-black uppercase tracking-wider sm:w-auto"
               >
                 <Link href="/">
                   <Home className="size-4" /> Kembali ke Beranda
@@ -133,7 +134,7 @@ export default function NotFound() {
                 asChild
                 variant="outline"
                 size="lg"
-                className="clip-angled w-full sm:w-auto bg-white/80 hover:bg-white border-white/80 text-slate-800 hover:text-slate-950 text-xs font-bold uppercase tracking-wider px-6 shadow-sm"
+                className="w-full rounded-[18px] border-white/80 bg-white/80 px-6 text-xs font-bold uppercase tracking-wider text-slate-800 shadow-sm hover:bg-white hover:text-slate-950 sm:w-auto"
               >
                 <Link href="/#competitions">
                   <Trophy className="size-4 text-amber-500" /> Lihat Cabang

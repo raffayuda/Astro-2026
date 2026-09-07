@@ -54,7 +54,7 @@ export default function ProfilePage() {
   );
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen astro-sky-soft">
       <Navbar />
 
       {/* ════════════ 1. HERO — CINEMATIC SPLIT ════════════ */}
@@ -63,8 +63,9 @@ export default function ProfilePage() {
       {/* ════════════ 2. ABOUT ASTRO ════════════ */}
       <section
         id="about-event"
-        className="relative py-20 md:py-28 bg-gradient-to-b from-sky-100 via-sky-200 to-sky-200 overflow-hidden"
+        className="astro-sky-soft astro-bubble-field relative overflow-hidden py-20 md:py-28"
       >
+        <div className="astro-pattern absolute inset-0 z-0 opacity-30" />
         {/* Floating blobs */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -191,9 +192,9 @@ export default function ProfilePage() {
                   transition={{ duration: 0.5 }}
                 >
                   <div className="accent-line mb-3" />
-                  <h2 className="font-masterpiece text-5xl md:text-6xl lg:text-7xl text-slate-900 leading-tight">
+                  <h2 className="font-masterpiece text-5xl md:text-6xl lg:text-7xl text-[#18345f] leading-tight">
                     Tentang <br />
-                    <span className="text-astro-cyan">ASTRO 2026</span>
+                    <span className="astro-title-chrome">ASTRO 2026</span>
                   </h2>
                 </motion.div>
 
@@ -202,7 +203,7 @@ export default function ProfilePage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: 0.1 }}
-                  className="text-sm md:text-base text-slate-650 mt-6 leading-relaxed font-normal max-w-2xl"
+                  className="astro-card mt-6 max-w-2xl p-6 text-sm font-medium leading-relaxed text-[#18345f]/75 md:text-base"
                 >
                   ASTRO adalah program kerja tahunan BEM STT-NF yang telah
                   berlangsung sejak BEM dibentuk, yang awalnya hanya sebatas
@@ -282,7 +283,7 @@ export default function ProfilePage() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: 0.1 }}
               >
-                <div className="bg-white rounded-2xl border border-slate-200/60 p-6 md:p-8 shadow-sm">
+                  <div className="astro-card p-6 md:p-8">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-10 h-10 rounded-full bg-astro-cyan flex items-center justify-center shrink-0">
                       <Eye className="w-5 h-5 text-white" />
@@ -307,7 +308,7 @@ export default function ProfilePage() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: 0.2 }}
               >
-                <div className="bg-white rounded-2xl border border-slate-200/60 p-6 md:p-8 shadow-sm">
+                  <div className="astro-card p-6 md:p-8">
                   <div className="flex items-center gap-3 mb-5">
                     <div className="w-10 h-10 rounded-full bg-astro-cyan flex items-center justify-center shrink-0">
                       <Target className="w-5 h-5 text-white" />
@@ -345,8 +346,9 @@ export default function ProfilePage() {
       {/* ════════════ 4. ASTRO JOURNEY — CINEMATIC BENTO ════════════ */}
       <section
         id="journey"
-        className="relative py-28 md:py-36 overflow-hidden bg-gradient-to-b from-sky-200 via-sky-100 to-sky-200"
+        className="astro-sky astro-frame-y astro-bubble-field relative overflow-hidden py-28 md:py-36"
       >
+        <div className="astro-pattern absolute inset-0 z-0 opacity-30" />
         {/* Ambient radial glow */}
         <div className="absolute top-1/3 -left-[20%] w-[40%] h-[50%] bg-cyan-500/5 blur-[120px] rounded-full pointer-events-none" />
         <div className="absolute bottom-1/4 -right-[10%] w-[30%] h-[40%] bg-sky-500/5 blur-[100px] rounded-full pointer-events-none" />
@@ -392,12 +394,12 @@ export default function ProfilePage() {
             <span className="text-[10px] font-extrabold tracking-[0.25em] uppercase text-slate-400 mb-4 block">
               Milestones
             </span>
-            <h2 className="font-masterpiece text-5xl md:text-7xl lg:text-8xl text-slate-900 leading-[0.9] mb-5">
+            <h2 className="font-masterpiece text-5xl md:text-7xl lg:text-8xl text-[#18345f] leading-[0.9] mb-5">
               ASTRO
               <br />
-              <span className="text-astro-cyan">Journey</span>
+              <span className="astro-title-chrome">Journey</span>
             </h2>
-            <p className="text-sm md:text-base text-slate-500 font-light max-w-lg mx-auto">
+            <p className="astro-pill mx-auto max-w-lg px-5 py-2 text-sm font-semibold text-[#3157ff] md:text-base">
               Setiap tahun adalah babak baru dalam perjalanan menuju inovasi
               tanpa batas.
             </p>
@@ -427,7 +429,7 @@ export default function ProfilePage() {
                     className="block h-full w-full text-left group"
                   >
                     <div
-                      className={`relative h-full bg-white border border-slate-200/80 hover:border-astro-cyan/30 p-8 md:p-10 transition-all duration-500 hover:shadow-xl hover:shadow-cyan-500/5 hover:-translate-y-1 overflow-hidden cursor-pointer ${
+                      className={`astro-card relative h-full cursor-pointer overflow-hidden p-8 transition-all duration-500 hover:-translate-y-1 hover:border-[#3157ff]/45 md:p-10 ${
                         isFuture
                           ? "border-astro-cyan/20 bg-gradient-to-br from-white to-cyan-50/30"
                           : ""

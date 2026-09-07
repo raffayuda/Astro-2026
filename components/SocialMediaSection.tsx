@@ -34,8 +34,9 @@ export default function SocialMediaSection({ priority = false }: { priority?: bo
   return (
     <section
       id="social"
-      className="relative min-h-screen w-full overflow-hidden text-slate-900 py-16 md:py-24 font-sans bg-sky-100"
+      className="astro-sky astro-frame-y astro-bubble-field relative min-h-screen w-full overflow-hidden py-16 font-sans text-slate-900 md:py-24"
     >
+      <div className="astro-pattern absolute inset-0 z-0 opacity-40" />
       {/* ── Subtle Sky Ambient Glow ── */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-cyan-300/20 rounded-full blur-[130px] pointer-events-none z-0" />
 
@@ -70,7 +71,7 @@ export default function SocialMediaSection({ priority = false }: { priority?: bo
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
             className="mb-4"
           >
-            <Badge variant="outline" className="gap-2 border-slate-200 bg-white/80 px-3.5 py-1 text-xs font-semibold text-slate-700 shadow-sm backdrop-blur-md">
+            <Badge variant="outline" className="astro-pill gap-2 border-white/80 px-4 py-2 text-xs font-black text-[#3157ff]">
               <InstagramIcon className="size-3.5 text-slate-800" />
               @astrosttnf
             </Badge>
@@ -81,10 +82,10 @@ export default function SocialMediaSection({ priority = false }: { priority?: bo
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-            className="font-masterpiece text-3xl sm:text-5xl md:text-6xl lg:text-7xl text-slate-900 tracking-tight leading-tight font-extrabold"
+            className="font-masterpiece text-3xl font-extrabold leading-tight tracking-tight text-[#18345f] sm:text-5xl md:text-6xl lg:text-7xl"
           >
             Lebih Dekat. Lebih Seru.<br />
-            <span className="text-sky-600 font-normal italic">Lebih ASTRO.</span>
+            <span className="astro-title-chrome font-normal italic">Lebih ASTRO.</span>
           </motion.h2>
 
           <motion.p
@@ -92,7 +93,7 @@ export default function SocialMediaSection({ priority = false }: { priority?: bo
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="mt-4 text-xs sm:text-sm md:text-base text-slate-600 font-medium tracking-wide"
+            className="astro-pill mx-auto mt-4 w-fit px-5 py-2 text-xs font-black tracking-wide text-[#3157ff] sm:text-sm md:text-base"
           >
             Official Media Hub & Interactive Feed ASTRO 2026
           </motion.p>
@@ -156,44 +157,44 @@ export default function SocialMediaSection({ priority = false }: { priority?: bo
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.3 }}
-          className="w-full max-w-6xl grid md:grid-cols-2 gap-x-14 gap-y-10 border-t border-slate-300/60 pt-12 md:pt-16 z-20"
+          className="astro-card z-20 grid w-full max-w-6xl gap-x-14 gap-y-10 p-6 md:grid-cols-2 md:p-9"
         >
           {/* Spec Item 1 */}
-          <div className="flex flex-col gap-2 border-b border-slate-300/40 pb-8 md:border-b-0 md:pb-0">
-            <h3 className="text-sm md:text-base font-bold text-slate-900 tracking-tight">
+          <div className="flex flex-col gap-2 border-b border-[#83cfff]/45 pb-8 md:border-b-0 md:pb-0">
+            <h3 className="text-sm md:text-base font-black text-[#18345f] tracking-tight">
               Highlights & Dokumentasi Eksklusif
             </h3>
-            <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-normal">
+            <p className="text-xs md:text-sm text-[#18345f]/70 leading-relaxed font-medium">
               Liputan penuh seluruh cabang kompetisi, momen terbaik di panggung utama, dan galeri kegiatan ASTRO 2026.
             </p>
           </div>
 
           {/* Spec Item 2 */}
-          <div className="flex flex-col gap-2 border-b border-slate-300/40 pb-8 md:border-b-0 md:pb-0">
-            <h3 className="text-sm md:text-base font-bold text-slate-900 tracking-tight">
+          <div className="flex flex-col gap-2 border-b border-[#83cfff]/45 pb-8 md:border-b-0 md:pb-0">
+            <h3 className="text-sm md:text-base font-black text-[#18345f] tracking-tight">
               Update Real-Time Pendaftaran
             </h3>
-            <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-normal">
+            <p className="text-xs md:text-sm text-[#18345f]/70 leading-relaxed font-medium">
               Informasi kuota perlombaan, jadwal pengumuman, dan konsultasi cepat langsung melalui DM panitia.
             </p>
           </div>
 
           {/* Spec Item 3 */}
-          <div className="flex flex-col gap-2 border-b border-slate-300/40 pb-8 md:border-b-0 md:pb-0">
-            <h3 className="text-sm md:text-base font-bold text-slate-900 tracking-tight">
+          <div className="flex flex-col gap-2 border-b border-[#83cfff]/45 pb-8 md:border-b-0 md:pb-0">
+            <h3 className="text-sm md:text-base font-black text-[#18345f] tracking-tight">
               Jaringan Komunitas Pelajar
             </h3>
-            <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-normal">
+            <p className="text-xs md:text-sm text-[#18345f]/70 leading-relaxed font-medium">
               Menghubungkan ratusan inovator muda dari universitas dan sekolah terbaik di seluruh Indonesia.
             </p>
           </div>
 
           {/* Spec Item 4 */}
           <div className="flex flex-col gap-2">
-            <h3 className="text-sm md:text-base font-bold text-slate-900 tracking-tight">
+            <h3 className="text-sm md:text-base font-black text-[#18345f] tracking-tight">
               Rilis Pers & Aset Visual Resmi
             </h3>
-            <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-normal">
+            <p className="text-xs md:text-sm text-[#18345f]/70 leading-relaxed font-medium">
               Akses cepat ke materi publikasi, logo resmi, dan press kit terverifikasi untuk mitra media.
             </p>
           </div>
@@ -209,7 +210,7 @@ export default function SocialMediaSection({ priority = false }: { priority?: bo
         >
           <Button
             asChild
-            className="group gap-2.5 rounded-full bg-slate-900 px-6 py-3.5 text-xs font-semibold text-white shadow-lg shadow-slate-900/10 transition-all duration-300 hover:bg-slate-800 hover:shadow-slate-900/20 active:scale-95"
+            className="group gap-2.5 rounded-[18px] border-2 border-white/80 px-6 py-3.5 text-xs font-black uppercase tracking-wider text-white shadow-lg transition-all duration-300 active:scale-95"
           >
             <a href="https://instagram.com/astrosttnf" target="_blank" rel="noopener noreferrer">
               <span>Ikuti @astrosttnf di Instagram</span>

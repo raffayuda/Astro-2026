@@ -90,12 +90,12 @@ export default function AboutSection({ competitions }: Props) {
   return (
     <section
       id="competitions"
-      className="relative py-20 md:py-28 overflow-hidden"
+      className="astro-sky-soft astro-bubble-field relative overflow-hidden py-20 md:py-28"
     >
       {/* Background — seamless transition from Hero's sky fade */}
-      <div className="absolute inset-0 bg-gradient-to-b from-sky-100/80 via-white to-white -z-10" />
-      <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-cyan-500/2 blur-[120px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-cyan-500/2 blur-[120px] rounded-full pointer-events-none" />
+      <div className="astro-pattern absolute inset-0 -z-10 opacity-35" />
+      <div className="pointer-events-none absolute top-0 left-0 size-[500px] rounded-full bg-[#66f4bd]/18 blur-[120px]" />
+      <div className="pointer-events-none absolute right-0 bottom-0 size-[500px] rounded-full bg-[#3157ff]/10 blur-[120px]" />
 
       {/* ─── FLOATING BLOB ROUND IMAGES ─── */}
       <motion.div
@@ -224,12 +224,12 @@ export default function AboutSection({ competitions }: Props) {
               transition={{ duration: 0.5 }}
             >
               <div className="accent-line mb-3" />
-              <h2 className="font-masterpiece text-4xl md:text-5xl lg:text-6xl text-slate-900 leading-tight">
+              <h2 className="font-masterpiece text-4xl leading-tight text-[#18345f] md:text-5xl lg:text-6xl">
                 Pilih
                 <br />
-                <span className="text-astro-cyan">Lombamu</span>
+                <span className="astro-title-chrome">Lombamu</span>
               </h2>
-              <p className="text-sm text-slate-600 mt-2">
+              <p className="mt-2 text-sm font-semibold text-[#3157ff]/80">
                 Tersedia berbagai cabang lomba seru dari tiga kategori berbeda.
               </p>
             </motion.div>
@@ -240,7 +240,7 @@ export default function AboutSection({ competitions }: Props) {
             {/* Row 1: Search + Origin */}
             <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
               <div className="relative flex-1 sm:max-w-xs">
-                <InputGroup className="clip-angled h-10 border-border bg-background">
+                <InputGroup className="astro-pill h-11 border-white/80 bg-white/80">
                   <InputGroupAddon align="inline-start">
                     <Search className="size-3.5 text-muted-foreground" />
                   </InputGroupAddon>
@@ -248,7 +248,7 @@ export default function AboutSection({ competitions }: Props) {
                     placeholder="CARI LOMBA..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="text-xs font-bold tracking-wider uppercase"
+                    className="text-xs font-bold tracking-wider uppercase placeholder:text-[#3157ff]/50"
                   />
                 </InputGroup>
               </div>
@@ -273,7 +273,7 @@ export default function AboutSection({ competitions }: Props) {
                     <ToggleGroupItem
                       key={opt.value}
                       value={opt.value}
-                      className="clip-angled px-4 py-2 text-[10px] font-bold uppercase tracking-[0.15em] data-[state=on]:bg-astro-cyan data-[state=on]:text-slate-950 data-[state=on]:shadow-sm data-[state=off]:border data-[state=off]:border-border data-[state=off]:bg-white data-[state=off]:text-muted-foreground data-[state=off]:hover:text-foreground"
+                      className="rounded-[14px] border border-[#83cfff]/80 bg-white/80 px-4 py-2 text-[10px] font-black uppercase tracking-[0.15em] text-[#3157ff] shadow-sm data-[state=on]:border-white data-[state=on]:bg-gradient-to-b data-[state=on]:from-[#28aaff] data-[state=on]:to-[#3157ff] data-[state=on]:text-white data-[state=on]:shadow-[0_8px_18px_rgba(49,87,255,0.22)]"
                     >
                       {opt.label}
                     </ToggleGroupItem>
@@ -284,7 +284,7 @@ export default function AboutSection({ competitions }: Props) {
 
             {/* Row 2: Category buttons */}
             <div className="flex flex-wrap items-center gap-1">
-              <span className="mr-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+              <span className="mr-1 text-[10px] font-black uppercase tracking-wider text-[#3157ff]">
                 Kategori
               </span>
               <ToggleGroup
@@ -299,7 +299,7 @@ export default function AboutSection({ competitions }: Props) {
                   <ToggleGroupItem
                     key={cat.value}
                     value={cat.value}
-                    className="clip-angled px-4 py-2 text-[10px] font-bold uppercase tracking-[0.15em] data-[state=on]:bg-astro-cyan data-[state=on]:text-slate-950 data-[state=on]:shadow-sm data-[state=off]:border data-[state=off]:border-border data-[state=off]:bg-white data-[state=off]:text-muted-foreground data-[state=off]:hover:text-foreground"
+                    className="rounded-[14px] border border-[#83cfff]/80 bg-white/80 px-4 py-2 text-[10px] font-black uppercase tracking-[0.15em] text-[#3157ff] shadow-sm data-[state=on]:border-white data-[state=on]:bg-gradient-to-b data-[state=on]:from-[#28aaff] data-[state=on]:to-[#3157ff] data-[state=on]:text-white data-[state=on]:shadow-[0_8px_18px_rgba(49,87,255,0.22)]"
                   >
                     {cat.label}
                   </ToggleGroupItem>
@@ -313,7 +313,7 @@ export default function AboutSection({ competitions }: Props) {
             {filtered.length > 0 ? (
               <motion.div
                 key={`${selectedCategory}-${searchQuery}`}
-                className="grid gap-4 sm:grid-cols-2 md:grid-cols-3"
+                className="grid gap-5 sm:grid-cols-2 md:grid-cols-3"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
@@ -329,7 +329,7 @@ export default function AboutSection({ competitions }: Props) {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
               >
-                <Empty className="clip-angled-lg border border-border bg-white py-16 shadow-sm">
+                <Empty className="astro-card py-16">
                   <EmptyHeader>
                     <EmptyTitle className="text-base font-black uppercase tracking-wider">
                       Tidak Ditemukan

@@ -27,13 +27,12 @@ function Block({ value, label, delay }: { value: number; label: string; delay: n
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay, duration: 0.5, ease: [0.16, 1, 0.3, 1] as const }}
-      className="flex flex-col items-center bg-white border border-slate-200 px-3 py-3 md:px-5 md:py-4 min-w-[68px] md:min-w-[88px] shadow-sm"
-      style={{ clipPath: 'polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%)' }}
+      className="astro-card flex min-w-[68px] flex-col items-center px-3 py-3 md:min-w-[88px] md:px-5 md:py-4"
     >
-      <span className="text-2xl md:text-4xl font-black text-cyan-700 font-mono tracking-wider tabular-nums leading-none">
+      <span className="font-mono text-2xl font-black leading-none tracking-wider text-[#3157ff] tabular-nums md:text-4xl">
         {String(value).padStart(2, '0')}
       </span>
-      <span className="text-[9px] md:text-[10px] uppercase text-slate-600 tracking-[0.15em] mt-1.5 font-bold">
+      <span className="mt-1.5 text-[9px] font-black uppercase tracking-[0.15em] text-[#18345f]/70 md:text-[10px]">
         {label}
       </span>
     </motion.div>
@@ -65,8 +64,7 @@ export default function CountdownTimer({ deadline }: { deadline: string }) {
           {mounted ? (
             <Block value={item.value} label={item.label} delay={item.delay} />
           ) : (
-            <div className="flex flex-col items-center bg-white border border-slate-200 px-3 py-3 md:px-5 md:py-4 min-w-[68px] md:min-w-[88px] shadow-sm"
-              style={{ clipPath: 'polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%)' }}>
+            <div className="astro-card flex min-w-[68px] flex-col items-center px-3 py-3 md:min-w-[88px] md:px-5 md:py-4">
               <span className="text-2xl md:text-4xl font-black text-cyan-700/40 font-mono tracking-wider">--</span>
               <span className="text-[9px] md:text-[10px] uppercase text-slate-500 tracking-[0.15em] mt-1.5 font-bold">{item.label}</span>
             </div>

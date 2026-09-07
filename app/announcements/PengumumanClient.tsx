@@ -166,7 +166,8 @@ export default function PengumumanClient() {
   };
 
   return (
-    <section className="relative min-h-screen pt-24 md:pt-32 pb-20 overflow-hidden bg-gradient-to-b from-sky-400 via-sky-300 to-sky-100 text-slate-900">
+    <section className="astro-sky astro-frame-y astro-bubble-field relative min-h-screen overflow-hidden pt-24 pb-20 text-slate-900 md:pt-32">
+      <div className="astro-pattern absolute inset-0 z-0 opacity-35" />
       {/* Floating blobs — seperti hero halaman detail lomba */}
       <MotionImage
         src="/assets/blob-round.png" alt="" width={112} height={112}
@@ -217,11 +218,11 @@ export default function PengumumanClient() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="font-masterpiece text-5xl md:text-6xl lg:text-7xl text-slate-900 leading-tight mb-3"
+            className="font-masterpiece text-5xl md:text-6xl lg:text-7xl text-[#18345f] leading-tight mb-3"
           >
             Pengumuman
             <br />
-            <span className="bg-gradient-to-r from-sky-900 via-cyan-800 to-slate-800 bg-clip-text text-transparent">
+            <span className="astro-title-chrome">
               Pemenang
             </span>
           </motion.h1>
@@ -229,7 +230,7 @@ export default function PengumumanClient() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="text-sm md:text-base text-slate-600 max-w-lg mx-auto leading-relaxed"
+            className="astro-pill mx-auto max-w-lg px-5 py-2 text-sm font-semibold leading-relaxed text-[#3157ff] md:text-base"
           >
             Selamat kepada para pemenang di setiap cabang lomba ASTRO 2026!
           </motion.p>
@@ -243,7 +244,7 @@ export default function PengumumanClient() {
           className="flex flex-col items-stretch justify-center gap-3 mb-10 sm:flex-row sm:items-center"
         >
           <div className="relative w-full sm:max-w-xs">
-            <InputGroup className="clip-angled h-10 border-border bg-white">
+            <InputGroup className="astro-pill h-11 border-white/80 bg-white/80">
               <InputGroupAddon align="inline-start">
                 <Search className="size-3.5 text-muted-foreground" />
               </InputGroupAddon>
@@ -268,7 +269,7 @@ export default function PengumumanClient() {
                 <ToggleGroupItem
                   key={cat.value}
                   value={cat.value}
-                  className="clip-angled px-4 py-2 text-[10px] font-bold tracking-[0.15em] uppercase data-[state=on]:bg-astro-cyan data-[state=on]:text-slate-950 data-[state=on]:shadow-sm data-[state=off]:border data-[state=off]:border-border data-[state=off]:bg-white data-[state=off]:text-muted-foreground data-[state=off]:hover:text-foreground"
+                  className="rounded-[14px] border border-[#83cfff]/80 bg-white/80 px-4 py-2 text-[10px] font-black tracking-[0.15em] uppercase text-[#3157ff] data-[state=on]:border-white data-[state=on]:bg-gradient-to-b data-[state=on]:from-[#28aaff] data-[state=on]:to-[#3157ff] data-[state=on]:text-white data-[state=on]:shadow-sm"
                 >
                   {cat.label}
                 </ToggleGroupItem>
@@ -311,11 +312,7 @@ export default function PengumumanClient() {
             {Array.from({ length: SKELETON_COUNT }).map((_, index) => (
               <div
                 key={index}
-                className="group bg-white border border-slate-200/80 p-5 md:p-6 flex flex-col gap-3"
-                style={{
-                  clipPath:
-                    "polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%)",
-                }}
+                className="astro-card group flex flex-col gap-3 p-5 md:p-6"
               >
                 <div className="flex items-center justify-between">
                   <Skeleton className="h-5 w-24" />
@@ -351,11 +348,7 @@ export default function PengumumanClient() {
                     delay: Math.min(index * 0.05, 0.3),
                     ease: [0.16, 1, 0.3, 1],
                   }}
-                  className="group bg-white border border-slate-200/80 hover:border-astro-cyan/40 shadow-sm hover:shadow-md transition-all duration-200 ease-in-out"
-                  style={{
-                    clipPath:
-                      "polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%)",
-                  }}
+                  className="astro-card group transition-all duration-200 ease-in-out hover:-translate-y-1 hover:border-[#3157ff]/45"
                 >
                   {/* Corner accent */}
                   <div className="relative">
@@ -370,7 +363,7 @@ export default function PengumumanClient() {
                     <div className="flex items-center justify-between">
                       <Badge
                         variant="outline"
-                        className={`clip-angled-sm border text-[10px] font-bold tracking-[0.15em] uppercase ${cat.bg} ${cat.color} ${cat.border}`}
+                          className={`rounded-[12px] border text-[10px] font-bold tracking-[0.15em] uppercase ${cat.bg} ${cat.color} ${cat.border}`}
                       >
                         {cat.label}
                       </Badge>
@@ -392,13 +385,13 @@ export default function PengumumanClient() {
                       {comp.hasWinners ? (
                         <Button
                           onClick={() => openModal(comp)}
-                          className="clip-angled-sm w-full py-2.5 text-[10px] font-black tracking-[0.1em] uppercase bg-astro-cyan text-white hover:bg-astro-cyan/80"
+                          className="w-full rounded-[14px] py-2.5 text-[10px] font-black tracking-[0.1em] uppercase"
                         >
                           <Eye data-icon="inline-start" />
                           Lihat Juara
                         </Button>
                       ) : (
-                        <div className="clip-angled-sm w-full border border-border bg-muted/50 py-2.5 text-center text-[10px] font-bold uppercase tracking-[0.1em] text-muted-foreground">
+                        <div className="w-full rounded-[14px] border border-[#83cfff]/60 bg-white/55 py-2.5 text-center text-[10px] font-bold uppercase tracking-[0.1em] text-muted-foreground">
                           Belum Ada
                         </div>
                       )}

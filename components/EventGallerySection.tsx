@@ -87,7 +87,8 @@ export default function EventGallerySection() {
   }, [selectedPhotoIndex, filteredPhotos.length]);
 
   return (
-    <section id="gallery" className="relative overflow-hidden bg-gradient-to-b from-sky-200 via-sky-100 to-sky-100 py-24 text-slate-900 md:py-32">
+    <section id="gallery" className="astro-sky-soft astro-bubble-field relative overflow-hidden py-24 text-slate-900 md:py-32">
+      <div className="astro-pattern absolute inset-0 z-0 opacity-25" />
       {/* ─── SKY BACKGROUND GLOWS ─── */}
       <div className="pointer-events-none absolute top-1/2 left-1/2 z-0 size-[850px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-300/25 blur-[140px]" />
 
@@ -126,10 +127,10 @@ export default function EventGallerySection() {
           <div className="mb-3 flex justify-center">
             <div className="accent-line" />
           </div>
-          <h2 className="font-masterpiece mb-3 text-4xl leading-tight tracking-tight text-slate-900 sm:text-5xl md:text-6xl">
-            EVENT <span className="text-astro-cyan">GALLERY</span>
+          <h2 className="font-masterpiece mb-3 text-4xl leading-tight tracking-tight text-[#18345f] sm:text-5xl md:text-6xl">
+            EVENT <span className="astro-title-chrome">GALLERY</span>
           </h2>
-          <p className="mx-auto mb-6 max-w-xl text-xs font-bold leading-relaxed text-slate-700 md:text-sm">
+          <p className="astro-pill mx-auto mb-6 max-w-xl px-5 py-2 text-xs font-black leading-relaxed text-[#3157ff] md:text-sm">
             Kumpulan momen berharga, dokumentasi keseruan lomba, seminar, dan perayaan kemenangan ASTRO dari masa ke masa.
           </p>
 
@@ -145,7 +146,7 @@ export default function EventGallerySection() {
                 <ToggleGroupItem
                   key={cat.slug}
                   value={cat.slug}
-                  className="clip-angled gap-2 border border-white/80 bg-white/40 px-4 py-2 text-xs font-black uppercase tracking-wider backdrop-blur-xl data-[state=on]:border-cyan-200 data-[state=on]:bg-astro-cyan data-[state=on]:text-slate-950 data-[state=on]:shadow-md"
+                  className="rounded-[14px] gap-2 border border-white/80 bg-white/70 px-4 py-2 text-xs font-black uppercase tracking-wider text-[#3157ff] backdrop-blur-xl data-[state=on]:border-white data-[state=on]:bg-gradient-to-b data-[state=on]:from-[#28aaff] data-[state=on]:to-[#3157ff] data-[state=on]:text-white data-[state=on]:shadow-md"
                 >
                   <Camera className="size-3.5" />
                   {cat.name}
@@ -179,7 +180,7 @@ export default function EventGallerySection() {
                     <div
                       key={`r${rowIdx}-${photoItem.id}-${idx}`}
                       onClick={() => setSelectedPhotoIndex(idx % filteredPhotos.length)}
-                      className="group relative aspect-[4/3] w-[280px] shrink-0 cursor-pointer overflow-hidden border-2 border-white/80 bg-white/50 p-3 shadow-md backdrop-blur-2xl transition-all duration-500 hover:border-white hover:shadow-2xl sm:w-[330px] md:w-[380px]"
+                      className="group relative aspect-[4/3] w-[280px] shrink-0 cursor-pointer overflow-hidden rounded-[22px] border-2 border-white/80 bg-white/60 p-3 shadow-md backdrop-blur-2xl transition-all duration-500 hover:border-white hover:shadow-2xl sm:w-[330px] md:w-[380px]"
                       style={{ clipPath: 'polygon(14px 0, 100% 0, calc(100% - 14px) 100%, 0 100%)' }}
                     >
                       {/* Glass Refraction Highlight */}
@@ -187,7 +188,7 @@ export default function EventGallerySection() {
 
                       <div
                         className="relative h-full w-full overflow-hidden border border-white/60 bg-slate-900 transition-colors group-hover:border-astro-cyan"
-                        style={{ clipPath: 'polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%)' }}
+                        style={{ borderRadius: '18px' }}
                       >
                         {/* Shimmer skeleton while thumbnail loads */}
                         <SkeletonImage
@@ -360,4 +361,3 @@ export default function EventGallerySection() {
     </section>
   );
 }
-

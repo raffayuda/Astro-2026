@@ -245,8 +245,9 @@ export default function CommitteeSection() {
   return (
     <section
       id="committee"
-      className="relative overflow-hidden bg-gradient-to-b from-sky-100 via-sky-50 to-white py-20 text-slate-900 md:py-28"
+      className="astro-sky-soft astro-bubble-field relative overflow-hidden py-20 text-slate-900 md:py-28"
     >
+      <div className="astro-pattern absolute inset-0 z-0 opacity-25" />
       {/* ─── SKY BACKGROUND GLOWS ─── */}
       <div className="pointer-events-none absolute top-1/2 left-1/2 z-0 size-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-300/20 blur-[140px]" />
 
@@ -294,10 +295,10 @@ export default function CommitteeSection() {
           <div className="flex justify-center mb-3">
             <div className="accent-line" />
           </div>
-          <h2 className="font-masterpiece text-4xl md:text-5xl lg:text-6xl text-slate-900 leading-tight mb-3">
-            Our <span className="text-astro-cyan">Committee</span>
+          <h2 className="font-masterpiece text-4xl md:text-5xl lg:text-6xl text-[#18345f] leading-tight mb-3">
+            Our <span className="astro-title-chrome">Committee</span>
           </h2>
-          <p className="text-sm md:text-base text-slate-600 max-w-xl mx-auto leading-relaxed">
+          <p className="astro-pill mx-auto max-w-xl px-5 py-2 text-sm font-semibold text-[#3157ff] md:text-base">
             Tim panitia penggerak ASTRO 2026 yang bekerja keras untuk kesuksesan
             acara ini.
           </p>
@@ -321,7 +322,7 @@ export default function CommitteeSection() {
               <ToggleGroupItem
                 key={div.id}
                 value={div.slug}
-                className="clip-angled gap-2 px-4 py-2 text-xs font-semibold tracking-wide data-[state=on]:bg-white data-[state=on]:text-slate-900 data-[state=on]:shadow-lg data-[state=on]:shadow-black/5 data-[state=on]:ring-1 data-[state=on]:ring-slate-200 data-[state=off]:bg-white/40 data-[state=off]:text-slate-600 data-[state=off]:hover:bg-white/70 data-[state=off]:hover:text-slate-800 transition-all"
+                className="rounded-[14px] gap-2 px-4 py-2 text-xs font-black tracking-wide transition-all data-[state=on]:bg-gradient-to-b data-[state=on]:from-[#28aaff] data-[state=on]:to-[#3157ff] data-[state=on]:text-white data-[state=on]:shadow-lg data-[state=off]:bg-white/65 data-[state=off]:text-[#3157ff] data-[state=off]:hover:bg-white data-[state=off]:hover:text-[#3157ff]"
               >
                 <span
                   className={cn(
@@ -351,7 +352,7 @@ export default function CommitteeSection() {
         {/* ── Division Header & Controls ── */}
         <div className="flex items-center justify-between gap-4 mb-6 px-2 sm:px-4">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-black uppercase tracking-widest text-slate-700 bg-white/60 px-3 py-1 rounded-lg border border-slate-200 shadow-sm">
+            <span className="astro-pill px-4 py-1.5 text-xs font-black uppercase tracking-widest text-[#3157ff]">
               {currentDivision?.displayName || activeDivision}
             </span>
             <span className="hidden sm:inline-block text-[11px] font-medium text-slate-500">
