@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, useReducedMotion } from "motion/react";
@@ -30,6 +31,13 @@ interface MediaPartnerItem {
   website?: string | null;
   logo?: string | null;
   isCurrent?: boolean;
+}
+
+/** A titled shelf of partners, with an optional node shown when it is empty. */
+interface PartnerGroup {
+  title: string;
+  items: (SponsorItem | MediaPartnerItem)[];
+  fallback?: ReactNode;
 }
 
 interface SponsorSectionProps {
@@ -80,7 +88,7 @@ export default function SponsorSection({
   const currentMediaPartners = mediaPartners.filter((partner) => !!partner.isCurrent);
   const previousMediaPartners = mediaPartners.filter((partner) => !partner.isCurrent);
 
-  const groups =
+  const groups: PartnerGroup[] =
     variant === "home"
       ? [
           {
