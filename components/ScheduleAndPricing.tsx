@@ -9,6 +9,7 @@ import {
   BenefitCard,
   CtaButton,
   Pill,
+  PricePill,
   ScheduleCard,
   SectionHeading,
   SectionShell,
@@ -54,17 +55,42 @@ export default function ScheduleAndPricing({
       sky="soft"
       clouds={false}
       bubbles="none"
-      className="py-20 md:py-28"
+      className="py-18 md:py-24"
+      width="wide"
     >
-      <SectionHeading
-        eyebrow="Timeline & Biaya"
-        title="Jadwal Acara"
-        lead="Catat tanggalnya dan siapkan pendaftaranmu. Semua tahapan ASTRO 2026 ada di bawah ini."
-      />
+      <div className="grid gap-8 lg:grid-cols-[0.82fr_1.18fr] lg:items-end">
+        <SectionHeading
+          eyebrow="Timeline & Biaya"
+          title="Alur singkat untuk peserta"
+          lead="Tanggal penting, benefit, dan akses pendaftaran disatukan dalam satu area yang mudah dipindai."
+          align="start"
+        />
 
-      <div className="mt-12 grid gap-8 lg:grid-cols-[1.6fr_1fr] lg:items-start">
-        {/* ─── Schedule ─── */}
-        <div className="grid gap-4 sm:grid-cols-2">
+        <Surface
+          tone="plain"
+          radius="2xl"
+          pad="lg"
+          className="grid gap-4 border border-white/80 bg-white/85 backdrop-blur sm:grid-cols-3"
+        >
+          <div>
+            <Pill tone="gold" size="sm">
+              Prize pool
+            </Pill>
+            <p className="mt-3 font-heading text-3xl font-black leading-none text-astro-navy">
+              {eventConfig.totalPrizePool}
+            </p>
+          </div>
+          <div className="sm:col-span-2">
+            <p className="text-sm font-semibold leading-relaxed text-ink">
+              Setiap peserta mendapatkan alur pendaftaran, juknis, dan kontak
+              yang jelas sebelum hari lomba.
+            </p>
+          </div>
+        </Surface>
+      </div>
+
+      <div className="mt-10 grid gap-6 lg:grid-cols-[1.45fr_0.9fr] lg:items-start">
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {timeline.map((item, i) => (
             <motion.div
               key={`${item.date}-${item.title}`}
@@ -82,7 +108,6 @@ export default function ScheduleAndPricing({
           ))}
         </div>
 
-        {/* ─── Benefit + pricing ─── */}
         <motion.aside
           initial={reduce ? false : { opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -90,33 +115,54 @@ export default function ScheduleAndPricing({
           transition={{ duration: 0.5, ease: EASE }}
           className="flex flex-col gap-6 lg:sticky lg:top-24"
         >
-          <BenefitCard />
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
+            <BenefitCard />
+            <Surface tone="gold" radius="xl" pad="lg">
+              <p className="text-10 font-black uppercase tracking-widest text-astro-navy/70">
+                Biaya mulai dari
+              </p>
+              <div className="mt-4">
+                <PricePill amount="Rp 20.000" unit="Orang" />
+              </div>
+              <p className="mt-4 text-sm font-semibold leading-relaxed text-astro-navy/80">
+                Beberapa lomba gratis atau memiliki batch khusus. Detail biaya
+                tetap tersedia di masing-masing halaman lomba.
+              </p>
+            </Surface>
+          </div>
 
-          <Surface pad="lg" radius="xl" className="flex flex-col items-center gap-4 text-center">
-            <Pill tone="blue" size="sm">
-              Total Hadiah
-            </Pill>
-            <p className="font-heading text-3xl font-extrabold leading-none text-astro-navy">
-              {eventConfig.totalPrizePool}
-            </p>
-
-            <div className="rounded-lg bg-white p-3 shadow-soft-sm">
-              <QRCodeSVG
-                value={registerUrl}
-                size={128}
-                bgColor="#ffffff"
-                fgColor="#1e3a8a"
-                level="M"
-                aria-label="QR code pendaftaran ASTRO 2026"
-              />
+          <Surface
+            pad="lg"
+            radius="xl"
+            className="grid gap-5 text-left sm:grid-cols-[auto_1fr] sm:items-center lg:grid-cols-1 lg:text-center"
+          >
+            <div className="rounded-lg bg-sky-bottom p-3 shadow-soft-sm">
+              <div className="rounded-md bg-white p-2">
+                <QRCodeSVG
+                  value={registerUrl}
+                  size={128}
+                  bgColor="#ffffff"
+                  fgColor="#1e3a8a"
+                  level="M"
+                  aria-label="QR code pendaftaran ASTRO 2026"
+                />
+              </div>
             </div>
-            <p className="text-10 font-bold uppercase tracking-widest text-muted-foreground">
-              Scan untuk daftar
-            </p>
+            <div className="flex flex-col gap-3">
+              <div>
+                <Pill tone="blue" size="sm">
+                  Persistent CTA
+                </Pill>
+                <p className="mt-3 text-sm font-semibold leading-relaxed text-ink">
+                  Scan QR atau lanjut ke katalog lomba untuk memilih cabang yang
+                  sesuai.
+                </p>
+              </div>
 
-            <CtaButton href="#competitions" size="default" className="w-full">
-              Daftar Segera
-            </CtaButton>
+              <CtaButton href="#competitions" size="default" className="w-full">
+                Daftar Segera
+              </CtaButton>
+            </div>
           </Surface>
         </motion.aside>
       </div>

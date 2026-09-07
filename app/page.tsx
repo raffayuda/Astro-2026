@@ -10,6 +10,7 @@ import HeroSection from '@/components/HeroSection';
 import StatsBar from '@/components/StatsBar';
 import Footer from '@/components/Footer';
 import ScheduleAndPricing from '@/components/ScheduleAndPricing';
+import CategorySection from '@/components/CategorySection';
 import { FloatingCta } from '@/components/brand';
 import astroData from '@/data/astro-data.json';
 
@@ -84,6 +85,7 @@ export default async function Home() {
       <main>
         <HeroSection eventConfig={data.eventConfig} />
         <StatsBar data={data} />
+        <CategorySection competitions={data.competitions} />
         <ScheduleAndPricing timeline={data.timeline} eventConfig={data.eventConfig} />
         <Suspense fallback={<SectionFallback className="py-24 md:py-32" />}>
           <AboutSection competitions={data.competitions} />

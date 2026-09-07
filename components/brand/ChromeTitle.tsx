@@ -32,7 +32,7 @@ const DROP_SHADOW = {
 export function ChromeTitle({
   children,
   depth = "md",
-  align = "start",
+  align = "left",
   fill = "fill-astro-blue",
   stroke = "#ffffff",
   outline = true,
@@ -41,7 +41,8 @@ export function ChromeTitle({
   /** Text to render. Newlines start a new line. */
   children: string
   depth?: "sm" | "md" | "lg"
-  align?: "start" | "middle"
+  /** `left`/`center`/`right`; `start`/`middle` accepted as SVG-flavoured aliases. */
+  align?: "left" | "center" | "right" | "start" | "middle"
   /** Tailwind fill utility for the glyph body. */
   fill?: string
   /** Outline colour. */
@@ -99,8 +100,13 @@ export function ChromeTitle({
     }
   }, [measure, lines])
 
-  const anchor = align === "middle" ? "middle" : "start"
-  const x = align === "middle" ? "50%" : 0
+  const anchor =
+    align === "middle" || align === "center"
+      ? "middle"
+      : align === "right"
+        ? "end"
+        : "start"
+  const x = anchor === "middle" ? "50%" : anchor === "end" ? "100%" : 0
 
   return (
     <div

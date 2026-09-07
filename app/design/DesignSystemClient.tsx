@@ -179,51 +179,75 @@ const SHADOWS = [
 
 const PAGE_LAYOUTS = [
   {
-    name: "Landing",
+    name: "Participant Landing",
     route: "/",
-    parts: ["SectionShell", "ChromeText", "StatCard", "ScheduleCard", "TalentCategoryCard", "PricePill", "CtaButton", "SiteFooter"],
+    sections: [
+      { band: "hero", label: "Hero", parts: ["SkyBackdrop", "ChromeTitle", "Subtitle", "CountdownTimer", "CtaButton"] },
+      { band: "tint", label: "Stats", parts: ["ChevronRibbon", "Surface", "StatCard"] },
+      { band: "sky", label: "Categories", parts: ["SectionShell", "SectionHeading", "Pill"] },
+      { band: "soft", label: "Schedule + Pricing", parts: ["ScheduleCard", "BenefitCard", "QRCode", "CtaButton"] },
+      { band: "tint", label: "Competitions", parts: ["AboutSection", "CompetitionCard", "ToggleGroup"] },
+      { band: "soft", label: "FAQ", parts: ["Accordion", "SectionHeading"] },
+      { band: "tint", label: "Sponsors", parts: ["SponsorSection"] },
+      { band: "navy", label: "Footer", parts: ["SiteFooter", "FloatingCta"] },
+    ],
   },
   {
-    name: "Company Profile",
-    route: "/profile",
-    parts: ["SectionShell", "SectionHeading", "Surface", "SiteFooter"],
-  },
-  {
-    name: "Competition Detail",
-    route: "/competitions/[id]",
-    parts: ["SectionShell", "ChromeText", "Pill", "ScheduleCard", "BenefitCard", "CtaButton"],
+    name: "Corporate Partner",
+    route: "/sponsorship",
+    sections: [
+      { band: "hero", label: "Why Partner", parts: ["ChromeTitle", "Subtitle", "StatCard"] },
+      { band: "soft", label: "Packages", parts: ["RetroMonitorWidget", "Surface", "Pill"] },
+      { band: "sky", label: "Brand Exposure", parts: ["SectionHeading", "StatCard"] },
+      { band: "soft", label: "Let's Collaborate", parts: ["Surface", "CtaButton"] },
+      { band: "navy", label: "Footer", parts: ["SiteFooter"] },
+    ],
   },
   {
     name: "Registration",
     route: "/register/[id]",
-    parts: ["SectionShell", "Surface", "Label", "Input", "Select", "TalentCategoryCard", "PricePill", "CtaButton"],
+    sections: [
+      { band: "hero", label: "Header + Steps", parts: ["ChevronRibbon", "Pill", "PricePill"] },
+      { band: "soft", label: "Form", parts: ["Surface", "Label", "Input", "Select", "TalentCategoryCard"] },
+      { band: "soft", label: "Payment", parts: ["Surface", "Badge", "CtaButton"] },
+      { band: "navy", label: "Footer", parts: ["SiteFooter"] },
+    ],
   },
   {
-    name: "Sponsorship Proposal",
-    route: "/sponsorship",
-    parts: ["SectionShell", "StatCard", "RetroMonitorWidget", "Surface", "CtaButton", "SiteFooter"],
-  },
-  {
-    name: "Announcements",
-    route: "/announcements",
-    parts: ["SectionShell", "ToggleGroup", "Surface", "Badge", "SiteFooter"],
-  },
-  {
-    name: "Check Registration",
-    route: "/check-registration",
-    parts: ["SectionShell", "Surface", "Badge", "SiteFooter"],
+    name: "Company Profile",
+    route: "/profile",
+    sections: [
+      { band: "hero", label: "Profile Hero", parts: ["ChromeTitle", "SkyBackdrop"] },
+      { band: "soft", label: "About + Journey", parts: ["SectionHeading", "Surface"] },
+      { band: "tint", label: "Gallery + Social", parts: ["EventGallerySection", "SocialMediaSection"] },
+      { band: "sky", label: "Committee", parts: ["CommitteeSection", "Pill"] },
+      { band: "navy", label: "Footer", parts: ["SiteFooter"] },
+    ],
   },
   {
     name: "Auth",
     route: "/login, /auth/signup",
-    parts: ["SectionShell", "Surface", "Label", "Input", "InputOTP", "Button"],
+    sections: [
+      { band: "hero", label: "Centred Card", parts: ["CenteredShell", "Surface", "Label", "Input", "InputOTP", "Button"] },
+    ],
   },
   {
     name: "Dashboard",
     route: "/dashboard/*",
-    parts: ["Surface", "Card", "Table", "Badge", "Button", "Select", "Switch"],
+    sections: [
+      { band: "navy", label: "Sidebar + Topbar", parts: ["Sidebar", "Button"] },
+      { band: "soft", label: "Content", parts: ["Surface", "Card", "Table", "Badge", "Select", "Switch"] },
+    ],
   },
 ] as const
+
+const BAND: Record<string, string> = {
+  hero: "bg-linear-to-b from-sky-top to-sky-mid text-astro-navy",
+  sky: "bg-sky-mid text-astro-navy",
+  soft: "bg-sky-bottom text-astro-navy",
+  tint: "bg-surface text-astro-navy",
+  navy: "bg-astro-navy text-white",
+}
 
 /** One labelled block in the style guide. */
 function Spec({
@@ -751,31 +775,48 @@ Okta R.`}
 
           <Spec
             title="Page layouts"
-            hint="Which components compose each route. Every page is assembled from the library above."
+            hint="The real section stack of each route, top to bottom. Band colour is the section ground; chips are the components composing it."
           >
-            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            <div className="grid gap-6 lg:grid-cols-2 xl:grid-cols-3">
               {PAGE_LAYOUTS.map((page) => (
-                <Surface key={page.route} tone="tint" pad="md" radius="lg">
-                  <div className="flex flex-col gap-2">
-                    <div className="flex items-center justify-between gap-2">
-                      <p className="font-heading text-sm font-extrabold text-astro-navy">
-                        {page.name}
-                      </p>
-                      <code className="font-mono text-10 text-muted-foreground">
-                        {page.route}
-                      </code>
-                    </div>
-                    <ul className="flex flex-wrap gap-1.5">
-                      {page.parts.map((part) => (
-                        <li key={part}>
-                          <Pill tone="white" size="sm" className="font-mono">
-                            {part}
-                          </Pill>
-                        </li>
-                      ))}
-                    </ul>
+                <div key={page.route} className="flex flex-col gap-2">
+                  <div className="flex items-baseline justify-between gap-2">
+                    <p className="font-heading text-sm font-extrabold uppercase tracking-tight text-astro-navy">
+                      {page.name}
+                    </p>
+                    <code className="font-mono text-9 text-muted-foreground">
+                      {page.route}
+                    </code>
                   </div>
-                </Surface>
+
+                  <div className="overflow-hidden rounded-xl shadow-soft">
+                    {page.sections.map((sec, i) => (
+                      <div
+                        key={sec.label}
+                        className={`flex flex-col gap-1.5 px-3 py-2.5 ${BAND[sec.band]}`}
+                      >
+                        <div className="flex items-center gap-2">
+                          <span className="grid size-4 shrink-0 place-items-center rounded-full bg-current/15 text-9 font-black">
+                            {i + 1}
+                          </span>
+                          <span className="text-10 font-black uppercase tracking-widest">
+                            {sec.label}
+                          </span>
+                        </div>
+                        <div className="flex flex-wrap gap-1">
+                          {sec.parts.map((part) => (
+                            <span
+                              key={part}
+                              className="rounded-full bg-current/12 px-1.5 py-0.5 font-mono text-9 font-semibold"
+                            >
+                              {part}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               ))}
             </div>
           </Spec>
