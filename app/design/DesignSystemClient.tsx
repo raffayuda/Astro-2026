@@ -37,6 +37,7 @@ import {
   Surface,
   TALENT_CATEGORIES,
   TalentCategoryCard,
+  WindowCard,
   type TalentId,
 } from "@/components/brand"
 import { Badge } from "@/components/ui/badge"
@@ -147,6 +148,7 @@ const SURFACE_TONES = [
   "pink",
   "orange",
   "gold",
+  "cream",
   "sticker",
 ] as const
 
@@ -450,15 +452,16 @@ Okta R.`}
 
           <Spec
             title="Event schedule card"
-            hint="ScheduleCard: gold banner, status icon, date and phase."
+            hint="ScheduleCard: connected rail, phase, then date. Stack as a timeline."
           >
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {SCHEDULE.map((item) => (
+            <div className="max-w-lg">
+              {SCHEDULE.map((item, index) => (
                 <ScheduleCard
                   key={item.phase}
                   phase={item.phase}
                   dateLabel={item.dateLabel}
                   status={item.status}
+                  isLast={index === SCHEDULE.length - 1}
                 />
               ))}
             </div>
@@ -507,7 +510,7 @@ Okta R.`}
 
           <Spec
             title="Stat card"
-            hint="StatCard: metric variant for figures, checked variant for exposure channels."
+            hint="StatCard: ink-on-tint metrics inside a window. Checked = exposure channels."
           >
             <div className="flex flex-col gap-6">
               <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
@@ -538,6 +541,18 @@ Okta R.`}
             hint="RetroMonitorWidget: the sponsorship tier selector from slide three."
           >
             <RetroMonitorWidget selected={tier} onSelect={setTier} />
+          </Spec>
+
+          <Spec
+            title="Window card"
+            hint="WindowCard: blue title bar, red close, white body. Stats and FAQ sit inside this."
+          >
+            <WindowCard title="Why Partner with ASTRO 2026?">
+              <div className="grid grid-cols-2 gap-3">
+                <StatCard metric="1.500+" label="Peserta" />
+                <StatCard metric="1.000+" label="Mahasiswa" />
+              </div>
+            </WindowCard>
           </Spec>
 
           <Spec
@@ -842,7 +857,7 @@ Okta R.`}
         <SectionHeading
           eyebrow="SectionHeading"
           title="Ruang Tanpa Sekat"
-          lead="Eyebrow pill, chrome display title, accent rule and lead paragraph: the standard section opener."
+          lead="Caps eyebrow, display title and lead paragraph: the standard section opener."
         />
       </SectionShell>
     </main>

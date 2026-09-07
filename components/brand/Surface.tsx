@@ -19,6 +19,8 @@ const surfaceVariants = cva("relative", {
         "bg-linear-to-br from-pastel-orange to-orange-300 text-white shadow-glow-orange",
       /** Gold, for price and highlight surfaces. */
       gold: "bg-linear-to-br from-amber-400 to-astro-gold text-astro-navy shadow-soft",
+      /** Poster cream plate — Cerdas Cermat title card. */
+      cream: "bg-agt-cream text-astro-navy shadow-soft",
       /** Poster-style hard sticker outline. */
       sticker: "border-2 border-astro-navy bg-white text-ink shadow-sticker",
     },
@@ -27,6 +29,7 @@ const surfaceVariants = cva("relative", {
       lg: "rounded-lg",
       xl: "rounded-xl",
       "2xl": "rounded-2xl",
+      "3xl": "rounded-3xl",
       full: "rounded-full",
     },
     pad: {
@@ -43,7 +46,7 @@ const surfaceVariants = cva("relative", {
   },
   defaultVariants: {
     tone: "plain",
-    radius: "xl",
+    radius: "2xl",
     pad: "md",
     interactive: false,
   },

@@ -15,7 +15,12 @@ const pillVariants = cva(
         pink: "bg-linear-to-r from-astro-pink to-pink-400 text-white shadow-soft-sm",
         orange:
           "bg-linear-to-r from-pastel-orange to-orange-300 text-white shadow-soft-sm",
-        glass: "bg-white/70 text-astro-navy ring-1 ring-inset ring-white",
+        glass: "bg-white/70 text-astro-navy ring-1 ring-inset ring-white shadow-gloss",
+        /* ASTRO GOT TALENT tagline chip. Figma ends the ramp on #f67334;
+           white type on that alone is 2.8:1, so the bottom stop is deepened
+           one step to clear WCAG AA for large text. */
+        sunset:
+          "bg-linear-to-b from-agt-orange to-orange-600 text-white shadow-gloss",
       },
       size: {
         sm: "px-3 py-1 text-xs uppercase tracking-wide [&_svg]:size-3",

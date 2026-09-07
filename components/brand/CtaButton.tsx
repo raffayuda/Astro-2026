@@ -47,7 +47,10 @@ export function CtaButton({
     </>
   )
 
-  const classes = cn("ring-3 ring-white/70", className)
+  const classes = cn(
+    "ring-3 ring-white/70 shadow-gloss transition-transform duration-200 hover:-translate-y-0.5 active:scale-[0.97]",
+    className,
+  )
 
   if (href) {
     return (

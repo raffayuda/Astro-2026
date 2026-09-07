@@ -6,26 +6,27 @@
  */
 export { AccentLine } from "./AccentLine"
 export { BenefitCard, DEFAULT_BENEFITS, type BenefitItem } from "./BenefitCard"
+export { BrandLock } from "./BrandLock"
 export { Bubbles } from "./Bubbles"
 export { ChevronRibbon } from "./ChevronRibbon"
 export { ChromeText, type ChromeTextProps } from "./ChromeText"
 export { ChromeTitle } from "./ChromeTitle"
+export { ConfettiField } from "./ConfettiField"
 export { CtaButton } from "./CtaButton"
 export { FloatingCta } from "./FloatingCta"
 export { CenteredShell, PageShell } from "./PageShell"
 export { Pattern } from "./Pattern"
 export { Pill, pillVariants, type PillProps } from "./Pill"
+export { PosterPlate } from "./PosterPlate"
 export { PricePill } from "./PricePill"
 export { RetroMonitorWidget, SPONSOR_TIERS, type SponsorTier } from "./RetroMonitorWidget"
 export { ScheduleCard, type ScheduleStatus } from "./ScheduleCard"
 export { SectionHeading } from "./SectionHeading"
 export { SectionShell } from "./SectionShell"
-export {
-  ASTRO_EMAIL,
-  ASTRO_SOCIALS,
-  SiteFooter,
-  type SocialLink,
-} from "./SiteFooter"
+export { GlassBar, ASTRO_EMAIL, ASTRO_SOCIALS, type SocialLink } from "./GlassBar"
+export { GrassStrip } from "./GrassStrip"
+export { WindowCard } from "./WindowCard"
+export { SiteFooter } from "./SiteFooter"
 export { SkyBackdrop } from "./SkyBackdrop"
 export { StatCard } from "./StatCard"
 export { Subtitle } from "./Subtitle"

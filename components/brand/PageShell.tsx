@@ -4,14 +4,16 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 import Navbar from "@/components/Navbar"
+import { Bubbles } from "./Bubbles"
+import { Pattern } from "./Pattern"
 import { SiteFooter } from "./SiteFooter"
+import { SkyBackdrop } from "./SkyBackdrop"
 
 /**
- * Standard page frame: navbar, content, footer.
+ * Standard page frame: sky ground, navbar, content, footer.
  *
- * Every route uses this so the header offset, footer and vertical rhythm are
- * identical instead of being re-derived per page. Section-level decoration
- * (sky, ribbon, bubbles) belongs to SectionShell inside `children`.
+ * Every public route uses this so the Frutiger-aero sky, pattern, and bubbles
+ * are identical instead of being re-derived per page.
  */
 export function PageShell({
   children,
@@ -29,10 +31,22 @@ export function PageShell({
   return (
     <div
       data-slot="page-shell"
-      className={cn("flex min-h-svh flex-col bg-white", className)}
+      className={cn("relative flex min-h-svh flex-col", className)}
     >
+      <SkyBackdrop tone="bright" clouds bubbles="sparse" />
+      <Pattern className="opacity-35" />
+      <Bubbles preset="corners" />
+
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-100 focus:rounded-full focus:bg-astro-navy focus:px-4 focus:py-2 focus:text-sm focus:font-bold focus:text-white"
+      >
+        Lewati ke konten
+      </a>
       {navbar && <Navbar />}
-      <main className={cn("flex-1", mainClassName)}>{children}</main>
+      <main id="main-content" className={cn("relative z-10 flex-1", mainClassName)}>
+        {children}
+      </main>
       {footer && <SiteFooter />}
     </div>
   )
@@ -40,7 +54,6 @@ export function PageShell({
 
 /**
  * Centred single-card frame, for auth and other focused flows.
- * Keeps the sky ground and ribbon consistent across login, signup and invite.
  */
 export function CenteredShell({
   children,
@@ -50,15 +63,13 @@ export function CenteredShell({
 }: {
   children: React.ReactNode
   footer?: boolean
-  /** Auth flows are chromeless by default. */
   navbar?: boolean
   className?: string
 }) {
   return (
     <PageShell footer={footer} navbar={navbar} className={className}>
-      <div className="relative flex min-h-svh items-center justify-center overflow-hidden px-4 py-24">
-        <div className="absolute inset-0 bg-linear-to-b from-sky-top via-sky-mid to-white" />
-        <div className="relative z-10 w-full max-w-md">{children}</div>
+      <div className="relative z-10 flex min-h-svh items-center justify-center px-4 py-24">
+        <div className="w-full max-w-md">{children}</div>
       </div>
     </PageShell>
   )

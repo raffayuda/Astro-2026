@@ -45,13 +45,14 @@ export function FloatingCta({
           exit={reduce ? undefined : { opacity: 0, y: 24, scale: 0.9 }}
           transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
           className={cn(
-            "fixed bottom-5 right-5 z-50 print:hidden",
+            "fixed z-50 print:hidden",
+            "inset-x-4 bottom-[max(1rem,env(safe-area-inset-bottom))] sm:inset-x-auto sm:right-5 sm:bottom-5",
             className
           )}
         >
           <Link
             href={href}
-            className="group flex items-center gap-2 rounded-full border-2 border-white bg-linear-to-r from-astro-navy via-astro-blue to-astro-sky py-3 pr-3 pl-5 font-bold text-white shadow-glow-blue ring-3 ring-white/60 transition-transform hover:-translate-y-0.5 active:translate-y-px"
+            className="group flex w-full items-center justify-center gap-2 rounded-full border-2 border-white bg-linear-to-r from-astro-navy via-astro-blue to-astro-sky py-3 pr-3 pl-5 font-bold text-white shadow-glow-blue ring-3 ring-white/60 transition-transform hover:-translate-y-0.5 active:translate-y-px sm:w-auto"
           >
             <span className="text-sm uppercase tracking-wide">{label}</span>
             <span

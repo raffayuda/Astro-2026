@@ -34,6 +34,28 @@
   --color-casing: #e4e4e7;
   --color-casing-deep: #a1a1aa;
 
+  /* ── Logo artwork colours ──
+     Sampled straight from public/assets/logo-astro.png so the hero scene, the
+     mascot and the wordmark sit in one palette. The --color-astro-* ramp above
+     is the UI palette (Tailwind blue) and is deliberately left alone: ~130 call
+     sites depend on it. Use these only for the illustrated scene. */
+  --color-logo-navy: #131a3d;
+  --color-logo-mint: #4be6a0;
+  --color-logo-sky: #3ab7e8;
+  --color-logo-sun: #ffc41f;
+  --color-logo-pink: #ef6ba4;
+  --color-logo-leaf: #34a45b;
+
+  /* ── ASTRO GOT TALENT poster palette ──
+     Sampled from Figma frame 795:2 "COVER AGT" in the ASTRO 2026 file. The
+     poster is a warm pink/cream world, so it gets its own names rather than
+     bending the blue --color-astro-* UI ramp that ~130 sites depend on. */
+  --color-agt-pink: #ff1ca8;
+  --color-agt-cream: #fff2d0;
+  --color-agt-orange: #f67334;
+  --color-agt-mint: #20f4aa;
+  --color-agt-lime: #48fe68;
+
   /* ── Brand: accent ── */
   --color-pastel-orange: #ff9e64;
   --color-astro-gold: #facc15;
@@ -81,6 +103,8 @@
      0px -6.2px 6.07px 0px #00000040 inset. */
   --shadow-inset-top: inset 0 -6.2px 6.07px rgba(0, 0, 0, 0.25);
   --shadow-inset-screen: inset 0 4px 12px rgba(0, 0, 0, 0.35);
+  /* Poster title plate, per the Figma spec: 0 -9px 4px #00000040 inset. */
+  --shadow-plate: inset 0 -9px 4px rgba(0, 0, 0, 0.25);
 
   /* ── Micro type ramp ──
      Named by pixel size so there is exactly one utility per step and no
@@ -235,12 +259,11 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Unlayered, so it wins over the @layer base body rule above. */
+/* Unlayered, so it wins over the @layer base body rule above.
+   Page ground is sky. White and cream are plates on PageShell, matching the
+   brand-kit slides and Cerdas Cermat posters. */
 body {
-  background:
-    radial-gradient(circle at 12% 8%, rgba(255, 255, 255, 0.55), transparent 22rem),
-    radial-gradient(circle at 88% 12%, rgba(250, 204, 21, 0.14), transparent 24rem),
-    linear-gradient(180deg, #7ec8f5 0%, #b8e4fb 42%, #e8f6fe 78%, #ffffff 100%);
+  background: #b8e4fb;
   color: #1f2937;
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
