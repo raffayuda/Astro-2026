@@ -9,7 +9,7 @@ import { SkyBackdrop } from "./SkyBackdrop"
  * decorative bubbles/clouds, and a centered content container.
  *
  * Every public section composes this instead of repeating the old
- * `bg-linear-to-b from-sky-top via-sky-mid to-white astro-frame-y astro-bubble-field` class trio.
+ * `astro-sky astro-frame-y astro-bubble-field` class trio.
  */
 export function SectionShell({
   id,

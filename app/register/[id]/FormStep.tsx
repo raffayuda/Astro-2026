@@ -231,10 +231,10 @@ export default function FormStep({
     >
       {/* Section title */}
       <div>
-        <h2 className="text-lg font-black uppercase tracking-tight text-[#18345f]">
+        <h2 className="text-lg font-black uppercase tracking-tight text-astro-navy">
           Data Pendaftaran
         </h2>
-        <p className="mt-1 text-xs font-semibold text-[#3157ff]/75">
+        <p className="mt-1 text-xs font-semibold text-astro-blue/75">
           Isi data dengan benar untuk pendaftaran lomba{" "}
           <strong>{competition.title}</strong>.
         </p>
@@ -336,7 +336,7 @@ export default function FormStep({
                   key={i}
                   className={
                     photoRequired
-                      ? "flex flex-col gap-2 rounded-[16px] border border-[#83cfff]/60 bg-white/60 p-3"
+                      ? "flex flex-col gap-2 rounded-[16px] border border-astro-cyan-2/60 bg-white/60 p-3"
                       : undefined
                   }
                 >

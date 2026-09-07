@@ -3,7 +3,7 @@
 import { motion, useReducedMotion } from 'motion/react';
 import { CalendarDays, Clock } from 'lucide-react';
 import type { TimelineItem } from '@/types/astro';
-import { Pattern } from "@/components/brand"
+import { Bubbles, ChromeText, Pattern } from "@/components/brand";
 
 interface Props {
   timeline: TimelineItem[];
@@ -31,10 +31,11 @@ export default function CompetitionTimeline({ timeline, lineColor, categoryColor
   const reduce = useReducedMotion();
 
   return (
-    <section className="bg-linear-to-b from-sky-bottom via-white to-white astro-bubble-field relative overflow-hidden py-16 md:py-20">
+    <section className="bg-linear-to-b from-sky-bottom via-white to-white relative overflow-hidden py-16 md:py-20">
+      <Bubbles preset="sparse" />
       <Pattern className="absolute inset-0 z-0 opacity-25" />
       {/* Subtle background glow */}
-      <div className="absolute top-1/2 left-1/2 size-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#66f4bd]/12 blur-[150px] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 size-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-astro-cyan-2/12 blur-[150px] pointer-events-none" />
 
       <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6">
         {/* ─── Section header ─── */}
@@ -47,13 +48,13 @@ export default function CompetitionTimeline({ timeline, lineColor, categoryColor
         >
           <div className="flex justify-center mb-3">
             <div
-              className="h-1.5 w-12 rounded-full bg-[#d9f64a] shadow-[0_3px_0_rgba(49,87,255,0.22)]"
+              className="h-1.5 w-12 rounded-full bg-astro-gold shadow-[0_3px_0_rgba(49,87,255,0.22)]"
             />
           </div>
-          <h2 className="text-2xl md:text-3xl font-black text-[#18345f] uppercase tracking-tight mb-2">
-            Timeline <span className="astro-title-chrome">Lomba</span>
+          <h2 className="text-2xl md:text-3xl font-black text-astro-navy uppercase tracking-tight mb-2">
+            Timeline <ChromeText>Lomba</ChromeText>
           </h2>
-          <p className="text-sm md:text-base text-[#3157ff]/75 font-semibold leading-relaxed max-w-lg mx-auto">
+          <p className="text-sm md:text-base text-astro-blue/75 font-semibold leading-relaxed max-w-lg mx-auto">
             Jadwal lengkap rangkaian acara lomba ini dari awal hingga akhir
           </p>
         </motion.div>
@@ -178,7 +179,7 @@ function TimelineCard({
 }) {
   return (
     <div
-      className={`rounded-xl bg-white shadow-soft transition-all duration-200 w-full max-w-md relative group hover:border-[#3157ff]/45 ${
+      className={`rounded-xl bg-white shadow-soft transition-all duration-200 w-full max-w-md relative group hover:border-astro-blue/45 ${
         align === 'right' ? 'text-right' : 'text-left'
       }`}
     >
@@ -203,15 +204,15 @@ function TimelineCard({
 
         {/* Date */}
         <div className={`flex items-center gap-1.5 mt-3 mb-2 ${align === 'right' ? 'justify-end' : ''}`}>
-          <CalendarDays className="w-3.5 h-3.5 text-[#3157ff]/55 flex-shrink-0" />
-          <span className="text-[11px] font-bold text-[#3157ff]/75 uppercase tracking-wider">
+          <CalendarDays className="w-3.5 h-3.5 text-astro-blue/55 flex-shrink-0" />
+          <span className="text-[11px] font-bold text-astro-blue/75 uppercase tracking-wider">
             {item.date}
           </span>
         </div>
 
         {/* Title */}
         <h3
-          className={`text-base md:text-lg font-black text-[#18345f] uppercase tracking-tight mb-1 ${
+          className={`text-base md:text-lg font-black text-astro-navy uppercase tracking-tight mb-1 ${
             align === 'right' ? 'text-right' : 'text-left'
           }`}
         >
@@ -220,7 +221,7 @@ function TimelineCard({
 
         {/* Accent line */}
         <div
-          className={`w-10 h-[4px] rounded-full bg-[#d9f64a] mb-2 ${
+          className={`w-10 h-[4px] rounded-full bg-astro-gold mb-2 ${
             align === 'right' ? 'ml-auto' : 'mr-auto'
           }`}
           style={{ clipPath: 'polygon(2px 0, 100% 0, calc(100% - 2px) 100%, 0 100%)' }}
@@ -228,7 +229,7 @@ function TimelineCard({
 
         {/* Description */}
         <p
-          className={`text-sm text-[#18345f]/72 leading-relaxed ${
+          className={`text-sm text-astro-navy/72 leading-relaxed ${
             align === 'right' ? 'text-right' : 'text-left'
           }`}
         >

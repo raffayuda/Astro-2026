@@ -24,7 +24,7 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import WinnersModal from "./WinnersModal";
 import { apiHelpers } from "@/src/lib/api";
 import { queryKeys } from "@/src/lib/hooks/use-queries";
-import { Pattern } from "@/components/brand"
+import { Bubbles, ChevronRibbon, ChromeText, Pattern } from "@/components/brand";
 
 type CategoryType = "akademik" | "olahraga" | "esports" | "kesenian-/-seni";
 
@@ -167,7 +167,10 @@ export default function PengumumanClient() {
   };
 
   return (
-    <section className="bg-linear-to-b from-sky-top via-sky-mid to-white astro-frame-y astro-bubble-field relative min-h-screen overflow-hidden pt-24 pb-20 text-slate-900 md:pt-32">
+    <section className="bg-linear-to-b from-sky-top via-sky-mid to-white relative min-h-screen overflow-hidden pt-24 pb-20 text-slate-900 md:pt-32">
+      <Bubbles preset="sparse" />
+      <ChevronRibbon edge="top" />
+      <ChevronRibbon edge="bottom" />
       <Pattern className="absolute inset-0 z-0 opacity-35" />
       {/* Floating blobs — seperti hero halaman detail lomba */}
       <MotionImage
@@ -219,19 +222,19 @@ export default function PengumumanClient() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="font-title text-5xl md:text-6xl lg:text-7xl text-[#18345f] leading-tight mb-3"
+            className="font-title text-5xl md:text-6xl lg:text-7xl text-astro-navy leading-tight mb-3"
           >
             Pengumuman
             <br />
-            <span className="astro-title-chrome">
+            <ChromeText>
               Pemenang
-            </span>
+            </ChromeText>
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="rounded-full bg-white shadow-soft-sm mx-auto max-w-lg px-5 py-2 text-sm font-semibold leading-relaxed text-[#3157ff] md:text-base"
+            className="rounded-full bg-white shadow-soft-sm mx-auto max-w-lg px-5 py-2 text-sm font-semibold leading-relaxed text-astro-blue md:text-base"
           >
             Selamat kepada para pemenang di setiap cabang lomba ASTRO 2026!
           </motion.p>
@@ -270,7 +273,7 @@ export default function PengumumanClient() {
                 <ToggleGroupItem
                   key={cat.value}
                   value={cat.value}
-                  className="rounded-[14px] border border-[#83cfff]/80 bg-white/80 px-4 py-2 text-[10px] font-black tracking-[0.15em] uppercase text-[#3157ff] data-[state=on]:border-white data-[state=on]:bg-linear-to-b data-[state=on]:from-[#28aaff] data-[state=on]:to-[#3157ff] data-[state=on]:text-white data-[state=on]:shadow-sm"
+                  className="rounded-[14px] border border-astro-cyan-2/80 bg-white/80 px-4 py-2 text-[10px] font-black tracking-[0.15em] uppercase text-astro-blue data-[state=on]:border-white data-[state=on]:bg-linear-to-b data-[state=on]:from-astro-blue data-[state=on]:to-astro-blue data-[state=on]:text-white data-[state=on]:shadow-sm"
                 >
                   {cat.label}
                 </ToggleGroupItem>
@@ -349,7 +352,7 @@ export default function PengumumanClient() {
                     delay: Math.min(index * 0.05, 0.3),
                     ease: [0.16, 1, 0.3, 1],
                   }}
-                  className="rounded-xl bg-white shadow-soft group transition-all duration-200 ease-in-out hover:-translate-y-1 hover:border-[#3157ff]/45"
+                  className="rounded-xl bg-white shadow-soft group transition-all duration-200 ease-in-out hover:-translate-y-1 hover:border-astro-blue/45"
                 >
                   {/* Corner accent */}
                   <div className="relative">
@@ -392,7 +395,7 @@ export default function PengumumanClient() {
                           Lihat Juara
                         </Button>
                       ) : (
-                        <div className="w-full rounded-[14px] border border-[#83cfff]/60 bg-white/55 py-2.5 text-center text-[10px] font-bold uppercase tracking-[0.1em] text-muted-foreground">
+                        <div className="w-full rounded-[14px] border border-astro-cyan-2/60 bg-white/55 py-2.5 text-center text-[10px] font-bold uppercase tracking-[0.1em] text-muted-foreground">
                           Belum Ada
                         </div>
                       )}

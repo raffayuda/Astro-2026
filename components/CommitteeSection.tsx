@@ -10,7 +10,7 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { cn } from "@/lib/utils";
 import { normalizeImageUrl } from "@/components/ImportCommittee";
 import SkeletonImage from "@/components/SkeletonImage";
-import { Pattern } from "@/components/brand";
+import { Bubbles, ChromeText, Pattern } from "@/components/brand";
 import {
   useCommitteeMembers,
   useCommitteeDivisions,
@@ -246,8 +246,9 @@ export default function CommitteeSection() {
   return (
     <section
       id="committee"
-      className="bg-linear-to-b from-sky-bottom via-white to-white astro-bubble-field relative overflow-hidden py-20 text-slate-900 md:py-28"
+      className="bg-linear-to-b from-sky-bottom via-white to-white relative overflow-hidden py-20 text-slate-900 md:py-28"
     >
+      <Bubbles preset="sparse" />
       <Pattern className="absolute inset-0 z-0 opacity-25" />
       {/* ─── SKY BACKGROUND GLOWS ─── */}
       <div className="pointer-events-none absolute top-1/2 left-1/2 z-0 size-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-300/20 blur-[140px]" />
@@ -296,10 +297,10 @@ export default function CommitteeSection() {
           <div className="flex justify-center mb-3">
             <div className="block h-1.5 w-18 rounded-full bg-linear-to-r from-astro-gold via-astro-lime2 to-astro-blue" />
           </div>
-          <h2 className="font-title text-4xl md:text-5xl lg:text-6xl text-[#18345f] leading-tight mb-3">
-            Our <span className="astro-title-chrome">Committee</span>
+          <h2 className="font-title text-4xl md:text-5xl lg:text-6xl text-astro-navy leading-tight mb-3">
+            Our <ChromeText>Committee</ChromeText>
           </h2>
-          <p className="rounded-full bg-white shadow-soft-sm mx-auto max-w-xl px-5 py-2 text-sm font-semibold text-[#3157ff] md:text-base">
+          <p className="rounded-full bg-white shadow-soft-sm mx-auto max-w-xl px-5 py-2 text-sm font-semibold text-astro-blue md:text-base">
             Tim panitia penggerak ASTRO 2026 yang bekerja keras untuk kesuksesan
             acara ini.
           </p>
@@ -323,7 +324,7 @@ export default function CommitteeSection() {
               <ToggleGroupItem
                 key={div.id}
                 value={div.slug}
-                className="rounded-[14px] gap-2 px-4 py-2 text-xs font-black tracking-wide transition-all data-[state=on]:bg-linear-to-b data-[state=on]:from-[#28aaff] data-[state=on]:to-[#3157ff] data-[state=on]:text-white data-[state=on]:shadow-lg data-[state=off]:bg-white/65 data-[state=off]:text-[#3157ff] data-[state=off]:hover:bg-white data-[state=off]:hover:text-[#3157ff]"
+                className="rounded-[14px] gap-2 px-4 py-2 text-xs font-black tracking-wide transition-all data-[state=on]:bg-linear-to-b data-[state=on]:from-astro-blue data-[state=on]:to-astro-blue data-[state=on]:text-white data-[state=on]:shadow-lg data-[state=off]:bg-white/65 data-[state=off]:text-astro-blue data-[state=off]:hover:bg-white data-[state=off]:hover:text-astro-blue"
               >
                 <span
                   className={cn(
@@ -353,7 +354,7 @@ export default function CommitteeSection() {
         {/* ── Division Header & Controls ── */}
         <div className="flex items-center justify-between gap-4 mb-6 px-2 sm:px-4">
           <div className="flex items-center gap-2">
-            <span className="rounded-full bg-white shadow-soft-sm px-4 py-1.5 text-xs font-black uppercase tracking-widest text-[#3157ff]">
+            <span className="rounded-full bg-white shadow-soft-sm px-4 py-1.5 text-xs font-black uppercase tracking-widest text-astro-blue">
               {currentDivision?.displayName || activeDivision}
             </span>
             <span className="hidden sm:inline-block text-[11px] font-medium text-slate-500">
@@ -536,7 +537,7 @@ export default function CommitteeSection() {
               exit={{ scale: 0.95, opacity: 0, y: 15 }}
               transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
               onClick={(e) => e.stopPropagation()}
-              className="relative z-10 flex flex-col w-full max-w-sm sm:max-w-md max-h-[92vh] overflow-hidden rounded-3xl border border-sky-400/30 bg-[#0d172a]/95 p-4 sm:p-5 text-white shadow-2xl backdrop-blur-2xl"
+              className="relative z-10 flex flex-col w-full max-w-sm sm:max-w-md max-h-[92vh] overflow-hidden rounded-3xl border border-sky-400/30 bg-astro-navy/95 p-4 sm:p-5 text-white shadow-2xl backdrop-blur-2xl"
             >
               {/* Header inside Card */}
               <div className="flex items-center justify-between pb-3">

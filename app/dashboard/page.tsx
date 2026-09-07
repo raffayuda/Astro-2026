@@ -84,10 +84,10 @@ export default async function DashboardOverview() {
                   <Icon className="size-5" />
                 </div>
                 <div>
-                  <p className="text-[10px] font-black uppercase tracking-[0.15em] text-[#3157ff]/70">
+                  <p className="text-[10px] font-black uppercase tracking-[0.15em] text-astro-blue/70">
                     {stat.label}
                   </p>
-                  <p className="mt-1 text-2xl font-black text-[#18345f]">{stat.value}</p>
+                  <p className="mt-1 text-2xl font-black text-astro-navy">{stat.value}</p>
                 </div>
               </CardContent>
             </Card>

@@ -28,7 +28,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useJourneys } from "@/src/lib/hooks/use-queries";
 import SponsorSection from "@/components/SponsorSection";
-import { Pattern } from "@/components/brand"
+import { Bubbles, ChevronRibbon, ChromeText, Pattern } from "@/components/brand";
 
 const MotionImage = motion.create(Image);
 
@@ -64,8 +64,9 @@ export default function ProfilePage() {
       {/* ════════════ 2. ABOUT ASTRO ════════════ */}
       <section
         id="about-event"
-        className="bg-linear-to-b from-sky-bottom via-white to-white astro-bubble-field relative overflow-hidden py-20 md:py-28"
+        className="bg-linear-to-b from-sky-bottom via-white to-white relative overflow-hidden py-20 md:py-28"
       >
+        <Bubbles preset="sparse" />
         <Pattern className="absolute inset-0 z-0 opacity-30" />
         {/* Floating blobs */}
         <motion.div
@@ -193,9 +194,9 @@ export default function ProfilePage() {
                   transition={{ duration: 0.5 }}
                 >
                   <div className="block h-1.5 w-18 rounded-full bg-linear-to-r from-astro-gold via-astro-lime2 to-astro-blue mb-3" />
-                  <h2 className="font-title text-5xl md:text-6xl lg:text-7xl text-[#18345f] leading-tight">
+                  <h2 className="font-title text-5xl md:text-6xl lg:text-7xl text-astro-navy leading-tight">
                     Tentang <br />
-                    <span className="astro-title-chrome">ASTRO 2026</span>
+                    <ChromeText>ASTRO 2026</ChromeText>
                   </h2>
                 </motion.div>
 
@@ -204,7 +205,7 @@ export default function ProfilePage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: 0.1 }}
-                  className="rounded-xl bg-white shadow-soft mt-6 max-w-2xl p-6 text-sm font-medium leading-relaxed text-[#18345f]/75 md:text-base"
+                  className="rounded-xl bg-white shadow-soft mt-6 max-w-2xl p-6 text-sm font-medium leading-relaxed text-astro-navy/75 md:text-base"
                 >
                   ASTRO adalah program kerja tahunan BEM STT-NF yang telah
                   berlangsung sejak BEM dibentuk, yang awalnya hanya sebatas
@@ -347,8 +348,11 @@ export default function ProfilePage() {
       {/* ════════════ 4. ASTRO JOURNEY — CINEMATIC BENTO ════════════ */}
       <section
         id="journey"
-        className="bg-linear-to-b from-sky-top via-sky-mid to-white astro-frame-y astro-bubble-field relative overflow-hidden py-28 md:py-36"
+        className="bg-linear-to-b from-sky-top via-sky-mid to-white relative overflow-hidden py-28 md:py-36"
       >
+        <Bubbles preset="sparse" />
+        <ChevronRibbon edge="top" />
+        <ChevronRibbon edge="bottom" />
         <Pattern className="absolute inset-0 z-0 opacity-30" />
         {/* Ambient radial glow */}
         <div className="absolute top-1/3 -left-[20%] w-[40%] h-[50%] bg-cyan-500/5 blur-[120px] rounded-full pointer-events-none" />
@@ -395,12 +399,12 @@ export default function ProfilePage() {
             <span className="text-[10px] font-extrabold tracking-[0.25em] uppercase text-slate-400 mb-4 block">
               Milestones
             </span>
-            <h2 className="font-title text-5xl md:text-7xl lg:text-8xl text-[#18345f] leading-[0.9] mb-5">
+            <h2 className="font-title text-5xl md:text-7xl lg:text-8xl text-astro-navy leading-[0.9] mb-5">
               ASTRO
               <br />
-              <span className="astro-title-chrome">Journey</span>
+              <ChromeText>Journey</ChromeText>
             </h2>
-            <p className="rounded-full bg-white shadow-soft-sm mx-auto max-w-lg px-5 py-2 text-sm font-semibold text-[#3157ff] md:text-base">
+            <p className="rounded-full bg-white shadow-soft-sm mx-auto max-w-lg px-5 py-2 text-sm font-semibold text-astro-blue md:text-base">
               Setiap tahun adalah babak baru dalam perjalanan menuju inovasi
               tanpa batas.
             </p>
@@ -430,7 +434,7 @@ export default function ProfilePage() {
                     className="block h-full w-full text-left group"
                   >
                     <div
-                      className={`rounded-xl bg-white shadow-soft relative h-full cursor-pointer overflow-hidden p-8 transition-all duration-500 hover:-translate-y-1 hover:border-[#3157ff]/45 md:p-10 ${
+                      className={`rounded-xl bg-white shadow-soft relative h-full cursor-pointer overflow-hidden p-8 transition-all duration-500 hover:-translate-y-1 hover:border-astro-blue/45 md:p-10 ${
                         isFuture
                           ? "border-astro-cyan/20 bg-linear-to-br from-white to-cyan-50/30"
                           : ""

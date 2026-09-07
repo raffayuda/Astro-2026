@@ -18,7 +18,7 @@ const CLOUDS = [
 /**
  * Sky gradient ground plus drifting clouds and bubbles.
  *
- * Replaces the old `.bg-linear-to-b from-sky-top via-sky-mid to-white` / `.bg-linear-to-b from-sky-bottom via-white to-white` / `.astro-bubble-field`
+ * Replaces the old `.astro-sky` / `.astro-sky-soft` / `.astro-bubble-field`
  * global classes. The gradient is plain Tailwind utilities over theme colors.
  * Parent must be `relative`.
  */

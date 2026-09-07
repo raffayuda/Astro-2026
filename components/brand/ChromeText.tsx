@@ -20,6 +20,23 @@ const OUTLINE_DEPTH = {
 
 const STROKE = { sm: "3px", md: "5px", lg: "7px" } as const
 
+/**
+ * The raw inline style, for elements that cannot be swapped for `ChromeText`
+ * itself — motion components, for instance, where the element type is fixed.
+ * Pair it with `font-title uppercase text-sky-bottom` (or `text-astro-blue`
+ * for the outline variant).
+ */
+export function chromeTextStyle(
+  variant: "chrome" | "outline" = "chrome",
+  depth: "sm" | "md" | "lg" = "md"
+): React.CSSProperties {
+  return {
+    WebkitTextStroke: `${STROKE[depth]} #ffffff`,
+    paintOrder: "stroke fill",
+    textShadow: variant === "outline" ? OUTLINE_DEPTH[depth] : CHROME_DEPTH[depth],
+  }
+}
+
 export type ChromeTextProps<T extends React.ElementType = "span"> = {
   as?: T
   /**

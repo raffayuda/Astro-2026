@@ -79,8 +79,8 @@ export default function DashboardShell({ children, role, userName }: Props) {
 
   return (
     <SidebarProvider>
-      <Sidebar collapsible="offcanvas" className="border-r border-[#83cfff]/55 bg-[#effaff]/95">
-        <SidebarHeader className="border-b border-[#83cfff]/55 bg-white/60">
+      <Sidebar collapsible="offcanvas" className="border-r border-astro-cyan-2/55 bg-sky-bottom/95">
+        <SidebarHeader className="border-b border-astro-cyan-2/55 bg-white/60">
           <Link href="/dashboard" className="flex items-center gap-3 px-2 py-1">
             <Image
               src="/assets/logo-astro.png"
@@ -109,7 +109,7 @@ export default function DashboardShell({ children, role, userName }: Props) {
                         isActive={isActive(item.href)}
                         className={cn(
                           isActive(item.href) &&
-                            'border border-[#83cfff]/70 bg-linear-to-b from-[#28aaff]/15 to-[#3157ff]/10 text-[#3157ff] hover:bg-[#e8f8ff] hover:text-[#3157ff]'
+                            'border border-astro-cyan-2/70 bg-linear-to-b from-astro-blue/15 to-astro-blue/10 text-astro-blue hover:bg-sky-bottom hover:text-astro-blue'
                         )}
                       >
                         <Link href={item.href}>
@@ -153,7 +153,7 @@ export default function DashboardShell({ children, role, userName }: Props) {
       </Sidebar>
 
       <SidebarInset>
-        <header className="flex h-16 items-center gap-4 border-b border-[#83cfff]/55 bg-white/70 px-4 shadow-[0_8px_24px_rgba(49,87,255,0.08)] backdrop-blur-xl lg:px-6">
+        <header className="flex h-16 items-center gap-4 border-b border-astro-cyan-2/55 bg-white/70 px-4 shadow-[0_8px_24px_rgba(49,87,255,0.08)] backdrop-blur-xl lg:px-6">
           <SidebarTrigger className="md:hidden" />
           <div className="flex-1" />
           <Link

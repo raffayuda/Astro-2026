@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/empty";
 import type { Competition, CategoryType } from "@/types/astro";
 import CompetitionCard from "./CompetitionCard";
-import { Pattern } from "@/components/brand"
+import { Bubbles, ChromeText, Pattern } from "@/components/brand";
 
 const MotionImage = motion.create(Image);
 
@@ -91,12 +91,13 @@ export default function AboutSection({ competitions }: Props) {
   return (
     <section
       id="competitions"
-      className="bg-linear-to-b from-sky-bottom via-white to-white astro-bubble-field relative overflow-hidden py-20 md:py-28"
+      className="bg-linear-to-b from-sky-bottom via-white to-white relative overflow-hidden py-20 md:py-28"
     >
+      <Bubbles preset="sparse" />
       {/* Background — seamless transition from Hero's sky fade */}
       <Pattern className="absolute inset-0 -z-10 opacity-35" />
-      <div className="pointer-events-none absolute top-0 left-0 size-[500px] rounded-full bg-[#66f4bd]/18 blur-[120px]" />
-      <div className="pointer-events-none absolute right-0 bottom-0 size-[500px] rounded-full bg-[#3157ff]/10 blur-[120px]" />
+      <div className="pointer-events-none absolute top-0 left-0 size-[500px] rounded-full bg-astro-cyan-2/18 blur-[120px]" />
+      <div className="pointer-events-none absolute right-0 bottom-0 size-[500px] rounded-full bg-astro-blue/10 blur-[120px]" />
 
       {/* ─── FLOATING BLOB ROUND IMAGES ─── */}
       <motion.div
@@ -225,12 +226,12 @@ export default function AboutSection({ competitions }: Props) {
               transition={{ duration: 0.5 }}
             >
               <div className="block h-1.5 w-18 rounded-full bg-linear-to-r from-astro-gold via-astro-lime2 to-astro-blue mb-3" />
-              <h2 className="font-title text-4xl leading-tight text-[#18345f] md:text-5xl lg:text-6xl">
+              <h2 className="font-title text-4xl leading-tight text-astro-navy md:text-5xl lg:text-6xl">
                 Pilih
                 <br />
-                <span className="astro-title-chrome">Lombamu</span>
+                <ChromeText>Lombamu</ChromeText>
               </h2>
-              <p className="mt-2 text-sm font-semibold text-[#3157ff]/80">
+              <p className="mt-2 text-sm font-semibold text-astro-blue/80">
                 Tersedia berbagai cabang lomba seru dari tiga kategori berbeda.
               </p>
             </motion.div>
@@ -249,7 +250,7 @@ export default function AboutSection({ competitions }: Props) {
                     placeholder="CARI LOMBA..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="text-xs font-bold tracking-wider uppercase placeholder:text-[#3157ff]/50"
+                    className="text-xs font-bold tracking-wider uppercase placeholder:text-astro-blue/50"
                   />
                 </InputGroup>
               </div>
@@ -274,7 +275,7 @@ export default function AboutSection({ competitions }: Props) {
                     <ToggleGroupItem
                       key={opt.value}
                       value={opt.value}
-                      className="rounded-[14px] border border-[#83cfff]/80 bg-white/80 px-4 py-2 text-[10px] font-black uppercase tracking-[0.15em] text-[#3157ff] shadow-sm data-[state=on]:border-white data-[state=on]:bg-linear-to-b data-[state=on]:from-[#28aaff] data-[state=on]:to-[#3157ff] data-[state=on]:text-white data-[state=on]:shadow-[0_8px_18px_rgba(49,87,255,0.22)]"
+                      className="rounded-[14px] border border-astro-cyan-2/80 bg-white/80 px-4 py-2 text-[10px] font-black uppercase tracking-[0.15em] text-astro-blue shadow-sm data-[state=on]:border-white data-[state=on]:bg-linear-to-b data-[state=on]:from-astro-blue data-[state=on]:to-astro-blue data-[state=on]:text-white data-[state=on]:shadow-[0_8px_18px_rgba(49,87,255,0.22)]"
                     >
                       {opt.label}
                     </ToggleGroupItem>
@@ -285,7 +286,7 @@ export default function AboutSection({ competitions }: Props) {
 
             {/* Row 2: Category buttons */}
             <div className="flex flex-wrap items-center gap-1">
-              <span className="mr-1 text-[10px] font-black uppercase tracking-wider text-[#3157ff]">
+              <span className="mr-1 text-[10px] font-black uppercase tracking-wider text-astro-blue">
                 Kategori
               </span>
               <ToggleGroup
@@ -300,7 +301,7 @@ export default function AboutSection({ competitions }: Props) {
                   <ToggleGroupItem
                     key={cat.value}
                     value={cat.value}
-                    className="rounded-[14px] border border-[#83cfff]/80 bg-white/80 px-4 py-2 text-[10px] font-black uppercase tracking-[0.15em] text-[#3157ff] shadow-sm data-[state=on]:border-white data-[state=on]:bg-linear-to-b data-[state=on]:from-[#28aaff] data-[state=on]:to-[#3157ff] data-[state=on]:text-white data-[state=on]:shadow-[0_8px_18px_rgba(49,87,255,0.22)]"
+                    className="rounded-[14px] border border-astro-cyan-2/80 bg-white/80 px-4 py-2 text-[10px] font-black uppercase tracking-[0.15em] text-astro-blue shadow-sm data-[state=on]:border-white data-[state=on]:bg-linear-to-b data-[state=on]:from-astro-blue data-[state=on]:to-astro-blue data-[state=on]:text-white data-[state=on]:shadow-[0_8px_18px_rgba(49,87,255,0.22)]"
                   >
                     {cat.label}
                   </ToggleGroupItem>

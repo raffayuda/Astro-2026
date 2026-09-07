@@ -14,7 +14,7 @@ import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 import { Spinner } from '@/components/ui/spinner';
-import { Pattern } from "@/components/brand"
+import { Bubbles, ChevronRibbon, Pattern } from "@/components/brand";
 
 type Step = 'form' | 'otp' | 'success';
 
@@ -177,7 +177,10 @@ export default function SignupPage() {
   // ─── SUCCESS ───
   if (step === 'success') {
     return (
-      <div className="bg-linear-to-b from-sky-top via-sky-mid to-white astro-frame-y astro-bubble-field flex min-h-screen flex-col">
+      <div className="relative bg-linear-to-b from-sky-top via-sky-mid to-white flex min-h-screen flex-col">
+        <Bubbles preset="sparse" />
+        <ChevronRibbon edge="top" />
+        <ChevronRibbon edge="bottom" />
         <Pattern className="absolute inset-0 opacity-35" />
         <div className="flex flex-1 items-center justify-center px-4">
           <motion.div
@@ -204,7 +207,10 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="bg-linear-to-b from-sky-top via-sky-mid to-white astro-frame-y astro-bubble-field flex min-h-screen flex-col">
+    <div className="relative bg-linear-to-b from-sky-top via-sky-mid to-white flex min-h-screen flex-col">
+      <Bubbles preset="sparse" />
+      <ChevronRibbon edge="top" />
+      <ChevronRibbon edge="bottom" />
       <Pattern className="absolute inset-0 opacity-35" />
       <div className="relative z-10 flex flex-1 items-center justify-center px-4">
         <motion.div

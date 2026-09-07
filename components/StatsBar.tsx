@@ -41,7 +41,7 @@ export default function StatsBar({ data }: Props) {
   const items = stats(data);
 
   return (
-    <section className="relative z-20 bg-[#e7f8ff] border-y-4 border-[#3157ff]/75 shadow-[inset_0_4px_0_#d9f64a,inset_0_-4px_0_#d9f64a]">
+    <section className="relative z-20 bg-sky-bottom border-y-4 border-astro-blue/75 shadow-[inset_0_4px_0_#d9f64a,inset_0_-4px_0_#d9f64a]">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
         <motion.div
           className="grid grid-cols-2 gap-3 py-5 md:grid-cols-4"
@@ -61,11 +61,11 @@ export default function StatsBar({ data }: Props) {
                 transition={{ delay: i * 0.08, duration: 0.4, ease: [0.16, 1, 0.3, 1] as const }}
                 className="rounded-xl bg-white shadow-soft group px-6 py-6 text-center transition-all duration-200 ease-in-out hover:-translate-y-0.5 hover:bg-white md:py-8"
               >
-                <Icon className="mx-auto mb-2 size-5 text-[#3157ff] opacity-80 transition-opacity group-hover:opacity-100" />
-                <div className="text-2xl md:text-3xl font-black text-[#18345f] tracking-tight">
+                <Icon className="mx-auto mb-2 size-5 text-astro-blue opacity-80 transition-opacity group-hover:opacity-100" />
+                <div className="text-2xl md:text-3xl font-black text-astro-navy tracking-tight">
                   {stat.value}
                 </div>
-                <div className="mt-1 text-[10px] font-black tracking-[0.18em] text-[#3157ff] uppercase">
+                <div className="mt-1 text-[10px] font-black tracking-[0.18em] text-astro-blue uppercase">
                   {stat.label}
                 </div>
               </motion.div> 

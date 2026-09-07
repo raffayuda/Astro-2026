@@ -116,7 +116,7 @@ export default function Navbar() {
               height={44}
               className="h-9 w-auto object-contain transition-transform duration-300 group-hover:scale-105 md:h-11"
             />
-            <span className={cn('font-title text-sm tracking-wide transition-colors duration-300 md:text-base', isScrolled ? 'text-[#3157ff]' : 'text-foreground md:text-white')}>
+            <span className={cn('font-title text-sm tracking-wide transition-colors duration-300 md:text-base', isScrolled ? 'text-astro-blue' : 'text-foreground md:text-white')}>
               ASTRO 2026
             </span>
           </button>
@@ -132,7 +132,7 @@ export default function Navbar() {
                 className={cn(
                   'relative flex h-9 items-center rounded-[14px] px-3.5 text-[11px] font-extrabold uppercase tracking-[0.12em] transition-all duration-200',
                   isScrolled
-                    ? 'text-[#3157ff]/75 hover:bg-[#e8f8ff] hover:text-[#3157ff]'
+                    ? 'text-astro-blue/75 hover:bg-sky-bottom hover:text-astro-blue'
                     : 'text-slate-800 hover:bg-white/20 hover:text-white md:text-white/90'
                 )}
               >
@@ -222,7 +222,7 @@ export default function Navbar() {
                 <Menu />
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-80 bg-[#effaff]/95 p-0 backdrop-blur-2xl">
+            <SheetContent side="right" className="w-80 bg-sky-bottom/95 p-0 backdrop-blur-2xl">
               <SheetHeader className="border-b border-border p-5">
                 <div className="flex items-center gap-2">
                   <Image src="/assets/logo-astro.png" alt="ASTRO Logo" width={32} height={32} className="h-8 w-auto object-contain" />
@@ -258,7 +258,7 @@ export default function Navbar() {
                     <button
                       key={link.label}
                       onClick={() => scrollTo(link.href)}
-                      className="group flex items-center justify-between rounded-[16px] px-4 py-3 text-left text-xs font-extrabold tracking-wider text-muted-foreground transition-all hover:bg-white hover:text-[#3157ff]"
+                      className="group flex items-center justify-between rounded-[16px] px-4 py-3 text-left text-xs font-extrabold tracking-wider text-muted-foreground transition-all hover:bg-white hover:text-astro-blue"
                     >
                       <span>{link.label}</span>
                       <span className="size-1.5 rounded-sm bg-primary opacity-0 transition-opacity group-hover:opacity-100" />

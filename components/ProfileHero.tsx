@@ -4,7 +4,7 @@ import Image from "next/image";
 import { motion, useReducedMotion } from "motion/react";
 import { ArrowDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Pattern } from "@/components/brand"
+import { Bubbles, ChevronRibbon, ChromeText, Pattern } from "@/components/brand";
 
 const MotionImage = motion.create(Image);
 
@@ -28,8 +28,11 @@ export default function ProfileHero() {
   return (
     <section
       id="home"
-      className="bg-linear-to-b from-sky-top via-sky-mid to-white astro-frame-y astro-bubble-field relative flex min-h-[100svh] flex-col items-center justify-start overflow-hidden pt-[18svh] md:pt-[15svh]"
+      className="bg-linear-to-b from-sky-top via-sky-mid to-white relative flex min-h-[100svh] flex-col items-center justify-start overflow-hidden pt-[18svh] md:pt-[15svh]"
     >
+      <Bubbles preset="sparse" />
+      <ChevronRibbon edge="top" />
+      <ChevronRibbon edge="bottom" />
       <Pattern className="absolute inset-0 z-0 opacity-55" />
       {/* ─── CLOUD IMAGES ─── */}
       {/* Big cloud top-left */}
@@ -159,23 +162,25 @@ export default function ProfileHero() {
             className="size-12 object-contain"
             priority
           />
-          <span className="text-xs font-black uppercase tracking-[0.18em] text-[#3157ff]">
+          <span className="text-xs font-black uppercase tracking-[0.18em] text-astro-blue">
             Company Profile
           </span>
         </motion.div>
         {/* ─── MAIN TITLE ─── */}
         <motion.div variants={fadeUp} className="mb-6 md:mb-0 md:-mt-6">
           <h1 className="font-title text-6xl font-black uppercase leading-none sm:text-7xl lg:text-8xl mb-0">
-            <span
-              className="astro-title-chrome block"
+            <ChromeText
+              depth="lg"
+              className="block"
             >
               ASTRO
-            </span>
-            <span
-              className="astro-title-chrome block"
+            </ChromeText>
+            <ChromeText
+              depth="lg"
+              className="block"
             >
               2026
-            </span>
+            </ChromeText>
           </h1>
 
           {/* Tagline - Split Creative */}
@@ -183,7 +188,7 @@ export default function ProfileHero() {
             <span className="text-3xl sm:text-4xl md:text-5xl text-white/95 block">
               Where Innovation
             </span>
-            <span className="-mt-1 block bg-linear-to-r from-[#f8ff7a] via-[#d9f64a] to-white bg-clip-text text-4xl text-transparent sm:text-5xl md:text-6xl">
+            <span className="-mt-1 block bg-linear-to-r from-astro-gold via-astro-gold to-white bg-clip-text text-4xl text-transparent sm:text-5xl md:text-6xl">
               Meets the Stars
             </span>
           </p>
@@ -194,7 +199,7 @@ export default function ProfileHero() {
           variants={fadeUp}
           className="flex justify-center mb-8 md:mb-10"
         >
-          <div className="h-[5px] w-28 rounded-full bg-[#d9f64a] shadow-[0_3px_0_rgba(49,87,255,0.35)]" />
+          <div className="h-[5px] w-28 rounded-full bg-astro-gold shadow-[0_3px_0_rgba(49,87,255,0.35)]" />
         </motion.div>
 
         {/* CTA - Solid Parallelogram Buttons */}

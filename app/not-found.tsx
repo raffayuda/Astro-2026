@@ -7,7 +7,7 @@ import { Home, Trophy, Search, ArrowLeft, Sparkles } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { Pattern } from "@/components/brand"
+import { Bubbles, ChevronRibbon, ChromeText, Pattern } from "@/components/brand";
 
 const MotionImage = motion.create(Image);
 
@@ -15,7 +15,10 @@ export default function NotFound() {
   const reduce = useReducedMotion();
 
   return (
-    <div className="bg-linear-to-b from-sky-top via-sky-mid to-white astro-frame-y astro-bubble-field min-h-screen flex flex-col overflow-hidden">
+    <div className="relative bg-linear-to-b from-sky-top via-sky-mid to-white min-h-screen flex flex-col overflow-hidden">
+      <Bubbles preset="sparse" />
+      <ChevronRibbon edge="top" />
+      <ChevronRibbon edge="bottom" />
       <Pattern className="absolute inset-0 opacity-35" />
       <Navbar />
 
@@ -93,9 +96,13 @@ export default function NotFound() {
           >
             {/* Big 404 Headline with Masterpiece Font */}
             <div className="relative">
-              <h1 className="astro-title-chrome font-title text-8xl leading-none select-none sm:text-9xl md:text-[11rem]">
+              <ChromeText
+                as="h1"
+                depth="lg"
+                className="text-title select-none"
+              >
                 404
-              </h1>
+              </ChromeText>
               <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
                 <span className="font-title text-8xl sm:text-9xl md:text-[11rem] leading-none text-transparent bg-clip-text bg-linear-to-b from-white via-white/80 to-sky-200/50 opacity-90">
                   404
@@ -105,10 +112,10 @@ export default function NotFound() {
 
             {/* Description */}
             <div className="mx-auto flex max-w-md flex-col gap-2">
-              <h2 className="text-xl font-black uppercase tracking-tight text-[#18345f] sm:text-2xl">
+              <h2 className="text-xl font-black uppercase tracking-tight text-astro-navy sm:text-2xl">
                 Halaman Tidak Ditemukan
               </h2>
-              <p className="text-sm font-medium leading-relaxed text-[#18345f]/72 sm:text-base">
+              <p className="text-sm font-medium leading-relaxed text-astro-navy/72 sm:text-base">
                 Sepertinya rute atau koordinat yang Anda tuju telah berpindah
                 atau berada di luar orbit sistem ASTRO 2026.
               </p>
@@ -116,7 +123,7 @@ export default function NotFound() {
 
             {/* Accent divider */}
             <div className="flex justify-center py-1">
-              <div className="h-1 w-14 rounded-full bg-[#d9f64a] shadow-[0_3px_0_rgba(49,87,255,0.22)]" />
+              <div className="h-1 w-14 rounded-full bg-astro-gold shadow-[0_3px_0_rgba(49,87,255,0.22)]" />
             </div>
 
             {/* Action Buttons */}

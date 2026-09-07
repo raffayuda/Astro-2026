@@ -11,7 +11,7 @@ import SkeletonImage from '@/components/SkeletonImage';
 import { cn } from '@/lib/utils';
 import { normalizeImageUrl } from '@/components/ImportCommittee';
 import { useGalleryPhotos, useGalleryCategories } from '@/src/lib/hooks/use-queries';
-import { Pattern } from "@/components/brand"
+import { Bubbles, ChromeText, Pattern } from "@/components/brand";
 
 const MotionImage = motion.create(Image);
 
@@ -88,7 +88,8 @@ export default function EventGallerySection() {
   }, [selectedPhotoIndex, filteredPhotos.length]);
 
   return (
-    <section id="gallery" className="bg-linear-to-b from-sky-bottom via-white to-white astro-bubble-field relative overflow-hidden py-24 text-slate-900 md:py-32">
+    <section id="gallery" className="bg-linear-to-b from-sky-bottom via-white to-white relative overflow-hidden py-24 text-slate-900 md:py-32">
+      <Bubbles preset="sparse" />
       <Pattern className="absolute inset-0 z-0 opacity-25" />
       {/* ─── SKY BACKGROUND GLOWS ─── */}
       <div className="pointer-events-none absolute top-1/2 left-1/2 z-0 size-[850px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-300/25 blur-[140px]" />
@@ -128,10 +129,10 @@ export default function EventGallerySection() {
           <div className="mb-3 flex justify-center">
             <div className="block h-1.5 w-18 rounded-full bg-linear-to-r from-astro-gold via-astro-lime2 to-astro-blue" />
           </div>
-          <h2 className="font-title mb-3 text-4xl leading-tight tracking-tight text-[#18345f] sm:text-5xl md:text-6xl">
-            EVENT <span className="astro-title-chrome">GALLERY</span>
+          <h2 className="font-title mb-3 text-4xl leading-tight tracking-tight text-astro-navy sm:text-5xl md:text-6xl">
+            EVENT <ChromeText>GALLERY</ChromeText>
           </h2>
-          <p className="rounded-full bg-white shadow-soft-sm mx-auto mb-6 max-w-xl px-5 py-2 text-xs font-black leading-relaxed text-[#3157ff] md:text-sm">
+          <p className="rounded-full bg-white shadow-soft-sm mx-auto mb-6 max-w-xl px-5 py-2 text-xs font-black leading-relaxed text-astro-blue md:text-sm">
             Kumpulan momen berharga, dokumentasi keseruan lomba, seminar, dan perayaan kemenangan ASTRO dari masa ke masa.
           </p>
 
@@ -147,7 +148,7 @@ export default function EventGallerySection() {
                 <ToggleGroupItem
                   key={cat.slug}
                   value={cat.slug}
-                  className="rounded-[14px] gap-2 border border-white/80 bg-white/70 px-4 py-2 text-xs font-black uppercase tracking-wider text-[#3157ff] backdrop-blur-xl data-[state=on]:border-white data-[state=on]:bg-linear-to-b data-[state=on]:from-[#28aaff] data-[state=on]:to-[#3157ff] data-[state=on]:text-white data-[state=on]:shadow-md"
+                  className="rounded-[14px] gap-2 border border-white/80 bg-white/70 px-4 py-2 text-xs font-black uppercase tracking-wider text-astro-blue backdrop-blur-xl data-[state=on]:border-white data-[state=on]:bg-linear-to-b data-[state=on]:from-astro-blue data-[state=on]:to-astro-blue data-[state=on]:text-white data-[state=on]:shadow-md"
                 >
                   <Camera className="size-3.5" />
                   {cat.name}
@@ -239,7 +240,7 @@ export default function EventGallerySection() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-[100] flex flex-col bg-[#0d172a]/95 backdrop-blur-xl text-white"
+            className="fixed inset-0 z-[100] flex flex-col bg-astro-navy/95 backdrop-blur-xl text-white"
             role="dialog"
             aria-modal="true"
             aria-label={photo.title}

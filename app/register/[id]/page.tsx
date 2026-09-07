@@ -21,7 +21,7 @@ const MotionImage = motion.create(Image);
 import { getEffectiveCompetitionFee } from "@/src/lib/competitions";
 
 import type { CompetitionCustomField } from "@/types/astro";
-import { Pattern } from "@/components/brand"
+import { Bubbles, ChevronRibbon, Pattern, chromeTextStyle } from "@/components/brand";
 
 interface CompetitionData {
   id: string;
@@ -329,7 +329,8 @@ export default function RegistrationPage({
     return (
       <>
         <Navbar />
-        <div className="bg-linear-to-b from-sky-bottom via-white to-white astro-bubble-field min-h-screen flex items-center justify-center px-4 py-20">
+        <div className="relative bg-linear-to-b from-sky-bottom via-white to-white min-h-screen flex items-center justify-center px-4 py-20">
+          <Bubbles preset="sparse" />
           <div className="rounded-xl bg-white shadow-soft p-8 sm:p-12 max-w-lg w-full text-center space-y-6">
             <div className="size-16 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto ring-8 ring-red-50">
               <Lock className="size-8" />
@@ -440,7 +441,10 @@ export default function RegistrationPage({
       <div className="min-h-screen flex flex-col justify-between bg-linear-to-b from-sky-bottom via-white to-white">
         <main className="flex-grow">
           {/* ─── HEADER ─── */}
-          <section className="bg-linear-to-b from-sky-top via-sky-mid to-white astro-frame-y astro-bubble-field relative overflow-hidden pt-36 pb-14 md:pt-40 md:pb-18">
+          <section className="bg-linear-to-b from-sky-top via-sky-mid to-white relative overflow-hidden pt-36 pb-14 md:pt-40 md:pb-18">
+            <Bubbles preset="sparse" />
+            <ChevronRibbon edge="top" />
+            <ChevronRibbon edge="bottom" />
             <Pattern className="absolute inset-0 z-0 opacity-35" />
             {/* ─── SKY BACKGROUND ─── */}
             <div className="absolute inset-0 -z-10 " />
@@ -555,7 +559,8 @@ export default function RegistrationPage({
                 initial="hidden"
                 animate="visible"
                 variants={fadeUp}
-                className="astro-title-chrome text-xl md:text-3xl font-black uppercase tracking-tight mb-2"
+                style={chromeTextStyle()}
+                className="font-title text-xl uppercase tracking-tight text-sky-bottom mb-2 md:text-3xl"
               >
                 Pendaftaran {competition.title}
               </motion.h1>
@@ -571,7 +576,7 @@ export default function RegistrationPage({
                 initial="hidden"
                 animate="visible"
                 variants={fadeUp}
-                className="rounded-full bg-white shadow-soft-sm flex w-fit items-center gap-1.5 px-4 py-2 text-sm font-semibold text-[#18345f]"
+                className="rounded-full bg-white shadow-soft-sm flex w-fit items-center gap-1.5 px-4 py-2 text-sm font-semibold text-astro-navy"
               >
                 <Trophy className="w-4 h-4 text-astro-cyan" />
                 Biaya Pendaftaran:{" "}
