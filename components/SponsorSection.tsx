@@ -152,7 +152,7 @@ export default function SponsorSection({
               tone="plain"
               radius="2xl"
               pad="lg"
-              className="mt-6 border border-white/80 bg-white/85 backdrop-blur"
+              className="mt-6 border border-white/80 bg-white/90 backdrop-blur"
             >
               <Pill tone="gold" size="sm">
                 Let's collaborate
@@ -227,7 +227,7 @@ function PartnerShelf({
       tone="plain"
       radius="2xl"
       pad="lg"
-      className="border border-white/80 bg-white/88 backdrop-blur"
+      className="border border-white/80 bg-white/90 backdrop-blur"
     >
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
         <Pill tone="blue" size="sm">

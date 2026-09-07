@@ -70,7 +70,7 @@ export default function ScheduleAndPricing({
           tone="plain"
           radius="2xl"
           pad="lg"
-          className="grid gap-4 border border-white/80 bg-white/85 backdrop-blur sm:grid-cols-3"
+          className="grid gap-4 border border-white/80 bg-white/90 backdrop-blur sm:grid-cols-3"
         >
           <div>
             <Pill tone="gold" size="sm">

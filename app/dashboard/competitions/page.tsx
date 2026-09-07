@@ -252,7 +252,7 @@ function FormFields({ form, setForm, isAdd, categories }: { form: any; setForm: 
       </Field>
       {!form.isFree && (
         <Field className="sm:col-span-2">
-          <div className="rounded-xl border border-astro-blue/30 bg-astro-navy/10 p-4 dark:bg-astro-navy/20">
+          <div className="rounded-xl border border-astro-blue/30 bg-astro-navy/10 p-4">
             <div className="flex items-center justify-between gap-3">
               <div className="space-y-0.5">
                 <Label htmlFor="toggle-has-batches" className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-foreground cursor-pointer">
@@ -321,7 +321,7 @@ function FormFields({ form, setForm, isAdd, categories }: { form: any; setForm: 
                       };
                       update({ batches: [...currentBatches, newBatch] });
                     }}
-                    className="h-7 text-xs font-bold uppercase tracking-wider border-astro-blue/40 text-astro-navy dark:text-astro-sky hover:bg-astro-blue/10"
+                    className="h-7 text-xs font-bold uppercase tracking-wider border-astro-blue/40 text-astro-navy hover:bg-astro-blue/10"
                   >
                     <Plus className="size-3.5 mr-1" /> Tambah Batch
                   </Button>
@@ -1229,7 +1229,7 @@ export default function KompetisiPage() {
                           {comp.isActive ? 'Pendaftaran Dibuka' : 'Pendaftaran Ditutup'}
                         </Badge>
                         {((comp as any).hasBatches === true || (comp as any).hasBatches === '1') && (
-                          <Badge variant="outline" className="rounded-md border-astro-cyan-2 bg-sky-bottom text-9 font-bold uppercase tracking-wider text-astro-navy dark:bg-astro-navy/40 dark:text-astro-sky gap-1">
+                          <Badge variant="outline" className="rounded-md border-astro-cyan-2 bg-sky-bottom text-9 font-bold uppercase tracking-wider text-astro-navy gap-1">
                             <Layers className="size-2.5" /> {(comp as any).batches?.length || 0} Batch
                           </Badge>
                         )}
@@ -1238,7 +1238,7 @@ export default function KompetisiPage() {
                         <p className="text-sm text-ink font-light mb-2">{comp.tagline}</p>
                       )}
                       <div className="flex flex-wrap gap-x-5 gap-y-1.5 text-xs text-ink">
-                        <span className="flex items-center gap-1 font-semibold text-astro-navy dark:text-surface">
+                        <span className="flex items-center gap-1 font-semibold text-astro-navy">
                           <Coins className="w-3 h-3 text-astro-blue" />
                           {(() => {
                             if ((comp as any).isFree === '1' || (comp as any).isFree === true || comp.isFree) {

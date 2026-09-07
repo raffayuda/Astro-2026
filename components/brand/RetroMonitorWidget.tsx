@@ -14,7 +14,7 @@ export type SponsorTier = {
 export const SPONSOR_TIERS: SponsorTier[] = [
   { tier: "Platinum", face: "from-surface to-astro-cyan-2" },
   { tier: "Gold", face: "from-amber-200 to-astro-gold" },
-  { tier: "Silver", face: "from-zinc-100 to-zinc-300" },
+  { tier: "Silver", face: "from-casing to-casing-deep" },
   { tier: "Bronze", face: "from-orange-200 to-pastel-orange" },
 ]
 
@@ -39,7 +39,7 @@ export function RetroMonitorWidget({
       data-slot="retro-monitor"
       className={cn("mx-auto w-full max-w-2xl", className)}
     >
-      <div className="rounded-2xl bg-linear-to-b from-zinc-100 to-zinc-300 p-5 shadow-soft-lg ring-1 ring-inset ring-white/70">
+      <div className="rounded-2xl bg-linear-to-b from-casing to-casing-deep p-5 shadow-soft-lg ring-1 ring-inset ring-white/70">
         <div
           className="relative overflow-hidden rounded-xl bg-linear-to-b from-astro-blue to-astro-cyan-2 p-5"
           style={{ boxShadow: "var(--shadow-inset-screen)" }}
@@ -87,8 +87,8 @@ export function RetroMonitorWidget({
         </div>
       </div>
 
-      <div className="mx-auto h-5 w-28 rounded-b-xl bg-zinc-300 shadow-soft" />
-      <div className="mx-auto h-2 w-44 rounded-full bg-zinc-400/70" />
+      <div className="mx-auto h-5 w-28 rounded-b-xl bg-casing shadow-soft" />
+      <div className="mx-auto h-2 w-44 rounded-full bg-casing-deep/70" />
     </div>
   )
 }

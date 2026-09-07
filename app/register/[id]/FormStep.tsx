@@ -503,7 +503,7 @@ export default function FormStep({
                                 onBlur={subField.handleBlur}
                                 onChange={(e) => subField.handleChange(e.target.value as never)}
                                 aria-invalid={!!err}
-                                className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring md:text-sm dark:bg-astro-navy"
+                                className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring md:text-sm"
                               >
                                 <option value="">-- Pilih {field.label} --</option>
                                 {(field.options || []).map((opt) => (

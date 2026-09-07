@@ -29,6 +29,11 @@
   /* Bright gradient end for CTAs and sky ramps. */
   --color-astro-sky: #38bdf8;
 
+  /* Physical casing greys for the retro monitor widget. Not brand colours, but
+     named so no component reaches into Tailwind's built-in ramps. */
+  --color-casing: #e4e4e7;
+  --color-casing-deep: #a1a1aa;
+
   /* ── Brand: accent ── */
   --color-pastel-orange: #ff9e64;
   --color-astro-gold: #facc15;

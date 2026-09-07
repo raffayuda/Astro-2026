@@ -787,7 +787,7 @@ export default function CommitteePage() {
                       <p className={cn(
                         "text-10 font-medium",
                         normalizeImageUrl(form.image) !== form.image || form.image.startsWith('https://lh3.googleusercontent.com/d/')
-                          ? "text-emerald-600 dark:text-emerald-400"
+                          ? "text-emerald-600"
                           : "text-muted-foreground"
                       )}>
                         {form.image.startsWith('https://drive.google.com/') || form.image.startsWith('https://docs.google.com/')

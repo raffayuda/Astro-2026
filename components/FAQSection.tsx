@@ -55,14 +55,14 @@ export default function FAQSection({ faqs }: Props) {
               lead="Jawaban singkat untuk hal yang paling sering ditanyakan peserta sebelum daftar."
               align="start"
               chrome={false}
-              className="[&_[data-slot=pill]]:bg-white/20 [&_[data-slot=pill]]:text-white [&_h2]:text-white [&_p]:text-white/82"
+              className="[&_[data-slot=pill]]:bg-white/20 [&_[data-slot=pill]]:text-white [&_h2]:text-white [&_p]:text-white/80"
             />
 
             <div className="mt-8 rounded-xl bg-white/14 p-4 ring-1 ring-inset ring-white/25">
               <Pill tone="gold" size="sm">
                 Kontak cepat
               </Pill>
-              <p className="mt-3 text-sm font-medium leading-relaxed text-white/84">
+              <p className="mt-3 text-sm font-medium leading-relaxed text-white/80">
                 Kalau pertanyaanmu belum ada di daftar, hubungi panitia melalui
                 Instagram resmi ASTRO.
               </p>
@@ -87,7 +87,7 @@ export default function FAQSection({ faqs }: Props) {
         <Accordion type="single" collapsible defaultValue="item-0" className="flex flex-col gap-3">
           {faqs.map((faq, index) => (
             <motion.div
-              key={`${faq.q}-${index}`}
+              key={faq.q}
               initial={reduce ? false : { opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -100,7 +100,7 @@ export default function FAQSection({ faqs }: Props) {
                 <AccordionTrigger className="gap-4 px-5 py-5 text-left text-sm font-extrabold tracking-tight text-astro-navy hover:no-underline md:text-base">
                   {faq.q}
                 </AccordionTrigger>
-                <AccordionContent className="border-t border-astro-cyan-2/35 px-5 pb-5 pt-4 text-sm font-medium leading-relaxed text-ink/78 md:text-base">
+                <AccordionContent className="border-t border-astro-cyan-2/35 px-5 pb-5 pt-4 text-sm font-medium leading-relaxed text-ink/80 md:text-base">
                   {faq.a}
                 </AccordionContent>
               </AccordionItem>

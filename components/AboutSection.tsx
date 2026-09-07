@@ -115,7 +115,7 @@ export default function AboutSection({ competitions }: Props) {
       className="relative overflow-hidden bg-linear-to-b from-sky-bottom via-white to-white py-18 md:py-24"
     >
       <Pattern className="absolute inset-0 -z-10 opacity-35" />
-      <div className="pointer-events-none absolute left-0 top-10 size-[420px] rounded-full bg-astro-cyan-2/16 blur-[110px]" />
+      <div className="pointer-events-none absolute left-0 top-10 size-[420px] rounded-full bg-astro-cyan-2/20 blur-[110px]" />
 
       <div className="grid gap-8 lg:grid-cols-[0.36fr_0.64fr] lg:items-start">
         <aside className="flex flex-col gap-5 lg:sticky lg:top-24">
@@ -131,7 +131,7 @@ export default function AboutSection({ competitions }: Props) {
             tone="plain"
             radius="2xl"
             pad="lg"
-            className="border border-white/80 bg-white/85 backdrop-blur"
+            className="border border-white/80 bg-white/90 backdrop-blur"
           >
             <div className="flex flex-col gap-5">
               <div>

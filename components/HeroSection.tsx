@@ -9,8 +9,6 @@ import { CtaButton, Pill, SkyBackdrop, Surface } from "@/components/brand";
 import { Button } from "@/components/ui/button";
 import CountdownTimer from "./CountdownTimer";
 
-const MotionImage = motion.create(Image);
-
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 interface Props {

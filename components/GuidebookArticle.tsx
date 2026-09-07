@@ -42,7 +42,7 @@ function renderFormattedText(text: string) {
         return (
           <span
             key={i}
-            className="inline-block rounded bg-astro-blue/15 px-1.5 py-0.5 font-mono text-xs font-bold text-astro-navy dark:text-astro-cyan-2 border border-astro-blue/30 mx-0.5"
+            className="inline-block rounded bg-astro-blue/15 px-1.5 py-0.5 font-mono text-xs font-bold text-astro-navy border border-astro-blue/30 mx-0.5"
           >
             {inner}
           </span>
@@ -182,7 +182,7 @@ export default function GuidebookArticle({
       {/* ── Section Title & Guidebook Banner ── */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-2">
-          <span className="flex size-8 items-center justify-center rounded-lg border border-astro-blue/30 bg-astro-blue/10 text-astro-blue dark:text-astro-sky">
+          <span className="flex size-8 items-center justify-center rounded-lg border border-astro-blue/30 bg-astro-blue/10 text-astro-blue">
             <BookOpen className="size-4" />
           </span>
           <div>
@@ -223,7 +223,7 @@ export default function GuidebookArticle({
                 className={cn(
                   "rounded-md group relative flex shrink-0 items-center gap-2 border px-4 py-2 text-xs font-bold uppercase tracking-wider transition-all",
                   isActive
-                    ? "border-astro-blue/60 bg-astro-blue/15 text-astro-navy dark:text-astro-cyan-2 shadow-sm"
+                    ? "border-astro-blue/60 bg-astro-blue/15 text-astro-navy shadow-sm"
                     : "border-border/60 bg-muted/40 text-muted-foreground hover:border-border hover:bg-muted hover:text-foreground"
                 )}
               >
@@ -273,7 +273,7 @@ export default function GuidebookArticle({
                     key={bIdx}
                     className={cn(
                       "font-black uppercase tracking-wider text-foreground pt-2",
-                      block.level === 2 ? "text-base text-astro-blue dark:text-astro-sky" : "text-sm"
+                      block.level === 2 ? "text-base text-astro-blue" : "text-sm"
                     )}
                   >
                     {block.text}
@@ -283,7 +283,7 @@ export default function GuidebookArticle({
 
               if (block.type === "paragraph") {
                 return (
-                  <p key={bIdx} className="text-sm leading-relaxed text-muted-foreground dark:text-zinc-300">
+                  <p key={bIdx} className="text-sm leading-relaxed text-muted-foreground">
                     {renderFormattedText(block.text)}
                   </p>
                 );
@@ -294,7 +294,7 @@ export default function GuidebookArticle({
                   <ul key={bIdx} className="space-y-2.5 pl-1">
                     {block.items.map((item, itemIdx) => (
                       <li key={itemIdx} className="flex items-start gap-2.5 text-sm text-foreground/90">
-                        <span className="mt-1 flex size-4 shrink-0 items-center justify-center rounded-full bg-astro-blue/15 text-astro-blue dark:text-astro-sky">
+                        <span className="mt-1 flex size-4 shrink-0 items-center justify-center rounded-full bg-astro-blue/15 text-astro-blue">
                           <ChevronRight className="size-3" />
                         </span>
                         <div className="flex-1 leading-snug">
@@ -310,15 +310,15 @@ export default function GuidebookArticle({
                 return (
                   <div
                     key={bIdx}
-                    className="my-3 rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 dark:bg-amber-950/20"
+                    className="my-3 rounded-xl border border-amber-500/30 bg-amber-500/10 p-4"
                   >
-                    <div className="flex items-center gap-2 text-amber-600 dark:text-amber-400">
+                    <div className="flex items-center gap-2 text-amber-600">
                       <AlertTriangle className="size-4 shrink-0" />
                       <span className="text-xs font-black uppercase tracking-wider">
                         {block.title || "Perhatian Khusus"}
                       </span>
                     </div>
-                    <p className="mt-1.5 text-xs leading-relaxed text-amber-900/90 dark:text-amber-200">
+                    <p className="mt-1.5 text-xs leading-relaxed text-amber-900/90">
                       {renderFormattedText(block.text)}
                     </p>
                   </div>
@@ -337,7 +337,7 @@ export default function GuidebookArticle({
         {contactPerson?.name && (
           <div className="flex items-center justify-between rounded-xl border border-border/70 bg-muted/30 p-4 transition-colors hover:border-border">
             <div className="flex items-center gap-3">
-              <span className="flex size-10 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+              <span className="flex size-10 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-600">
                 <MessageCircle className="size-5" />
               </span>
               <div>
@@ -355,7 +355,7 @@ export default function GuidebookArticle({
               </div>
             </div>
             {waUrl && (
-              <Button asChild size="sm" variant="outline" className="rounded-md border-emerald-500/40 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-500/10 text-xs font-bold">
+              <Button asChild size="sm" variant="outline" className="rounded-md border-emerald-500/40 text-emerald-700 hover:bg-emerald-500/10 text-xs font-bold">
                 <a href={waUrl} target="_blank" rel="noopener noreferrer">
                   Chat WA
                 </a>
@@ -368,11 +368,11 @@ export default function GuidebookArticle({
         {rulebookUrl ? (
           <div className="flex items-center justify-between rounded-xl border border-astro-blue/30 bg-astro-blue/5 p-4 transition-colors hover:border-astro-blue/50">
             <div className="flex items-center gap-3">
-              <span className="flex size-10 items-center justify-center rounded-lg bg-astro-blue/15 text-astro-blue dark:text-astro-sky">
+              <span className="flex size-10 items-center justify-center rounded-lg bg-astro-blue/15 text-astro-blue">
                 <FileText className="size-5" />
               </span>
               <div>
-                <p className="text-10 font-bold uppercase tracking-wider text-astro-blue dark:text-astro-sky">
+                <p className="text-10 font-bold uppercase tracking-wider text-astro-blue">
                   Dokumen Lengkap
                 </p>
                 <p className="text-xs font-black text-foreground">

@@ -279,7 +279,7 @@ export default function SponsorPage() {
                   "h-7 text-xs font-bold uppercase tracking-wider",
                   spFilter === 'current'
                     ? "bg-emerald-600 hover:bg-emerald-700 text-white"
-                    : "border-emerald-500/40 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/30"
+                    : "border-emerald-500/40 text-emerald-700 hover:bg-emerald-50"
                 )}
               >
                 ASTRO 2026 ({sponsors.filter(s => s.isCurrent).length})
@@ -441,7 +441,7 @@ export default function SponsorPage() {
                     ) : null}
                     <span className="text-sm font-bold text-foreground">{s.name || '(tanpa nama)'}</span>
                     {s.isCurrent ? (
-                      <Badge className="bg-emerald-500/15 text-emerald-700 border-emerald-500/30 dark:text-emerald-400 text-10 font-bold">
+                      <Badge className="bg-emerald-500/15 text-emerald-700 border-emerald-500/30 text-10 font-bold">
                         ASTRO 2026
                       </Badge>
                     ) : (
@@ -496,7 +496,7 @@ export default function SponsorPage() {
                   "h-7 text-xs font-bold uppercase tracking-wider",
                   mpFilter === 'current'
                     ? "bg-astro-blue hover:bg-astro-navy text-white"
-                    : "border-astro-blue/40 text-astro-navy dark:text-astro-sky hover:bg-sky-bottom dark:hover:bg-astro-navy/30"
+                    : "border-astro-blue/40 text-astro-navy hover:bg-sky-bottom"
                 )}
               >
                 ASTRO 2026 ({mediaPartners.filter(m => m.isCurrent).length})
@@ -643,7 +643,7 @@ export default function SponsorPage() {
                     ) : null}
                     <span className="text-sm font-bold text-foreground">{m.name || '(tanpa nama)'}</span>
                     {m.isCurrent ? (
-                      <Badge className="bg-astro-blue/15 text-astro-navy border-astro-blue/30 dark:text-astro-sky text-10 font-bold">
+                      <Badge className="bg-astro-blue/15 text-astro-navy border-astro-blue/30 text-10 font-bold">
                         ASTRO 2026
                       </Badge>
                     ) : (

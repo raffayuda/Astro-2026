@@ -75,7 +75,7 @@ export default function StatsBar({ data }: Props) {
                   icon={stat.icon}
                   metric={stat.value}
                   label={stat.label}
-                  className="h-full border border-white/80 bg-white/82"
+                  className="h-full border border-white/80 bg-white/80"
                 />
               </motion.div>
             ))}
