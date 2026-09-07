@@ -51,7 +51,7 @@ export function StatCard({
         </p>
       )}
 
-      <p className="text-2xs font-bold uppercase tracking-wide text-ink sm:text-xs">
+      <p className="text-10 font-bold uppercase tracking-wide text-ink sm:text-xs">
         {label}
       </p>
     </div>

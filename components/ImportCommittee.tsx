@@ -183,7 +183,7 @@ export default function ImportCommittee({ onImported }: { onImported?: () => voi
         <span className="text-sm font-bold text-foreground">
           {fileName || 'Pilih file CSV / Excel panitia'}
         </span>
-        <span className="text-[11px] text-muted-foreground">
+        <span className="text-11 text-muted-foreground">
           Format Google Forms (kolom: Nama lengkap, PRODI, Angkatan, Jabatan, Divisi, upload foto). NIM &amp; TTD dilewati otomatis.
         </span>
         <input
@@ -223,7 +223,7 @@ export default function ImportCommittee({ onImported }: { onImported?: () => voi
           </div>
 
           {skipped > 0 && (
-            <p className="flex items-center gap-1.5 text-[11px] text-amber-600">
+            <p className="flex items-center gap-1.5 text-11 text-amber-600">
               <AlertTriangle className="size-3.5" />
               {skipped} baris dilewati (duplikat atau data tidak lengkap).
             </p>
@@ -232,7 +232,7 @@ export default function ImportCommittee({ onImported }: { onImported?: () => voi
           {/* Ringkasan divisi */}
           <div className="flex flex-wrap gap-1.5">
             {Object.entries(groupByDivision).map(([div, count]) => (
-              <Badge key={div} variant="secondary" className="rounded-md gap-1 px-2.5 py-1 text-[10px] font-bold">
+              <Badge key={div} variant="secondary" className="rounded-md gap-1 px-2.5 py-1 text-10 font-bold">
                 {div} · {count}
               </Badge>
             ))}
@@ -241,7 +241,7 @@ export default function ImportCommittee({ onImported }: { onImported?: () => voi
           {/* Preview 5 baris */}
           <div className="overflow-hidden rounded-xl border border-border">
             <table className="w-full text-left text-xs">
-              <thead className="border-b border-border bg-muted/50 text-[10px] uppercase tracking-wider text-muted-foreground">
+              <thead className="border-b border-border bg-muted/50 text-10 uppercase tracking-wider text-muted-foreground">
                 <tr>
                   <th className="px-3 py-2">Nama</th>
                   <th className="px-3 py-2">Jabatan</th>
@@ -255,7 +255,7 @@ export default function ImportCommittee({ onImported }: { onImported?: () => voi
                     <td className="px-3 py-2 font-semibold text-foreground">{r.name}</td>
                     <td className="px-3 py-2">
                       <Badge className={cn(
-                        'rounded-md text-[9px] font-bold uppercase',
+                        'rounded-md text-9 font-bold uppercase',
                         r.role.toUpperCase() === 'SC' || r.role.toUpperCase() === 'PO' || r.role.toUpperCase() === 'PI'
                           ? 'bg-cyan-100 text-cyan-800'
                           : 'bg-muted text-muted-foreground'
@@ -268,7 +268,7 @@ export default function ImportCommittee({ onImported }: { onImported?: () => voi
               </tbody>
             </table>
             {rows.length > 5 && (
-              <div className="border-t border-border bg-muted/30 px-3 py-1.5 text-[10px] text-muted-foreground">
+              <div className="border-t border-border bg-muted/30 px-3 py-1.5 text-10 text-muted-foreground">
                 … dan {rows.length - 5} lainnya
               </div>
             )}

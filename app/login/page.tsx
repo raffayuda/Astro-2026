@@ -336,7 +336,7 @@ function LoginForm() {
               </p>
               <Link
                 href={`/auth/verify-otp${email ? `?email=${encodeURIComponent(email)}` : ''}`}
-                className="text-[11px] font-medium text-slate-500 hover:text-primary hover:underline"
+                className="text-11 font-medium text-slate-500 hover:text-primary hover:underline"
               >
                 Sudah daftar tapi belum verifikasi OTP? Verifikasi di sini
               </Link>
@@ -402,7 +402,7 @@ function LoginForm() {
                     <FieldLabel htmlFor="login-otp" required>
                       Kode OTP (6 Digit)
                     </FieldLabel>
-                    <span className="text-[11px] text-muted-foreground flex items-center gap-1">
+                    <span className="text-11 text-muted-foreground flex items-center gap-1">
                       <Clock className="size-3" /> Berlaku 10 menit
                     </span>
                   </div>

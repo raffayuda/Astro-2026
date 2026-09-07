@@ -234,7 +234,7 @@ export default function WinnerManager({ competitionId }: WinnerManagerProps) {
          <h4 className="flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-foreground">
            <Award className="size-4 text-primary" /> Kelola Juara & Sertifikat
          </h4>
-         <p className="mt-0.5 text-[10px] text-muted-foreground">
+         <p className="mt-0.5 text-10 text-muted-foreground">
            Tentukan juara dan kelola template sertifikat untuk kompetisi ini.
          </p>
        </div>
@@ -242,7 +242,7 @@ export default function WinnerManager({ competitionId }: WinnerManagerProps) {
          <Button
            size="sm"
            variant={activeTab === 'winners' ? 'default' : 'outline'}
-           className="rounded-md text-[10px] font-black uppercase tracking-wider"
+           className="rounded-md text-10 font-black uppercase tracking-wider"
            onClick={() => setActiveTab('winners')}
          >
            <Users className="size-3.5" /> Juara & Peserta
@@ -250,7 +250,7 @@ export default function WinnerManager({ competitionId }: WinnerManagerProps) {
          <Button
            size="sm"
            variant={activeTab === 'templates' ? 'default' : 'outline'}
-           className="rounded-md text-[10px] font-black uppercase tracking-wider"
+           className="rounded-md text-10 font-black uppercase tracking-wider"
            onClick={() => setActiveTab('templates')}
          >
            <FileText className="size-3.5" /> Template Sertifikat
@@ -264,7 +264,7 @@ export default function WinnerManager({ competitionId }: WinnerManagerProps) {
 
       {/* Registrations List */}
       <div className="space-y-2">
-        <div className="flex justify-between items-center text-[10px] text-slate-500 font-bold uppercase tracking-wider">
+        <div className="flex justify-between items-center text-10 text-slate-500 font-bold uppercase tracking-wider">
           <span>Daftar Peserta ({registrations.length} Lunas)</span>
           <span>Halaman {page} dari {Math.max(1, Math.ceil(registrations.length / PAGE_SIZE))}</span>
         </div>
@@ -291,22 +291,22 @@ export default function WinnerManager({ competitionId }: WinnerManagerProps) {
                     <div className="flex flex-wrap items-center gap-2">
                       <span className="text-xs font-black uppercase tracking-tight text-foreground">{name}</span>
                       {reg.type === 'team' && (
-                        <Badge variant="secondary" className="rounded bg-muted text-[8px] font-bold uppercase tracking-wider text-muted-foreground">Tim</Badge>
+                        <Badge variant="secondary" className="rounded bg-muted text-8 font-bold uppercase tracking-wider text-muted-foreground">Tim</Badge>
                       )}
                       {isWinner && (
-                        <Badge variant="outline" className={cn('rounded-md gap-0.5 border text-[9px] font-bold uppercase tracking-wider',
+                        <Badge variant="outline" className={cn('rounded-md gap-0.5 border text-9 font-bold uppercase tracking-wider',
                           isDraft ? 'border-amber-300 bg-amber-200 text-amber-900' : 'border-amber-200 bg-amber-100 text-amber-800')}>
                           <Trophy className="size-2.5" /> Juara {eff.winnerRank}
-                          {isDraft && <span className="ml-0.5 text-[7px] opacity-60">(draft)</span>}
+                          {isDraft && <span className="ml-0.5 text-8 opacity-60">(draft)</span>}
                         </Badge>
                       )}
                       {isSent && (
-                        <Badge variant="outline" className="rounded-md gap-0.5 border border-emerald-200 bg-emerald-100 text-[9px] font-bold uppercase tracking-wider text-emerald-800">
+                        <Badge variant="outline" className="rounded-md gap-0.5 border border-emerald-200 bg-emerald-100 text-9 font-bold uppercase tracking-wider text-emerald-800">
                           <Check className="size-2.5" /> Terkirim
                         </Badge>
                       )}
                     </div>
-                    <div className="mt-0.5 flex items-center gap-2 text-[10px] text-muted-foreground">
+                    <div className="mt-0.5 flex items-center gap-2 text-10 text-muted-foreground">
                       <Mail className="size-3 text-muted-foreground" /> {reg.email}
                       <span>•</span>
                       <span>{reg.institution}</span>
@@ -320,7 +320,7 @@ export default function WinnerManager({ competitionId }: WinnerManagerProps) {
                         const active = isWinner && eff.winnerRank === rank;
                         return (
                           <ToggleGroupItem key={rank} value={rank}
-                            className={cn('size-7 text-[10px] font-black text-muted-foreground hover:bg-muted hover:text-muted-foreground',
+                            className={cn('size-7 text-10 font-black text-muted-foreground hover:bg-muted hover:text-muted-foreground',
                               active && 'bg-amber-400 text-amber-950 shadow-sm hover:bg-amber-400 hover:text-amber-950')}
                             title={active ? `Batalkan Juara ${rank}` : `Tandai Juara ${rank}`}>
                             {rank}
@@ -331,7 +331,7 @@ export default function WinnerManager({ competitionId }: WinnerManagerProps) {
 
                     {/* Send button */}
                     <Button onClick={() => sendCertificate(reg)} disabled={saving} size="sm"
-                      className={cn('rounded-md gap-1 text-[9px] font-bold uppercase tracking-wider', isSent && 'bg-muted text-muted-foreground hover:bg-muted')}>
+                      className={cn('rounded-md gap-1 text-9 font-bold uppercase tracking-wider', isSent && 'bg-muted text-muted-foreground hover:bg-muted')}>
                       <Send data-icon="inline-start" className="size-2.5" /> {isSent ? 'Kirim Ulang' : 'Kirim'}
                     </Button>
                   </div>
@@ -340,13 +340,13 @@ export default function WinnerManager({ competitionId }: WinnerManagerProps) {
                 {/* ─── Daftar Sertifikat yang sudah diupload ─── */}
                 {certs.length > 0 && (
                   <div className="border-t border-slate-200 pt-2 mt-2 space-y-1.5">
-                    <p className="text-[9px] font-bold text-slate-500 uppercase tracking-wider">Sertifikat Terupload:</p>
+                    <p className="text-9 font-bold text-slate-500 uppercase tracking-wider">Sertifikat Terupload:</p>
                     {certs.map((c, i) => (
                       <div key={i} className="flex items-center justify-between bg-white border border-slate-100 px-2.5 py-1.5"
                         style={{ clipPath: 'polygon(3px 0, 100% 0, calc(100% - 3px) 100%, 0 100%)' }}>
                         <div className="flex items-center gap-2 min-w-0">
                           <FileText className="w-3 h-3 text-slate-400 flex-shrink-0" />
-                          <span className="text-[11px] font-bold text-slate-700 truncate">{c.name}</span>
+                          <span className="text-11 font-bold text-slate-700 truncate">{c.name}</span>
                           <a href={c.url} target="_blank" rel="noopener noreferrer"
                             className="text-slate-400 hover:text-astro-cyan flex-shrink-0" title="Lihat">
                             <ExternalLink className="w-3 h-3" />
@@ -372,7 +372,7 @@ export default function WinnerManager({ competitionId }: WinnerManagerProps) {
                   />
                   <label className="flex-shrink-0 cursor-pointer">
                     <Button asChild size="sm" variant="outline" disabled={newCert[reg.id]?.uploading}
-                      className="rounded-md gap-1 text-[9px] font-bold uppercase tracking-wider">
+                      className="rounded-md gap-1 text-9 font-bold uppercase tracking-wider">
                       <span>
                         {newCert[reg.id]?.uploading ? <Spinner className="size-3" /> : <Upload className="size-3" />}
                         {newCert[reg.id]?.uploading ? 'Mengunggah...' : 'Upload'}
@@ -388,7 +388,7 @@ export default function WinnerManager({ competitionId }: WinnerManagerProps) {
                     style={{ clipPath: 'polygon(3px 0, 100% 0, calc(100% - 3px) 100%, 0 100%)' }}>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={newCert[reg.id]?.preview} alt={newCert[reg.id]?.name || 'Preview'} className="size-7 rounded object-cover" />
-                    <span className="text-[10px] font-semibold text-slate-500">
+                    <span className="text-10 font-semibold text-slate-500">
                       {newCert[reg.id]?.uploading ? 'Mengunggah...' : 'Preview sertifikat'}
                     </span>
                   </div>
@@ -417,7 +417,7 @@ export default function WinnerManager({ competitionId }: WinnerManagerProps) {
               <p className="text-xs font-black uppercase tracking-tight text-foreground">
                 {hasChanges} perubahan belum disimpan
               </p>
-              <p className="mt-0.5 text-[10px] text-muted-foreground">Klik simpan untuk mengirim perubahan juara ke server.</p>
+              <p className="mt-0.5 text-10 text-muted-foreground">Klik simpan untuk mengirim perubahan juara ke server.</p>
             </div>
             <div className="flex gap-2">
               <Button variant="outline" onClick={() => { setDraftChanges({}); toast.info('Perubahan dibatalkan'); }}
@@ -445,7 +445,7 @@ export default function WinnerManager({ competitionId }: WinnerManagerProps) {
             {generateAllMut.isPending ? <Spinner className="size-4" /> : <Download className="size-4" />}
             Generate Otomatis untuk Semua Juara
           </Button>
-          <p className="mt-1.5 text-[10px] text-muted-foreground">
+          <p className="mt-1.5 text-10 text-muted-foreground">
             Hasilkan PDF sertifikat otomatis dari template untuk semua pemenang Juara 1/2/3.
           </p>
         </div>

@@ -392,7 +392,7 @@ export default function SignupPage() {
                 </p>
                 <Link
                   href={`/auth/verify-otp${email ? `?email=${encodeURIComponent(email)}` : ''}`}
-                  className="text-[11px] font-medium text-slate-500 hover:text-primary hover:underline"
+                  className="text-11 font-medium text-slate-500 hover:text-primary hover:underline"
                 >
                   Sudah daftar tapi belum verifikasi OTP? Verifikasi di sini
                 </Link>

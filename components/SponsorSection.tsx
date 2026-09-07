@@ -137,7 +137,7 @@ export default function SponsorSection({ variant = 'home', id = 'sponsor' }: Spo
           <h2 className="font-title text-5xl md:text-6xl lg:text-7xl text-slate-900 mb-3 leading-tight">
             Didukung <span className="text-sky-500">Oleh</span>
           </h2>
-          <p className="text-[11px] sm:text-xs md:text-sm font-semibold tracking-[0.25em] md:tracking-[0.35em] text-slate-700 uppercase">
+          <p className="text-11 sm:text-xs md:text-sm font-semibold tracking-[0.25em] md:tracking-[0.35em] text-slate-700 uppercase">
             {isProfileVariant
               ? 'REKAM JEJAK MITRA & SPONSOR ASTRO'
               : 'TRUSTED BY PARTNERS AND COMMUNITIES'}
@@ -154,7 +154,7 @@ export default function SponsorSection({ variant = 'home', id = 'sponsor' }: Spo
               <div className="mb-8 flex justify-center">
                 <Badge
                   variant="secondary"
-                  className="border border-sky-300/60 bg-white/85 px-5 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-sky-900 shadow-sm backdrop-blur-md sm:text-xs gap-1.5"
+                  className="border border-sky-300/60 bg-white/85 px-5 py-1.5 text-11 font-bold uppercase tracking-[0.2em] text-sky-900 shadow-sm backdrop-blur-md sm:text-xs gap-1.5"
                 >
                   <Sparkles className="size-3 text-amber-500" />
                   Official Sponsor ASTRO 2026
@@ -241,7 +241,7 @@ export default function SponsorSection({ variant = 'home', id = 'sponsor' }: Spo
                 <div className="relative flex justify-center">
                   <Badge
                     variant="secondary"
-                    className="border border-sky-300/70 bg-sky-200/95 px-5 py-1.5 text-[11px] font-bold uppercase tracking-[0.25em] text-slate-800 shadow-sm backdrop-blur-md sm:text-xs gap-1.5"
+                    className="border border-sky-300/70 bg-sky-200/95 px-5 py-1.5 text-11 font-bold uppercase tracking-[0.25em] text-slate-800 shadow-sm backdrop-blur-md sm:text-xs gap-1.5"
                   >
                     <Sparkles className="size-3 text-cyan-600" />
                     Official Media Partner ASTRO 2026
@@ -289,7 +289,7 @@ export default function SponsorSection({ variant = 'home', id = 'sponsor' }: Spo
                         >
                           <MessageSquare className="size-3.5 text-emerald-600" />
                           <span>Hubungi {cp.name}</span>
-                          <span className="text-[10px] text-muted-foreground font-medium">({cp.phone})</span>
+                          <span className="text-10 text-muted-foreground font-medium">({cp.phone})</span>
                         </Button>
                       </a>
                     ))}
@@ -311,7 +311,7 @@ export default function SponsorSection({ variant = 'home', id = 'sponsor' }: Spo
                 <div className="mb-8 flex justify-center">
                   <Badge
                     variant="secondary"
-                    className="border border-sky-300/60 bg-white/90 px-5 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-sky-900 shadow-sm backdrop-blur-md sm:text-xs gap-1.5"
+                    className="border border-sky-300/60 bg-white/90 px-5 py-1.5 text-11 font-bold uppercase tracking-[0.2em] text-sky-900 shadow-sm backdrop-blur-md sm:text-xs gap-1.5"
                   >
                     <Sparkles className="size-3 text-amber-500" />
                     Official Sponsor ASTRO 2026
@@ -341,7 +341,7 @@ export default function SponsorSection({ variant = 'home', id = 'sponsor' }: Spo
                   <div className="relative flex justify-center">
                     <Badge
                       variant="secondary"
-                      className="border border-sky-300/70 bg-white/80 px-5 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-slate-700 shadow-sm backdrop-blur-md sm:text-xs"
+                      className="border border-sky-300/70 bg-white/80 px-5 py-1.5 text-11 font-bold uppercase tracking-[0.2em] text-slate-700 shadow-sm backdrop-blur-md sm:text-xs"
                     >
                       Sponsor Periode Terdahulu
                     </Badge>
@@ -371,7 +371,7 @@ export default function SponsorSection({ variant = 'home', id = 'sponsor' }: Spo
                   <div className="relative flex justify-center">
                     <Badge
                       variant="secondary"
-                      className="border border-sky-300/70 bg-sky-200/90 px-5 py-1.5 text-[11px] font-bold uppercase tracking-[0.25em] text-slate-800 shadow-sm backdrop-blur-md sm:text-xs gap-1.5"
+                      className="border border-sky-300/70 bg-sky-200/90 px-5 py-1.5 text-11 font-bold uppercase tracking-[0.25em] text-slate-800 shadow-sm backdrop-blur-md sm:text-xs gap-1.5"
                     >
                       <Sparkles className="size-3 text-cyan-600" />
                       Official Media Partner ASTRO 2026
@@ -402,7 +402,7 @@ export default function SponsorSection({ variant = 'home', id = 'sponsor' }: Spo
                   <div className="relative flex justify-center">
                     <Badge
                       variant="secondary"
-                      className="border border-sky-300/70 bg-sky-200/90 px-5 py-1.5 text-[11px] font-bold uppercase tracking-[0.25em] text-slate-700 shadow-sm backdrop-blur-md sm:text-xs"
+                      className="border border-sky-300/70 bg-sky-200/90 px-5 py-1.5 text-11 font-bold uppercase tracking-[0.25em] text-slate-700 shadow-sm backdrop-blur-md sm:text-xs"
                     >
                       Media Partner Periode Terdahulu
                     </Badge>
@@ -432,7 +432,7 @@ export default function SponsorSection({ variant = 'home', id = 'sponsor' }: Spo
             {sponsors.length > 0 && (
               <div>
                 <div className="mb-8 flex justify-center">
-                  <Badge variant="secondary" className="border border-sky-300/60 bg-white/80 px-5 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-sky-800 shadow-sm sm:text-xs">
+                  <Badge variant="secondary" className="border border-sky-300/60 bg-white/80 px-5 py-1.5 text-11 font-bold uppercase tracking-[0.2em] text-sky-800 shadow-sm sm:text-xs">
                     Sponsors
                   </Badge>
                 </div>
@@ -447,7 +447,7 @@ export default function SponsorSection({ variant = 'home', id = 'sponsor' }: Spo
               <div>
                 <div className="relative max-w-4xl mx-auto my-10">
                   <div className="relative flex justify-center">
-                    <Badge variant="secondary" className="border border-sky-300/70 bg-sky-200/90 px-5 py-1.5 text-[11px] font-bold uppercase tracking-[0.25em] text-slate-700 shadow-sm sm:text-xs">
+                    <Badge variant="secondary" className="border border-sky-300/70 bg-sky-200/90 px-5 py-1.5 text-11 font-bold uppercase tracking-[0.25em] text-slate-700 shadow-sm sm:text-xs">
                       Media Partners
                     </Badge>
                   </div>

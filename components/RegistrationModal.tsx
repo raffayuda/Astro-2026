@@ -203,7 +203,7 @@ Terima kasih.`;
         <form onSubmit={handleSubmit} className="flex flex-col gap-5">
             {canChooseType && (
               <div className="flex flex-wrap items-center gap-3">
-                <span className="text-[10px] font-black uppercase tracking-wider text-muted-foreground">
+                <span className="text-10 font-black uppercase tracking-wider text-muted-foreground">
                   Pilih Kategori:
                 </span>
                 <div className="flex overflow-hidden rounded-full border border-border bg-muted/50">
@@ -224,7 +224,7 @@ Terima kasih.`;
                         }));
                         setErrors({});
                       }}
-                      className={`px-4 py-1.5 text-[11px] font-black uppercase tracking-wider transition-colors ${
+                      className={`px-4 py-1.5 text-11 font-black uppercase tracking-wider transition-colors ${
                         regType === t
                           ? 'bg-primary text-primary-foreground'
                           : 'text-muted-foreground hover:bg-accent hover:text-foreground'
@@ -388,7 +388,7 @@ Terima kasih.`;
               type="submit"
               disabled={loading}
               size="lg"
-              className="rounded-lg w-full text-base shadow-[0_0_20px_rgba(6,182,212,0.3)]"
+              className="rounded-lg w-full text-base shadow-glow-blue"
             >
               {loading ? (
                 <>
@@ -442,7 +442,7 @@ Terima kasih.`;
                       {copied ? <Check className="text-emerald-500" /> : <Copy />}
                     </Button>
                     {copied && (
-                      <Badge variant="secondary" className="text-[10px] font-bold text-emerald-600">
+                      <Badge variant="secondary" className="text-10 font-bold text-emerald-600">
                         Tersalin
                       </Badge>
                     )}
@@ -461,7 +461,7 @@ Terima kasih.`;
               <span className="font-bold text-foreground">Penting:</span> Simpan bukti transfer Anda. Setelah melakukan pembayaran, Anda wajib melakukan konfirmasi dengan mengirimkan bukti transfer ke Contact Person melalui WhatsApp menggunakan tombol di bawah ini.
             </div>
 
-            <Button asChild size="lg" className="rounded-lg w-full bg-emerald-500 text-white shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:bg-emerald-400">
+            <Button asChild size="lg" className="rounded-lg w-full bg-emerald-500 text-white shadow-sticker hover:bg-emerald-400">
               <a href={getWhatsAppLink()} target="_blank" rel="noopener noreferrer">
                 <MessageCircle data-icon="inline-start" />
                 Konfirmasi Pembayaran (WhatsApp)

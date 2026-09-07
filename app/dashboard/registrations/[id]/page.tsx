@@ -83,7 +83,7 @@ export default async function RegistrationDetailPage({
           <div className="flex items-center gap-2">
             <StatusIcon className={`w-4 h-4 ${statusConfig[reg.paymentStatus]?.color?.split(' ')[1] || 'text-slate-500'}`} />
             <span
-              className={`px-3 py-1 text-[10px] font-bold uppercase tracking-wider border ${statusConfig[reg.paymentStatus]?.color || statusConfig.pending.color}`}
+              className={`px-3 py-1 text-10 font-bold uppercase tracking-wider border ${statusConfig[reg.paymentStatus]?.color || statusConfig.pending.color}`}
               style={{ clipPath: 'polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%)' }}
             >
               {statusConfig[reg.paymentStatus]?.label || reg.paymentStatus}
@@ -135,20 +135,20 @@ export default async function RegistrationDetailPage({
                 {reg.type === 'team' ? (
                   <>
                     <div>
-                      <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Nama Tim</span>
+                      <span className="text-10 font-bold text-slate-500 uppercase tracking-wider">Nama Tim</span>
                       <p className="text-sm font-bold text-slate-900 mt-0.5">{reg.teamName}</p>
                     </div>
                     <div>
-                      <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Ketua Tim</span>
+                      <span className="text-10 font-bold text-slate-500 uppercase tracking-wider">Ketua Tim</span>
                       <p className="text-sm font-bold text-slate-900 mt-0.5">{reg.leaderName}</p>
                     </div>
                     <div>
-                      <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Identitas Ketua</span>
+                      <span className="text-10 font-bold text-slate-500 uppercase tracking-wider">Identitas Ketua</span>
                       <p className="text-sm text-slate-700 mt-0.5">{reg.leaderIdentity}</p>
                     </div>
                     {reg.leaderPhotoUrl && (
                       <div>
-                        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Foto Ketua</span>
+                        <span className="text-10 font-bold text-slate-500 uppercase tracking-wider">Foto Ketua</span>
                         <a
                           href={reg.leaderPhotoUrl}
                           target="_blank"
@@ -167,7 +167,7 @@ export default async function RegistrationDetailPage({
                     )}
                     {reg.memberDetails?.length ? (
                       <div className="sm:col-span-2">
-                        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Anggota Tim</span>
+                        <span className="text-10 font-bold text-slate-500 uppercase tracking-wider">Anggota Tim</span>
                         <div className="mt-2 flex flex-wrap gap-3">
                           {reg.memberDetails.map((m, i) => (
                             <div key={`${m.name}-${i}`} className="w-20">
@@ -182,18 +182,18 @@ export default async function RegistrationDetailPage({
                                   />
                                 </a>
                               ) : (
-                                <div className="flex h-20 w-20 items-center justify-center rounded-md border border-dashed border-slate-200 text-[10px] text-slate-400">
+                                <div className="flex h-20 w-20 items-center justify-center rounded-md border border-dashed border-slate-200 text-10 text-slate-400">
                                   Tanpa foto
                                 </div>
                               )}
-                              <p className="mt-1 text-[11px] leading-tight text-slate-700">{m.name}</p>
+                              <p className="mt-1 text-11 leading-tight text-slate-700">{m.name}</p>
                             </div>
                           ))}
                         </div>
                       </div>
                     ) : reg.members ? (
                       <div className="sm:col-span-2">
-                        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Anggota Tim</span>
+                        <span className="text-10 font-bold text-slate-500 uppercase tracking-wider">Anggota Tim</span>
                         <p className="text-sm text-slate-700 mt-0.5 whitespace-pre-line">{reg.members}</p>
                       </div>
                     ) : null}
@@ -201,17 +201,17 @@ export default async function RegistrationDetailPage({
                 ) : (
                   <>
                     <div>
-                      <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Nama Lengkap</span>
+                      <span className="text-10 font-bold text-slate-500 uppercase tracking-wider">Nama Lengkap</span>
                       <p className="text-sm font-bold text-slate-900 mt-0.5">{reg.fullName}</p>
                     </div>
                     <div>
-                      <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Nomor Identitas</span>
+                      <span className="text-10 font-bold text-slate-500 uppercase tracking-wider">Nomor Identitas</span>
                       <p className="text-sm text-slate-700 mt-0.5">{reg.identityNumber}</p>
                     </div>
                   </>
                 )}
                 <div>
-                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
+                  <span className="text-10 font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
                     <Building2 className="w-3 h-3" /> Sekolah / Instansi
                   </span>
                   <p className="text-sm font-medium text-slate-900 mt-0.5">{reg.institution}</p>
@@ -240,7 +240,7 @@ export default async function RegistrationDetailPage({
                     if (isImg) {
                       return (
                         <div key={key} className="space-y-1.5 sm:col-span-2">
-                          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
+                          <span className="text-10 font-bold text-slate-500 uppercase tracking-wider block">
                             {label}
                           </span>
                           <div className="flex items-center gap-3">
@@ -268,7 +268,7 @@ export default async function RegistrationDetailPage({
                                 <ExternalLink className="size-3.5" />
                                 Buka Berkas / Foto Ukuran Penuh
                               </a>
-                              <p className="text-[11px] text-slate-500">
+                              <p className="text-11 text-slate-500">
                                 Berkas diunggah oleh pendaftar saat registrasi
                               </p>
                             </div>
@@ -279,7 +279,7 @@ export default async function RegistrationDetailPage({
 
                     return (
                       <div key={key} className="space-y-0.5">
-                        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
+                        <span className="text-10 font-bold text-slate-500 uppercase tracking-wider block">
                           {label}
                         </span>
                         <p className="text-sm text-slate-900 font-medium whitespace-pre-line">
@@ -301,13 +301,13 @@ export default async function RegistrationDetailPage({
               <h2 className="text-sm font-black text-slate-900 uppercase tracking-tight">Kontak</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
+                  <span className="text-10 font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
                     <Mail className="w-3 h-3" /> Email
                   </span>
                   <p className="text-sm text-slate-900 mt-0.5">{reg.email}</p>
                 </div>
                 <div>
-                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
+                  <span className="text-10 font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
                     <Phone className="w-3 h-3" /> WhatsApp
                   </span>
                   <p className="text-sm text-slate-900 mt-0.5">{reg.whatsapp}</p>
@@ -324,23 +324,23 @@ export default async function RegistrationDetailPage({
             style={{ clipPath: 'polygon(12px 0, 100% 0, calc(100% - 12px) 100%, 0 100%)' }}
           >
             <div className="p-5 space-y-4">
-              <h3 className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.15em] flex items-center gap-1">
+              <h3 className="text-10 font-bold text-slate-500 uppercase tracking-[0.15em] flex items-center gap-1">
                 <Tag className="w-3 h-3" /> Lomba
               </h3>
               <p className="text-sm font-bold text-slate-900">{reg.competitionName}</p>
               <div className="flex flex-wrap gap-1.5">
-                <span className="inline-flex items-center px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider border bg-slate-50 text-slate-600 border-slate-200"
+                <span className="inline-flex items-center px-2 py-0.5 text-9 font-bold uppercase tracking-wider border bg-slate-50 text-slate-600 border-slate-200"
                   style={{ clipPath: 'polygon(3px 0, 100% 0, calc(100% - 3px) 100%, 0 100%)' }}
                 >
                   {reg.competitionCategory}
                 </span>
-                <span className="inline-flex items-center px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider border bg-sky-50 text-sky-700 border-sky-200"
+                <span className="inline-flex items-center px-2 py-0.5 text-9 font-bold uppercase tracking-wider border bg-sky-50 text-sky-700 border-sky-200"
                   style={{ clipPath: 'polygon(3px 0, 100% 0, calc(100% - 3px) 100%, 0 100%)' }}
                 >
                   <Globe className="w-2.5 h-2.5 mr-1" />
                   {reg.competitionOrigin === 'external' ? 'Eksternal' : 'Internal'}
                 </span>
-                <span className={`inline-flex items-center px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider border ${
+                <span className={`inline-flex items-center px-2 py-0.5 text-9 font-bold uppercase tracking-wider border ${
                   reg.competitionIsFree === '1'
                     ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
                     : 'bg-amber-50 text-amber-700 border-amber-200'
@@ -352,7 +352,7 @@ export default async function RegistrationDetailPage({
               </div>
               {reg.competitionFee > 0 && (
                 <div className="pt-3 border-t border-slate-100">
-                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Biaya</span>
+                  <span className="text-10 font-bold text-slate-500 uppercase tracking-wider">Biaya</span>
                   <p className="text-sm font-bold text-slate-900 mt-0.5">
                     Rp {reg.competitionFee.toLocaleString('id-ID')}
                   </p>
@@ -366,25 +366,25 @@ export default async function RegistrationDetailPage({
             style={{ clipPath: 'polygon(12px 0, 100% 0, calc(100% - 12px) 100%, 0 100%)' }}
           >
             <div className="p-5 space-y-4">
-              <h3 className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.15em] flex items-center gap-1">
+              <h3 className="text-10 font-bold text-slate-500 uppercase tracking-[0.15em] flex items-center gap-1">
                 <Coins className="w-3 h-3" /> Pembayaran
               </h3>
               <div>
-                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Referensi</span>
+                <span className="text-10 font-bold text-slate-500 uppercase tracking-wider">Referensi</span>
                 <p className="text-xs font-mono font-bold text-slate-900 mt-0.5">{reg.paymentReference || '—'}</p>
               </div>
               <div>
-                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Jumlah</span>
+                <span className="text-10 font-bold text-slate-500 uppercase tracking-wider">Jumlah</span>
                 <p className="text-lg font-black text-astro-cyan mt-0.5">
                   Rp {reg.paymentAmount.toLocaleString('id-ID')}
                 </p>
               </div>
               <div>
-                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Metode</span>
+                <span className="text-10 font-bold text-slate-500 uppercase tracking-wider">Metode</span>
                 <p className="text-sm text-slate-900 mt-0.5 capitalize">{reg.paymentMethod || '—'}</p>
               </div>
               <div>
-                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
+                <span className="text-10 font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
                   <CalendarDays className="w-3 h-3" /> Didaftarkan
                 </span>
                 <p className="text-sm text-slate-600 mt-0.5">

@@ -326,7 +326,7 @@ export default function FormStep({
                 Anggota Tim (Min. {requiredMembers} selain ketua)
               </FieldLabel>
               {photoRequired && (
-                <p className="text-[11px] font-light text-muted-foreground">
+                <p className="text-11 font-light text-muted-foreground">
                   Setiap pemain wajib melampirkan foto — formal atau non-formal
                   keduanya diterima.
                 </p>
@@ -456,7 +456,7 @@ export default function FormStep({
                                 {field.label}
                               </FieldLabel>
                               {field.description && (
-                                <p className="text-[11px] font-normal text-muted-foreground -mt-1">
+                                <p className="text-11 font-normal text-muted-foreground -mt-1">
                                   {field.description}
                                 </p>
                               )}
@@ -493,7 +493,7 @@ export default function FormStep({
                                 {field.label}
                               </FieldLabel>
                               {field.description && (
-                                <p className="text-[11px] font-normal text-muted-foreground -mt-1">
+                                <p className="text-11 font-normal text-muted-foreground -mt-1">
                                   {field.description}
                                 </p>
                               )}
@@ -536,7 +536,7 @@ export default function FormStep({
                               {field.label}
                             </FieldLabel>
                             {field.description && (
-                              <p className="text-[11px] font-normal text-muted-foreground -mt-1">
+                              <p className="text-11 font-normal text-muted-foreground -mt-1">
                                 {field.description}
                               </p>
                             )}

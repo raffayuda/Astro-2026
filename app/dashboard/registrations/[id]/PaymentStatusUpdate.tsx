@@ -38,7 +38,7 @@ export default function PaymentStatusUpdate({ registrationId, currentStatus }: P
 
   return (
     <div className="space-y-3 border-t border-border pt-3">
-      <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+      <span className="text-10 font-bold uppercase tracking-wider text-muted-foreground">
         Update Status Pembayaran
       </span>
       <Select value={status} onValueChange={setStatus}>

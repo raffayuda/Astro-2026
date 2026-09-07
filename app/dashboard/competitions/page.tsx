@@ -146,7 +146,7 @@ function FormFields({ form, setForm, isAdd, categories }: { form: any; setForm: 
           <ToggleGroupItem value="both" className="flex-1 text-xs font-bold uppercase tracking-wider">Keduanya</ToggleGroupItem>
         </ToggleGroup>
         {form.type === 'both' && (
-          <p className="mt-1.5 text-[10px] text-muted-foreground">Peserta bisa memilih pendaftaran individu atau tim.</p>
+          <p className="mt-1.5 text-10 text-muted-foreground">Peserta bisa memilih pendaftaran individu atau tim.</p>
         )}
       </Field>
       {form.type !== 'individual' && (
@@ -176,7 +176,7 @@ function FormFields({ form, setForm, isAdd, categories }: { form: any; setForm: 
           <ToggleGroupItem value="required" className="flex-1 text-xs font-bold uppercase tracking-wider">Wajib</ToggleGroupItem>
         </ToggleGroup>
         {form.playerPhotoRequired && (
-          <p className="mt-1.5 text-[10px] text-muted-foreground">Setiap pemain (ketua + anggota) wajib mengunggah foto saat mendaftar.</p>
+          <p className="mt-1.5 text-10 text-muted-foreground">Setiap pemain (ketua + anggota) wajib mengunggah foto saat mendaftar.</p>
         )}
       </Field>
       <Field>
@@ -196,7 +196,7 @@ function FormFields({ form, setForm, isAdd, categories }: { form: any; setForm: 
             Tutup Pendaftaran (Nonaktif / Draft)
           </ToggleGroupItem>
         </ToggleGroup>
-        <p className="mt-1 text-[10px] text-muted-foreground">
+        <p className="mt-1 text-10 text-muted-foreground">
           {form.isActive ? 'Pendaftaran lomba ini dibuka untuk umum.' : 'Pendaftaran ditutup/dikunci di halaman publik, formulir pendaftaran tidak dapat diakses.'}
         </p>
       </Field>
@@ -244,7 +244,7 @@ function FormFields({ form, setForm, isAdd, categories }: { form: any; setForm: 
                 placeholder="50.000"
               />
             </InputGroup>
-            <p className="mt-1 text-[10px] text-muted-foreground">
+            <p className="mt-1 text-10 text-muted-foreground">
               Minimal Rp 1.000 untuk gateway pembayaran. Jika gratis, pilih opsi &quot;Gratis&quot;.
             </p>
           </>
@@ -259,7 +259,7 @@ function FormFields({ form, setForm, isAdd, categories }: { form: any; setForm: 
                   <Layers className="size-4 text-cyan-600" />
                   Aktifkan Batch Pendaftaran (Harga Beda)
                 </Label>
-                <p className="text-[11px] text-muted-foreground leading-relaxed">
+                <p className="text-11 text-muted-foreground leading-relaxed">
                   Aktifkan untuk membagi periode pendaftaran menjadi beberapa gelombang (misalnya Early Bird, Batch 1, Reguler) dengan rentang tanggal dan harga yang berbeda.
                 </p>
               </div>
@@ -350,17 +350,17 @@ function FormFields({ form, setForm, isAdd, categories }: { form: any; setForm: 
                                 Batch #{idx + 1}
                               </span>
                               {isOngoing && (
-                                <Badge className="bg-emerald-500 text-white text-[10px] py-0 px-2 h-4 font-bold">
+                                <Badge className="bg-emerald-500 text-white text-10 py-0 px-2 h-4 font-bold">
                                   Aktif Sekarang
                                 </Badge>
                               )}
                               {isUpcoming && (
-                                <Badge variant="secondary" className="text-[10px] py-0 px-2 h-4 text-cyan-600 font-bold">
+                                <Badge variant="secondary" className="text-10 py-0 px-2 h-4 text-cyan-600 font-bold">
                                   Mendatang
                                 </Badge>
                               )}
                               {isPast && (
-                                <Badge variant="outline" className="text-[10px] py-0 px-2 h-4 text-muted-foreground font-bold">
+                                <Badge variant="outline" className="text-10 py-0 px-2 h-4 text-muted-foreground font-bold">
                                   Berakhir
                                 </Badge>
                               )}
@@ -382,7 +382,7 @@ function FormFields({ form, setForm, isAdd, categories }: { form: any; setForm: 
 
                           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                             <div>
-                              <Label className="text-[11px] font-bold uppercase text-muted-foreground">Nama Gelombang / Batch</Label>
+                              <Label className="text-11 font-bold uppercase text-muted-foreground">Nama Gelombang / Batch</Label>
                               <Input
                                 value={batch.name}
                                 onChange={(e) => {
@@ -395,7 +395,7 @@ function FormFields({ form, setForm, isAdd, categories }: { form: any; setForm: 
                               />
                             </div>
                             <div>
-                              <Label className="text-[11px] font-bold uppercase text-muted-foreground">Harga / Biaya Gelombang</Label>
+                              <Label className="text-11 font-bold uppercase text-muted-foreground">Harga / Biaya Gelombang</Label>
                               <InputGroup className="h-9 mt-1 border-border bg-background">
                                 <InputGroupAddon align="inline-start">
                                   <span className="text-xs font-bold text-muted-foreground">Rp</span>
@@ -423,7 +423,7 @@ function FormFields({ form, setForm, isAdd, categories }: { form: any; setForm: 
 
                           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                             <div>
-                              <Label className="text-[11px] font-bold uppercase text-muted-foreground">Tanggal Mulai (Daterange Start)</Label>
+                              <Label className="text-11 font-bold uppercase text-muted-foreground">Tanggal Mulai (Daterange Start)</Label>
                               <Input
                                 type="datetime-local"
                                 value={batch.startDate ? (batch.startDate.includes('T') ? batch.startDate.slice(0, 16) : `${batch.startDate}T00:00`) : ''}
@@ -436,7 +436,7 @@ function FormFields({ form, setForm, isAdd, categories }: { form: any; setForm: 
                               />
                             </div>
                             <div>
-                              <Label className="text-[11px] font-bold uppercase text-muted-foreground">Tanggal Selesai (Daterange End)</Label>
+                              <Label className="text-11 font-bold uppercase text-muted-foreground">Tanggal Selesai (Daterange End)</Label>
                               <Input
                                 type="datetime-local"
                                 value={batch.endDate ? (batch.endDate.includes('T') ? batch.endDate.slice(0, 16) : `${batch.endDate}T23:59`) : ''}
@@ -476,7 +476,7 @@ function FormFields({ form, setForm, isAdd, categories }: { form: any; setForm: 
         <FieldGroup className="gap-2">
           {form.prizes.map((p: { label: string; value: string }, i: number) => (
             <div key={i} className="flex items-center gap-2">
-              <span className="w-5 flex-shrink-0 text-[10px] font-bold text-muted-foreground">#{i + 1}</span>
+              <span className="w-5 flex-shrink-0 text-10 font-bold text-muted-foreground">#{i + 1}</span>
               <Input
                 value={p.label}
                 onChange={(e) => {
@@ -515,7 +515,7 @@ function FormFields({ form, setForm, isAdd, categories }: { form: any; setForm: 
             variant="outline"
             size="sm"
             onClick={() => update('prizes', [...form.prizes, { label: `Juara ${form.prizes.length + 1}`, value: '' }])}
-            className="rounded-md gap-1.5 self-start border-dashed text-[10px] font-bold uppercase tracking-wider text-muted-foreground hover:text-primary"
+            className="rounded-md gap-1.5 self-start border-dashed text-10 font-bold uppercase tracking-wider text-muted-foreground hover:text-primary"
           >
             <Plus data-icon="inline-start" className="size-3" /> Tambah Hadiah
           </Button>
@@ -533,7 +533,7 @@ function FormFields({ form, setForm, isAdd, categories }: { form: any; setForm: 
           onChange={(e) => update('rulebookUrl', e.target.value)}
           placeholder="https://drive.google.com/... atau link dokumen PDF"
         />
-        <p className="mt-1 text-[10px] text-muted-foreground">
+        <p className="mt-1 text-10 text-muted-foreground">
           Tautan dokumen juknis resmi lomba (Google Drive / PDF / dokumen eksternal) yang akan dibuka saat peserta klik tombol Buka Guidebook di halaman lomba.
         </p>
       </Field>
@@ -1064,7 +1064,7 @@ export default function KompetisiPage() {
           {/* Add/Edit form */}
           <div className="flex gap-3 items-end">
             <div className="flex-1">
-              <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Label</label>
+              <label className="text-10 font-bold text-slate-500 uppercase tracking-wider">Label</label>
               <input value={catForm.label} onChange={(e) => setCatForm({ ...catForm, label: e.target.value, id: editingCatId ? catForm.id : e.target.value.toLowerCase().replace(/\s+/g, '-') })}
                 placeholder="Nama kategori"
                 className="w-full px-3 py-2 border border-slate-200 text-sm mt-1 focus:outline-none focus:border-astro-cyan"
@@ -1073,7 +1073,7 @@ export default function KompetisiPage() {
             </div>
             {!editingCatId && (
               <div className="flex-1">
-                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">ID</label>
+                <label className="text-10 font-bold text-slate-500 uppercase tracking-wider">ID</label>
                 <input value={catForm.id} onChange={(e) => setCatForm({ ...catForm, id: e.target.value })}
                   placeholder="slug-kategori"
                   className="w-full px-3 py-2 border border-slate-200 text-sm mt-1 focus:outline-none focus:border-astro-cyan"
@@ -1111,7 +1111,7 @@ export default function KompetisiPage() {
           <div className="flex flex-wrap gap-2">
             {categories.map((cat) => (
               <div key={cat.id}
-                className={`flex items-center gap-2 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider border ${cat.color}`}
+                className={`flex items-center gap-2 px-3 py-1.5 text-11 font-bold uppercase tracking-wider border ${cat.color}`}
                 style={{ clipPath: 'polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%)' }}
               >
                 <span>{cat.label}</span>
@@ -1161,7 +1161,7 @@ export default function KompetisiPage() {
             { key: 'az', label: 'A-Z' },
             { key: 'za', label: 'Z-A' },
           ].map((opt) => (
-            <ToggleGroupItem key={opt.key} value={opt.key} className="rounded-md px-3 py-2 text-[10px] font-bold uppercase tracking-wider">
+            <ToggleGroupItem key={opt.key} value={opt.key} className="rounded-md px-3 py-2 text-10 font-bold uppercase tracking-wider">
               {opt.label}
             </ToggleGroupItem>
           ))}
@@ -1201,27 +1201,27 @@ export default function KompetisiPage() {
                     <div className="flex-1 min-w-0">
                       <div className="mb-2 flex flex-wrap items-center gap-2">
                         <h3 className="text-base font-black uppercase tracking-tight text-foreground">{comp.title}</h3>
-                        <Badge variant="outline" className={cn('rounded-md border text-[10px] font-bold uppercase tracking-wider', catColor)}>
+                        <Badge variant="outline" className={cn('rounded-md border text-10 font-bold uppercase tracking-wider', catColor)}>
                           {cat?.label || comp.category}
                         </Badge>
-                        <Badge variant="outline" className="rounded-md border-purple-200 bg-purple-50 text-[9px] font-bold uppercase tracking-wider text-purple-700">
+                        <Badge variant="outline" className="rounded-md border-purple-200 bg-purple-50 text-9 font-bold uppercase tracking-wider text-purple-700">
                           {comp.type === 'both'
                             ? 'Tim & Individu'
                             : comp.type === 'team'
                               ? 'Tim'
                               : 'Individu'}
                         </Badge>
-                        <Badge variant="outline" className={cn('rounded-md border text-[9px] font-bold uppercase tracking-wider',
+                        <Badge variant="outline" className={cn('rounded-md border text-9 font-bold uppercase tracking-wider',
                           (comp as any).isFree === '1' || (comp as any).isFree === true
                             ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
                             : 'border-amber-200 bg-amber-50 text-amber-700')}
                         >
                           {(comp as any).isFree === '1' || (comp as any).isFree === true ? 'Gratis' : 'Berbayar'}
                         </Badge>
-                        <Badge variant="outline" className="rounded-md border-sky-200 bg-sky-50 text-[9px] font-bold uppercase tracking-wider text-sky-700">
+                        <Badge variant="outline" className="rounded-md border-sky-200 bg-sky-50 text-9 font-bold uppercase tracking-wider text-sky-700">
                           {(comp as any).origin === 'external' ? 'Eksternal' : 'Internal'}
                         </Badge>
-                        <Badge variant="outline" className={cn('rounded-md border text-[9px] font-bold uppercase tracking-wider',
+                        <Badge variant="outline" className={cn('rounded-md border text-9 font-bold uppercase tracking-wider',
                           comp.isActive
                             ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
                             : 'border-red-200 bg-red-50 text-red-600')}
@@ -1229,7 +1229,7 @@ export default function KompetisiPage() {
                           {comp.isActive ? 'Pendaftaran Dibuka' : 'Pendaftaran Ditutup'}
                         </Badge>
                         {((comp as any).hasBatches === true || (comp as any).hasBatches === '1') && (
-                          <Badge variant="outline" className="rounded-md border-cyan-300 bg-cyan-50 text-[9px] font-bold uppercase tracking-wider text-cyan-700 dark:bg-cyan-950/40 dark:text-cyan-400 gap-1">
+                          <Badge variant="outline" className="rounded-md border-cyan-300 bg-cyan-50 text-9 font-bold uppercase tracking-wider text-cyan-700 dark:bg-cyan-950/40 dark:text-cyan-400 gap-1">
                             <Layers className="size-2.5" /> {(comp as any).batches?.length || 0} Batch
                           </Badge>
                         )}
@@ -1292,7 +1292,7 @@ export default function KompetisiPage() {
                       <h3 className="text-sm font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
                         <Clock className="w-4 h-4 text-astro-cyan" /> Timeline Lomba
                       </h3>
-                      <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+                      <span className="text-10 text-slate-400 font-bold uppercase tracking-wider">
                         {(timelineItems[comp.id] || []).length} item
                       </span>
                     </div>
@@ -1307,7 +1307,7 @@ export default function KompetisiPage() {
                           className="flex items-start gap-3 bg-slate-50 border border-slate-100 p-3 group"
                           style={{ clipPath: 'polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%)' }}
                         >
-                          <span className="flex-shrink-0 w-6 h-6 text-[10px] font-black bg-cyan-100 text-cyan-700 flex items-center justify-center"
+                          <span className="flex-shrink-0 w-6 h-6 text-10 font-black bg-cyan-100 text-cyan-700 flex items-center justify-center"
                             style={{ clipPath: 'polygon(3px 0, 100% 0, calc(100% - 3px) 100%, 0 100%)' }}
                           >
                             {idx + 1}
@@ -1315,9 +1315,9 @@ export default function KompetisiPage() {
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2">
                               <span className="text-xs font-black text-slate-800 uppercase tracking-tight truncate">{item.title}</span>
-                              <span className="text-[10px] text-slate-400 font-bold whitespace-nowrap">{item.date}</span>
+                              <span className="text-10 text-slate-400 font-bold whitespace-nowrap">{item.date}</span>
                             </div>
-                            <p className="text-[11px] text-slate-500 leading-relaxed line-clamp-1">{item.desc}</p>
+                            <p className="text-11 text-slate-500 leading-relaxed line-clamp-1">{item.desc}</p>
                           </div>
                           <div className="flex gap-1 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
                             <button onClick={() => handleTlEdit(item)}
@@ -1338,7 +1338,7 @@ export default function KompetisiPage() {
                     {/* Add/Edit form */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div>
-                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Tanggal Mulai</label>
+                        <label className="text-10 font-bold text-slate-500 uppercase tracking-wider">Tanggal Mulai</label>
                         <input type="date" value={tlDateRange.start}
                           onChange={(e) => setTlDateRange({ ...tlDateRange, start: e.target.value })}
                           className="w-full px-3 py-2 border border-slate-200 text-xs mt-1 focus:outline-none focus:border-astro-cyan"
@@ -1346,7 +1346,7 @@ export default function KompetisiPage() {
                         />
                       </div>
                       <div>
-                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Tanggal Akhir <span className="text-slate-400 font-normal normal-case tracking-normal">(opsional)</span></label>
+                        <label className="text-10 font-bold text-slate-500 uppercase tracking-wider">Tanggal Akhir <span className="text-slate-400 font-normal normal-case tracking-normal">(opsional)</span></label>
                         <input type="date" value={tlDateRange.end}
                           onChange={(e) => setTlDateRange({ ...tlDateRange, end: e.target.value })}
                           min={tlDateRange.start || undefined}
@@ -1357,7 +1357,7 @@ export default function KompetisiPage() {
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 items-end">
                       <div>
-                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Judul</label>
+                        <label className="text-10 font-bold text-slate-500 uppercase tracking-wider">Judul</label>
                         <input value={tlForm.title} onChange={(e) => setTlForm({ ...tlForm, title: e.target.value })}
                           placeholder="Pendaftaran Dibuka"
                           className="w-full px-3 py-2 border border-slate-200 text-xs mt-1 focus:outline-none focus:border-astro-cyan"
@@ -1376,7 +1376,7 @@ export default function KompetisiPage() {
                       </div>
                     </div>
                     <div>
-                      <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Deskripsi</label>
+                      <label className="text-10 font-bold text-slate-500 uppercase tracking-wider">Deskripsi</label>
                       <textarea value={tlForm.desc} onChange={(e) => setTlForm({ ...tlForm, desc: e.target.value })}
                         placeholder="Deskripsi item timeline..."
                         rows={2}

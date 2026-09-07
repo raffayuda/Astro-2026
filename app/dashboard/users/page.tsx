@@ -138,7 +138,7 @@ function UserDetailModal({
               <Badge
                 variant="outline"
                 className={cn(
-                  "rounded-md border text-[10px] font-bold uppercase tracking-wider",
+                  "rounded-md border text-10 font-bold uppercase tracking-wider",
                   user.role === "admin"
                     ? "border-cyan-200 bg-cyan-50 text-astro-cyan"
                     : "border-slate-200 bg-muted text-muted-foreground",
@@ -150,7 +150,7 @@ function UserDetailModal({
               <Badge
                 variant="outline"
                 className={cn(
-                  "rounded-md border text-[10px] font-bold uppercase tracking-wider",
+                  "rounded-md border text-10 font-bold uppercase tracking-wider",
                   user.emailVerified
                     ? "border-emerald-200 bg-emerald-50 text-emerald-700"
                     : "border-amber-200 bg-amber-50 text-amber-700",
@@ -158,7 +158,7 @@ function UserDetailModal({
               >
                 {user.emailVerified ? "Terverifikasi" : "Belum Verifikasi"}
               </Badge>
-              <div className="flex items-center gap-1 text-[11px] text-muted-foreground">
+              <div className="flex items-center gap-1 text-11 text-muted-foreground">
                 <Calendar className="size-3" />
                 <span>
                   {user.createdAt
@@ -235,7 +235,7 @@ function UserDetailModal({
                       <Badge
                         variant="outline"
                         className={cn(
-                          "rounded-md border text-[9px] font-bold uppercase tracking-wider",
+                          "rounded-md border text-9 font-bold uppercase tracking-wider",
                           isPaid &&
                             "border-emerald-200 bg-emerald-50 text-emerald-700",
                           isPending &&
@@ -249,7 +249,7 @@ function UserDetailModal({
 
                     <div className="grid grid-cols-1 gap-2 pt-1 border-t border-border/50 text-xs sm:grid-cols-2">
                       <div>
-                        <span className="block text-[10px] font-bold uppercase text-muted-foreground">
+                        <span className="block text-10 font-bold uppercase text-muted-foreground">
                           {reg.teamName ? "Tim" : "Peserta"}
                         </span>
                         <span className="font-semibold text-foreground">
@@ -260,7 +260,7 @@ function UserDetailModal({
                       </div>
 
                       <div>
-                        <span className="block text-[10px] font-bold uppercase text-muted-foreground">
+                        <span className="block text-10 font-bold uppercase text-muted-foreground">
                           Institusi / Sekolah
                         </span>
                         <span className="text-foreground">
@@ -269,7 +269,7 @@ function UserDetailModal({
                       </div>
 
                       <div>
-                        <span className="block text-[10px] font-bold uppercase text-muted-foreground">
+                        <span className="block text-10 font-bold uppercase text-muted-foreground">
                           Nominal & Referensi
                         </span>
                         <span className="font-mono text-foreground">
@@ -283,7 +283,7 @@ function UserDetailModal({
                       </div>
 
                       <div>
-                        <span className="block text-[10px] font-bold uppercase text-muted-foreground">
+                        <span className="block text-10 font-bold uppercase text-muted-foreground">
                           Tanggal Didaftarkan
                         </span>
                         <span className="text-muted-foreground">
@@ -649,7 +649,7 @@ export default function UsersPage() {
                           <Badge
                             variant="outline"
                             className={cn(
-                              "rounded-md border text-[9px] font-bold uppercase tracking-wider",
+                              "rounded-md border text-9 font-bold uppercase tracking-wider",
                               u.role === "admin"
                                 ? "border-cyan-200 bg-cyan-50 text-astro-cyan"
                                 : "border-slate-200 bg-muted text-muted-foreground",
@@ -660,7 +660,7 @@ export default function UsersPage() {
                           <Badge
                             variant="outline"
                             className={cn(
-                              "rounded-md border text-[9px] font-bold uppercase tracking-wider",
+                              "rounded-md border text-9 font-bold uppercase tracking-wider",
                               u.emailVerified
                                 ? "border-emerald-200 bg-emerald-50 text-emerald-700"
                                 : "border-amber-200 bg-amber-50 text-amber-700",
@@ -799,7 +799,7 @@ export default function UsersPage() {
                             <Badge
                               variant="outline"
                               className={cn(
-                                "rounded-md border text-[9px] font-bold uppercase tracking-wider",
+                                "rounded-md border text-9 font-bold uppercase tracking-wider",
                                 inv.role === "admin"
                                   ? "border-cyan-200 bg-cyan-50 text-astro-cyan"
                                   : "border-slate-200 bg-muted text-muted-foreground",
@@ -810,7 +810,7 @@ export default function UsersPage() {
                             <Badge
                               variant="outline"
                               className={cn(
-                                "rounded-md border text-[9px] font-bold uppercase tracking-wider",
+                                "rounded-md border text-9 font-bold uppercase tracking-wider",
                                 isPending &&
                                   "border-amber-200 bg-amber-50 text-amber-700",
                                 isAccepted &&
@@ -831,7 +831,7 @@ export default function UsersPage() {
                           <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
                             <span>
                               Token:{" "}
-                              <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-[11px] text-foreground">
+                              <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-11 text-foreground">
                                 {inv.token.slice(0, 10)}...
                               </code>
                             </span>
@@ -1131,7 +1131,7 @@ export default function UsersPage() {
                     </SelectGroup>
                   </SelectContent>
                 </Select>
-                <p className="text-[11px] text-muted-foreground mt-1">
+                <p className="text-11 text-muted-foreground mt-1">
                   Pilih hak akses yang akan langsung diperoleh saat akun aktif.
                 </p>
               </Field>
@@ -1147,7 +1147,7 @@ export default function UsersPage() {
                   }
                   placeholder="Contoh: panitia@gmail.com"
                 />
-                <p className="text-[11px] text-muted-foreground mt-1">
+                <p className="text-11 text-muted-foreground mt-1">
                   Kosongkan jika tautan ini terbuka untuk siapa saja yang membukanya pertama kali.
                 </p>
               </Field>

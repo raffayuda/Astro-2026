@@ -390,7 +390,7 @@ export default function SponsorPage() {
                           <Sparkles className="size-3.5 text-amber-500" />
                           Sponsor Event Saat Ini (ASTRO 2026)
                         </Label>
-                        <p className="text-[11px] text-muted-foreground">
+                        <p className="text-11 text-muted-foreground">
                           Aktifkan jika brand ini merupakan sponsor resmi ASTRO 2026 yang sedang berlangsung (tampil di halaman utama). Matikan jika merupakan sponsor periode terdahulu (portofolio).
                         </p>
                       </div>
@@ -441,15 +441,15 @@ export default function SponsorPage() {
                     ) : null}
                     <span className="text-sm font-bold text-foreground">{s.name || '(tanpa nama)'}</span>
                     {s.isCurrent ? (
-                      <Badge className="bg-emerald-500/15 text-emerald-700 border-emerald-500/30 dark:text-emerald-400 text-[10px] font-bold">
+                      <Badge className="bg-emerald-500/15 text-emerald-700 border-emerald-500/30 dark:text-emerald-400 text-10 font-bold">
                         ASTRO 2026
                       </Badge>
                     ) : (
-                      <Badge variant="outline" className="text-[10px] font-medium text-muted-foreground">
+                      <Badge variant="outline" className="text-10 font-medium text-muted-foreground">
                         Periode Lalu
                       </Badge>
                     )}
-                    {s.website && <span className="hidden text-[11px] text-muted-foreground sm:block">{s.website.replace(/https?:\/\//, '')}</span>}
+                    {s.website && <span className="hidden text-11 text-muted-foreground sm:block">{s.website.replace(/https?:\/\//, '')}</span>}
                   </div>
                   <div className="flex items-center gap-1">
                     <Button
@@ -592,7 +592,7 @@ export default function SponsorPage() {
                           <Sparkles className="size-3.5 text-cyan-500" />
                           Media Partner Event Saat Ini (ASTRO 2026)
                         </Label>
-                        <p className="text-[11px] text-muted-foreground">
+                        <p className="text-11 text-muted-foreground">
                           Aktifkan jika media ini merupakan media partner resmi ASTRO 2026 yang sedang berlangsung (tampil di halaman utama). Matikan jika merupakan mitra periode terdahulu.
                         </p>
                       </div>
@@ -643,15 +643,15 @@ export default function SponsorPage() {
                     ) : null}
                     <span className="text-sm font-bold text-foreground">{m.name || '(tanpa nama)'}</span>
                     {m.isCurrent ? (
-                      <Badge className="bg-cyan-500/15 text-cyan-700 border-cyan-500/30 dark:text-cyan-400 text-[10px] font-bold">
+                      <Badge className="bg-cyan-500/15 text-cyan-700 border-cyan-500/30 dark:text-cyan-400 text-10 font-bold">
                         ASTRO 2026
                       </Badge>
                     ) : (
-                      <Badge variant="outline" className="text-[10px] font-medium text-muted-foreground">
+                      <Badge variant="outline" className="text-10 font-medium text-muted-foreground">
                         Periode Lalu
                       </Badge>
                     )}
-                    {m.website && <span className="hidden text-[11px] text-muted-foreground sm:block">{m.website.replace(/https?:\/\//, '')}</span>}
+                    {m.website && <span className="hidden text-11 text-muted-foreground sm:block">{m.website.replace(/https?:\/\//, '')}</span>}
                   </div>
                   <div className="flex items-center gap-1">
                     <Button

@@ -63,19 +63,19 @@ export default function CompetitionCard({ competition, index }: Props) {
           {/* Top row: badge + slots */}
           <div className="flex items-start justify-between gap-1">
             <div className="flex flex-wrap items-center gap-1">
-              <Badge variant="outline" className={cn('rounded-md border text-[10px] font-bold uppercase tracking-[0.15em]', cat.badgeClass)}>
+              <Badge variant="outline" className={cn('rounded-md border text-10 font-bold uppercase tracking-[0.15em]', cat.badgeClass)}>
                 {cat.label}
               </Badge>
-              <Badge variant="outline" className="rounded-md border-sky-200 bg-sky-50 text-[9px] font-bold uppercase tracking-[0.1em] text-sky-700">
+              <Badge variant="outline" className="rounded-md border-sky-200 bg-sky-50 text-9 font-bold uppercase tracking-[0.1em] text-sky-700">
                 {competition.origin === 'external' ? 'Eksternal' : 'Internal'}
               </Badge>
               {!isOpen && (
-                <Badge variant="outline" className="rounded-md border-red-200 bg-red-50 text-[9px] font-bold uppercase tracking-[0.1em] text-red-600">
+                <Badge variant="outline" className="rounded-md border-red-200 bg-red-50 text-9 font-bold uppercase tracking-[0.1em] text-red-600">
                   Ditutup
                 </Badge>
               )}
             </div>
-            <span className={cn('flex-shrink-0 text-[10px] font-bold tracking-wide', !isOpen ? 'text-red-600' : left <= 5 ? 'text-destructive' : 'text-muted-foreground')}>
+            <span className={cn('flex-shrink-0 text-10 font-bold tracking-wide', !isOpen ? 'text-red-600' : left <= 5 ? 'text-destructive' : 'text-muted-foreground')}>
               {!isOpen ? 'DITUTUP' : left > 0 ? `SISA ${left} SLOT` : 'PENUH'}
             </span>
           </div>
@@ -89,7 +89,7 @@ export default function CompetitionCard({ competition, index }: Props) {
           </p>
 
           {/* Metadata grid */}
-          <div className="mt-1 grid grid-cols-2 gap-2 text-[11px] text-muted-foreground">
+          <div className="mt-1 grid grid-cols-2 gap-2 text-11 text-muted-foreground">
             <span className="flex items-center gap-1.5">
               <Coins className="size-3 text-primary flex-shrink-0" />
               <span className="truncate">
@@ -127,7 +127,7 @@ export default function CompetitionCard({ competition, index }: Props) {
 
           {/* Actions */}
           <div className="mt-1 flex items-center gap-2">
-            <Button asChild variant="outline" size="sm" className="rounded-md flex-1 text-[10px] font-bold uppercase tracking-[0.1em]">
+            <Button asChild variant="outline" size="sm" className="rounded-md flex-1 text-10 font-bold uppercase tracking-[0.1em]">
               <Link href={`/competitions/${competition.id}`} aria-label={`Detail ${competition.title}`}>Detail</Link>
             </Button>
             {!isOpen ? (
@@ -135,7 +135,7 @@ export default function CompetitionCard({ competition, index }: Props) {
                 disabled
                 size="sm"
                 aria-label={`Pendaftaran ${competition.title} Ditutup`}
-                className="rounded-md flex-1 text-[10px] font-bold uppercase tracking-[0.1em] opacity-60 cursor-not-allowed bg-muted text-muted-foreground hover:bg-muted"
+                className="rounded-md flex-1 text-10 font-bold uppercase tracking-[0.1em] opacity-60 cursor-not-allowed bg-muted text-muted-foreground hover:bg-muted"
               >
                 Ditutup
               </Button>
@@ -144,7 +144,7 @@ export default function CompetitionCard({ competition, index }: Props) {
                 disabled
                 size="sm"
                 aria-label={`Kuota ${competition.title} Penuh`}
-                className="rounded-md flex-1 text-[10px] font-bold uppercase tracking-[0.1em] opacity-60 cursor-not-allowed bg-muted text-muted-foreground hover:bg-muted"
+                className="rounded-md flex-1 text-10 font-bold uppercase tracking-[0.1em] opacity-60 cursor-not-allowed bg-muted text-muted-foreground hover:bg-muted"
               >
                 Penuh
               </Button>
@@ -153,7 +153,7 @@ export default function CompetitionCard({ competition, index }: Props) {
                 onClick={() => router.push(`/register/${competition.id}`)}
                 size="sm"
                 aria-label={`Daftar ${competition.title}`}
-                className="rounded-md flex-1 text-[10px] font-black uppercase tracking-[0.1em]"
+                className="rounded-md flex-1 text-10 font-black uppercase tracking-[0.1em]"
               >
                 Daftar
               </Button>

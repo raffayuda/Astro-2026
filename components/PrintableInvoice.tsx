@@ -117,23 +117,23 @@ export default function PrintableInvoice({ data }: Props) {
             <h1 className="text-xl font-black uppercase tracking-tight text-slate-950 leading-none">
               ASTRO 2026
             </h1>
-            <p className="text-[11px] font-bold text-cyan-700 uppercase tracking-widest mt-1">
+            <p className="text-11 font-bold text-cyan-700 uppercase tracking-widest mt-1">
               ajang kompetisi dan kreativitas bergengsi
             </p>
-            <p className="text-[10px] text-slate-600">
+            <p className="text-10 text-slate-600">
               BEM STT Terpadu Nurul Fikri • Depok, Indonesia
             </p>
           </div>
         </div>
 
         <div className="text-right">
-          <span className="inline-block bg-slate-900 text-white text-[10px] font-black uppercase px-2.5 py-0.5 tracking-widest rounded-xs mb-1">
+          <span className="inline-block bg-slate-900 text-white text-10 font-black uppercase px-2.5 py-0.5 tracking-widest rounded-xs mb-1">
             BUKTI PENDAFTARAN RESMI
           </span>
           <p className="font-mono text-sm font-black text-slate-900">
             {data.paymentReference || 'INV-ASTRO-2026'}
           </p>
-          <p className="text-[11px] text-slate-600">
+          <p className="text-11 text-slate-600">
             Terbit: {formatDate(data.createdAt || new Date())}
           </p>
         </div>
@@ -158,7 +158,7 @@ export default function PrintableInvoice({ data }: Props) {
           <div>
             <div className="flex items-center gap-2">
               <span
-                className={`text-[11px] font-black uppercase tracking-wider px-2 py-0.5 rounded-xs ${
+                className={`text-11 font-black uppercase tracking-wider px-2 py-0.5 rounded-xs ${
                   isPaid
                     ? 'bg-emerald-600 text-white'
                     : isPending
@@ -169,12 +169,12 @@ export default function PrintableInvoice({ data }: Props) {
                 {isPaid ? 'LUNAS / VERIFIED' : isPending ? 'MENUNGGU PEMBAYARAN' : 'GAGAL / EXPIRED'}
               </span>
               {data.paymentMethod && (
-                <span className="text-[11px] font-mono font-bold text-slate-600 uppercase">
+                <span className="text-11 font-mono font-bold text-slate-600 uppercase">
                   • Metode: {data.paymentMethod}
                 </span>
               )}
             </div>
-            <p className="text-[10px] text-slate-600 mt-0.5">
+            <p className="text-10 text-slate-600 mt-0.5">
               {isPaid
                 ? 'Pembayaran telah terverifikasi secara otomatis oleh Payment Gateway ASTRO 2026.'
                 : isPending
@@ -185,7 +185,7 @@ export default function PrintableInvoice({ data }: Props) {
         </div>
 
         <div className="text-right shrink-0">
-          <span className="text-[10px] font-bold text-slate-600 uppercase tracking-wider block">
+          <span className="text-10 font-bold text-slate-600 uppercase tracking-wider block">
             Total Biaya
           </span>
           <span className="text-base font-black text-slate-950">
@@ -198,15 +198,15 @@ export default function PrintableInvoice({ data }: Props) {
       <div className="grid grid-cols-2 gap-4 my-4">
         {/* Kolom Kiri: Identitas Peserta */}
         <div className="border border-slate-200 rounded-lg p-3.5 bg-white">
-          <h2 className="text-[10px] font-black uppercase tracking-wider text-cyan-800 pb-1.5 border-b border-slate-100 flex items-center justify-between">
+          <h2 className="text-10 font-black uppercase tracking-wider text-cyan-800 pb-1.5 border-b border-slate-100 flex items-center justify-between">
             <span>Identitas Pendaftar</span>
-            <span className="text-[9px] text-slate-600 font-normal">
+            <span className="text-9 text-slate-600 font-normal">
               Kategori: {data.type === 'team' ? 'Tim' : 'Individu'}
             </span>
           </h2>
           <dl className="mt-2.5 space-y-1.5 text-xs">
             <div>
-              <dt className="text-[9px] text-slate-600 uppercase font-semibold">
+              <dt className="text-9 text-slate-600 uppercase font-semibold">
                 {data.type === 'team' ? 'Nama Tim' : 'Nama Lengkap'}
               </dt>
               <dd className="font-bold text-slate-900 text-sm mt-0.5">
@@ -216,7 +216,7 @@ export default function PrintableInvoice({ data }: Props) {
 
             {data.type === 'team' && data.leaderName && (
               <div>
-                <dt className="text-[9px] text-slate-600 uppercase font-semibold">
+                <dt className="text-9 text-slate-600 uppercase font-semibold">
                   Ketua Tim
                 </dt>
                 <dd className="font-medium text-slate-800 mt-0.5">
@@ -226,7 +226,7 @@ export default function PrintableInvoice({ data }: Props) {
             )}
 
             <div>
-              <dt className="text-[9px] text-slate-600 uppercase font-semibold">
+              <dt className="text-9 text-slate-600 uppercase font-semibold">
                 Asal Instansi / Sekolah / Kampus
               </dt>
               <dd className="font-semibold text-slate-800 mt-0.5">
@@ -236,13 +236,13 @@ export default function PrintableInvoice({ data }: Props) {
 
             <div className="grid grid-cols-2 gap-2 pt-1 border-t border-slate-100">
               <div>
-                <dt className="text-[9px] text-slate-600 uppercase font-semibold">Email</dt>
+                <dt className="text-9 text-slate-600 uppercase font-semibold">Email</dt>
                 <dd className="font-medium text-slate-800 truncate mt-0.5">
                   {data.email}
                 </dd>
               </div>
               <div>
-                <dt className="text-[9px] text-slate-600 uppercase font-semibold">WhatsApp</dt>
+                <dt className="text-9 text-slate-600 uppercase font-semibold">WhatsApp</dt>
                 <dd className="font-mono font-medium text-slate-800 mt-0.5">
                   {data.whatsapp}
                 </dd>
@@ -253,15 +253,15 @@ export default function PrintableInvoice({ data }: Props) {
 
         {/* Kolom Kanan: Rincian Kompetisi */}
         <div className="border border-slate-200 rounded-lg p-3.5 bg-white">
-          <h2 className="text-[10px] font-black uppercase tracking-wider text-cyan-800 pb-1.5 border-b border-slate-100 flex items-center justify-between">
+          <h2 className="text-10 font-black uppercase tracking-wider text-cyan-800 pb-1.5 border-b border-slate-100 flex items-center justify-between">
             <span>Kompetisi Terdaftar</span>
-            <span className="text-[9px] font-mono text-slate-600 uppercase">
+            <span className="text-9 font-mono text-slate-600 uppercase">
               Ref: {data.id.slice(0, 8)}
             </span>
           </h2>
           <dl className="mt-2.5 space-y-1.5 text-xs">
             <div>
-              <dt className="text-[9px] text-slate-600 uppercase font-semibold">Nama Lomba</dt>
+              <dt className="text-9 text-slate-600 uppercase font-semibold">Nama Lomba</dt>
               <dd className="font-black text-slate-900 text-sm mt-0.5">
                 {data.competitionName}
               </dd>
@@ -269,13 +269,13 @@ export default function PrintableInvoice({ data }: Props) {
 
             <div className="grid grid-cols-2 gap-2">
               <div>
-                <dt className="text-[9px] text-slate-600 uppercase font-semibold">Kategori Bidang</dt>
+                <dt className="text-9 text-slate-600 uppercase font-semibold">Kategori Bidang</dt>
                 <dd className="font-bold text-slate-800 uppercase mt-0.5">
                   {data.competitionCategory || 'Umum'}
                 </dd>
               </div>
               <div>
-                <dt className="text-[9px] text-slate-600 uppercase font-semibold">Gelombang</dt>
+                <dt className="text-9 text-slate-600 uppercase font-semibold">Gelombang</dt>
                 <dd className="font-bold text-cyan-700 uppercase mt-0.5">
                   {data.batchName || 'Reguler'}
                 </dd>
@@ -284,11 +284,11 @@ export default function PrintableInvoice({ data }: Props) {
 
             {data.competitionContactName && (
               <div className="pt-1.5 border-t border-slate-100">
-                <dt className="text-[9px] text-slate-600 uppercase font-semibold">Contact Person Panitia</dt>
+                <dt className="text-9 text-slate-600 uppercase font-semibold">Contact Person Panitia</dt>
                 <dd className="text-slate-800 font-medium mt-0.5">
                   {data.competitionContactName}{' '}
                   {data.competitionContactWhatsapp && (
-                    <span className="font-mono text-slate-600 text-[10px]">
+                    <span className="font-mono text-slate-600 text-10">
                       ({data.competitionContactWhatsapp})
                     </span>
                   )}
@@ -304,7 +304,7 @@ export default function PrintableInvoice({ data }: Props) {
         data.memberDetails &&
         data.memberDetails.length > 0 && (
           <div className="my-4 border border-slate-200 rounded-lg p-3.5 bg-white">
-            <h3 className="text-[10px] font-black uppercase tracking-wider text-slate-900 pb-1.5 border-b border-slate-100">
+            <h3 className="text-10 font-black uppercase tracking-wider text-slate-900 pb-1.5 border-b border-slate-100">
               Susunan Anggota Tim ({data.memberDetails.length} Pemain)
             </h3>
             <div className="mt-2 grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -313,10 +313,10 @@ export default function PrintableInvoice({ data }: Props) {
                   key={idx}
                   className="p-1.5 bg-slate-50 border border-slate-100 rounded text-xs flex items-center gap-2"
                 >
-                  <span className="size-4 rounded-full bg-slate-200 text-slate-700 font-bold text-[9px] flex items-center justify-center shrink-0">
+                  <span className="size-4 rounded-full bg-slate-200 text-slate-700 font-bold text-9 flex items-center justify-center shrink-0">
                     {idx + 1}
                   </span>
-                  <span className="font-medium text-slate-800 truncate text-[11px]">
+                  <span className="font-medium text-slate-800 truncate text-11">
                     {m.name}
                   </span>
                 </div>
@@ -329,7 +329,7 @@ export default function PrintableInvoice({ data }: Props) {
       {data.customFields &&
         Object.keys(data.customFields).length > 0 && (
           <div className="my-4 border border-slate-200 rounded-lg p-3.5 bg-white">
-            <h3 className="text-[10px] font-black uppercase tracking-wider text-slate-900 pb-1.5 border-b border-slate-100">
+            <h3 className="text-10 font-black uppercase tracking-wider text-slate-900 pb-1.5 border-b border-slate-100">
               Data Khusus & Persyaratan Lomba
             </h3>
             <div className="mt-2 grid grid-cols-2 gap-2 text-xs">
@@ -337,11 +337,11 @@ export default function PrintableInvoice({ data }: Props) {
                 const isUrl = typeof val === 'string' && val.startsWith('http');
                 return (
                   <div key={key} className="p-2 rounded bg-slate-50 border border-slate-100">
-                    <span className="text-[9px] font-bold uppercase text-slate-600 block">
+                    <span className="text-9 font-bold uppercase text-slate-600 block">
                       {formatCustomFieldKey(key)}
                     </span>
                     {isUrl ? (
-                      <span className="text-cyan-700 font-semibold text-[10px] inline-flex items-center gap-1 mt-0.5">
+                      <span className="text-cyan-700 font-semibold text-10 inline-flex items-center gap-1 mt-0.5">
                         ✓ Berkas Terunggah (Valid)
                       </span>
                     ) : (
@@ -360,7 +360,7 @@ export default function PrintableInvoice({ data }: Props) {
       <div className="my-4 border border-slate-200 rounded-lg overflow-hidden">
         <table className="w-full text-left text-xs border-collapse">
           <thead>
-            <tr className="bg-slate-900 text-white uppercase text-[10px] font-black tracking-wider">
+            <tr className="bg-slate-900 text-white uppercase text-10 font-black tracking-wider">
               <th className="py-2 px-3.5">Deskripsi Registrasi</th>
               <th className="py-2 px-3.5 text-center">Tipe</th>
               <th className="py-2 px-3.5 text-right">Biaya</th>
@@ -372,11 +372,11 @@ export default function PrintableInvoice({ data }: Props) {
                 <p className="font-bold text-slate-900">
                   {data.competitionName}
                 </p>
-                <p className="text-[10px] text-slate-600">
+                <p className="text-10 text-slate-600">
                   Gelombang: {data.batchName || 'Reguler'} • Ref: {data.paymentReference}
                 </p>
               </td>
-              <td className="py-2.5 px-3.5 text-center font-medium text-slate-700 uppercase text-[10px]">
+              <td className="py-2.5 px-3.5 text-center font-medium text-slate-700 uppercase text-10">
                 {data.type === 'team' ? 'Tim' : 'Individu'}
               </td>
               <td className="py-2.5 px-3.5 text-right font-mono font-bold text-slate-900">
@@ -384,7 +384,7 @@ export default function PrintableInvoice({ data }: Props) {
               </td>
             </tr>
             <tr className="bg-slate-50/80 font-bold">
-              <td colSpan={2} className="py-2 px-3.5 text-slate-700 uppercase text-[10px]">
+              <td colSpan={2} className="py-2 px-3.5 text-slate-700 uppercase text-10">
                 Total Pembayaran
               </td>
               <td className="py-2 px-3.5 text-right font-mono text-sm font-black text-slate-950">
@@ -396,22 +396,22 @@ export default function PrintableInvoice({ data }: Props) {
       </div>
 
       {/* ─── FOOTER RESMI & DISCLAIMER ─── */}
-      <div className="pt-3 border-t border-slate-200 flex flex-row items-center justify-between gap-4 text-[10px] text-slate-600">
+      <div className="pt-3 border-t border-slate-200 flex flex-row items-center justify-between gap-4 text-10 text-slate-600">
         <div className="space-y-0.5 max-w-md">
-          <p className="font-bold text-slate-800 flex items-center gap-1 text-[11px]">
+          <p className="font-bold text-slate-800 flex items-center gap-1 text-11">
             <ShieldCheck className="size-3.5 text-emerald-600" /> Dokumen Otentik Terverifikasi Sistem ASTRO
           </p>
-          <p className="text-[9px] leading-relaxed text-slate-600">
+          <p className="text-9 leading-relaxed text-slate-600">
             Bukti pendaftaran resmi diterbitkan oleh Panitia ASTRO 2026. Tunjukkan bukti ini saat verifikasi dan registrasi ulang lomba.
           </p>
         </div>
 
         <div className="flex items-center gap-2.5 shrink-0">
           <div className="text-right">
-            <span className="text-[8px] font-mono text-slate-600 uppercase block">
+            <span className="text-8 font-mono text-slate-600 uppercase block">
               Kode Verifikasi
             </span>
-            <span className="font-mono text-[11px] font-bold text-slate-900">
+            <span className="font-mono text-11 font-bold text-slate-900">
               {data.paymentReference?.replace('INV-', '') || data.id.slice(0, 8).toUpperCase()}
             </span>
           </div>

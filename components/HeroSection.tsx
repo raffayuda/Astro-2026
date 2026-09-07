@@ -147,9 +147,9 @@ export default function HeroSection({ eventConfig }: Props) {
       <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 text-center animate-hero-rise">
         {/* ─── MAIN TITLE ─── */}
         <div className="mb-2 sm:mb-3">
-          <h1 className="font-title font-black tracking-tight leading-[0.82] uppercase mb-0 text-[clamp(3.5rem,7.5vw,7.5rem)]">
+          <h1 className="font-title font-black tracking-tight leading-[0.82] uppercase mb-0 text-title-sm">
             <span
-              className="block bg-linear-to-b from-slate-300 via-slate-400 to-slate-600 bg-clip-text text-transparent drop-shadow-[0_4px_30px_rgba(0,0,0,0.15)]"
+              className="block bg-linear-to-b from-slate-300 via-slate-400 to-slate-600 bg-clip-text text-transparent drop-shadow-sticker"
               style={{
                 textShadow: '0 2px 0 #cbd5e1, 0 4px 0 #94a3b8, 0 6px 0 #64748b, 0 8px 20px rgba(0,0,0,0.3)',
               }}
@@ -167,7 +167,7 @@ export default function HeroSection({ eventConfig }: Props) {
           </h1>
 
           {/* Tagline - Split Creative */}
-          <p className="mt-2 sm:mt-3 font-title leading-snug drop-shadow-[0_2px_12px_rgba(0,0,0,0.08)]">
+          <p className="mt-2 sm:mt-3 font-title leading-snug drop-shadow-sticker">
             <span className="text-xl sm:text-2xl md:text-3xl text-white/95 block">
               Where Innovation
             </span>
@@ -189,7 +189,7 @@ export default function HeroSection({ eventConfig }: Props) {
           transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] as const }}
           className="mb-8 md:mb-10 inline-flex"
         >
-          <div className="skew-x-[-8deg] border border-white/50 bg-slate-900/75 backdrop-blur-md px-5 py-2 sm:px-6 sm:py-2.5 shadow-[0_8px_30px_rgba(0,0,0,0.2)]">
+          <div className="skew-x-[-8deg] border border-white/50 bg-slate-900/75 backdrop-blur-md px-5 py-2 sm:px-6 sm:py-2.5 shadow-sticker">
             <div className="skew-x-[8deg] flex items-center gap-2 sm:gap-2.5 text-xs sm:text-sm font-black uppercase tracking-[0.2em] text-white">
               <span className="size-2 rounded-full bg-cyan-400 animate-pulse" />
               <span>ASTRO 2026 • PENDAFTARAN SEGERA DIBUKA (TBA)</span>
@@ -207,14 +207,14 @@ export default function HeroSection({ eventConfig }: Props) {
           <Button
             onClick={() => document.querySelector('#competitions')?.scrollIntoView({ behavior: 'smooth' })}
             size="lg"
-            className="skew-x-[-8deg] rounded-none border-2 border-sky-300 bg-sky-700 px-6 py-3 sm:px-8 sm:py-3.5 text-xs sm:text-sm font-black uppercase tracking-wider text-white shadow-[0_8px_30px_rgba(2,132,199,0.4)] hover:-translate-y-0.5 hover:bg-sky-600 hover:shadow-[0_12px_40px_rgba(2,132,199,0.5)] active:scale-95"
+            className="skew-x-[-8deg] rounded-none border-2 border-sky-300 bg-sky-700 px-6 py-3 sm:px-8 sm:py-3.5 text-xs sm:text-sm font-black uppercase tracking-wider text-white shadow-glow-blue hover:-translate-y-0.5 hover:bg-sky-600 hover:shadow-glow-blue active:scale-95"
           >
             <span className="block skew-x-[8deg]">Lihat Lomba & Daftar</span>
           </Button>
           <Button
             asChild
             size="lg"
-            className="skew-x-[-8deg] rounded-none border-2 border-slate-400 bg-slate-700 px-6 py-3 sm:px-8 sm:py-3.5 text-xs sm:text-sm font-bold uppercase tracking-wider text-white shadow-[0_8px_30px_rgba(0,0,0,0.3)] hover:-translate-y-0.5 hover:bg-slate-600 hover:shadow-[0_12px_40px_rgba(0,0,0,0.35)] active:scale-95"
+            className="skew-x-[-8deg] rounded-none border-2 border-slate-400 bg-slate-700 px-6 py-3 sm:px-8 sm:py-3.5 text-xs sm:text-sm font-bold uppercase tracking-wider text-white shadow-sticker hover:-translate-y-0.5 hover:bg-slate-600 hover:shadow-sticker active:scale-95"
           >
             <a href={eventConfig.generalJuknisUrl} target="_blank" rel="noopener noreferrer">
               <span className="block skew-x-[8deg]">Unduh Juknis</span>

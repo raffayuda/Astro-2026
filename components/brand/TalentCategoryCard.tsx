@@ -83,7 +83,7 @@ export function TalentCategoryCard({
       <span
         className={cn(
           "font-bold uppercase leading-tight tracking-wide",
-          size === "default" ? "text-xs" : "text-2xs"
+          size === "default" ? "text-xs" : "text-10"
         )}
       >
         {label}

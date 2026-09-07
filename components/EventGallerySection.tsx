@@ -207,7 +207,7 @@ export default function EventGallerySection() {
 
                         {/* Year Badge */}
                         <div className="absolute top-3 left-3 z-20 flex items-center gap-2">
-                          <Badge className="rounded-md bg-astro-cyan text-[10px] font-black uppercase tracking-wider text-slate-950 shadow-md">
+                          <Badge className="rounded-md bg-astro-cyan text-10 font-black uppercase tracking-wider text-slate-950 shadow-md">
                             {photoItem.year}
                           </Badge>
                         </div>
@@ -217,7 +217,7 @@ export default function EventGallerySection() {
                           <h4 className="text-sm font-black leading-tight text-white transition-colors group-hover:text-astro-cyan md:text-base">
                             {photoItem.title}
                           </h4>
-                          <p className="mt-0.5 text-[11px] font-semibold text-slate-300 opacity-80">
+                          <p className="mt-0.5 text-11 font-semibold text-slate-300 opacity-80">
                             {photoItem.category}
                           </p>
                         </div>
@@ -253,7 +253,7 @@ export default function EventGallerySection() {
               <div className="flex items-center gap-3">
                 {isPhotoReady ? (
                   <>
-                    <Badge className="rounded-md bg-astro-cyan text-[11px] font-black uppercase tracking-wider text-slate-950 shadow-sm">
+                    <Badge className="rounded-md bg-astro-cyan text-11 font-black uppercase tracking-wider text-slate-950 shadow-sm">
                       {photo.year}
                     </Badge>
                     <span className="text-xs font-bold uppercase tracking-widest text-slate-300">

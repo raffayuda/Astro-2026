@@ -242,7 +242,7 @@ function VerifyOtpContent() {
                 <FieldLabel htmlFor="otp-input" required>
                   Kode OTP (6 Digit)
                 </FieldLabel>
-                <span className="text-[11px] text-muted-foreground flex items-center gap-1">
+                <span className="text-11 text-muted-foreground flex items-center gap-1">
                   <Clock className="size-3" /> Berlaku 10 menit
                 </span>
               </div>

@@ -106,7 +106,7 @@ export default function PlayerPhotoField({
         size="sm"
         disabled={uploading}
         onClick={() => inputRef.current?.click()}
-        className="text-[11px] font-bold uppercase tracking-wider"
+        className="text-11 font-bold uppercase tracking-wider"
       >
         {uploading ? (
           <>
@@ -131,7 +131,7 @@ export default function PlayerPhotoField({
         </Button>
       )}
 
-      <span className="text-[11px] text-muted-foreground italic">
+      <span className="text-11 text-muted-foreground italic">
         {isDragging ? "Lepaskan file di sini" : "(bisa drag & drop file)"}
       </span>
     </div>
@@ -194,7 +194,7 @@ export default function PlayerPhotoField({
             </span>
             <div className="flex-1 text-left min-w-0">
               <p className="text-xs font-bold text-foreground truncate">{label}</p>
-              <p className="text-[11px] text-muted-foreground truncate">
+              <p className="text-11 text-muted-foreground truncate">
                 Tarik & lepas foto baru di sini untuk mengganti
               </p>
             </div>
@@ -205,7 +205,7 @@ export default function PlayerPhotoField({
                 size="sm"
                 disabled={uploading}
                 onClick={() => inputRef.current?.click()}
-                className="text-[10px] font-bold uppercase tracking-wider"
+                className="text-10 font-bold uppercase tracking-wider"
               >
                 {uploading ? (
                   <>
@@ -249,7 +249,7 @@ export default function PlayerPhotoField({
                     ? "Lepaskan foto di sini..."
                     : "Tarik & lepas foto pemain di sini, atau klik untuk memilih file"}
               </p>
-              <p className="text-[10px] text-muted-foreground mt-0.5">
+              <p className="text-10 text-muted-foreground mt-0.5">
                 PNG, JPG, WEBP (otomatis dioptimasi)
               </p>
             </div>

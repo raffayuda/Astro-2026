@@ -166,13 +166,13 @@ export default function CustomFieldsBuilder({ fields, onChange }: Props) {
           <h4 className="text-xs font-black text-slate-800 uppercase tracking-wider">
             Form Pendaftaran Kustom ({fields.length} Field)
           </h4>
-          <p className="text-[11px] text-slate-500 font-light">
+          <p className="text-11 text-slate-500 font-light">
             Sesuaikan formulir khusus untuk cabang lomba ini (berkas upload, dropdown, dsb).
           </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-1.5">
-          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+          <span className="text-10 font-bold text-slate-400 uppercase tracking-wider">
             Preset Cepat:
           </span>
           <Button
@@ -180,7 +180,7 @@ export default function CustomFieldsBuilder({ fields, onChange }: Props) {
             variant="outline"
             size="sm"
             onClick={applyPresetSttnf}
-            className="h-7 text-[10px] font-bold text-slate-700 hover:text-astro-cyan gap-1"
+            className="h-7 text-10 font-bold text-slate-700 hover:text-astro-cyan gap-1"
           >
             <Sparkles className="size-3 text-astro-cyan" />
             STT-NF + Berkas
@@ -190,7 +190,7 @@ export default function CustomFieldsBuilder({ fields, onChange }: Props) {
             variant="outline"
             size="sm"
             onClick={applyPresetTalent}
-            className="h-7 text-[10px] font-bold text-slate-700 hover:text-purple-600 gap-1"
+            className="h-7 text-10 font-bold text-slate-700 hover:text-purple-600 gap-1"
           >
             <Sparkles className="size-3 text-purple-500" />
             Seni / Bakat (AGT)
@@ -204,7 +204,7 @@ export default function CustomFieldsBuilder({ fields, onChange }: Props) {
           <p className="text-xs text-slate-500">
             Belum ada field kustom untuk lomba ini (formulir hanya meminta data umum standar).
           </p>
-          <p className="text-[11px] text-slate-400 mt-1">
+          <p className="text-11 text-slate-400 mt-1">
             Gunakan tombol preset di atas atau klik tombol &quot;Tambah Field&quot; di bawah.
           </p>
         </div>
@@ -218,17 +218,17 @@ export default function CustomFieldsBuilder({ fields, onChange }: Props) {
               {/* Field Header Row */}
               <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2 flex-1 min-w-0">
-                  <span className="flex items-center justify-center size-5 rounded bg-slate-200 text-slate-700 text-[10px] font-black shrink-0">
+                  <span className="flex items-center justify-center size-5 rounded bg-slate-200 text-slate-700 text-10 font-black shrink-0">
                     {idx + 1}
                   </span>
-                  <Badge variant="outline" className="text-[10px] font-bold uppercase shrink-0">
+                  <Badge variant="outline" className="text-10 font-bold uppercase shrink-0">
                     {field.type}
                   </Badge>
                   <span className="text-xs font-bold text-slate-800 truncate">
                     {field.label || "Field Tanpa Nama"}
                   </span>
                   {field.required && (
-                    <span className="text-[10px] font-extrabold text-red-500 uppercase shrink-0">
+                    <span className="text-10 font-extrabold text-red-500 uppercase shrink-0">
                       *Wajib
                     </span>
                   )}
@@ -272,7 +272,7 @@ export default function CustomFieldsBuilder({ fields, onChange }: Props) {
               <div className="grid grid-cols-1 sm:grid-cols-12 gap-2.5 pt-1">
                 {/* Label */}
                 <div className="sm:col-span-6">
-                  <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">
+                  <label className="text-10 font-bold uppercase tracking-wider text-slate-500 block mb-1">
                     Label Pertanyaan / Dokumen
                   </label>
                   <Input
@@ -286,7 +286,7 @@ export default function CustomFieldsBuilder({ fields, onChange }: Props) {
 
                 {/* Tipe Field */}
                 <div className="sm:col-span-3">
-                  <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">
+                  <label className="text-10 font-bold uppercase tracking-wider text-slate-500 block mb-1">
                     Tipe Input
                   </label>
                   <select
@@ -308,7 +308,7 @@ export default function CustomFieldsBuilder({ fields, onChange }: Props) {
 
                 {/* Switch Required */}
                 <div className="sm:col-span-3 flex items-center justify-between sm:justify-end gap-2 pt-4 sm:pt-6">
-                  <span className="text-[10px] font-bold text-slate-600 uppercase tracking-wider">
+                  <span className="text-10 font-bold text-slate-600 uppercase tracking-wider">
                     Wajib Diisi:
                   </span>
                   <Switch
@@ -320,7 +320,7 @@ export default function CustomFieldsBuilder({ fields, onChange }: Props) {
                 {/* Placeholder (for text/textarea) */}
                 {(field.type === "text" || field.type === "textarea") && (
                   <div className="sm:col-span-6">
-                    <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">
+                    <label className="text-10 font-bold uppercase tracking-wider text-slate-500 block mb-1">
                       Placeholder (Petunjuk di dalam kotak)
                     </label>
                     <Input
@@ -336,7 +336,7 @@ export default function CustomFieldsBuilder({ fields, onChange }: Props) {
                 {/* Options (for select) */}
                 {field.type === "select" && (
                   <div className="sm:col-span-12">
-                    <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">
+                    <label className="text-10 font-bold uppercase tracking-wider text-slate-500 block mb-1">
                       Pilihan Dropdown (Pisahkan dengan tanda koma `,`)
                     </label>
                     <Input
@@ -358,7 +358,7 @@ export default function CustomFieldsBuilder({ fields, onChange }: Props) {
 
                 {/* Description / Helper Text */}
                 <div className="sm:col-span-12">
-                  <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">
+                  <label className="text-10 font-bold uppercase tracking-wider text-slate-500 block mb-1">
                     Deskripsi / Panduan Peserta (Opsional)
                   </label>
                   <Input

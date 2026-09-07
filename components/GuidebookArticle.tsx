@@ -227,7 +227,7 @@ export default function GuidebookArticle({
                     : "border-border/60 bg-muted/40 text-muted-foreground hover:border-border hover:bg-muted hover:text-foreground"
                 )}
               >
-                <span className="flex size-4 items-center justify-center rounded-full bg-background/80 text-[10px] font-black text-muted-foreground group-hover:text-foreground">
+                <span className="flex size-4 items-center justify-center rounded-full bg-background/80 text-10 font-black text-muted-foreground group-hover:text-foreground">
                   {idx + 1}
                 </span>
                 <span>{sec.title}</span>
@@ -259,7 +259,7 @@ export default function GuidebookArticle({
                 {currentSection.title}
               </h3>
             </div>
-            <Badge variant="outline" className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+            <Badge variant="outline" className="text-10 font-bold uppercase tracking-wider text-muted-foreground">
               Bab #{activeTab + 1} of {activeSections.length}
             </Badge>
           </div>
@@ -341,14 +341,14 @@ export default function GuidebookArticle({
                 <MessageCircle className="size-5" />
               </span>
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                <p className="text-10 font-bold uppercase tracking-wider text-muted-foreground">
                   Contact Person Resmi
                 </p>
                 <p className="text-xs font-black text-foreground">
                   {contactPerson.name}
                 </p>
                 {contactPerson.whatsapp && (
-                  <p className="text-[11px] font-mono text-muted-foreground">
+                  <p className="text-11 font-mono text-muted-foreground">
                     +{contactPerson.whatsapp}
                   </p>
                 )}
@@ -372,13 +372,13 @@ export default function GuidebookArticle({
                 <FileText className="size-5" />
               </span>
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-wider text-cyan-600 dark:text-cyan-400">
+                <p className="text-10 font-bold uppercase tracking-wider text-cyan-600 dark:text-cyan-400">
                   Dokumen Lengkap
                 </p>
                 <p className="text-xs font-black text-foreground">
                   Guidebook Teknis (PDF)
                 </p>
-                <p className="text-[11px] text-muted-foreground">
+                <p className="text-11 text-muted-foreground">
                   Unduh / baca via Google Drive
                 </p>
               </div>

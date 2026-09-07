@@ -123,7 +123,7 @@ export default function OverviewCharts() {
                 {statusDistribution.map((s) => (
                   <div key={s.name} className="flex items-center gap-1.5">
                     <span className="size-2.5 rounded-full" style={{ backgroundColor: s.color }} />
-                    <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+                    <span className="text-10 font-medium uppercase tracking-wider text-muted-foreground">
                       {STATUS_LABELS[s.name] || s.name}: {s.value}
                     </span>
                   </div>

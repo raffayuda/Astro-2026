@@ -450,7 +450,7 @@ export default function CommitteePage() {
               variant="ghost"
               size="sm"
               onClick={() => { setSearch(""); setFilterRole(""); setFilterDivision(""); setPage(1); }}
-              className="rounded-md gap-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground"
+              className="rounded-md gap-1 text-10 font-bold uppercase tracking-wider text-muted-foreground"
             >
               <X className="size-3" /> Reset
             </Button>
@@ -459,7 +459,7 @@ export default function CommitteePage() {
       </div>
 
       {filtered.length !== items.length && (
-        <p className="text-[11px] text-muted-foreground">
+        <p className="text-11 text-muted-foreground">
           Menampilkan {filtered.length} dari {items.length} anggota
         </p>
       )}
@@ -481,7 +481,7 @@ export default function CommitteePage() {
             variant="destructive"
             size="sm"
             onClick={handleBulkDelete}
-            className="rounded-md ml-auto gap-1 text-[10px] font-bold uppercase tracking-wider"
+            className="rounded-md ml-auto gap-1 text-10 font-bold uppercase tracking-wider"
           >
             <Trash2 className="size-3.5" /> Hapus Terpilih
           </Button>
@@ -714,7 +714,7 @@ export default function CommitteePage() {
                         </button>
                         <div className="flex-1 text-left min-w-0">
                           <p className="text-xs font-bold text-foreground truncate">Foto Terpasang</p>
-                          <p className="text-[11px] text-muted-foreground truncate">
+                          <p className="text-11 text-muted-foreground truncate">
                             Tarik & lepas foto baru di sini untuk mengganti
                           </p>
                         </div>
@@ -725,7 +725,7 @@ export default function CommitteePage() {
                             size="sm"
                             disabled={uploading}
                             onClick={() => fileInputRef.current?.click()}
-                            className="text-[10px] font-bold uppercase tracking-wider"
+                            className="text-10 font-bold uppercase tracking-wider"
                           >
                             {uploading ? (
                               <>
@@ -767,7 +767,7 @@ export default function CommitteePage() {
                                 ? "Lepaskan file di sini..."
                                 : "Tarik & lepas foto panitia di sini, atau klik untuk memilih"}
                           </p>
-                          <p className="text-[10px] text-muted-foreground mt-0.5">
+                          <p className="text-10 text-muted-foreground mt-0.5">
                             PNG, JPG, WEBP (maksimal 30 MB)
                           </p>
                         </div>
@@ -785,7 +785,7 @@ export default function CommitteePage() {
                     />
                     {form.image && (
                       <p className={cn(
-                        "text-[10px] font-medium",
+                        "text-10 font-medium",
                         normalizeImageUrl(form.image) !== form.image || form.image.startsWith('https://lh3.googleusercontent.com/d/')
                           ? "text-emerald-600 dark:text-emerald-400"
                           : "text-muted-foreground"
@@ -850,23 +850,23 @@ export default function CommitteePage() {
                     <Image src={normalizeImageUrl(item.image)} alt="" width={40} height={40} unoptimized className="size-10 object-cover" />
                   </button>
                 ) : (
-                  <div className="flex size-10 items-center justify-center rounded-full bg-muted text-[10px] font-bold uppercase text-muted-foreground">
+                  <div className="flex size-10 items-center justify-center rounded-full bg-muted text-10 font-bold uppercase text-muted-foreground">
                     {item.name.charAt(0)}
                   </div>
                 )}
                 <div>
                   <span className="text-sm font-bold text-foreground">{item.name}</span>
                   <div className="mt-0.5 flex gap-2">
-                    <span className="text-[10px] font-semibold text-muted-foreground">{item.role}</span>
+                    <span className="text-10 font-semibold text-muted-foreground">{item.role}</span>
                     {item.isLeader === "1" && (
-                      <Badge variant="outline" className="rounded-md border-amber-200 bg-amber-50 text-[9px] font-bold uppercase text-amber-700">
+                      <Badge variant="outline" className="rounded-md border-amber-200 bg-amber-50 text-9 font-bold uppercase text-amber-700">
                         Koordinator
                       </Badge>
                     )}
-                    <span className="text-[10px] text-muted-foreground/60">|</span>
-                    <span className="text-[10px] text-muted-foreground">{item.divisionName || item.division}</span>
+                    <span className="text-10 text-muted-foreground/60">|</span>
+                    <span className="text-10 text-muted-foreground">{item.divisionName || item.division}</span>
                     {(item.studyProgram || item.batch) && (
-                      <span className="text-[10px] text-muted-foreground/60">
+                      <span className="text-10 text-muted-foreground/60">
                         · {[item.studyProgram, item.batch].filter(Boolean).join(' ')}
                       </span>
                     )}
@@ -930,7 +930,7 @@ export default function CommitteePage() {
                       <GripVertical className="size-4 text-muted-foreground" />
                       <span className="text-sm font-bold">{div.name}</span>
                       {div.shortName && (
-                        <Badge variant="secondary" className="ml-auto text-[10px] uppercase">
+                        <Badge variant="secondary" className="ml-auto text-10 uppercase">
                           {div.shortName}
                         </Badge>
                       )}

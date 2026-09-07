@@ -104,7 +104,7 @@ export default function NotFound() {
                 404
               </ChromeText>
               <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-                <span className="font-title text-8xl sm:text-9xl md:text-[11rem] leading-none text-transparent bg-clip-text bg-linear-to-b from-white via-white/80 to-sky-200/50 opacity-90">
+                <span className="font-title text-8xl sm:text-9xl md:text-title leading-none text-transparent bg-clip-text bg-linear-to-b from-white via-white/80 to-sky-200/50 opacity-90">
                   404
                 </span>
               </div>
@@ -123,7 +123,7 @@ export default function NotFound() {
 
             {/* Accent divider */}
             <div className="flex justify-center py-1">
-              <div className="h-1 w-14 rounded-full bg-astro-gold shadow-[0_3px_0_rgba(49,87,255,0.22)]" />
+              <div className="h-1 w-14 rounded-full bg-astro-gold shadow-sticker-sm" />
             </div>
 
             {/* Action Buttons */}

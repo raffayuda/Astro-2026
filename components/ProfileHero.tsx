@@ -184,7 +184,7 @@ export default function ProfileHero() {
           </h1>
 
           {/* Tagline - Split Creative */}
-          <p className="mt-6 font-title leading-snug drop-shadow-[0_2px_12px_rgba(0,0,0,0.08)]">
+          <p className="mt-6 font-title leading-snug drop-shadow-sticker">
             <span className="text-3xl sm:text-4xl md:text-5xl text-white/95 block">
               Where Innovation
             </span>
@@ -199,7 +199,7 @@ export default function ProfileHero() {
           variants={fadeUp}
           className="flex justify-center mb-8 md:mb-10"
         >
-          <div className="h-[5px] w-28 rounded-full bg-astro-gold shadow-[0_3px_0_rgba(49,87,255,0.35)]" />
+          <div className="h-[5px] w-28 rounded-full bg-astro-gold shadow-sticker-sm" />
         </motion.div>
 
         {/* CTA - Solid Parallelogram Buttons */}
@@ -210,7 +210,7 @@ export default function ProfileHero() {
           <Button
             asChild
             size="lg"
-            className="rounded-[18px] border-2 border-white/80 px-8 py-4 text-sm font-black uppercase tracking-wider text-white shadow-[0_12px_28px_rgba(49,87,255,0.3)] hover:-translate-y-0.5 active:scale-95"
+            className="rounded-[18px] border-2 border-white/80 px-8 py-4 text-sm font-black uppercase tracking-wider text-white shadow-sticker hover:-translate-y-0.5 active:scale-95"
           >
             <a href="#about-event">
               <span className="flex items-center gap-2">
@@ -222,7 +222,7 @@ export default function ProfileHero() {
             asChild
             size="lg"
             variant="secondary"
-            className="rounded-[18px] border-2 border-white/80 px-8 py-4 text-sm font-black uppercase tracking-wider shadow-[0_12px_28px_rgba(217,246,74,0.24)] hover:-translate-y-0.5 active:scale-95"
+            className="rounded-[18px] border-2 border-white/80 px-8 py-4 text-sm font-black uppercase tracking-wider shadow-glow-orange hover:-translate-y-0.5 active:scale-95"
           >
             <a href="#contact">
               Contact Us

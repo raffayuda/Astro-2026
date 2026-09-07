@@ -338,7 +338,7 @@ export default function CommitteeSection() {
                 <Badge
                   variant="secondary"
                   className={cn(
-                    "rounded-md text-[10px] font-bold",
+                    "rounded-md text-10 font-bold",
                     activeDivision === div.slug
                       ? "bg-sky-50 text-astro-cyan"
                       : "bg-white/40 text-muted-foreground",
@@ -357,7 +357,7 @@ export default function CommitteeSection() {
             <span className="rounded-full bg-white shadow-soft-sm px-4 py-1.5 text-xs font-black uppercase tracking-widest text-astro-blue">
               {currentDivision?.displayName || activeDivision}
             </span>
-            <span className="hidden sm:inline-block text-[11px] font-medium text-slate-500">
+            <span className="hidden sm:inline-block text-11 font-medium text-slate-500">
               ({filteredMembers.length} Personel)
             </span>
           </div>
@@ -441,8 +441,8 @@ export default function CommitteeSection() {
                     <Badge
                       className={
                         member.isLeader === "1"
-                          ? "bg-amber-400 text-[10px] font-bold uppercase tracking-wider text-amber-950 shadow-sm max-w-[140px] truncate inline-block"
-                          : "bg-white/85 text-[10px] font-bold uppercase tracking-wider text-slate-700 ring-1 ring-white/90 backdrop-blur-sm max-w-[140px] truncate inline-block"
+                          ? "bg-amber-400 text-10 font-bold uppercase tracking-wider text-amber-950 shadow-sm max-w-[140px] truncate inline-block"
+                          : "bg-white/85 text-10 font-bold uppercase tracking-wider text-slate-700 ring-1 ring-white/90 backdrop-blur-sm max-w-[140px] truncate inline-block"
                       }
                     >
                       {member.role || "Anggota"}
@@ -468,7 +468,7 @@ export default function CommitteeSection() {
                           </p>
 
                           {(member.studyProgram || member.batch) && (
-                            <p className="mt-1 text-[10px] font-semibold uppercase tracking-wider text-cyan-200/90 drop-shadow-sm">
+                            <p className="mt-1 text-10 font-semibold uppercase tracking-wider text-cyan-200/90 drop-shadow-sm">
                               {[member.studyProgram, member.batch]
                                 .filter(Boolean)
                                 .join(" ")}
@@ -484,7 +484,7 @@ export default function CommitteeSection() {
                           {(member.instagram || member.linkedin) && (
                             <div className="flex items-center gap-3 mt-2 pt-2 border-t border-white/20">
                               {member.instagram && (
-                                <span className="text-[10px] font-medium text-white/80 truncate">
+                                <span className="text-10 font-medium text-white/80 truncate">
                                   @{member.instagram}
                                 </span>
                               )}
@@ -543,7 +543,7 @@ export default function CommitteeSection() {
               <div className="flex items-center justify-between pb-3">
                 <div className="flex items-center gap-2">
                   {isMemberReady ? (
-                    <Badge className="rounded-md bg-astro-cyan text-[11px] font-black uppercase tracking-wider text-slate-950 shadow-sm">
+                    <Badge className="rounded-md bg-astro-cyan text-11 font-black uppercase tracking-wider text-slate-950 shadow-sm">
                       {currentDivision?.shortDisplay ||
                         currentDivision?.name ||
                         activeDivision}
@@ -611,7 +611,7 @@ export default function CommitteeSection() {
                       {viewerMember.role}
                     </p>
                     {(viewerMember.studyProgram || viewerMember.batch) && (
-                      <p className="mt-1 text-[10px] font-bold uppercase tracking-wider text-cyan-200/90">
+                      <p className="mt-1 text-10 font-bold uppercase tracking-wider text-cyan-200/90">
                         {[viewerMember.studyProgram, viewerMember.batch]
                           .filter(Boolean)
                           .join(" ")}
@@ -622,7 +622,7 @@ export default function CommitteeSection() {
                         "{viewerMember.quote}"
                       </p>
                     )}
-                    <p className="mt-2 text-[11px] font-semibold text-slate-400">
+                    <p className="mt-2 text-11 font-semibold text-slate-400">
                       {selectedMemberIndex! + 1} dari {filteredMembers.length}{" "}
                       anggota
                     </p>

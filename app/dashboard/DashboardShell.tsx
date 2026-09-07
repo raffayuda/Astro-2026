@@ -135,7 +135,7 @@ export default function DashboardShell({ children, role, userName }: Props) {
             </Avatar>
             <div className="min-w-0 flex-1">
               <p className="truncate text-sm font-bold text-sidebar-foreground">{userName}</p>
-              <p className="text-[10px] uppercase tracking-wider text-sidebar-foreground/70">{role}</p>
+              <p className="text-10 uppercase tracking-wider text-sidebar-foreground/70">{role}</p>
             </div>
             <Button
               variant="ghost"
@@ -153,7 +153,7 @@ export default function DashboardShell({ children, role, userName }: Props) {
       </Sidebar>
 
       <SidebarInset>
-        <header className="flex h-16 items-center gap-4 border-b border-astro-cyan-2/55 bg-white/70 px-4 shadow-[0_8px_24px_rgba(49,87,255,0.08)] backdrop-blur-xl lg:px-6">
+        <header className="flex h-16 items-center gap-4 border-b border-astro-cyan-2/55 bg-white/70 px-4 shadow-sticker backdrop-blur-xl lg:px-6">
           <SidebarTrigger className="md:hidden" />
           <div className="flex-1" />
           <Link

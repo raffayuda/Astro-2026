@@ -190,10 +190,10 @@ export default function FAQPage() {
                     />
                   </FieldGroup>
                   <div className="flex gap-2">
-                    <Button size="sm" variant="default" className="gap-1 bg-emerald-500 text-white text-[10px] font-bold uppercase tracking-wider hover:bg-emerald-400" onClick={() => handleSave(faq.id)} disabled={saving}>
+                    <Button size="sm" variant="default" className="gap-1 bg-emerald-500 text-white text-10 font-bold uppercase tracking-wider hover:bg-emerald-400" onClick={() => handleSave(faq.id)} disabled={saving}>
                       {saving ? <Spinner className="size-3" /> : <Check className="size-3" />} Simpan
                     </Button>
-                    <Button size="sm" variant="outline" className="gap-1 text-[10px] font-bold uppercase tracking-wider" onClick={() => setEditingId(null)}>
+                    <Button size="sm" variant="outline" className="gap-1 text-10 font-bold uppercase tracking-wider" onClick={() => setEditingId(null)}>
                       <X className="size-3" /> Batal
                     </Button>
                   </div>

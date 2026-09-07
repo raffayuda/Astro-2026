@@ -76,7 +76,7 @@ export function RetroMonitorWidget({
                     {t.tier}
                   </span>
                   {t.price && (
-                    <span className="text-2xs font-bold uppercase tracking-wide opacity-80">
+                    <span className="text-10 font-bold uppercase tracking-wide opacity-80">
                       {t.price}
                     </span>
                   )}

@@ -120,7 +120,7 @@ export default function JourneyDetailPage() {
             {/* Back */}
             <Link
               href="/profile"
-              className="inline-flex items-center gap-2 text-white/70 hover:text-white text-[11px] font-bold uppercase tracking-wider mb-10 transition-colors group"
+              className="inline-flex items-center gap-2 text-white/70 hover:text-white text-11 font-bold uppercase tracking-wider mb-10 transition-colors group"
             >
               <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
               Back to Journey
@@ -129,7 +129,7 @@ export default function JourneyDetailPage() {
             <div className="grid lg:grid-cols-12 gap-8 lg:gap-16 items-end">
               {/* Title */}
               <div className="lg:col-span-8">
-                <span className="inline-flex items-center gap-2 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.18em] text-white/90 bg-white/15 border border-white/25 backdrop-blur-sm mb-5"
+                <span className="inline-flex items-center gap-2 px-3 py-1.5 text-10 font-black uppercase tracking-[0.18em] text-white/90 bg-white/15 border border-white/25 backdrop-blur-sm mb-5"
                   style={{ clipPath: 'polygon(5px 0, 100% 0, calc(100% - 5px) 100%, 0 100%)' }}
                 >
                   ASTRO {data.year}
@@ -146,7 +146,7 @@ export default function JourneyDetailPage() {
                     style={{ clipPath: 'polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%)' }}
                   >
                     <div className="text-2xl md:text-3xl font-black text-white font-display">{data.participants}+</div>
-                    <div className="text-[9px] font-bold text-white/60 uppercase tracking-wider mt-1">Peserta</div>
+                    <div className="text-9 font-bold text-white/60 uppercase tracking-wider mt-1">Peserta</div>
                   </div>
                 )}
                 {data.date && (
@@ -154,14 +154,14 @@ export default function JourneyDetailPage() {
                     style={{ clipPath: 'polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%)' }}
                   >
                     <div className="text-sm md:text-base font-black text-white font-display leading-tight">{data.date}</div>
-                    <div className="text-[9px] font-bold text-white/60 uppercase tracking-wider mt-1">Hari Pelaksanaan</div>
+                    <div className="text-9 font-bold text-white/60 uppercase tracking-wider mt-1">Hari Pelaksanaan</div>
                   </div>
                 )}
                 <div className="flex-1 min-w-[100px] bg-white/10 backdrop-blur-sm border border-white/15 p-4 text-center"
                   style={{ clipPath: 'polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%)' }}
                 >
                   <div className="text-2xl md:text-3xl font-black text-white font-display">{data.competitions}</div>
-                  <div className="text-[9px] font-bold text-white/60 uppercase tracking-wider mt-1">Cabang Lomba</div>
+                  <div className="text-9 font-bold text-white/60 uppercase tracking-wider mt-1">Cabang Lomba</div>
                 </div>
               </div>
             </div>
@@ -194,7 +194,7 @@ export default function JourneyDetailPage() {
                   {data.description}
                 </p>
 
-                <h3 className="text-[11px] font-black uppercase tracking-[0.18em] text-astro-cyan mb-5">Highlights</h3>
+                <h3 className="text-11 font-black uppercase tracking-[0.18em] text-astro-cyan mb-5">Highlights</h3>
                 <div className="grid sm:grid-cols-2 gap-3">
                   {data.highlights.map((h, i) => (
                     <motion.div
@@ -253,21 +253,21 @@ export default function JourneyDetailPage() {
                     >
                       <Users className="w-4 h-4 text-astro-cyan mx-auto mb-1" />
                       <p className="text-lg font-black text-slate-900">{data.participants > 0 ? data.participants.toLocaleString() : '-'}</p>
-                      <p className="text-[8px] font-bold text-slate-500 uppercase tracking-wider">Peserta</p>
+                      <p className="text-8 font-bold text-slate-500 uppercase tracking-wider">Peserta</p>
                     </div>
                     <div className="bg-white/80 border border-cyan-100/70 p-4 text-center"
                       style={{ clipPath: 'polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%)' }}
                     >
                       <Calendar className="w-4 h-4 text-astro-cyan mx-auto mb-1" />
                       <p className="text-sm font-black text-slate-900 leading-tight">{data.date || '-'}</p>
-                      <p className="text-[8px] font-bold text-slate-500 uppercase tracking-wider">Hari Pelaksanaan</p>
+                      <p className="text-8 font-bold text-slate-500 uppercase tracking-wider">Hari Pelaksanaan</p>
                     </div>
                     <div className="bg-white/80 border border-cyan-100/70 p-4 text-center"
                       style={{ clipPath: 'polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%)' }}
                     >
                       <Target className="w-4 h-4 text-astro-cyan mx-auto mb-1" />
                       <p className="text-lg font-black text-slate-900">{data.competitions}</p>
-                      <p className="text-[8px] font-bold text-slate-500 uppercase tracking-wider">Lomba</p>
+                      <p className="text-8 font-bold text-slate-500 uppercase tracking-wider">Lomba</p>
                     </div>
                   </div>
 
@@ -276,7 +276,7 @@ export default function JourneyDetailPage() {
                     {parseInt(data.year) > 2023 ? (
                       <Link
                         href={`/profile/journey/${String(parseInt(data.year) - 1)}`}
-                        className="inline-flex items-center gap-1.5 text-[11px] font-bold text-slate-500 hover:text-astro-cyan transition-colors group"
+                        className="inline-flex items-center gap-1.5 text-11 font-bold text-slate-500 hover:text-astro-cyan transition-colors group"
                       >
                         <ArrowLeft className="w-3.5 h-3.5 transition-transform group-hover:-translate-x-0.5" />
                         {parseInt(data.year) - 1}
@@ -285,7 +285,7 @@ export default function JourneyDetailPage() {
                     {parseInt(data.year) < 2026 ? (
                       <Link
                         href={`/profile/journey/${String(parseInt(data.year) + 1)}`}
-                        className="inline-flex items-center gap-1.5 text-[11px] font-bold text-slate-500 hover:text-astro-cyan transition-colors group"
+                        className="inline-flex items-center gap-1.5 text-11 font-bold text-slate-500 hover:text-astro-cyan transition-colors group"
                       >
                         {parseInt(data.year) + 1}
                         <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
@@ -344,11 +344,11 @@ export default function JourneyDetailPage() {
                     />
                     {doc.caption && (
                       <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/70 to-transparent px-4 pb-3 pt-8">
-                        <p className="text-[10px] font-bold uppercase tracking-wider text-white">{doc.caption}</p>
+                        <p className="text-10 font-bold uppercase tracking-wider text-white">{doc.caption}</p>
                       </div>
                     )}
                     <div className="absolute inset-0 bg-white/0 transition-all duration-300 group-hover:bg-astro-cyan/20 flex items-end justify-end p-4">
-                      <span className="flex items-center gap-1 text-[9px] font-black text-astro-600 uppercase tracking-wider opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                      <span className="flex items-center gap-1 text-9 font-black text-astro-600 uppercase tracking-wider opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                         <Camera className="size-3" /> Lihat
                       </span>
                     </div>

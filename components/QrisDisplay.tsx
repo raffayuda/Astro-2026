@@ -175,12 +175,12 @@ export default function QrisDisplay({
         {/* Header: Astro 2026 & Ref */}
         <div className="flex items-center justify-between pb-3 border-b border-slate-100 text-xs font-semibold text-slate-500">
           <span className="text-slate-900 font-bold uppercase tracking-wider">Astro 2026</span>
-          <span className="font-mono text-[11px] text-slate-400">{paymentReference}</span>
+          <span className="font-mono text-11 text-slate-400">{paymentReference}</span>
         </div>
 
         {/* Total Pembayaran */}
         <div className="space-y-1">
-          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+          <span className="text-10 font-bold text-slate-400 uppercase tracking-wider block">
             Total Pembayaran
           </span>
           <div className="text-3xl font-black text-slate-950 tracking-tight">
@@ -232,7 +232,7 @@ export default function QrisDisplay({
 
         {/* Subtext 1 baris */}
         <div className="pt-2 border-t border-slate-100">
-          <p className="text-[11px] text-slate-400">
+          <p className="text-11 text-slate-400">
             Scan dengan aplikasi m-Banking atau e-Wallet apa saja
           </p>
         </div>
@@ -245,7 +245,7 @@ export default function QrisDisplay({
             asChild
             variant="ghost"
             size="sm"
-            className="text-[11px] text-slate-400 hover:text-cyan-700 hover:bg-transparent h-auto py-1"
+            className="text-11 text-slate-400 hover:text-cyan-700 hover:bg-transparent h-auto py-1"
           >
             <a href={paymentLinkUrl} target="_blank" rel="noopener noreferrer">
               Kendala scan? Buka Halaman Checkout <ExternalLink className="size-3 ml-1" />

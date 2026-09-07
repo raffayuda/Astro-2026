@@ -32,7 +32,7 @@ function Block({ value, label, delay }: { value: number; label: string; delay: n
       <span className="font-mono text-2xl font-black leading-none tracking-wider text-astro-blue tabular-nums md:text-4xl">
         {String(value).padStart(2, '0')}
       </span>
-      <span className="mt-1.5 text-[9px] font-black uppercase tracking-[0.15em] text-astro-navy/70 md:text-[10px]">
+      <span className="mt-1.5 text-9 font-black uppercase tracking-[0.15em] text-astro-navy/70 md:text-10">
         {label}
       </span>
     </motion.div>
@@ -66,7 +66,7 @@ export default function CountdownTimer({ deadline }: { deadline: string }) {
           ) : (
             <div className="rounded-xl bg-white shadow-soft flex min-w-[68px] flex-col items-center px-3 py-3 md:min-w-[88px] md:px-5 md:py-4">
               <span className="text-2xl md:text-4xl font-black text-cyan-700/40 font-mono tracking-wider">--</span>
-              <span className="text-[9px] md:text-[10px] uppercase text-slate-500 tracking-[0.15em] mt-1.5 font-bold">{item.label}</span>
+              <span className="text-9 md:text-10 uppercase text-slate-500 tracking-[0.15em] mt-1.5 font-bold">{item.label}</span>
             </div>
           )}
           {i < items.length - 1 && (

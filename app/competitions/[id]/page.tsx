@@ -298,21 +298,21 @@ export default function CompetitionDetailPage() {
                   transition={{ delay: 0.05 }}
                   className="mb-5 flex flex-wrap items-center gap-1.5"
                 >
-                  <Badge variant="outline" className={cn('rounded-md border px-2.5 py-1 text-[10px] font-bold tracking-[0.15em] uppercase', cat.bg, cat.color, cat.border)}>
+                  <Badge variant="outline" className={cn('rounded-md border px-2.5 py-1 text-10 font-bold tracking-[0.15em] uppercase', cat.bg, cat.color, cat.border)}>
                     {cat.label}
                   </Badge>
-                  <Badge variant="outline" className="rounded-md border-sky-200 bg-sky-50 px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.1em] text-sky-700">
+                  <Badge variant="outline" className="rounded-md border-sky-200 bg-sky-50 px-2.5 py-1 text-9 font-bold uppercase tracking-[0.1em] text-sky-700">
                     {competition.origin === 'external' ? 'Eksternal' : 'Internal'}
                   </Badge>
-                  <Badge variant="outline" className={cn('rounded-md border px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.1em]',
+                  <Badge variant="outline" className={cn('rounded-md border px-2.5 py-1 text-9 font-bold uppercase tracking-[0.1em]',
                     competition.isFree ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-amber-200 bg-amber-50 text-amber-700')}>
                     {competition.isFree ? 'Gratis' : 'Berbayar'}
                   </Badge>
-                  <Badge variant="outline" className="rounded-md border-purple-200 bg-purple-50 px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.1em] text-purple-700">
+                  <Badge variant="outline" className="rounded-md border-purple-200 bg-purple-50 px-2.5 py-1 text-9 font-bold uppercase tracking-[0.1em] text-purple-700">
                     {competition.type === 'both' ? 'Tim & Individu' : competition.type === 'team' ? 'Tim' : 'Individu'}
                   </Badge>
                   {competition.isActive === false && (
-                    <Badge variant="outline" className="rounded-md border-red-200 bg-red-50 px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.1em] text-red-600">
+                    <Badge variant="outline" className="rounded-md border-red-200 bg-red-50 px-2.5 py-1 text-9 font-bold uppercase tracking-[0.1em] text-red-600">
                       Pendaftaran Ditutup
                     </Badge>
                   )}
@@ -429,7 +429,7 @@ export default function CompetitionDetailPage() {
                           <card.icon className="w-5 h-5" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <span className="block text-[10px] font-bold text-slate-500 uppercase tracking-[0.15em]">
+                          <span className="block text-10 font-bold text-slate-500 uppercase tracking-[0.15em]">
                             {card.label}
                           </span>
                           <span className="block text-lg font-black text-slate-900 mt-1 truncate">
@@ -440,7 +440,7 @@ export default function CompetitionDetailPage() {
                             <>
                               <Progress value={card.ratio} className={cn('mt-2 h-1 bg-slate-100', cat.accent === 'bg-emerald-500' && '[&>div]:bg-emerald-500', cat.accent === 'bg-orange-500' && '[&>div]:bg-orange-500', cat.accent === 'bg-cyan-500' && '[&>div]:bg-cyan-500')} />
                               <span
-                                className={`block text-[10px] font-bold uppercase tracking-wider mt-1 ${
+                                className={`block text-10 font-bold uppercase tracking-wider mt-1 ${
                                   card.isLow
                                     ? 'text-destructive'
                                     : 'text-muted-foreground'
@@ -490,14 +490,14 @@ export default function CompetitionDetailPage() {
                             >
                               <div className="flex items-center justify-between mb-2">
                                 <span className="text-xs font-black uppercase tracking-wider text-slate-900">{batch.name}</span>
-                                {isOngoing && <Badge className="bg-emerald-500 text-white text-[9px] font-extrabold uppercase py-0 px-2 h-4">Aktif Sekarang</Badge>}
-                                {isUpcoming && <Badge variant="secondary" className="text-[9px] font-bold text-cyan-600 py-0 px-2 h-4">Mendatang</Badge>}
-                                {isPast && <Badge variant="outline" className="text-[9px] text-slate-400 py-0 px-2 h-4">Berakhir</Badge>}
+                                {isOngoing && <Badge className="bg-emerald-500 text-white text-9 font-extrabold uppercase py-0 px-2 h-4">Aktif Sekarang</Badge>}
+                                {isUpcoming && <Badge variant="secondary" className="text-9 font-bold text-cyan-600 py-0 px-2 h-4">Mendatang</Badge>}
+                                {isPast && <Badge variant="outline" className="text-9 text-slate-400 py-0 px-2 h-4">Berakhir</Badge>}
                               </div>
                               <div className="text-lg font-black text-slate-900 mb-2">
                                 Rp {Number(batch.fee).toLocaleString('id-ID')}
                               </div>
-                              <div className="text-[11px] text-slate-500 flex items-center gap-1.5">
+                              <div className="text-11 text-slate-500 flex items-center gap-1.5">
                                 <Clock className="w-3 h-3 text-slate-400" />
                                 {formatDateLong(batch.startDate)} s/d {formatDateLong(batch.endDate)}
                               </div>
@@ -564,7 +564,7 @@ export default function CompetitionDetailPage() {
                                 <Trophy className="w-4 h-4" />
                               </div>
                               <div className="flex-1 min-w-0">
-                                <div className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.15em]">
+                                <div className="text-10 font-bold text-slate-500 uppercase tracking-[0.15em]">
                                   {item.rank}
                                 </div>
                                 <div className="text-sm font-black text-slate-900 mt-0.5 truncate">

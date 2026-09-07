@@ -98,7 +98,7 @@ export default function ProfilePage() {
         <CardContent className="space-y-5 p-6">
           <h2 className="text-sm font-black uppercase tracking-tight text-foreground">Email</h2>
           <div>
-            <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+            <span className="text-10 font-bold uppercase tracking-wider text-muted-foreground">
               Email Saat Ini
             </span>
             <p className="mt-0.5 text-sm font-medium text-foreground">{user?.email || '—'}</p>

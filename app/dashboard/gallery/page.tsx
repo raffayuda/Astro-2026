@@ -223,7 +223,7 @@ export default function GalleryPage() {
               {categories.map((cat) => (
                 <Badge key={cat.id} variant="secondary" className="gap-2 border border-border px-3 py-1.5 text-xs font-bold">
                   <span>{cat.name}</span>
-                  <span className="text-[10px] text-muted-foreground">({cat.slug})</span>
+                  <span className="text-10 text-muted-foreground">({cat.slug})</span>
                   <Button variant="ghost" size="icon-xs" onClick={() => handleCatEdit(cat)} aria-label="Edit" className="ml-1 text-muted-foreground hover:text-primary"><Pencil /></Button>
                   <Button variant="ghost" size="icon-xs" onClick={() => handleCatDelete(cat.id)} aria-label="Hapus" className="text-muted-foreground hover:text-destructive"><X /></Button>
                 </Badge>
@@ -301,7 +301,7 @@ export default function GalleryPage() {
                       }
                     }} />
                 </label>
-                <span className="text-[10px] text-muted-foreground">atau</span>
+                <span className="text-10 text-muted-foreground">atau</span>
                 <Input value={form.imageUrl} onChange={(e) => setForm({ ...form, imageUrl: e.target.value })} placeholder="URL Google Drive / link gambar langsung..." className="flex-1" />
               </div>
             </Field>
@@ -349,9 +349,9 @@ export default function GalleryPage() {
                 <div>
                   <span className="text-sm font-bold text-foreground">{item.title}</span>
                   <div className="mt-0.5 flex gap-2">
-                    <span className="text-[10px] font-semibold uppercase text-muted-foreground">{item.category}</span>
-                    <span className="text-[10px] text-muted-foreground/60">|</span>
-                    <span className="text-[10px] text-muted-foreground">{item.year}</span>
+                    <span className="text-10 font-semibold uppercase text-muted-foreground">{item.category}</span>
+                    <span className="text-10 text-muted-foreground/60">|</span>
+                    <span className="text-10 text-muted-foreground">{item.year}</span>
                   </div>
                 </div>
               </div>

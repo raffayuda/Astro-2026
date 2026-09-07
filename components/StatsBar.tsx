@@ -4,6 +4,7 @@ import { motion, useReducedMotion } from 'motion/react';
 import { Trophy, Users, Gamepad2, CalendarCheck } from 'lucide-react';
 import type { AstroData } from '@/types/astro';
 import { toDate } from '@/lib/date';
+import { ChevronRibbon, StatCard } from '@/components/brand';
 
 interface Props {
   data: AstroData;
@@ -29,10 +30,10 @@ const stats = (data: AstroData) => {
   const filled = data.competitions.reduce((s, c) => s + c.filledSlots, 0);
   const cats = new Set(data.competitions.map((c) => c.category)).size;
   return [
-    { icon: Trophy, value: String(data.competitions.length), label: 'CABANG LOMBA' },
-    { icon: Users, value: `${filled}/${totalSlots}`, label: 'PARTISIPAN' },
-    { icon: Gamepad2, value: String(cats), label: 'KATEGORI' },
-    { icon: CalendarCheck, value: calcEventDays(data), label: 'HARI EVENT' },
+    { icon: Trophy, value: String(data.competitions.length), label: 'Cabang Lomba' },
+    { icon: Users, value: `${filled}/${totalSlots}`, label: 'Partisipan' },
+    { icon: Gamepad2, value: String(cats), label: 'Kategori' },
+    { icon: CalendarCheck, value: calcEventDays(data), label: 'Hari Event' },
   ];
 };
 
@@ -41,36 +42,29 @@ export default function StatsBar({ data }: Props) {
   const items = stats(data);
 
   return (
-    <section className="relative z-20 bg-sky-bottom border-y-4 border-astro-blue/75 shadow-[inset_0_4px_0_#d9f64a,inset_0_-4px_0_#d9f64a]">
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
+    <section className="relative z-20 bg-sky-bottom">
+      <ChevronRibbon edge="top" />
+      <ChevronRibbon edge="bottom" />
+
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-10">
         <motion.div
-          className="grid grid-cols-2 gap-3 py-5 md:grid-cols-4"
+          className="grid grid-cols-2 gap-3 py-9 md:grid-cols-4"
           initial={reduce ? undefined : { opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.5 }}
         >
-          {items.map((stat, i) => {
-            const Icon = stat.icon;
-            return (
-              <motion.div
-                key={stat.label}
-                initial={reduce ? false : { opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.08, duration: 0.4, ease: [0.16, 1, 0.3, 1] as const }}
-                className="rounded-xl bg-white shadow-soft group px-6 py-6 text-center transition-all duration-200 ease-in-out hover:-translate-y-0.5 hover:bg-white md:py-8"
-              >
-                <Icon className="mx-auto mb-2 size-5 text-astro-blue opacity-80 transition-opacity group-hover:opacity-100" />
-                <div className="text-2xl md:text-3xl font-black text-astro-navy tracking-tight">
-                  {stat.value}
-                </div>
-                <div className="mt-1 text-[10px] font-black tracking-[0.18em] text-astro-blue uppercase">
-                  {stat.label}
-                </div>
-              </motion.div> 
-            );
-          })}
+          {items.map((stat, i) => (
+            <motion.div
+              key={stat.label}
+              initial={reduce ? false : { opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.08, duration: 0.4, ease: [0.16, 1, 0.3, 1] as const }}
+            >
+              <StatCard icon={stat.icon} metric={stat.value} label={stat.label} />
+            </motion.div>
+          ))}
         </motion.div>
       </div>
     </section>

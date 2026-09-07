@@ -99,7 +99,7 @@ export default function Navbar() {
         className={cn(
           'fixed inset-x-0 top-0 z-50 flex h-16 items-center justify-between transition-all duration-300 md:h-[72px]',
           isScrolled
-            ? 'rounded-full bg-white shadow-soft-sm mx-4 mt-3 border-white/80 bg-white/75 shadow-[0_10px_28px_rgba(49,87,255,0.18)] md:mx-8'
+            ? 'rounded-full bg-white shadow-soft-sm mx-4 mt-3 border-white/80 bg-white/75 shadow-sticker md:mx-8'
             : 'mt-0 rounded-none border-transparent bg-transparent'
         )}
       >
@@ -130,7 +130,7 @@ export default function Navbar() {
                 key={link.label}
                 onClick={() => scrollTo(link.href)}
                 className={cn(
-                  'relative flex h-9 items-center rounded-[14px] px-3.5 text-[11px] font-extrabold uppercase tracking-[0.12em] transition-all duration-200',
+                  'relative flex h-9 items-center rounded-[14px] px-3.5 text-11 font-extrabold uppercase tracking-[0.12em] transition-all duration-200',
                   isScrolled
                     ? 'text-astro-blue/75 hover:bg-sky-bottom hover:text-astro-blue'
                     : 'text-slate-800 hover:bg-white/20 hover:text-white md:text-white/90'
@@ -145,7 +145,7 @@ export default function Navbar() {
             variant="default"
             size="sm"
             onClick={() => router.push(isProfilePage ? '/' : '/profile')}
-            className="rounded-[16px] border-2 border-white/70 text-[10px] font-black uppercase tracking-wider shadow-md hover:shadow-cyan-500/30 active:scale-95"
+            className="rounded-[16px] border-2 border-white/70 text-10 font-black uppercase tracking-wider shadow-md hover:shadow-cyan-500/30 active:scale-95"
             title={isProfilePage ? 'Ke Halaman Utama Portal Lomba ASTRO' : 'Ke Halaman Company Profile ASTRO'}
           >
             {isProfilePage ? <Trophy className="text-slate-950" /> : <Building2 className="text-slate-950" />}
@@ -162,7 +162,7 @@ export default function Navbar() {
                   variant="ghost"
                   size="sm"
                   className={cn(
-                    'hidden gap-1.5 text-[10px] font-bold uppercase tracking-wider md:flex',
+                    'hidden gap-1.5 text-10 font-bold uppercase tracking-wider md:flex',
                     !isScrolled && 'md:text-white/80 md:hover:text-white'
                   )}
                 >
@@ -193,7 +193,7 @@ export default function Navbar() {
               size="sm"
               onClick={() => router.push('/login')}
               className={cn(
-                'hidden gap-1.5 text-[10px] font-bold uppercase tracking-wider md:flex',
+                'hidden gap-1.5 text-10 font-bold uppercase tracking-wider md:flex',
                 !isScrolled && 'md:text-white/80 md:hover:text-white'
               )}
             >
@@ -205,7 +205,7 @@ export default function Navbar() {
             variant="default"
             size="sm"
             onClick={handleDaftar}
-            className="rounded-[16px] border-2 border-white/70 text-[11px] font-black uppercase tracking-wider shadow-md active:scale-95"
+            className="rounded-[16px] border-2 border-white/70 text-11 font-black uppercase tracking-wider shadow-md active:scale-95"
           >
             Daftar
           </Button>
@@ -234,7 +234,7 @@ export default function Navbar() {
               <div className="flex flex-col gap-4 overflow-y-auto p-6">
                 {/* Portal Switcher */}
                 <div className="border-b border-border pb-3">
-                  <p className="mb-2 text-[10px] font-extrabold uppercase tracking-wider text-muted-foreground">Pindah Web Portal</p>
+                  <p className="mb-2 text-10 font-extrabold uppercase tracking-wider text-muted-foreground">Pindah Web Portal</p>
                   <Button
                     variant="default"
                     className="rounded-[16px] w-full items-center justify-between px-4 py-3 text-xs font-black uppercase tracking-wider shadow-md"
@@ -247,13 +247,13 @@ export default function Navbar() {
                       {isProfilePage ? <Trophy className="size-4 text-slate-950" /> : <Building2 className="size-4 text-slate-950" />}
                       {isProfilePage ? 'Ke Portal Lomba Acara' : 'Ke Company Profile'}
                     </span>
-                    <span className="text-[10px] font-black text-slate-950">↗</span>
+                    <span className="text-10 font-black text-slate-950">↗</span>
                   </Button>
                 </div>
 
                 {/* Section Links */}
                 <div className="flex flex-col gap-1">
-                  <p className="mb-2 text-[10px] font-extrabold uppercase tracking-wider text-muted-foreground">Navigasi Halaman</p>
+                  <p className="mb-2 text-10 font-extrabold uppercase tracking-wider text-muted-foreground">Navigasi Halaman</p>
                   {sectionLinks.map((link) => (
                     <button
                       key={link.label}

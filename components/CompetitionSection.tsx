@@ -94,7 +94,7 @@ export default function CompetitionSection({ competitions }: Props) {
           <div className="flex flex-wrap gap-1">
             <ToggleGroup type="single" value={selectedCategory} onValueChange={(v) => v && setSelectedCategory(v as CategoryType | 'all')} spacing={1}>
               {CATEGORIES.map((cat) => (
-                <ToggleGroupItem key={cat.value} value={cat.value} className="rounded-lg px-4 py-2 text-[10px] font-bold uppercase tracking-[0.15em]">
+                <ToggleGroupItem key={cat.value} value={cat.value} className="rounded-lg px-4 py-2 text-10 font-bold uppercase tracking-[0.15em]">
                   {cat.label}
                 </ToggleGroupItem>
               ))}

@@ -27,11 +27,11 @@ export default function OgPreview() {
           {/* Main Title + Logo Combination */}
           <div className="flex flex-col items-center justify-center mb-6 mt-4">
             {/* Astro Logo */}
-            <div className="relative w-[100px] h-[100px] mb-4 drop-shadow-[0_10px_20px_rgba(0,0,0,0.3)]">
+            <div className="relative w-[100px] h-[100px] mb-4 drop-shadow-sticker">
               <Image src="/assets/logo-astro.svg" alt="Astro Logo" fill className="object-contain" />
             </div>
             
-            <h1 className="text-[160px] font-black leading-[0.85] tracking-tight drop-shadow-2xl font-title flex items-center gap-8">
+            <h1 className="text-title font-black leading-[0.85] tracking-tight drop-shadow-2xl font-title flex items-center gap-8">
               <span
                 className="bg-linear-to-b from-slate-100 via-slate-300 to-slate-500 bg-clip-text text-transparent"
                 style={{
@@ -53,17 +53,17 @@ export default function OgPreview() {
           </div>
 
           {/* Subtitle / Tagline */}
-          <div className="mt-4 font-title leading-snug drop-shadow-[0_2px_12px_rgba(0,0,0,0.15)] text-center">
-            <span className="text-[40px] text-white/95 block tracking-wide">
+          <div className="mt-4 font-title leading-snug drop-shadow-sticker text-center">
+            <span className="text-4xl text-white/95 block tracking-wide">
               Where Innovation
             </span>
-            <span className="text-[64px] bg-linear-to-r from-yellow-200 via-orange-200 to-pink-200 bg-clip-text text-transparent block -mt-2">
+            <span className="text-6xl bg-linear-to-r from-yellow-200 via-orange-200 to-pink-200 bg-clip-text text-transparent block -mt-2">
               Meets the Stars
             </span>
           </div>
 
           {/* Categories */}
-          <div className="mt-12 flex items-center gap-4 bg-white/20 backdrop-blur-md px-8 py-3 rounded-full shadow-[0_8px_32px_rgba(0,0,0,0.1)] border border-white/40">
+          <div className="mt-12 flex items-center gap-4 bg-white/20 backdrop-blur-md px-8 py-3 rounded-full shadow-sticker border border-white/40">
              <span className="text-sky-900 font-bold text-xl uppercase tracking-widest">Akademik</span>
              <span className="text-white mx-2 text-2xl">•</span>
              <span className="text-sky-900 font-bold text-xl uppercase tracking-widest">Olahraga</span>

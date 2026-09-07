@@ -184,7 +184,7 @@ export default function RegistrationsPage() {
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
-              <TableRow className="bg-muted/50 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+              <TableRow className="bg-muted/50 text-10 font-bold uppercase tracking-wider text-muted-foreground">
                 <TableHead className="w-10 px-5">No</TableHead>
                 <TableHead className="px-5">Referensi</TableHead>
                 <TableHead className="px-5">Nama / Tim</TableHead>
@@ -220,7 +220,7 @@ export default function RegistrationsPage() {
                       <span className="text-sm text-foreground">{reg.competitionName}</span>
                     </TableCell>
                     <TableCell className="px-5 py-3.5">
-                      <Badge variant="outline" className={cn('rounded-md border text-[10px] font-bold uppercase tracking-wider', statusColors[reg.paymentStatus] || statusColors.pending)}>
+                      <Badge variant="outline" className={cn('rounded-md border text-10 font-bold uppercase tracking-wider', statusColors[reg.paymentStatus] || statusColors.pending)}>
                         {reg.paymentStatus}
                       </Badge>
                     </TableCell>

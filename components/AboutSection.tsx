@@ -275,7 +275,7 @@ export default function AboutSection({ competitions }: Props) {
                     <ToggleGroupItem
                       key={opt.value}
                       value={opt.value}
-                      className="rounded-[14px] border border-astro-cyan-2/80 bg-white/80 px-4 py-2 text-[10px] font-black uppercase tracking-[0.15em] text-astro-blue shadow-sm data-[state=on]:border-white data-[state=on]:bg-linear-to-b data-[state=on]:from-astro-blue data-[state=on]:to-astro-blue data-[state=on]:text-white data-[state=on]:shadow-[0_8px_18px_rgba(49,87,255,0.22)]"
+                      className="rounded-[14px] border border-astro-cyan-2/80 bg-white/80 px-4 py-2 text-10 font-black uppercase tracking-[0.15em] text-astro-blue shadow-sm data-[state=on]:border-white data-[state=on]:bg-linear-to-b data-[state=on]:from-astro-blue data-[state=on]:to-astro-blue data-[state=on]:text-white data-[state=on]:shadow-soft-lg"
                     >
                       {opt.label}
                     </ToggleGroupItem>
@@ -286,7 +286,7 @@ export default function AboutSection({ competitions }: Props) {
 
             {/* Row 2: Category buttons */}
             <div className="flex flex-wrap items-center gap-1">
-              <span className="mr-1 text-[10px] font-black uppercase tracking-wider text-astro-blue">
+              <span className="mr-1 text-10 font-black uppercase tracking-wider text-astro-blue">
                 Kategori
               </span>
               <ToggleGroup
@@ -301,7 +301,7 @@ export default function AboutSection({ competitions }: Props) {
                   <ToggleGroupItem
                     key={cat.value}
                     value={cat.value}
-                    className="rounded-[14px] border border-astro-cyan-2/80 bg-white/80 px-4 py-2 text-[10px] font-black uppercase tracking-[0.15em] text-astro-blue shadow-sm data-[state=on]:border-white data-[state=on]:bg-linear-to-b data-[state=on]:from-astro-blue data-[state=on]:to-astro-blue data-[state=on]:text-white data-[state=on]:shadow-[0_8px_18px_rgba(49,87,255,0.22)]"
+                    className="rounded-[14px] border border-astro-cyan-2/80 bg-white/80 px-4 py-2 text-10 font-black uppercase tracking-[0.15em] text-astro-blue shadow-sm data-[state=on]:border-white data-[state=on]:bg-linear-to-b data-[state=on]:from-astro-blue data-[state=on]:to-astro-blue data-[state=on]:text-white data-[state=on]:shadow-soft-lg"
                   >
                     {cat.label}
                   </ToggleGroupItem>

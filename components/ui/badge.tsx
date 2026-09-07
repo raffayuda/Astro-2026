@@ -5,14 +5,14 @@ import { Slot } from "radix-ui"
 import { cn } from "@/lib/utils"
 
 const badgeVariants = cva(
-  "group/badge inline-flex w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-full border-2 border-transparent px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wide whitespace-nowrap transition-all focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 aria-invalid:border-destructive aria-invalid:ring-destructive/20 [&>svg]:pointer-events-none [&>svg]:size-3!",
+  "group/badge inline-flex w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-full border-2 border-transparent px-2.5 py-0.5 text-11 font-bold uppercase tracking-wide whitespace-nowrap transition-all focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 aria-invalid:border-destructive aria-invalid:ring-destructive/20 [&>svg]:pointer-events-none [&>svg]:size-3!",
   {
     variants: {
       variant: {
         default:
-          "border-white bg-astro-blue text-white shadow-[var(--shadow-sticker-sm)] [a]:hover:brightness-110",
+          "border-white bg-astro-blue text-white shadow-sticker-sm [a]:hover:brightness-110",
         secondary:
-          "border-astro-navy bg-astro-gold text-astro-navy shadow-[var(--shadow-sticker-sm)] [a]:hover:brightness-105",
+          "border-astro-navy bg-astro-gold text-astro-navy shadow-sticker-sm [a]:hover:brightness-105",
         destructive:
           "border-red-400 bg-red-50 text-red-700 focus-visible:ring-destructive/20 [a]:hover:bg-red-100",
         outline:

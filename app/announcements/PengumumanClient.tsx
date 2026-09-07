@@ -273,7 +273,7 @@ export default function PengumumanClient() {
                 <ToggleGroupItem
                   key={cat.value}
                   value={cat.value}
-                  className="rounded-[14px] border border-astro-cyan-2/80 bg-white/80 px-4 py-2 text-[10px] font-black tracking-[0.15em] uppercase text-astro-blue data-[state=on]:border-white data-[state=on]:bg-linear-to-b data-[state=on]:from-astro-blue data-[state=on]:to-astro-blue data-[state=on]:text-white data-[state=on]:shadow-sm"
+                  className="rounded-[14px] border border-astro-cyan-2/80 bg-white/80 px-4 py-2 text-10 font-black tracking-[0.15em] uppercase text-astro-blue data-[state=on]:border-white data-[state=on]:bg-linear-to-b data-[state=on]:from-astro-blue data-[state=on]:to-astro-blue data-[state=on]:text-white data-[state=on]:shadow-sm"
                 >
                   {cat.label}
                 </ToggleGroupItem>
@@ -301,7 +301,7 @@ export default function PengumumanClient() {
                   variant="link"
                   size="sm"
                   onClick={() => setSelectedCategory("all")}
-                  className="text-[10px] font-bold text-primary underline underline-offset-2 hover:text-primary/80"
+                  className="text-10 font-bold text-primary underline underline-offset-2 hover:text-primary/80"
                 >
                   Reset filter
                 </Button>
@@ -367,11 +367,11 @@ export default function PengumumanClient() {
                     <div className="flex items-center justify-between">
                       <Badge
                         variant="outline"
-                          className={`rounded-[12px] border text-[10px] font-bold tracking-[0.15em] uppercase ${cat.bg} ${cat.color} ${cat.border}`}
+                          className={`rounded-[12px] border text-10 font-bold tracking-[0.15em] uppercase ${cat.bg} ${cat.color} ${cat.border}`}
                       >
                         {cat.label}
                       </Badge>
-                      <span className="text-[10px] font-bold tracking-wide text-astro-cyan">
+                      <span className="text-10 font-bold tracking-wide text-astro-cyan">
                         {typeLabel}
                       </span>
                     </div>
@@ -389,13 +389,13 @@ export default function PengumumanClient() {
                       {comp.hasWinners ? (
                         <Button
                           onClick={() => openModal(comp)}
-                          className="w-full rounded-[14px] py-2.5 text-[10px] font-black tracking-[0.1em] uppercase"
+                          className="w-full rounded-[14px] py-2.5 text-10 font-black tracking-[0.1em] uppercase"
                         >
                           <Eye data-icon="inline-start" />
                           Lihat Juara
                         </Button>
                       ) : (
-                        <div className="w-full rounded-[14px] border border-astro-cyan-2/60 bg-white/55 py-2.5 text-center text-[10px] font-bold uppercase tracking-[0.1em] text-muted-foreground">
+                        <div className="w-full rounded-[14px] border border-astro-cyan-2/60 bg-white/55 py-2.5 text-center text-10 font-bold uppercase tracking-[0.1em] text-muted-foreground">
                           Belum Ada
                         </div>
                       )}

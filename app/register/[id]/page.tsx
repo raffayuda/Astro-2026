@@ -336,7 +336,7 @@ export default function RegistrationPage({
               <Lock className="size-8" />
             </div>
             <div className="space-y-2">
-              <Badge variant="outline" className="rounded-md border-red-200 bg-red-50 text-[10px] font-bold uppercase tracking-wider text-red-600">
+              <Badge variant="outline" className="rounded-md border-red-200 bg-red-50 text-10 font-bold uppercase tracking-wider text-red-600">
                 Pendaftaran Ditutup
               </Badge>
               <h1 className="text-2xl font-black uppercase tracking-tight text-foreground">
@@ -549,7 +549,7 @@ export default function RegistrationPage({
               >
                 <Badge
                   variant="outline"
-                  className={`rounded-md border px-3 py-1.5 text-[10px] font-bold tracking-[0.15em] uppercase ${cat.bg} ${cat.color} ${cat.border}`}
+                  className={`rounded-md border px-3 py-1.5 text-10 font-bold tracking-[0.15em] uppercase ${cat.bg} ${cat.color} ${cat.border}`}
                 >
                   {cat.label}
                 </Badge>
@@ -584,7 +584,7 @@ export default function RegistrationPage({
                   {competition.isFree ? "Gratis" : competition.fee > 0 ? `Rp ${competition.fee.toLocaleString("id-ID")}` : "Gratis"}
                 </span>
                 {competition.batchName && (
-                  <span className="ml-1.5 inline-flex items-center rounded-full bg-cyan-100 px-2 py-0.5 text-[10px] font-extrabold uppercase text-cyan-800">
+                  <span className="ml-1.5 inline-flex items-center rounded-full bg-cyan-100 px-2 py-0.5 text-10 font-extrabold uppercase text-cyan-800">
                     {competition.batchName}
                   </span>
                 )}
@@ -600,7 +600,7 @@ export default function RegistrationPage({
                   variants={fadeUp}
                   className="mt-6 flex flex-wrap items-center gap-3"
                 >
-                  <span className="text-[10px] font-black uppercase tracking-wider text-slate-500">
+                  <span className="text-10 font-black uppercase tracking-wider text-slate-500">
                     Pilih Kategori Pendaftaran:
                   </span>
                   <div className="rounded-full bg-white shadow-soft-sm flex overflow-hidden border-white/80 bg-white/75">
@@ -658,7 +658,7 @@ export default function RegistrationPage({
                     1
                   </motion.div>
                   <span
-                    className={`ml-2 text-[10px] font-bold uppercase tracking-wider ${
+                    className={`ml-2 text-10 font-bold uppercase tracking-wider ${
                       step === 1 ? "text-astro-cyan" : "text-slate-400"
                     }`}
                   >
@@ -693,7 +693,7 @@ export default function RegistrationPage({
                     2
                   </motion.div>
                   <span
-                    className={`ml-2 text-[10px] font-bold uppercase tracking-wider ${
+                    className={`ml-2 text-10 font-bold uppercase tracking-wider ${
                       step === 2 ? "text-astro-cyan" : "text-slate-400"
                     }`}
                   >

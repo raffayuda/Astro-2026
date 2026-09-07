@@ -49,7 +49,7 @@ export default function TimelineSection({ timeline }: Props) {
           <div className="flex justify-center mb-3">
             <Badge
               variant="outline"
-              className="border-amber-400/60 bg-amber-50/90 text-amber-900 text-[11px] font-bold uppercase tracking-wider px-3.5 py-1 gap-1.5 shadow-2xs backdrop-blur-xs"
+              className="border-amber-400/60 bg-amber-50/90 text-amber-900 text-11 font-bold uppercase tracking-wider px-3.5 py-1 gap-1.5 shadow-2xs backdrop-blur-xs"
             >
               <Clock className="size-3 text-amber-600" />
               Jadwal Bersifat Tentatif
@@ -302,7 +302,7 @@ function CardContent({ item, align }: { item: TimelineItem; align: 'left' | 'rig
       <div className="p-5 md:p-6">
         {/* Date badge */}
         <div
-          className={`inline-flex items-center gap-1.5 px-3 py-1 text-[10px] font-bold uppercase tracking-wider border ${
+          className={`inline-flex items-center gap-1.5 px-3 py-1 text-10 font-bold uppercase tracking-wider border ${
             align === 'right' ? 'float-right ml-auto' : ''
           } ${
             isTba

@@ -69,7 +69,7 @@ export default function MyRegistrationsPage() {
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
-                <TableRow className="bg-muted/50 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                <TableRow className="bg-muted/50 text-10 font-bold uppercase tracking-wider text-muted-foreground">
                   <TableHead className="px-5">Lomba</TableHead>
                   <TableHead className="hidden px-5 sm:table-cell">Referensi</TableHead>
                   <TableHead className="px-5">Status</TableHead>
@@ -84,7 +84,7 @@ export default function MyRegistrationsPage() {
                       <code className="font-mono text-xs text-muted-foreground">{reg.paymentReference || '—'}</code>
                     </TableCell>
                     <TableCell className="px-5 py-3.5">
-                      <Badge variant="outline" className={cn('rounded-md border text-[10px] font-bold uppercase tracking-wider', statusColors[reg.paymentStatus] || 'border-slate-200 bg-muted text-muted-foreground')}>
+                      <Badge variant="outline" className={cn('rounded-md border text-10 font-bold uppercase tracking-wider', statusColors[reg.paymentStatus] || 'border-slate-200 bg-muted text-muted-foreground')}>
                         {reg.paymentStatus}
                       </Badge>
                     </TableCell>

@@ -292,7 +292,7 @@ export function DesignSystemClient() {
             <div className="flex flex-col gap-6">
               {COLOR_GROUPS.map((group) => (
                 <div key={group.name} className="flex flex-col gap-3">
-                  <p className="text-2xs font-bold uppercase tracking-widest text-muted-foreground">
+                  <p className="text-10 font-bold uppercase tracking-widest text-muted-foreground">
                     {group.name}
                   </p>
                   <div className="flex flex-wrap gap-3">
@@ -302,10 +302,10 @@ export function DesignSystemClient() {
                           className={cnSwatch(swatch.cls)}
                           aria-hidden
                         />
-                        <p className="text-2xs font-bold uppercase text-astro-navy">
+                        <p className="text-10 font-bold uppercase text-astro-navy">
                           {swatch.name}
                         </p>
-                        <p className="font-mono text-2xs text-muted-foreground">
+                        <p className="font-mono text-10 text-muted-foreground">
                           {swatch.hex}
                         </p>
                       </div>
@@ -322,7 +322,7 @@ export function DesignSystemClient() {
           >
             <div className="flex flex-col gap-8">
               <div className="flex flex-col gap-2">
-                <p className="text-2xs font-bold uppercase tracking-widest text-muted-foreground">
+                <p className="text-10 font-bold uppercase tracking-widest text-muted-foreground">
                   text-title &mdash; Alexandria 700 / 162.55px ceiling / -6% tracking
                 </p>
                 <ChromeText as="p" depth="lg" className="text-title">
@@ -331,7 +331,7 @@ export function DesignSystemClient() {
               </div>
 
               <div className="flex flex-col gap-2">
-                <p className="text-2xs font-bold uppercase tracking-widest text-muted-foreground">
+                <p className="text-10 font-bold uppercase tracking-widest text-muted-foreground">
                   text-title-sm &mdash; Alexandria 700 / 126.06px ceiling
                 </p>
                 <ChromeText
@@ -345,14 +345,14 @@ export function DesignSystemClient() {
               </div>
 
               <div className="flex flex-col gap-2">
-                <p className="text-2xs font-bold uppercase tracking-widest text-muted-foreground">
+                <p className="text-10 font-bold uppercase tracking-widest text-muted-foreground">
                   text-subtitle &mdash; Lexend Exa 700 / 35.05px ceiling / -19% tracking
                 </p>
                 <Subtitle>Ruang Tanpa Sekat</Subtitle>
               </div>
 
               <div className="flex flex-col gap-3">
-                <p className="text-2xs font-bold uppercase tracking-widest text-muted-foreground">
+                <p className="text-10 font-bold uppercase tracking-widest text-muted-foreground">
                   Chrome depth &mdash; gloss stack vs. outline
                 </p>
                 <div className="flex flex-wrap items-end gap-6">
@@ -385,8 +385,8 @@ export function DesignSystemClient() {
                   Geist body copy, used for all running text, form labels and
                   table content.
                 </p>
-                <p className="text-2xs font-bold uppercase tracking-widest text-muted-foreground">
-                  Micro label / text-2xs
+                <p className="text-10 font-bold uppercase tracking-widest text-muted-foreground">
+                  Micro label / text-10
                 </p>
               </div>
             </div>
@@ -403,7 +403,7 @@ export function DesignSystemClient() {
                   className="flex flex-col items-center gap-2"
                 >
                   <div className={cnShadowSwatch(shadow.cls)} aria-hidden />
-                  <p className="font-mono text-2xs text-muted-foreground">
+                  <p className="font-mono text-10 text-muted-foreground">
                     {shadow.name}
                   </p>
                 </div>
@@ -584,7 +584,7 @@ export function DesignSystemClient() {
               <div className="flex flex-col gap-1.5">
                 <label
                   htmlFor="ds-name"
-                  className="text-2xs font-bold uppercase tracking-widest text-ink"
+                  className="text-10 font-bold uppercase tracking-widest text-ink"
                 >
                   Nama Lengkap
                 </label>
@@ -593,7 +593,7 @@ export function DesignSystemClient() {
               <div className="flex flex-col gap-1.5">
                 <label
                   htmlFor="ds-email"
-                  className="text-2xs font-bold uppercase tracking-widest text-ink"
+                  className="text-10 font-bold uppercase tracking-widest text-ink"
                 >
                   Email
                 </label>
@@ -606,7 +606,7 @@ export function DesignSystemClient() {
               <div className="flex flex-col gap-1.5 sm:col-span-2">
                 <label
                   htmlFor="ds-note"
-                  className="text-2xs font-bold uppercase tracking-widest text-ink"
+                  className="text-10 font-bold uppercase tracking-widest text-ink"
                 >
                   Catatan
                 </label>
@@ -770,7 +770,7 @@ export function DesignSystemClient() {
                       <p className="font-heading text-sm font-extrabold text-astro-navy">
                         {page.name}
                       </p>
-                      <code className="font-mono text-2xs text-muted-foreground">
+                      <code className="font-mono text-10 text-muted-foreground">
                         {page.route}
                       </code>
                     </div>

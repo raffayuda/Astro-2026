@@ -244,7 +244,7 @@ export default function InviteAcceptPage({
             <CardContent className="p-6 sm:p-8">
               {/* Header inside card */}
               <div className="mb-6 text-center">
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-50 border border-cyan-200 text-cyan-800 text-[11px] font-bold uppercase tracking-wider mb-2">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-50 border border-cyan-200 text-cyan-800 text-11 font-bold uppercase tracking-wider mb-2">
                   {invitation.role === 'admin'
                     ? 'Undangan Administrator'
                     : 'Undangan Peserta'}
@@ -280,7 +280,7 @@ export default function InviteAcceptPage({
                       />
                     </InputGroup>
                     {invitation.email && (
-                      <p className="text-[11px] text-slate-500 mt-1">
+                      <p className="text-11 text-slate-500 mt-1">
                         * Email ini telah ditentukan oleh administrator pengundang.
                       </p>
                     )}
@@ -376,7 +376,7 @@ export default function InviteAcceptPage({
               </form>
 
               {/* Footer note */}
-              <p className="mt-5 text-center text-[11px] text-slate-500">
+              <p className="mt-5 text-center text-11 text-slate-500">
                 Akun yang dibuat melalui tautan ini langsung aktif dan terverifikasi secara resmi oleh panitia ASTRO 2026.
               </p>
             </CardContent>

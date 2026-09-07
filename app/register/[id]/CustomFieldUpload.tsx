@@ -75,7 +75,7 @@ export default function CustomFieldUpload({
     <Field data-invalid={!!error}>
       <FieldLabel required={required}>{label}</FieldLabel>
       {description && (
-        <p className="text-[11px] font-normal text-muted-foreground -mt-1">
+        <p className="text-11 font-normal text-muted-foreground -mt-1">
           {description}
         </p>
       )}
@@ -126,7 +126,7 @@ export default function CustomFieldUpload({
                 href={value}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-1 text-[11px] text-primary hover:underline mt-0.5"
+                className="inline-flex items-center gap-1 text-11 text-primary hover:underline mt-0.5"
               >
                 <ExternalLink className="size-3" />
                 Lihat gambar ukuran penuh
@@ -139,7 +139,7 @@ export default function CustomFieldUpload({
                 size="sm"
                 disabled={uploading}
                 onClick={() => inputRef.current?.click()}
-                className="text-[10px] font-bold uppercase tracking-wider"
+                className="text-10 font-bold uppercase tracking-wider"
               >
                 {uploading ? (
                   <>
@@ -187,7 +187,7 @@ export default function CustomFieldUpload({
                     ? "Lepaskan berkas di sini..."
                     : `Tarik & lepas gambar ${label.toLowerCase()} di sini, atau klik untuk memilih file`}
               </p>
-              <p className="text-[10px] text-muted-foreground mt-0.5">
+              <p className="text-10 text-muted-foreground mt-0.5">
                 PNG, JPG, WEBP (otomatis dikompresi)
               </p>
             </div>

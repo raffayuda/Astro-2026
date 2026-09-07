@@ -274,7 +274,7 @@ export default function TemplateManagement({ competitionId }: Props) {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div className="flex items-end gap-3">
           <div>
-            <Label className="text-[10px] font-black uppercase tracking-wider text-muted-foreground">
+            <Label className="text-10 font-black uppercase tracking-wider text-muted-foreground">
               Peringkat
             </Label>
             <Select value={selectedRank} onValueChange={(v) => handleLoadTemplate(v)}>
@@ -293,7 +293,7 @@ export default function TemplateManagement({ competitionId }: Props) {
           <Button
             size="sm"
             variant="outline"
-            className="rounded-md text-[10px] font-black uppercase tracking-wider"
+            className="rounded-md text-10 font-black uppercase tracking-wider"
             onClick={handleSaveTemplate}
             disabled={createTemplateMut.isPending}
           >
@@ -310,7 +310,7 @@ export default function TemplateManagement({ competitionId }: Props) {
                 key={t.id}
                 size="sm"
                 variant="outline"
-                className="rounded-md text-[10px] font-black uppercase tracking-wider"
+                className="rounded-md text-10 font-black uppercase tracking-wider"
                 onClick={() => handleRemoveTemplate(t.id)}
                 disabled={deletingTemplateId === t.id}
               >
@@ -322,7 +322,7 @@ export default function TemplateManagement({ competitionId }: Props) {
 
       {/* Upload template image */}
       <div className="space-y-2">
-        <Label className="text-[10px] font-black uppercase tracking-wider text-muted-foreground">
+        <Label className="text-10 font-black uppercase tracking-wider text-muted-foreground">
           Template Image (hasil Canva)
         </Label>
         <div className="flex items-center gap-2">
@@ -336,7 +336,7 @@ export default function TemplateManagement({ competitionId }: Props) {
           />
           <label htmlFor="template-upload" className="flex-shrink-0 cursor-pointer">
             <Button asChild size="sm" variant="outline" disabled={uploadingTemplate}
-              className="rounded-md gap-1 text-[10px] font-black uppercase tracking-wider">
+              className="rounded-md gap-1 text-10 font-black uppercase tracking-wider">
               <span>
                 {uploadingTemplate ? <Spinner className="size-3" /> : <Upload className="size-3" />}
                 {uploadingTemplate ? 'Mengunggah...' : 'Upload Gambar'}
@@ -368,11 +368,11 @@ export default function TemplateManagement({ competitionId }: Props) {
       {/* Text overlay fields */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <Label className="text-[10px] font-black uppercase tracking-wider text-muted-foreground">
+          <Label className="text-10 font-black uppercase tracking-wider text-muted-foreground">
             Text Overlay Fields
           </Label>
           <Button size="sm" variant="outline"
-            className="rounded-md gap-1 text-[10px] font-black uppercase tracking-wider"
+            className="rounded-md gap-1 text-10 font-black uppercase tracking-wider"
             onClick={handleAddOverlayField}>
             <Plus className="size-3" /> Tambah Field
           </Button>
@@ -383,7 +383,7 @@ export default function TemplateManagement({ competitionId }: Props) {
             <div key={idx}
               className="flex flex-wrap items-end gap-2.5 rounded-lg border border-border p-3">
               <div className="flex-1 min-w-[120px]">
-                <Label className="text-[9px] text-muted-foreground">Field</Label>
+                <Label className="text-9 text-muted-foreground">Field</Label>
                 <Select
                   value={field.field}
                   onValueChange={(v) => handleUpdateOverlay(idx, { field: v })}
@@ -399,7 +399,7 @@ export default function TemplateManagement({ competitionId }: Props) {
                 </Select>
               </div>
               <div className="w-16">
-                <Label className="text-[9px] text-muted-foreground">X (px)</Label>
+                <Label className="text-9 text-muted-foreground">X (px)</Label>
                 <Input
                   type="number"
                   value={field.x}
@@ -408,7 +408,7 @@ export default function TemplateManagement({ competitionId }: Props) {
                 />
               </div>
               <div className="w-16">
-                <Label className="text-[9px] text-muted-foreground">Y (px)</Label>
+                <Label className="text-9 text-muted-foreground">Y (px)</Label>
                 <Input
                   type="number"
                   value={field.y}
@@ -417,7 +417,7 @@ export default function TemplateManagement({ competitionId }: Props) {
                 />
               </div>
               <div className="w-20">
-                <Label className="text-[9px] text-muted-foreground">Font Size</Label>
+                <Label className="text-9 text-muted-foreground">Font Size</Label>
                 <Input
                   type="number"
                   value={field.fontSize}
@@ -426,7 +426,7 @@ export default function TemplateManagement({ competitionId }: Props) {
                 />
               </div>
               <div className="w-24">
-                <Label className="text-[9px] text-muted-foreground">Color</Label>
+                <Label className="text-9 text-muted-foreground">Color</Label>
                 <Input
                   type="color"
                   value={field.color}
@@ -435,7 +435,7 @@ export default function TemplateManagement({ competitionId }: Props) {
                 />
               </div>
               <div className="w-24">
-                <Label className="text-[9px] text-muted-foreground">Align</Label>
+                <Label className="text-9 text-muted-foreground">Align</Label>
                 <Select
                   value={field.align}
                   onValueChange={(v) => handleUpdateOverlay(idx, { align: v })}
@@ -451,7 +451,7 @@ export default function TemplateManagement({ competitionId }: Props) {
                 </Select>
               </div>
               <div className="w-28">
-                <Label className="text-[9px] text-muted-foreground">Max Width</Label>
+                <Label className="text-9 text-muted-foreground">Max Width</Label>
                 <Input
                   type="number"
                   value={field.maxWidth}
@@ -476,7 +476,7 @@ export default function TemplateManagement({ competitionId }: Props) {
       {/* Preview */}
       {templateImageUrl && (
         <div className="pt-3">
-          <Label className="block text-[10px] font-black uppercase tracking-wider text-muted-foreground mb-2">
+          <Label className="block text-10 font-black uppercase tracking-wider text-muted-foreground mb-2">
             Preview Template — Juara {selectedRank}
           </Label>
           <div

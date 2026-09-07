@@ -324,7 +324,7 @@ export default function PaymentStep({
                 />
                 <div className="p-6 md:p-8 space-y-6 text-center">
                   <div>
-                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                    <span className="text-10 font-bold text-slate-500 uppercase tracking-wider">
                       Referensi
                     </span>
                     <p className="text-xs font-mono font-bold text-slate-700 mt-0.5 tracking-wide">
@@ -355,7 +355,7 @@ export default function PaymentStep({
             {/* Live Auto-detection status alert */}
             <div className="max-w-md mx-auto space-y-3">
               <Alert className="rounded-lg border-sky-200 bg-sky-50/50 text-sky-800">
-                <AlertDescription className="flex items-center gap-2 text-[11px] font-medium">
+                <AlertDescription className="flex items-center gap-2 text-11 font-medium">
                   <Spinner className="size-3.5 shrink-0" />
                   <span>Sistem memantau pembayaran secara otomatis. Halaman ini akan berganti seketika setelah pembayaran Anda terverifikasi.</span>
                 </AlertDescription>

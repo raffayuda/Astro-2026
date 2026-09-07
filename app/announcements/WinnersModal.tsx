@@ -60,7 +60,7 @@ function CertModal({
         </div>
         <div>
           <span className="block text-sm font-black uppercase tracking-tight text-foreground">Sertifikat</span>
-          <span className="text-[11px] text-muted-foreground">Unduh sertifikat peserta lomba ini.</span>
+          <span className="text-11 text-muted-foreground">Unduh sertifikat peserta lomba ini.</span>
         </div>
       </div>
 
@@ -68,7 +68,7 @@ function CertModal({
         {allCerts.map((group, gi) => (
           <div key={gi}>
             {group.rank && (
-              <div className="mb-1.5 text-[10px] font-black uppercase tracking-wider text-muted-foreground">
+              <div className="mb-1.5 text-10 font-black uppercase tracking-wider text-muted-foreground">
                 {group.rank}
               </div>
             )}
@@ -80,7 +80,7 @@ function CertModal({
                 >
                   <div className="flex min-w-0 items-center gap-2.5">
                     <FileText className="size-4 flex-shrink-0 text-muted-foreground transition-colors group-hover/cert:text-primary" />
-                    <span className="truncate text-[12px] font-bold text-muted-foreground transition-colors group-hover/cert:text-foreground">
+                    <span className="truncate text-xs font-bold text-muted-foreground transition-colors group-hover/cert:text-foreground">
                       {c.name}
                     </span>
                   </div>
@@ -291,7 +291,7 @@ export default function WinnersModal({
               <Trophy />
             </div>
             <div className="min-w-0">
-              <span className="block text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Nama Lomba</span>
+              <span className="block text-10 font-bold uppercase tracking-wider text-muted-foreground">Nama Lomba</span>
               <span className="block truncate text-xs font-extrabold text-foreground sm:text-sm">{competitionTitle}</span>
             </div>
           </div>
@@ -300,7 +300,7 @@ export default function WinnersModal({
               <Medal />
             </div>
             <div className="min-w-0">
-              <span className="block text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Kategori</span>
+              <span className="block text-10 font-bold uppercase tracking-wider text-muted-foreground">Kategori</span>
               <span className="block truncate text-xs font-extrabold text-foreground sm:text-sm">{categoryFormatted}</span>
             </div>
           </div>
@@ -322,12 +322,12 @@ export default function WinnersModal({
                 </div>
                 {prizes.find((p) => p.label.toLowerCase().includes('2') || p.label === 'Juara 2') && (
                   <div className="mt-3 border-t border-slate-200/60 pt-3">
-                    <span className="mb-1.5 block text-[9px] font-bold uppercase tracking-wider text-muted-foreground">Hadiah</span>
+                    <span className="mb-1.5 block text-9 font-bold uppercase tracking-wider text-muted-foreground">Hadiah</span>
                     <ul className="space-y-1">
                       {splitPrizeItems(prizes.find((p) => p.label.toLowerCase().includes('2') || p.label === 'Juara 2')?.value || '').map((item, i) => (
                         <li key={i} className="flex items-start justify-center gap-1.5 text-left">
                           <Check className="mt-0.5 size-3 flex-shrink-0 text-astro-cyan" />
-                          <span className="text-[11px] font-bold leading-snug text-slate-700">{item}</span>
+                          <span className="text-11 font-bold leading-snug text-slate-700">{item}</span>
                         </li>
                       ))}
                     </ul>
@@ -349,7 +349,7 @@ export default function WinnersModal({
                 </div>
                 {prizes.find((p) => p.label.toLowerCase().includes('1') || p.label === 'Juara 1') && (
                   <div className="mt-3 border-t border-amber-200/80 pt-3">
-                    <span className="mb-1.5 block text-[9px] font-bold uppercase tracking-wider text-muted-foreground">Hadiah</span>
+                    <span className="mb-1.5 block text-9 font-bold uppercase tracking-wider text-muted-foreground">Hadiah</span>
                     <ul className="space-y-1">
                       {splitPrizeItems(prizes.find((p) => p.label.toLowerCase().includes('1') || p.label === 'Juara 1')?.value || '').map((item, i) => (
                         <li key={i} className="flex items-start justify-center gap-1.5 text-left">
@@ -376,12 +376,12 @@ export default function WinnersModal({
                 </div>
                 {prizes.find((p) => p.label.toLowerCase().includes('3') || p.label === 'Juara 3') && (
                   <div className="mt-3 border-t border-orange-200/60 pt-3">
-                    <span className="mb-1.5 block text-[9px] font-bold uppercase tracking-wider text-muted-foreground">Hadiah</span>
+                    <span className="mb-1.5 block text-9 font-bold uppercase tracking-wider text-muted-foreground">Hadiah</span>
                     <ul className="space-y-1">
                       {splitPrizeItems(prizes.find((p) => p.label.toLowerCase().includes('3') || p.label === 'Juara 3')?.value || '').map((item, i) => (
                         <li key={i} className="flex items-start justify-center gap-1.5 text-left">
                           <Check className="mt-0.5 size-3 flex-shrink-0 text-orange-500" />
-                          <span className="text-[11px] font-bold leading-snug text-orange-900">{item}</span>
+                          <span className="text-11 font-bold leading-snug text-orange-900">{item}</span>
                         </li>
                       ))}
                     </ul>

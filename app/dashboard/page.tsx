@@ -84,7 +84,7 @@ export default async function DashboardOverview() {
                   <Icon className="size-5" />
                 </div>
                 <div>
-                  <p className="text-[10px] font-black uppercase tracking-[0.15em] text-astro-blue/70">
+                  <p className="text-10 font-black uppercase tracking-[0.15em] text-astro-blue/70">
                     {stat.label}
                   </p>
                   <p className="mt-1 text-2xl font-black text-astro-navy">{stat.value}</p>
@@ -108,7 +108,7 @@ export default async function DashboardOverview() {
         <CardContent className="p-0">
           <Table>
             <TableHeader>
-              <TableRow className="bg-muted/50 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+              <TableRow className="bg-muted/50 text-10 font-bold uppercase tracking-wider text-muted-foreground">
                 <TableHead className="px-5">Lomba</TableHead>
                 <TableHead className="px-5">Kategori</TableHead>
                 <TableHead className="px-5 text-right">Jumlah Pendaftar</TableHead>
@@ -125,7 +125,7 @@ export default async function DashboardOverview() {
                 perCompetition.map((row) => (
                   <TableRow key={row.name} className="hover:bg-muted/50">
                     <TableCell className="px-5 font-medium text-foreground">{row.name}</TableCell>
-                    <TableCell className="px-5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                    <TableCell className="px-5 text-10 font-bold uppercase tracking-wider text-muted-foreground">
                       {row.category}
                     </TableCell>
                     <TableCell className="px-5 text-right font-black text-foreground">{row.count}</TableCell>

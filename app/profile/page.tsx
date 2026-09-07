@@ -396,7 +396,7 @@ export default function ProfilePage() {
             transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
             className="text-center mb-20 md:mb-28"
           >
-            <span className="text-[10px] font-extrabold tracking-[0.25em] uppercase text-slate-400 mb-4 block">
+            <span className="text-10 font-extrabold tracking-[0.25em] uppercase text-slate-400 mb-4 block">
               Milestones
             </span>
             <h2 className="font-title text-5xl md:text-7xl lg:text-8xl text-astro-navy leading-[0.9] mb-5">
@@ -446,7 +446,7 @@ export default function ProfilePage() {
                       }}
                     >
                       {/* Year watermark */}
-                      <div className="absolute -top-4 -right-2 text-[clamp(5rem,10vw,9rem)] font-black text-slate-900/[0.03] leading-none pointer-events-none select-none">
+                      <div className="absolute -top-4 -right-2 text-title-sm font-black text-slate-900/[0.03] leading-none pointer-events-none select-none">
                         {j.year}
                       </div>
 
@@ -467,7 +467,7 @@ export default function ProfilePage() {
                         </span>
                         {isFuture && (
                           <span
-                            className="text-[9px] font-bold uppercase tracking-[0.1em] text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1"
+                            className="text-9 font-bold uppercase tracking-[0.1em] text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1"
                             style={{
                               clipPath:
                                 "polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%)",
@@ -496,13 +496,13 @@ export default function ProfilePage() {
 
                       {/* Stats + CTA */}
                       <div className="flex items-center justify-between pt-4 border-t border-slate-100">
-                        <span className="flex items-center gap-1.5 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                        <span className="flex items-center gap-1.5 text-11 font-bold text-slate-500 uppercase tracking-wider">
                           <Users className="w-3.5 h-3.5 text-astro-cyan" />
                           {j.participants > 0
                             ? `${j.participants.toLocaleString()}+ Peserta`
                             : "Coming Soon"}
                         </span>
-                        <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-astro-cyan group-hover:gap-2.5 transition-all duration-300">
+                        <span className="inline-flex items-center gap-1.5 text-10 font-bold uppercase tracking-wider text-astro-cyan group-hover:gap-2.5 transition-all duration-300">
                           <span>Lihat Detail</span>
                           <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
                         </span>
@@ -578,7 +578,7 @@ export default function ProfilePage() {
                       {j.theme}
                     </span>
                     {j.year === "2026" && (
-                      <Badge variant="outline" className="rounded-md border-emerald-200 bg-emerald-50 text-[8px] font-bold uppercase tracking-[0.1em] text-emerald-700">
+                      <Badge variant="outline" className="rounded-md border-emerald-200 bg-emerald-50 text-8 font-bold uppercase tracking-[0.1em] text-emerald-700">
                         Latest
                       </Badge>
                     )}
@@ -591,7 +591,7 @@ export default function ProfilePage() {
                   {/* Highlights */}
                   <div className="mb-4 flex flex-wrap gap-2">
                     {j.highlights.map((h, i) => (
-                      <Badge key={i} variant="secondary" className="rounded-md bg-muted text-[10px] font-semibold text-muted-foreground">
+                      <Badge key={i} variant="secondary" className="rounded-md bg-muted text-10 font-semibold text-muted-foreground">
                         {h}
                       </Badge>
                     ))}

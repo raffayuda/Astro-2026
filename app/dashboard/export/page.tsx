@@ -58,7 +58,7 @@ export default function ExportPage() {
           </div>
 
           <Field>
-            <FieldLabel className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground">Format File</FieldLabel>
+            <FieldLabel className="text-10 font-bold uppercase tracking-[0.15em] text-muted-foreground">Format File</FieldLabel>
             <RadioGroup value={format} onValueChange={setFormat} className="flex gap-3">
               <label className={format === 'csv' ? 'flex items-center gap-2 border border-primary bg-primary/10 px-4 py-3' : 'flex cursor-pointer items-center gap-2 border border-border px-4 py-3 transition-colors hover:border-border'} style={{ clipPath: 'polygon(5px 0, 100% 0, calc(100% - 5px) 100%, 0 100%)' }}>
                 <RadioGroupItem value="csv" />

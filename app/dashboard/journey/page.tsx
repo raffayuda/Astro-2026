@@ -208,7 +208,7 @@ export default function JourneyPage() {
               <div className="flex items-center gap-3">
                 <Badge variant="secondary" className="rounded-md bg-muted px-2.5 py-1 text-xs font-black text-foreground">{item.year || item.id}</Badge>
                 <span className="text-sm font-bold text-foreground">{item.theme}</span>
-                <span className="text-[11px] text-muted-foreground">{item.participants} peserta</span>
+                <span className="text-11 text-muted-foreground">{item.participants} peserta</span>
               </div>
               <div className="flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
                 <Button variant="ghost" size="icon-sm" onClick={() => handleEdit(item)} aria-label="Edit"><Pencil /></Button>
@@ -322,7 +322,7 @@ function JourneyPhotoManager({ journey }: { journey: Journey }) {
         />
         <label className="flex-shrink-0 cursor-pointer">
           <Button asChild size="sm" variant="outline" disabled={uploading}
-            className="rounded-md gap-1 text-[10px] font-bold uppercase tracking-wider">
+            className="rounded-md gap-1 text-10 font-bold uppercase tracking-wider">
             <span>
               {uploading ? <Loader2 className="size-3 animate-spin" /> : <ImagePlus className="size-3" />}
               {uploading ? 'Mengunggah...' : 'Upload Foto'}
@@ -333,7 +333,7 @@ function JourneyPhotoManager({ journey }: { journey: Journey }) {
       </div>
       <button
         onClick={handleAddByUrl}
-        className="rounded-md mt-2 inline-flex items-center gap-1.5 border border-border bg-muted px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+        className="rounded-md mt-2 inline-flex items-center gap-1.5 border border-border bg-muted px-3 py-1.5 text-10 font-bold uppercase tracking-wider text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
       >
         <Link2 className="size-3" /> Tambah dari URL
       </button>
@@ -365,7 +365,7 @@ function JourneyPhotoManager({ journey }: { journey: Journey }) {
           ))}
         </div>
       ) : (
-        <p className="mt-2 text-[11px] text-muted-foreground">Belum ada foto dokumentasi. Upload untuk menambahkan.</p>
+        <p className="mt-2 text-11 text-muted-foreground">Belum ada foto dokumentasi. Upload untuk menambahkan.</p>
       )}
       <ImagePreviewModal url={previewImage} onClose={() => setPreviewImage(null)} />
     </div>

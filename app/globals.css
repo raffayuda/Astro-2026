@@ -75,8 +75,13 @@
   --shadow-inset-top: inset 0 -6.2px 6.07px rgba(0, 0, 0, 0.25);
   --shadow-inset-screen: inset 0 4px 12px rgba(0, 0, 0, 0.35);
 
-  /* Micro-label size used by talent chips and stat captions. */
-  --text-2xs: 0.625rem;
+  /* ── Micro type ramp ──
+     Named by pixel size so there is exactly one utility per step and no
+     ambiguity. Replaces 408 arbitrary text-[Npx] values. */
+  --text-8: 0.5rem;
+  --text-9: 0.5625rem;
+  --text-10: 0.625rem;
+  --text-11: 0.6875rem;
 
   /* ── Display type scale ──
      v4 lets a font-size token carry its own line-height, letter-spacing and

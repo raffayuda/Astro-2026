@@ -137,7 +137,7 @@ export default function SertifikatPage() {
         <div className="flex items-end gap-3">
           <div className="max-w-md flex-1">
             <Field>
-              <FieldLabel className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground" required>Pilih Lomba</FieldLabel>
+              <FieldLabel className="text-10 font-bold uppercase tracking-wider text-muted-foreground" required>Pilih Lomba</FieldLabel>
               <Select value={selectedComp} onValueChange={(v) => { setSelectedComp(v); setPage(1); }}>
                 <SelectTrigger className="rounded-md h-10 w-full bg-background">
                   <SelectValue placeholder="-- Pilih Lomba --" />
@@ -162,14 +162,14 @@ export default function SertifikatPage() {
           <div className="flex items-center justify-between rounded-xl border border-cyan-100 bg-cyan-50/60 px-4 py-3">
             <div>
               <p className="text-xs font-black uppercase tracking-wider text-cyan-800">Generate Otomatis</p>
-              <p className="text-[10px] text-cyan-700/80">
+              <p className="text-10 text-cyan-700/80">
                 Hasilkan PDF sertifikat dari gambar template untuk semua pemenang.
               </p>
             </div>
             <Button
               onClick={handleGenerateAll}
               disabled={generateAllMut.isPending}
-              className="rounded-md gap-1.5 bg-cyan-500 px-4 py-2 text-[10px] font-black uppercase tracking-wider text-cyan-950 hover:bg-cyan-400"
+              className="rounded-md gap-1.5 bg-cyan-500 px-4 py-2 text-10 font-black uppercase tracking-wider text-cyan-950 hover:bg-cyan-400"
             >
               {generateAllMut.isPending ? <Spinner className="size-3.5" /> : <Download className="size-3.5" />}
               {generateAllMut.isPending ? 'Menggenerate...' : 'Generate Semua'}
@@ -178,7 +178,7 @@ export default function SertifikatPage() {
 
           <div className="flex items-center justify-between">
             <p className="text-sm text-muted-foreground">{registrations.length} peserta (lunas)</p>
-            <span className="text-[10px] font-bold uppercase text-muted-foreground">
+            <span className="text-10 font-bold uppercase text-muted-foreground">
               {competitions.find(c => c.id === selectedComp)?.certificateType === 'all' ? 'Semua peserta dapat sertifikat' : 'Hanya juara (1/2/3)'}
             </span>
           </div>
@@ -213,7 +213,7 @@ export default function SertifikatPage() {
                           key={rank}
                           variant={reg.isWinner === '1' && reg.winnerRank === rank ? 'default' : 'outline'}
                           size="icon-sm"
-                          className={cn('text-[10px] font-black', reg.isWinner === '1' && reg.winnerRank === rank && 'border-amber-400 bg-amber-400 text-amber-950 shadow-sm hover:bg-amber-400')}
+                          className={cn('text-10 font-black', reg.isWinner === '1' && reg.winnerRank === rank && 'border-amber-400 bg-amber-400 text-amber-950 shadow-sm hover:bg-amber-400')}
                           onClick={() => toggleWinner(reg.id, reg.isWinner === '1' && reg.winnerRank === rank ? null : rank)}
                           title={`Tandai juara ${rank}`}
                           aria-label={`Tandai juara ${rank}`}
@@ -225,7 +225,7 @@ export default function SertifikatPage() {
                         <Button
                           onClick={() => sendCertificate(reg)}
                           disabled={sending || reg.certificateSent === '1'}
-                          className={cn('rounded-md text-[10px] font-bold uppercase tracking-wider', reg.certificateSent === '1' && 'border border-emerald-200 bg-emerald-50 text-emerald-600 hover:bg-emerald-50')}
+                          className={cn('rounded-md text-10 font-bold uppercase tracking-wider', reg.certificateSent === '1' && 'border border-emerald-200 bg-emerald-50 text-emerald-600 hover:bg-emerald-50')}
                           size="sm"
                         >
                           {reg.certificateSent === '1' ? 'Terkirim' : 'Kirim'}
