@@ -1,13 +1,12 @@
 'use client';
 
+import { PageShell } from "@/components/brand";
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { notFound, useParams } from 'next/navigation';
 import Image from 'next/image';
 import { motion, useReducedMotion } from 'motion/react';
 import { ArrowLeft, Users, Award, Target, ArrowRight, Camera, X, Calendar } from 'lucide-react';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
 import { useJourneys, useJourneyPhotos } from '@/src/lib/hooks/use-queries';
 
 const MotionImage = motion.create(Image);
@@ -60,9 +59,9 @@ export default function JourneyDetailPage() {
 
   if (!data) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-white">
+      <div className="flex min-h-svh items-center justify-center bg-white">
         <div className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-ink">
-          <span className="size-4 animate-spin rounded-full border-2 border-astro-cyan-2 border-t-astro-cyan" />
+          <span className="size-4 animate-spin rounded-full border-2 border-astro-cyan-2 border-t-astro-blue" />
           Memuat...
         </div>
       </div>
@@ -70,8 +69,7 @@ export default function JourneyDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
-      <Navbar />
+    <PageShell>
 
       {/* ═══ HERO BANNER ═══ */}
       <section className={`relative pt-28 pb-28 md:pt-36 md:pb-36 bg-linear-to-br ${data.color} overflow-hidden`}>
@@ -383,7 +381,6 @@ export default function JourneyDetailPage() {
         </div>
       </section>
 
-      <Footer />
-    </div>
+    </PageShell>
   );
 }

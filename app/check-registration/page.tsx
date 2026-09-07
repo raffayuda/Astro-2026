@@ -14,7 +14,6 @@ import {
   Phone,
   Mail,
   User,
-  CalendarDays,
   Coins,
   FileText,
   CreditCard,
@@ -49,7 +48,6 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
-import { Separator } from "@/components/ui/separator";
 import { Spinner } from "@/components/ui/spinner";
 import { cn } from "@/lib/utils";
 import type { CompetitionCustomField } from "@/types/astro";

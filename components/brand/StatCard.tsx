@@ -2,6 +2,7 @@ import * as React from "react"
 import { Check, type LucideIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { Surface } from "./Surface"
 
 /**
  * Metric / channel tile.
@@ -23,10 +24,14 @@ export function StatCard({
   className?: string
 }) {
   return (
-    <div
+    <Surface
       data-slot="stat-card"
+      tone="plain"
+      radius="xl"
+      pad="md"
+      interactive
       className={cn(
-        "relative flex flex-col items-center gap-2 rounded-lg bg-white p-5 text-center shadow-soft transition-all duration-200 hover:-translate-y-0.5 hover:shadow-soft-lg",
+        "flex h-full flex-col items-center gap-2 text-center",
         className
       )}
     >
@@ -54,6 +59,6 @@ export function StatCard({
       <p className="text-10 font-bold uppercase tracking-wide text-ink sm:text-xs">
         {label}
       </p>
-    </div>
+    </Surface>
   )
 }

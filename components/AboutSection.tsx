@@ -232,16 +232,18 @@ export default function AboutSection({ competitions }: Props) {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
               >
-                <Empty className="rounded-xl bg-white py-16 shadow-soft">
-                  <EmptyHeader>
-                    <EmptyTitle className="text-base font-black uppercase tracking-wider">
-                      Tidak ditemukan
-                    </EmptyTitle>
-                    <EmptyDescription>
-                      Coba kata kunci atau filter lain.
-                    </EmptyDescription>
-                  </EmptyHeader>
-                </Empty>
+                <Surface tone="plain" radius="xl" pad="xl">
+                  <Empty>
+                    <EmptyHeader>
+                      <EmptyTitle className="text-base font-black uppercase tracking-wider">
+                        Tidak ditemukan
+                      </EmptyTitle>
+                      <EmptyDescription>
+                        Coba kata kunci atau filter lain.
+                      </EmptyDescription>
+                    </EmptyHeader>
+                  </Empty>
+                </Surface>
               </motion.div>
             )}
           </AnimatePresence>

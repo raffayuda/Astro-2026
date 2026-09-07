@@ -1,25 +1,22 @@
 'use client';
 
+import { Bubbles, CenteredShell } from "@/components/brand";
 import { use, useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion } from 'motion/react';
 import {
-  Shield,
-  UserCheck,
   Lock,
   Mail,
   User,
   ArrowRight,
   AlertCircle,
   CheckCircle2,
-  Sparkles,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
 import {
   InputGroup,
   InputGroupAddon,
@@ -27,7 +24,6 @@ import {
 } from '@/components/ui/input-group';
 import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { Spinner } from '@/components/ui/spinner';
-import { Badge } from '@/components/ui/badge';
 import { signIn } from '@/src/lib/auth-client';
 import { apiHelpers } from '@/src/lib/api';
 
@@ -144,9 +140,8 @@ export default function InviteAcceptPage({
   };
 
   return (
-    <div className="relative min-h-svh flex flex-col items-center justify-center p-4 overflow-hidden">
-      {/* Sky Background */}
-      <div className="absolute inset-0 -z-10 bg-linear-to-b from-sky-top via-astro-cyan-2 to-sky-mid" />
+    <CenteredShell>
+      <Bubbles preset="sparse" />
 
       {/* Cloud & Planet Decorative Elements */}
       <Image
@@ -178,7 +173,7 @@ export default function InviteAcceptPage({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-        className="w-full max-w-md z-10 my-8"
+        className="relative z-10"
       >
         {/* Logo ASTRO */}
         <div className="flex flex-col items-center mb-6">
@@ -383,6 +378,6 @@ export default function InviteAcceptPage({
           </Card>
         )}
       </motion.div>
-    </div>
+    </CenteredShell>
   );
 }

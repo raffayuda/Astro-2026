@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import {
   Plus,
   Trash2,
@@ -11,11 +10,9 @@ import {
   AlignLeft,
   List,
   Image as ImageIcon,
-  CheckCircle2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import type { CompetitionCustomField } from "@/types/astro";

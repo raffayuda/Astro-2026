@@ -3,6 +3,7 @@ import { Award, Gift, Sparkles, type LucideIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Pill } from "./Pill"
+import { Surface } from "./Surface"
 
 export type BenefitItem = { icon?: LucideIcon; label: string }
 
@@ -38,7 +39,7 @@ export function BenefitCard({
         {label}
       </Pill>
 
-      <div className="rounded-xl bg-linear-to-br from-astro-pink to-pink-300 p-4 pt-6 shadow-glow-pink">
+      <Surface tone="pink" radius="xl" pad="md" className="pt-6">
         <ul className="flex flex-col gap-2">
           {items.map((item) => {
             const Icon = item.icon ?? Sparkles
@@ -57,7 +58,7 @@ export function BenefitCard({
             )
           })}
         </ul>
-      </div>
+      </Surface>
     </div>
   )
 }

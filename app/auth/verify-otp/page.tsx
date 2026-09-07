@@ -1,5 +1,6 @@
 "use client";
 
+import { Bubbles, CenteredShell } from "@/components/brand";
 import { Suspense, useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -18,7 +19,6 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
 import {
   InputGroup,
   InputGroupAddon,
@@ -317,25 +317,23 @@ function VerifyOtpContent() {
 
 export default function VerifyOtpPage() {
   return (
-    <div className="flex min-h-screen flex-col bg-linear-to-b from-sky-top via-astro-cyan-2 to-sky-mid">
-      <div className="relative z-10 flex flex-1 items-center justify-center px-4 py-10">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="w-full max-w-md"
+    <CenteredShell>
+      <Bubbles preset="dense" />
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+      >
+        <Suspense
+          fallback={
+            <Card className="p-8 text-center">
+              <Spinner className="mx-auto size-6 text-astro-blue" />
+            </Card>
+          }
         >
-          <Suspense
-            fallback={
-              <Card className="rounded-xl border border-white/40 bg-background/80 p-8 text-center backdrop-blur-xl">
-                <Spinner className="size-6 text-primary mx-auto" />
-              </Card>
-            }
-          >
-            <VerifyOtpContent />
-          </Suspense>
-        </motion.div>
-      </div>
-    </div>
+          <VerifyOtpContent />
+        </Suspense>
+      </motion.div>
+    </CenteredShell>
   );
 }

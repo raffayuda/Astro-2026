@@ -58,7 +58,12 @@ export default function FAQSection({ faqs }: Props) {
               className="[&_[data-slot=pill]]:bg-white/20 [&_[data-slot=pill]]:text-white [&_h2]:text-white [&_p]:text-white/80"
             />
 
-            <div className="mt-8 rounded-xl bg-white/14 p-4 ring-1 ring-inset ring-white/25">
+            <Surface
+              tone="plain"
+              radius="xl"
+              pad="md"
+              className="mt-8 bg-white/14 text-white ring-1 ring-inset ring-white/25"
+            >
               <Pill tone="gold" size="sm">
                 Kontak cepat
               </Pill>
@@ -80,7 +85,7 @@ export default function FAQSection({ faqs }: Props) {
                   Hubungi @astrosttnf
                 </a>
               </Button>
-            </div>
+            </Surface>
           </Surface>
         </motion.aside>
 

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
+import { Surface } from '@/components/brand';
 
 interface TimeLeft {
   days: number;
@@ -27,14 +28,20 @@ function Block({ value, label, delay }: { value: number; label: string; delay: n
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay, duration: 0.5, ease: [0.16, 1, 0.3, 1] as const }}
-      className="rounded-xl bg-white shadow-soft flex min-w-[68px] flex-col items-center px-3 py-3 md:min-w-[88px] md:px-5 md:py-4"
     >
-      <span className="font-mono text-2xl font-black leading-none tracking-wider text-astro-blue tabular-nums md:text-4xl">
-        {String(value).padStart(2, '0')}
-      </span>
-      <span className="mt-1.5 text-9 font-black uppercase tracking-[0.15em] text-astro-navy/70 md:text-10">
-        {label}
-      </span>
+      <Surface
+        tone="plain"
+        radius="xl"
+        pad="sm"
+        className="flex min-w-[68px] flex-col items-center md:min-w-[88px] md:px-5 md:py-4"
+      >
+        <span className="font-mono text-2xl font-black leading-none tracking-wider text-astro-blue tabular-nums md:text-4xl">
+          {String(value).padStart(2, '0')}
+        </span>
+        <span className="mt-1.5 text-9 font-black uppercase tracking-[0.15em] text-astro-navy/70 md:text-10">
+          {label}
+        </span>
+      </Surface>
     </motion.div>
   );
 }
@@ -64,10 +71,15 @@ export default function CountdownTimer({ deadline }: { deadline: string }) {
           {mounted ? (
             <Block value={item.value} label={item.label} delay={item.delay} />
           ) : (
-            <div className="rounded-xl bg-white shadow-soft flex min-w-[68px] flex-col items-center px-3 py-3 md:min-w-[88px] md:px-5 md:py-4">
+            <Surface
+              tone="plain"
+              radius="xl"
+              pad="sm"
+              className="flex min-w-[68px] flex-col items-center md:min-w-[88px] md:px-5 md:py-4"
+            >
               <span className="text-2xl md:text-4xl font-black text-astro-navy/40 font-mono tracking-wider">--</span>
               <span className="text-9 md:text-10 uppercase text-ink tracking-[0.15em] mt-1.5 font-bold">{item.label}</span>
-            </div>
+            </Surface>
           )}
           {i < items.length - 1 && (
             <span className="text-ink text-lg md:text-xl font-bold mb-4">:</span>

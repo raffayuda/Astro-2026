@@ -253,7 +253,7 @@ function PartnerShelf({
 
 function SponsorFallback() {
   return (
-    <div className="flex flex-col gap-4 rounded-xl bg-sky-bottom p-5">
+    <Surface tone="tint" radius="xl" pad="md" className="flex flex-col gap-4">
       <span className="grid size-11 place-items-center rounded-full bg-white text-astro-blue shadow-soft-sm">
         <Handshake className="size-5" />
       </span>
@@ -265,13 +265,13 @@ function SponsorFallback() {
           Jangkau peserta, komunitas kampus, dan audience grand final ASTRO 2026.
         </p>
       </div>
-    </div>
+    </Surface>
   );
 }
 
 function MediaPartnerFallback() {
   return (
-    <div className="flex flex-col gap-4 rounded-xl bg-sky-bottom p-5">
+    <Surface tone="tint" radius="xl" pad="md" className="flex flex-col gap-4">
       <p className="text-sm font-medium leading-relaxed text-ink">
         Media partner dapat menghubungi contact person publikasi untuk kerja sama
         konten dan liputan acara.
@@ -292,7 +292,7 @@ function MediaPartnerFallback() {
           </Button>
         ))}
       </div>
-    </div>
+    </Surface>
   );
 }
 
@@ -302,7 +302,13 @@ function BrandItem({
   brand: { name: string; website?: string | null; logo?: string | null };
 }) {
   const content = (
-    <div className="flex min-h-24 items-center justify-center gap-3 rounded-xl bg-sky-bottom/70 p-4 text-center shadow-soft-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-white hover:shadow-soft">
+    <Surface
+      tone="tint"
+      radius="xl"
+      pad="md"
+      interactive
+      className="flex min-h-24 items-center justify-center gap-3 bg-sky-bottom/70 text-center hover:bg-white"
+    >
       {brand.logo && (
         <div className="relative size-14 shrink-0">
           <Image
@@ -317,7 +323,7 @@ function BrandItem({
       <span className="font-heading text-sm font-extrabold leading-tight text-astro-navy">
         {brand.name}
       </span>
-    </div>
+    </Surface>
   );
 
   const websiteUrl = brand.website

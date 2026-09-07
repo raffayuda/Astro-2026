@@ -16,11 +16,8 @@ import {
   Link as LinkIcon,
   Copy,
   Check,
-  Send,
-  Clock,
   Ban,
   Users,
-  ExternalLink,
 } from "lucide-react";
 import { toast } from "sonner";
 import Pagination from "@/components/Pagination";

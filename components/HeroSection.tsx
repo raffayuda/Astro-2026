@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { motion, useReducedMotion } from "motion/react";
-import { CalendarDays, FileText, Trophy } from "lucide-react";
+import { FileText } from "lucide-react";
 
 import type { EventConfig } from "@/types/astro";
 import { CtaButton, Pill, SkyBackdrop, Surface } from "@/components/brand";
@@ -54,48 +54,14 @@ export default function HeroSection({ eventConfig }: Props) {
 
           <motion.p
             {...rise(0.16)}
-            className="max-w-2xl text-base font-medium leading-relaxed text-ink sm:text-lg"
+            className="max-w-xl text-base font-medium leading-relaxed text-ink sm:text-lg"
           >
-            {eventConfig.description}
+            Pilih cabang lomba, baca juknis, lalu daftar dari satu halaman yang
+            rapi.
           </motion.p>
 
           <motion.div
             {...rise(0.24)}
-            className="grid w-full max-w-2xl gap-3 sm:grid-cols-3"
-          >
-            {[
-              {
-                icon: Trophy,
-                label: "Prize pool",
-                value: eventConfig.totalPrizePool,
-              },
-              { icon: CalendarDays, label: "Musim", value: "2026" },
-              { icon: FileText, label: "Juknis", value: "Lengkap" },
-            ].map(({ icon: Icon, label, value }) => (
-              <Surface
-                key={label}
-                tone="plain"
-                radius="xl"
-                pad="md"
-                className="flex items-center gap-3 border border-white/80 bg-white/80"
-              >
-                <span className="grid size-9 place-items-center rounded-full bg-sky-bottom text-astro-blue">
-                  <Icon className="size-4" aria-hidden />
-                </span>
-                <span>
-                  <span className="block text-10 font-black uppercase tracking-widest text-muted-foreground">
-                    {label}
-                  </span>
-                  <span className="block font-heading text-lg font-black text-astro-navy">
-                    {value}
-                  </span>
-                </span>
-              </Surface>
-            ))}
-          </motion.div>
-
-          <motion.div
-            {...rise(0.32)}
             className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center"
           >
             <CtaButton href="#competitions" size="lg">
@@ -170,7 +136,12 @@ export default function HeroSection({ eventConfig }: Props) {
                     Pilih lomba, baca detail, daftar.
                   </p>
                 </Surface>
-                <div className="relative min-h-42 overflow-hidden rounded-xl bg-linear-to-br from-sky-bottom via-white to-astro-cyan-2/45 shadow-soft">
+                <Surface
+                  tone="tint"
+                  radius="xl"
+                  pad="none"
+                  className="min-h-40 overflow-hidden"
+                >
                   <Image
                     src="/assets/computer.png"
                     alt="Layar retro ASTRO 2026"
@@ -179,7 +150,7 @@ export default function HeroSection({ eventConfig }: Props) {
                     className="object-contain object-center p-3"
                     priority
                   />
-                </div>
+                </Surface>
               </div>
             </div>
           </Surface>

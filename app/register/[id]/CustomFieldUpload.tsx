@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import Image from "next/image";
-import { Trash2, UploadCloud, FileImage, ExternalLink } from "lucide-react";
+import { Trash2, UploadCloud, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";

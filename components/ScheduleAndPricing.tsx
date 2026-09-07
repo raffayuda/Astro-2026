@@ -136,7 +136,7 @@ export default function ScheduleAndPricing({
             radius="xl"
             className="grid gap-5 text-left sm:grid-cols-[auto_1fr] sm:items-center lg:grid-cols-1 lg:text-center"
           >
-            <div className="rounded-lg bg-sky-bottom p-3 shadow-soft-sm">
+            <Surface tone="tint" radius="lg" pad="sm">
               <div className="rounded-md bg-white p-2">
                 <QRCodeSVG
                   value={registerUrl}
@@ -147,7 +147,7 @@ export default function ScheduleAndPricing({
                   aria-label="QR code pendaftaran ASTRO 2026"
                 />
               </div>
-            </div>
+            </Surface>
             <div className="flex flex-col gap-3">
               <div>
                 <Pill tone="blue" size="sm">

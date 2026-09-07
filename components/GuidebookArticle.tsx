@@ -7,7 +7,6 @@ import {
   ExternalLink,
   ChevronRight,
   AlertTriangle,
-  Layers,
   Sparkles,
   BookOpen,
 } from "lucide-react";

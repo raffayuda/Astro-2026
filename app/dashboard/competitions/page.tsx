@@ -5,7 +5,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   Pencil, X, Check, Search, Plus, Trophy,
   Coins, Users, MapPin, Calendar, Phone, User, Tag,
-  Trash2, EyeOff, Eye, Clock, Award, Layers, FileText, BookOpen,
+  Trash2, EyeOff, Eye, Clock, Award, Layers, FileText,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import DeleteModal from '@/components/DeleteModal';

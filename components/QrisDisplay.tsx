@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useId } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
-import { Download, Copy, Check, ExternalLink, Clock } from 'lucide-react';
+import { Download, ExternalLink, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 

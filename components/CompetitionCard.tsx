@@ -6,10 +6,10 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
+import { Surface } from '@/components/brand';
 import { cn } from '@/lib/utils';
-import type { Competition, CategoryType } from '@/types/astro';
+import type { Competition } from '@/types/astro';
 import { formatDateShort } from '@/lib/date';
 import { getEffectiveCompetitionFee } from '@/src/lib/competitions';
 
@@ -48,19 +48,19 @@ export default function CompetitionCard({ competition, index }: Props) {
       transition={{ duration: 0.4, delay: index * 0.05, ease: [0.16, 1, 0.3, 1] as const }}
       whileHover={reduce ? {} : { y: -4 }}
     >
-      <Card
+      <Surface
+        tone="plain"
+        radius="xl"
+        pad="none"
+        interactive
         className={cn(
-          "group rounded-lg overflow-hidden border-astro-cyan-2/80 shadow-sm transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md",
-          !isOpen && "bg-surface/50 opacity-90"
+          "group h-full overflow-hidden border border-white/80 bg-white/90",
+          !isOpen && "bg-surface/70 opacity-90"
         )}
       >
-        {/* Top angular corner accent per category */}
-        <div className="relative">
-          <div className={cn('absolute -top-px -left-px size-8', isOpen ? cat.accent : 'bg-ink')} style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }} />
-        </div>
+        <div className={cn("h-1.5", isOpen ? cat.accent : "bg-ink")} />
 
-        <CardContent className="flex flex-col gap-3 p-5 md:p-6">
-          {/* Top row: badge + slots */}
+        <div className="flex h-full flex-col gap-3 p-5 md:p-6">
           <div className="flex items-start justify-between gap-1">
             <div className="flex flex-wrap items-center gap-1">
               <Badge variant="outline" className={cn('rounded-md border text-10 font-bold uppercase tracking-[0.15em]', cat.badgeClass)}>
@@ -80,15 +80,13 @@ export default function CompetitionCard({ competition, index }: Props) {
             </span>
           </div>
 
-          {/* Title */}
-          <h3 className="text-base font-black uppercase leading-tight tracking-tight text-foreground md:text-lg">
+          <h3 className="text-base font-black leading-tight tracking-tight text-foreground md:text-lg">
             {competition.title}
           </h3>
           <p className="-mt-1 text-xs leading-relaxed text-muted-foreground md:text-sm">
             {competition.tagline || 'Informasi lomba segera diumumkan (TBA)'}
           </p>
 
-          {/* Metadata grid */}
           <div className="mt-1 grid grid-cols-2 gap-2 text-11 text-muted-foreground">
             <span className="flex items-center gap-1.5">
               <Coins className="size-3 text-primary flex-shrink-0" />
@@ -118,15 +116,13 @@ export default function CompetitionCard({ competition, index }: Props) {
             </span>
           </div>
 
-          {/* Progress bar */}
           <Progress
             value={competition.maxSlots > 0 ? ratio : 0}
             aria-label={`Kuota ${competition.title}`}
             className="h-1.5 bg-muted [&>div]:rounded-full"
           />
 
-          {/* Actions */}
-          <div className="mt-1 flex items-center gap-2">
+          <div className="mt-auto flex items-center gap-2 pt-1">
             <Button asChild variant="outline" size="sm" className="rounded-md flex-1 text-10 font-bold uppercase tracking-[0.1em]">
               <Link href={`/competitions/${competition.id}`} aria-label={`Detail ${competition.title}`}>Detail</Link>
             </Button>
@@ -155,12 +151,12 @@ export default function CompetitionCard({ competition, index }: Props) {
                 aria-label={`Daftar ${competition.title}`}
                 className="rounded-md flex-1 text-10 font-black uppercase tracking-[0.1em]"
               >
-                Daftar
-              </Button>
-            )}
+              Daftar
+            </Button>
+          )}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </Surface>
     </motion.div>
   );
 }

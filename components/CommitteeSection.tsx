@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import Image from "next/image";
 import { motion, useReducedMotion, AnimatePresence } from "motion/react";
-import { Users, X, ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
+import { Users, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";

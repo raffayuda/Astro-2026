@@ -2,6 +2,7 @@ import * as React from "react"
 import { Check, Circle, Dot } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { Surface } from "./Surface"
 
 export type ScheduleStatus = "done" | "active" | "upcoming"
 
@@ -51,11 +52,15 @@ export function ScheduleCard({
   const s = STATUS[status]
 
   return (
-    <article
+    <Surface
       data-slot="schedule-card"
       data-status={status}
+      tone="plain"
+      radius="xl"
+      pad="none"
+      interactive
       className={cn(
-        "flex h-full flex-col overflow-hidden rounded-xl bg-white shadow-soft transition-all duration-200 hover:-translate-y-0.5 hover:shadow-soft-lg",
+        "flex h-full flex-col overflow-hidden",
         className
       )}
     >
@@ -109,6 +114,6 @@ export function ScheduleCard({
           )}
         />
       </footer>
-    </article>
+    </Surface>
   )
 }
