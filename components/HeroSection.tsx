@@ -1,161 +1,114 @@
 "use client";
 
-import Image from "next/image";
 import { motion, useReducedMotion } from "motion/react";
-import { FileText } from "lucide-react";
 
 import type { EventConfig } from "@/types/astro";
-import { CtaButton, Pill, SkyBackdrop, Surface } from "@/components/brand";
-import { Button } from "@/components/ui/button";
+import { ChromeTitle } from "@/components/brand/ChromeTitle";
+import { CtaButton } from "@/components/brand/CtaButton";
+import { GrassStrip } from "@/components/brand/GrassStrip";
+import { Pill } from "@/components/brand/Pill";
+import { MascotCarousel } from "@/components/MascotCarousel";
 import CountdownTimer from "./CountdownTimer";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 interface Props {
   eventConfig: EventConfig;
+  competitionCount?: number;
 }
 
-export default function HeroSection({ eventConfig }: Props) {
+/**
+ * Landing hero, laid out like the Cerdas Cermat / AGT posters: copy on the
+ * left, mascot on the right, grass as the ground that separates the scene
+ * from the rest of the page.
+ */
+export default function HeroSection({ eventConfig, competitionCount }: Props) {
   const reduce = useReducedMotion();
+  const isOpen = new Date(eventConfig.registrationDeadline).getTime() > Date.now();
 
-  const rise = (delay: number) => ({
-    initial: reduce ? false : { opacity: 0, y: 24 },
-    animate: { opacity: 1, y: 0 },
-    transition: { delay, duration: 0.6, ease: EASE },
-  });
+  const stage = {
+    hidden: { opacity: 0, y: 18 },
+    show: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: reduce ? 0 : 0.55, ease: EASE },
+    },
+  };
 
   return (
     <section
       id="home"
-      className="relative isolate min-h-svh overflow-hidden px-4 pb-16 pt-24 sm:px-6 sm:pb-20 sm:pt-28"
+      className="relative isolate flex min-h-[100dvh] flex-col overflow-x-clip pt-20"
     >
-      <SkyBackdrop tone="bright" clouds={false} bubbles="none" />
+      <h1 className="sr-only">
+        ASTRO 2026. {eventConfig.tagline}
+      </h1>
+      <img
+        src="/assets/agt/swirl-left.svg"
+        alt=""
+        aria-hidden
+        className="pointer-events-none absolute bottom-8 left-0 z-0 hidden h-[min(72%,38rem)] w-auto opacity-80 lg:block"
+      />
+      <img
+        src="/assets/agt/swirl-right.svg"
+        alt=""
+        aria-hidden
+        className="pointer-events-none absolute right-0 bottom-8 z-0 hidden h-[min(72%,38rem)] w-auto opacity-80 lg:block"
+      />
 
-      <div className="relative z-20 mx-auto grid min-h-[calc(100svh-10rem)] w-full max-w-7xl items-center gap-8 lg:grid-cols-[1.05fr_0.95fr]">
-        <div className="flex flex-col items-start gap-6 text-left">
-          <motion.div
-            {...rise(0)}
-            className="flex flex-wrap items-center gap-2"
-          >
-            <Pill tone="gold" size="sm">
-              Pendaftaran dibuka
-            </Pill>
-            <Pill tone="glass" size="sm">
-              BEM STT-NF
-            </Pill>
+      <div className="relative z-10 mx-auto grid w-full max-w-6xl flex-1 items-center gap-4 px-4 pb-24 pt-6 sm:px-8 sm:gap-6 sm:pb-32 lg:grid-cols-2 lg:gap-10 lg:pb-36">
+        <motion.div
+          initial="hidden"
+          animate="show"
+          transition={{ staggerChildren: 0.08 }}
+          className="flex flex-col items-center text-center lg:items-start lg:text-left"
+        >
+          {isOpen && (
+            <motion.div variants={stage}>
+              <Pill tone="pink" size="sm" className="shadow-gloss">
+                Open
+              </Pill>
+            </motion.div>
+          )}
+
+          <motion.div variants={stage} className="mt-4 w-[min(100%,22rem)]">
+            <ChromeTitle depth="lg" align="center" className="lg:hidden">
+              {`ASTRO\n2026`}
+            </ChromeTitle>
+            <ChromeTitle depth="lg" align="left" className="hidden lg:block">
+              {`ASTRO\n2026`}
+            </ChromeTitle>
           </motion.div>
-
-          <motion.h1
-            {...rise(0.08)}
-            className="max-w-3xl font-heading text-5xl font-black leading-[0.98] tracking-tight text-astro-navy text-balance sm:text-6xl lg:text-7xl"
-          >
-            ASTRO 2026, tempat bakatmu tampil.
-          </motion.h1>
 
           <motion.p
-            {...rise(0.16)}
-            className="max-w-xl text-base font-medium leading-relaxed text-ink sm:text-lg"
+            variants={stage}
+            className="mt-4 max-w-md text-pretty text-base font-medium leading-relaxed text-logo-navy/75 sm:text-lg"
           >
-            Pilih cabang lomba, baca juknis, lalu daftar dari satu halaman yang
-            rapi.
+            {competitionCount ?? 9} lomba akademik, olahraga, dan esports.
           </motion.p>
 
-          <motion.div
-            {...rise(0.24)}
-            className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center"
-          >
+          <motion.div variants={stage} className="mt-6">
             <CtaButton href="#competitions" size="lg">
-              Daftar Segera
+              Daftar segera
             </CtaButton>
-            <Button variant="outline" size="lg" asChild>
-              <a
-                href={eventConfig.generalJuknisUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <FileText data-icon="inline-start" />
-                Unduh Juknis
-              </a>
-            </Button>
           </motion.div>
-        </div>
+
+          <motion.div variants={stage} className="mt-4">
+            <CountdownTimer deadline={eventConfig.registrationDeadline} variant="inline" />
+          </motion.div>
+        </motion.div>
 
         <motion.div
-          {...rise(0.18)}
-          className="relative mx-auto w-full max-w-xl lg:ml-auto"
+          initial={reduce ? false : { opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: reduce ? 0 : 0.28, duration: reduce ? 0 : 0.7, ease: EASE }}
+          className="relative z-10 flex items-center justify-center"
         >
-          <Surface
-            tone="plain"
-            radius="2xl"
-            pad="lg"
-            className="overflow-hidden border border-white/80 bg-white/90 backdrop-blur"
-          >
-            <div className="mb-5 flex items-center justify-between gap-4 border-b border-astro-cyan-2/35 pb-4">
-              <div className="flex items-center gap-3">
-                <Image
-                  src="/assets/logo-astro.png"
-                  alt="ASTRO 2026"
-                  width={48}
-                  height={48}
-                  priority
-                  className="size-12 object-contain"
-                />
-                <div>
-                  <p className="font-heading text-sm font-extrabold text-astro-navy">
-                    astro.nurulfikri.ac.id
-                  </p>
-                  <p className="text-xs font-semibold text-muted-foreground">
-                    {eventConfig.tagline}
-                  </p>
-                </div>
-              </div>
-              <Pill tone="blue" size="sm">
-                Live
-              </Pill>
-            </div>
-
-            <div className="grid gap-4">
-              <Surface tone="tint" radius="xl" pad="md">
-                <p className="mb-3 text-10 font-black uppercase tracking-widest text-muted-foreground">
-                  Batas pendaftaran
-                </p>
-                <CountdownTimer deadline={eventConfig.registrationDeadline} />
-              </Surface>
-
-              <div className="grid gap-3 sm:grid-cols-[0.9fr_1.1fr]">
-                <Surface
-                  tone="gold"
-                  radius="xl"
-                  pad="md"
-                  className="overflow-hidden"
-                >
-                  <p className="text-10 font-black uppercase tracking-widest text-astro-navy/70">
-                    Langkah awal
-                  </p>
-                  <p className="mt-2 font-heading text-2xl font-black leading-tight text-astro-navy">
-                    Pilih lomba, baca detail, daftar.
-                  </p>
-                </Surface>
-                <Surface
-                  tone="tint"
-                  radius="xl"
-                  pad="none"
-                  className="min-h-40 overflow-hidden"
-                >
-                  <Image
-                    src="/assets/computer.png"
-                    alt="Layar retro ASTRO 2026"
-                    fill
-                    sizes="(min-width: 1024px) 280px, 100vw"
-                    className="object-contain object-center p-3"
-                    priority
-                  />
-                </Surface>
-              </div>
-            </div>
-          </Surface>
+          <MascotCarousel />
         </motion.div>
       </div>
+
+      <GrassStrip className="h-24 sm:h-32 md:h-40 lg:h-44" />
     </section>
   );
 }

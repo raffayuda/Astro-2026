@@ -4,16 +4,14 @@ import type { ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, useReducedMotion } from "motion/react";
-import { ArrowRight, Handshake, Mail, MessageSquare, Phone } from "lucide-react";
+import { ArrowRight, Mail, MessageSquare, Phone } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import {
-  Pattern,
-  Pill,
-  SectionHeading,
-  SectionShell,
-  Surface,
-} from "@/components/brand";
+import { CtaButton } from "@/components/brand/CtaButton";
+import { SectionHeading } from "@/components/brand/SectionHeading";
+import { SectionShell } from "@/components/brand/SectionShell";
+import { Surface } from "@/components/brand/Surface";
+import { WindowCard } from "@/components/brand/WindowCard";
 import { useMediaPartners, useSponsors } from "@/src/lib/hooks/use-queries";
 
 interface SponsorItem {
@@ -70,10 +68,14 @@ const MEDPART_CP = [
   },
 ];
 
-export default function SponsorSection({
-  variant = "home",
-  id = "sponsor",
-}: SponsorSectionProps) {
+/**
+ * Partners — shelves of logos, then one contact row.
+ *
+ * The contact block was a sticky sidebar card competing with the shelves for
+ * half the width; it is a full-width strip under them now, which is where the
+ * reader gets to it anyway.
+ */
+export default function SponsorSection({ variant = "home", id = "sponsor" }: SponsorSectionProps) {
   const reduce = useReducedMotion();
   const { data: rawSponsors = [] } = useSponsors() as { data: SponsorItem[] };
   const { data: rawMediaPartners = [] } = useMediaPartners() as {
@@ -92,12 +94,12 @@ export default function SponsorSection({
     variant === "home"
       ? [
           {
-            title: "Official Sponsor ASTRO 2026",
+            title: "Official Sponsor",
             items: currentSponsors,
             fallback: <SponsorFallback />,
           },
           {
-            title: "Official Media Partner ASTRO 2026",
+            title: "Media Partner",
             items: currentMediaPartners,
             fallback: <MediaPartnerFallback />,
           },
@@ -114,177 +116,130 @@ export default function SponsorSection({
             { title: "Media Partners", items: mediaPartners },
           ];
 
-  const visibleGroups = groups.filter(
-    (group) => group.items.length > 0 || group.fallback,
-  );
+  const visibleGroups = groups.filter((group) => group.items.length > 0 || group.fallback);
 
   return (
     <SectionShell
       id={id}
-      sky="none"
-      width="wide"
-      className="relative overflow-hidden bg-linear-to-b from-surface via-sky-bottom to-astro-cyan-2/70 py-18 text-astro-navy md:py-24"
+      band={variant === "home" ? "gold" : "white"}
+      space="md"
     >
-      <Pattern className="absolute inset-0 -z-10 opacity-25" />
+      <SectionHeading
+        eyebrow="Kolaborasi"
+        pillTone="gold"
+        title={variant === "profile" ? "Jejak kolaborasi" : "Ruang kolaborasi"}
+        lead={
+          variant === "profile"
+            ? "Sponsor dan media partner yang mendukung perjalanan ASTRO."
+            : "Brand dan komunitas bisa masuk ke ekosistem ASTRO melalui sponsor, publikasi, dan aktivasi acara."
+        }
+        align="start"
+      />
 
-      <div className="grid gap-8 lg:grid-cols-[0.38fr_0.62fr] lg:items-start">
-        <motion.div
-          initial={reduce ? false : { opacity: 0, y: 18 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.5 }}
-          className="lg:sticky lg:top-24"
-        >
-          <SectionHeading
-            eyebrow="Partner"
-            title={variant === "profile" ? "Jejak kolaborasi" : "Ruang kolaborasi"}
-            lead={
-              variant === "profile"
-                ? "Sponsor dan media partner yang mendukung perjalanan ASTRO."
-                : "Brand dan komunitas bisa masuk ke ekosistem ASTRO melalui sponsor, publikasi, dan aktivasi acara."
-            }
-            align="start"
-            chrome={false}
-          />
-
-          {variant === "home" && (
-            <Surface
-              tone="plain"
-              radius="2xl"
-              pad="lg"
-              className="mt-6 border border-white/80 bg-white/90 backdrop-blur"
-            >
-              <Pill tone="gold" size="sm">
-                Let's collaborate
-              </Pill>
-              <div className="mt-4 flex flex-col gap-3 text-sm font-medium text-ink">
-                <p className="flex items-center gap-2">
-                  <Phone className="size-4 text-astro-blue" />
-                  <span>
-                    {SPONSOR_CP.name} ({SPONSOR_CP.phone})
-                  </span>
-                </p>
-                <p className="flex items-center gap-2">
-                  <Mail className="size-4 text-astro-blue" />
-                  <a href={SPONSOR_CP.emailLink} className="font-bold text-astro-navy hover:underline">
-                    {SPONSOR_CP.email}
-                  </a>
-                </p>
-              </div>
-              <div className="mt-5 flex flex-col gap-2 sm:flex-row lg:flex-col">
-                <Button asChild className="rounded-full text-xs font-black uppercase tracking-wider">
-                  <a href={SPONSOR_CP.waLink} target="_blank" rel="noopener noreferrer">
-                    <MessageSquare data-icon="inline-start" />
-                    Hubungi sponsor
-                  </a>
-                </Button>
-                <Button
-                  asChild
-                  variant="outline"
-                  className="rounded-full text-xs font-black uppercase tracking-wider"
-                >
-                  <Link href="/profile#sponsor">
-                    Lihat rekam jejak
-                    <ArrowRight data-icon="inline-end" />
-                  </Link>
-                </Button>
-              </div>
-            </Surface>
-          )}
-        </motion.div>
-
-        <div className="flex flex-col gap-5">
-          {visibleGroups.map((group, index) => (
-            <motion.div
-              key={group.title}
-              initial={reduce ? false : { opacity: 0, y: 18 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.25 }}
-              transition={{ delay: index * 0.06, duration: 0.45 }}
-            >
-              <PartnerShelf title={group.title} items={group.items}>
-                {group.fallback}
-              </PartnerShelf>
-            </motion.div>
-          ))}
-        </div>
+      <div className="mt-6 grid items-stretch gap-3 sm:mt-8 sm:gap-5 md:grid-cols-2">
+        {visibleGroups.map((group, index) => (
+          <motion.div
+            key={group.title}
+            initial={reduce ? false : { opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.25 }}
+            transition={{ delay: index * 0.06, duration: 0.45 }}
+            className="h-full"
+          >
+            <WindowCard title={group.title} close={false} className="h-full">
+              <PartnerShelf items={group.items}>{group.fallback}</PartnerShelf>
+            </WindowCard>
+          </motion.div>
+        ))}
       </div>
+
+      {variant === "home" && (
+        <WindowCard
+          title="Let's collaborate"
+          close={false}
+          className="mt-6 sm:mt-8"
+          bodyClassName="flex flex-col gap-4 sm:gap-6 md:flex-row md:items-center md:justify-between"
+        >
+          <div className="flex min-w-0 flex-col gap-2">
+            <p className="flex items-start gap-2 text-sm font-semibold break-words text-astro-navy">
+              <Phone aria-hidden className="mt-0.5 size-4 shrink-0 text-astro-blue" />
+              {SPONSOR_CP.name} ({SPONSOR_CP.phone})
+            </p>
+            <a
+              href={SPONSOR_CP.emailLink}
+              className="flex items-center gap-2 text-sm font-semibold break-all text-astro-navy hover:underline"
+            >
+              <Mail aria-hidden className="size-4 text-astro-blue" />
+              {SPONSOR_CP.email}
+            </a>
+          </div>
+
+          <div className="flex w-full shrink-0 flex-col gap-2 sm:w-auto sm:flex-row">
+            <CtaButton href={SPONSOR_CP.waLink} size="default" showChevron={false} className="w-full sm:w-auto">
+              Hubungi sponsor
+            </CtaButton>
+            <Button asChild variant="outline" className="w-full sm:w-auto">
+              <Link href="/profile#sponsor">
+                Lihat rekam jejak
+                <ArrowRight data-icon="inline-end" />
+              </Link>
+            </Button>
+          </div>
+        </WindowCard>
+      )}
     </SectionShell>
   );
 }
 
 function PartnerShelf({
-  title,
   items,
   children,
 }: {
-  title: string;
   items: { id: number; name: string; website?: string | null; logo?: string | null }[];
   children?: React.ReactNode;
 }) {
   return (
-    <Surface
-      tone="plain"
-      radius="2xl"
-      pad="lg"
-      className="border border-white/80 bg-white/90 backdrop-blur"
-    >
-      <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-        <Pill tone="blue" size="sm">
-          {title}
-        </Pill>
-        <span className="text-10 font-black uppercase tracking-widest text-muted-foreground">
-          {items.length > 0 ? `${items.length} partner` : "Open slot"}
-        </span>
-      </div>
+    <div className="flex h-full flex-1 flex-col gap-3">
+      <p className="text-10 font-black uppercase tracking-[0.16em] text-muted-foreground">
+        {items.length > 0 ? `${items.length} partner` : "Open slot"}
+      </p>
 
       {items.length > 0 ? (
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+        <div className="grid flex-1 grid-cols-2 content-start gap-3 sm:grid-cols-3">
           {items.map((brand) => (
             <BrandItem key={brand.id} brand={brand} />
           ))}
         </div>
       ) : (
-        children
+        <div className="flex flex-1">{children}</div>
       )}
-    </Surface>
+    </div>
   );
 }
 
 function SponsorFallback() {
   return (
-    <Surface tone="tint" radius="xl" pad="md" className="flex flex-col gap-4">
-      <span className="grid size-11 place-items-center rounded-full bg-white text-astro-blue shadow-soft-sm">
-        <Handshake className="size-5" />
-      </span>
-      <div>
-        <h3 className="font-heading text-lg font-black text-astro-navy">
-          Slot sponsor masih dibuka
-        </h3>
-        <p className="mt-1 text-sm font-medium leading-relaxed text-ink">
-          Jangkau peserta, komunitas kampus, dan audience grand final ASTRO 2026.
-        </p>
-      </div>
+    <Surface tone="tint" radius="xl" pad="md" className="flex min-h-36 flex-1 flex-col justify-center shadow-none">
+      <h3 className="font-heading text-base font-black text-astro-navy">
+        Slot sponsor masih dibuka
+      </h3>
+      <p className="mt-1.5 text-sm font-medium leading-relaxed text-ink/75">
+        Jangkau peserta, komunitas kampus, dan audience grand final ASTRO 2026.
+      </p>
     </Surface>
   );
 }
 
 function MediaPartnerFallback() {
   return (
-    <Surface tone="tint" radius="xl" pad="md" className="flex flex-col gap-4">
-      <p className="text-sm font-medium leading-relaxed text-ink">
-        Media partner dapat menghubungi contact person publikasi untuk kerja sama
-        konten dan liputan acara.
+    <Surface tone="tint" radius="xl" pad="md" className="flex min-h-36 flex-1 flex-col justify-center shadow-none">
+      <p className="text-sm font-medium leading-relaxed text-ink/75">
+        Media partner dapat menghubungi contact person publikasi untuk kerja sama konten dan liputan
+        acara.
       </p>
-      <div className="flex flex-wrap gap-2">
+      <div className="mt-4 flex flex-wrap gap-2">
         {MEDPART_CP.map((cp) => (
-          <Button
-            key={cp.name}
-            asChild
-            variant="outline"
-            size="sm"
-            className="rounded-full text-xs font-black uppercase tracking-wider"
-          >
+          <Button key={cp.name} asChild variant="outline" size="sm">
             <a href={cp.waLink} target="_blank" rel="noopener noreferrer">
               <MessageSquare data-icon="inline-start" />
               {cp.name}
@@ -302,28 +257,22 @@ function BrandItem({
   brand: { name: string; website?: string | null; logo?: string | null };
 }) {
   const content = (
-    <Surface
-      tone="tint"
-      radius="xl"
-      pad="md"
-      interactive
-      className="flex min-h-24 items-center justify-center gap-3 bg-sky-bottom/70 text-center hover:bg-white"
-    >
+    <div className="flex h-full min-h-24 flex-col items-center justify-center gap-2 rounded-xl border border-astro-cyan-2/40 bg-white p-4 text-center transition-colors hover:border-astro-blue/60">
       {brand.logo && (
-        <div className="relative size-14 shrink-0">
+        <div className="relative size-12 shrink-0">
           <Image
             src={brand.logo}
             alt={brand.name || "Logo partner"}
             fill
             className="object-contain"
-            sizes="56px"
+            sizes="48px"
           />
         </div>
       )}
-      <span className="font-heading text-sm font-extrabold leading-tight text-astro-navy">
+      <span className="font-heading text-xs font-extrabold leading-tight text-astro-navy">
         {brand.name}
       </span>
-    </Surface>
+    </div>
   );
 
   const websiteUrl = brand.website

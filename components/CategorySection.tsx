@@ -1,37 +1,39 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { motion, useReducedMotion } from 'motion/react';
-import { ArrowRight, Gamepad2, GraduationCap, Trophy } from 'lucide-react';
+import Link from "next/link";
+import { motion, useReducedMotion } from "motion/react";
+import { ArrowRight, Gamepad2, GraduationCap, Trophy } from "lucide-react";
 
-import type { Competition } from '@/types/astro';
-import { cn } from '@/lib/utils';
-import { Pill, SectionHeading, SectionShell } from '@/components/brand';
+import type { Competition } from "@/types/astro";
+import { cn } from "@/lib/utils";
+import { SectionHeading } from "@/components/brand/SectionHeading";
+import { SectionShell } from "@/components/brand/SectionShell";
+import { WindowCard } from "@/components/brand/WindowCard";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 /** Per-category presentation. Keys match Competition['category']. */
 const CATEGORIES = [
   {
-    id: 'akademik' as const,
-    label: 'Akademik',
-    blurb: 'Uji nalar, riset dan kemampuan analitismu.',
+    id: "akademik" as const,
+    label: "Akademik",
+    blurb: "Uji nalar, riset dan kemampuan analitismu.",
     icon: GraduationCap,
-    face: 'from-astro-blue to-astro-navy',
+    face: "bg-astro-blue",
   },
   {
-    id: 'olahraga' as const,
-    label: 'Olahraga',
-    blurb: 'Adu sportivitas, strategi dan ketangguhan fisik.',
+    id: "olahraga" as const,
+    label: "Olahraga",
+    blurb: "Adu sportivitas, strategi dan ketangguhan fisik.",
     icon: Trophy,
-    face: 'from-pastel-orange to-orange-400',
+    face: "bg-pastel-orange",
   },
   {
-    id: 'esports' as const,
-    label: 'Esports',
-    blurb: 'Bawa timmu menuju panggung grand final.',
+    id: "esports" as const,
+    label: "Esports",
+    blurb: "Bawa timmu menuju panggung grand final.",
     icon: Gamepad2,
-    face: 'from-astro-pink to-pink-400',
+    face: "bg-astro-pink",
   },
 ];
 
@@ -42,68 +44,58 @@ interface Props {
 export default function CategorySection({ competitions }: Props) {
   const reduce = useReducedMotion();
 
-  const countFor = (id: (typeof CATEGORIES)[number]['id']) =>
+  const countFor = (id: (typeof CATEGORIES)[number]["id"]) =>
     competitions.filter((c) => c.category === id).length;
 
   return (
-    <SectionShell
-      id="categories"
-      ribbon
-      sky="bright"
-      bubbles="corners"
-      className="py-20 md:py-24"
-    >
+    <SectionShell id="categories" band="mid" space="md">
       <SectionHeading
         eyebrow="Kategori"
-        title="Pilih Arenamu"
+        pillTone="blue"
+        title="Pilih arenamu"
         lead="Tiga kategori, satu panggung. Temukan cabang lomba yang paling kamu kuasai."
+        align="start"
       />
 
-      <div className="mt-12 grid gap-5 md:grid-cols-3">
+      <div className="mt-6 grid items-stretch gap-3 sm:mt-8 sm:gap-5 md:grid-cols-3">
         {CATEGORIES.map((cat, i) => {
           const total = countFor(cat.id);
           return (
             <motion.div
               key={cat.id}
-              initial={reduce ? false : { opacity: 0, y: 24 }}
+              initial={reduce ? false : { opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.25 }}
-              transition={{ delay: i * 0.08, duration: 0.5, ease: EASE }}
+              transition={{ delay: i * 0.07, duration: 0.5, ease: EASE }}
+              className="h-full"
             >
-              <Link
-                href="#competitions"
-                className="group flex h-full flex-col gap-4 rounded-xl bg-white p-6 shadow-soft transition-all duration-200 hover:-translate-y-1 hover:shadow-soft-lg"
+              <WindowCard
+                title={cat.label}
+                close={false}
+                pad="compact"
+                className="h-full transition-transform duration-200 hover:-translate-y-0.5"
               >
-                <span
-                  aria-hidden
-                  className={cn(
-                    'grid size-14 place-items-center rounded-xl bg-linear-to-br text-white shadow-soft-sm',
-                    cat.face
-                  )}
-                >
-                  <cat.icon className="size-7" />
-                </span>
-
-                <div className="flex flex-1 flex-col gap-1.5">
-                  <div className="flex items-center justify-between gap-2">
-                    <h3 className="font-title text-2xl font-bold uppercase tracking-tight text-astro-navy">
-                      {cat.label}
-                    </h3>
-                    <Pill tone="white" size="sm">
-                      {total} lomba
-                    </Pill>
-                  </div>
-                  <p className="text-sm font-medium text-ink">{cat.blurb}</p>
-                </div>
-
-                <span className="flex items-center gap-1.5 text-11 font-black uppercase tracking-widest text-astro-blue">
-                  Lihat cabang
-                  <ArrowRight
+                <Link href="#competitions" className="group flex h-full flex-col gap-4">
+                  <span
                     aria-hidden
-                    className="size-3.5 transition-transform group-hover:translate-x-1"
-                  />
-                </span>
-              </Link>
+                    className={cn("grid size-11 place-items-center rounded-xl text-white", cat.face)}
+                  >
+                    <cat.icon className="size-5" />
+                  </span>
+
+                  <p className="text-sm font-medium leading-relaxed text-ink/75">
+                    {cat.blurb}
+                  </p>
+
+                  <span className="mt-auto flex items-center justify-between gap-2 border-t border-astro-cyan-2/35 pt-3 text-11 font-black uppercase tracking-[0.16em] text-astro-blue">
+                    {total} lomba
+                    <ArrowRight
+                      aria-hidden
+                      className="size-4 transition-transform group-hover:translate-x-1"
+                    />
+                  </span>
+                </Link>
+              </WindowCard>
             </motion.div>
           );
         })}

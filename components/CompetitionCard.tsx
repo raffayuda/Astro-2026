@@ -1,27 +1,30 @@
-'use client';
+"use client";
 
-import { motion, useReducedMotion } from 'motion/react';
-import { Users, Coins, CalendarDays, MapPin } from 'lucide-react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
-import { Surface } from '@/components/brand';
-import { cn } from '@/lib/utils';
-import type { Competition } from '@/types/astro';
-import { formatDateShort } from '@/lib/date';
-import { getEffectiveCompetitionFee } from '@/src/lib/competitions';
+import { motion, useReducedMotion } from "motion/react";
+import { Users, Coins, CalendarDays, MapPin } from "lucide-react";
+import Link from "next/link";
+import type { Competition } from "@/types/astro";
+import { formatDateShort } from "@/lib/date";
+import { getEffectiveCompetitionFee } from "@/src/lib/competitions";
+import { CtaButton } from "@/components/brand/CtaButton";
+import { Pill, type PillProps } from "@/components/brand/Pill";
+import { WindowCard } from "@/components/brand/WindowCard";
+import { Button } from "@/components/ui/button";
 
-const categoryConfig: Record<string, { accent: string; label: string; badgeClass: string }> = {
-  akademik: { accent: 'bg-emerald-500', label: 'AKADEMIK', badgeClass: 'border-emerald-200 bg-emerald-50 text-emerald-700' },
-  olahraga: { accent: 'bg-orange-500', label: 'OLAHRAGA', badgeClass: 'border-orange-200 bg-orange-50 text-orange-700' },
-  esports: { accent: 'bg-astro-blue', label: 'ESPORTS', badgeClass: 'border-astro-cyan-2 bg-sky-bottom text-astro-navy' },
-  'kesenian-/-seni': { accent: 'bg-violet-500', label: 'KESENIAN', badgeClass: 'border-violet-200 bg-violet-50 text-violet-700' },
+const CATEGORY_PILL: Record<string, { label: string; tone: NonNullable<PillProps["tone"]> }> = {
+  akademik: { label: "Akademik", tone: "blue" },
+  olahraga: { label: "Olahraga", tone: "orange" },
+  esports: { label: "Esports", tone: "navy" },
+  "kesenian-/-seni": { label: "Kesenian", tone: "pink" },
 };
 
 function toIdr(n: number) {
-  return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(n);
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(n);
 }
 
 interface Props {
@@ -31,132 +34,101 @@ interface Props {
 
 export default function CompetitionCard({ competition, index }: Props) {
   const reduce = useReducedMotion();
-  const router = useRouter();
-  const cat = categoryConfig[competition.category] || categoryConfig.akademik;
-  const ratio = Math.min((competition.filledSlots / competition.maxSlots) * 100, 100);
+  const category = CATEGORY_PILL[competition.category] ?? CATEGORY_PILL.akademik;
   const left = competition.maxSlots - competition.filledSlots;
   const effective = getEffectiveCompetitionFee(competition);
-
   const isOpen = competition.isActive !== false;
   const isFull = left <= 0;
 
+  const feeLabel = competition.isFree
+    ? "Gratis"
+    : effective.fee > 0
+      ? toIdr(effective.fee)
+      : "TBA";
+
+  const meta = [
+    { id: "fee", icon: Coins, label: feeLabel },
+    { id: "place", icon: MapPin, label: competition.location || "TBA" },
+    { id: "date", icon: CalendarDays, label: formatDateShort(competition.scheduleDate) || "TBA" },
+    {
+      id: "slots",
+      icon: Users,
+      label:
+        competition.maxSlots > 0
+          ? `${competition.filledSlots}/${competition.maxSlots}`
+          : "Kuota TBA",
+    },
+  ] as const;
+
+  const actionLabel = !isOpen ? "Ditutup" : isFull ? "Penuh" : "Daftar";
+
   return (
     <motion.div
-      initial={reduce ? false : { opacity: 0, y: 30 }}
+      initial={reduce ? false : { opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.4, delay: index * 0.05, ease: [0.16, 1, 0.3, 1] as const }}
-      whileHover={reduce ? {} : { y: -4 }}
+      transition={{ duration: 0.35, delay: index * 0.04, ease: [0.16, 1, 0.3, 1] as const }}
+      className="h-full"
     >
-      <Surface
-        tone="plain"
-        radius="xl"
-        pad="none"
-        interactive
-        className={cn(
-          "group h-full overflow-hidden border border-white/80 bg-white/90",
-          !isOpen && "bg-surface/70 opacity-90"
-        )}
+      <WindowCard
+        title={competition.title}
+        close={false}
+        pad="compact"
+        className="h-full"
+        bodyClassName="gap-3"
       >
-        <div className={cn("h-1.5", isOpen ? cat.accent : "bg-ink")} />
-
-        <div className="flex h-full flex-col gap-3 p-5 md:p-6">
-          <div className="flex items-start justify-between gap-1">
-            <div className="flex flex-wrap items-center gap-1">
-              <Badge variant="outline" className={cn('rounded-md border text-10 font-bold uppercase tracking-[0.15em]', cat.badgeClass)}>
-                {cat.label}
-              </Badge>
-              <Badge variant="outline" className="rounded-md border-astro-cyan-2 bg-sky-bottom text-9 font-bold uppercase tracking-[0.1em] text-astro-navy">
-                {competition.origin === 'external' ? 'Eksternal' : 'Internal'}
-              </Badge>
-              {!isOpen && (
-                <Badge variant="outline" className="rounded-md border-red-200 bg-red-50 text-9 font-bold uppercase tracking-[0.1em] text-red-600">
-                  Ditutup
-                </Badge>
-              )}
-            </div>
-            <span className={cn('flex-shrink-0 text-10 font-bold tracking-wide', !isOpen ? 'text-red-600' : left <= 5 ? 'text-destructive' : 'text-muted-foreground')}>
-              {!isOpen ? 'DITUTUP' : left > 0 ? `SISA ${left} SLOT` : 'PENUH'}
-            </span>
-          </div>
-
-          <h3 className="text-base font-black leading-tight tracking-tight text-foreground md:text-lg">
-            {competition.title}
-          </h3>
-          <p className="-mt-1 text-xs leading-relaxed text-muted-foreground md:text-sm">
-            {competition.tagline || 'Informasi lomba segera diumumkan (TBA)'}
-          </p>
-
-          <div className="mt-1 grid grid-cols-2 gap-2 text-11 text-muted-foreground">
-            <span className="flex items-center gap-1.5">
-              <Coins className="size-3 text-primary flex-shrink-0" />
-              <span className="truncate">
-                {competition.isFree
-                  ? 'Gratis'
-                  : effective.fee > 0
-                    ? effective.batchName
-                      ? `${effective.batchName}: ${toIdr(effective.fee)}`
-                      : toIdr(effective.fee)
-                    : 'TBA'}
-              </span>
-            </span>
-            <span className="flex items-center gap-1.5">
-              <MapPin className="size-3 text-primary flex-shrink-0" />
-              <span className="truncate">{competition.location || 'TBA'}</span>
-            </span>
-            <span className="flex items-center gap-1.5">
-              <CalendarDays className="size-3 text-primary flex-shrink-0" />
-              <span className="truncate">{formatDateShort(competition.scheduleDate) || 'TBA'}</span>
-            </span>
-            <span className="flex items-center gap-1.5">
-              <Users className="size-3 text-primary flex-shrink-0" />
-              <span className="truncate">
-                {competition.maxSlots > 0 ? `${competition.filledSlots}/${competition.maxSlots}` : 'Kuota TBA'}
-              </span>
-            </span>
-          </div>
-
-          <Progress
-            value={competition.maxSlots > 0 ? ratio : 0}
-            aria-label={`Kuota ${competition.title}`}
-            className="h-1.5 bg-muted [&>div]:rounded-full"
-          />
-
-          <div className="mt-auto flex items-center gap-2 pt-1">
-            <Button asChild variant="outline" size="sm" className="rounded-md flex-1 text-10 font-bold uppercase tracking-[0.1em]">
-              <Link href={`/competitions/${competition.id}`} aria-label={`Detail ${competition.title}`}>Detail</Link>
-            </Button>
-            {!isOpen ? (
-              <Button
-                disabled
-                size="sm"
-                aria-label={`Pendaftaran ${competition.title} Ditutup`}
-                className="rounded-md flex-1 text-10 font-bold uppercase tracking-[0.1em] opacity-60 cursor-not-allowed bg-muted text-muted-foreground hover:bg-muted"
-              >
-                Ditutup
-              </Button>
-            ) : isFull ? (
-              <Button
-                disabled
-                size="sm"
-                aria-label={`Kuota ${competition.title} Penuh`}
-                className="rounded-md flex-1 text-10 font-bold uppercase tracking-[0.1em] opacity-60 cursor-not-allowed bg-muted text-muted-foreground hover:bg-muted"
-              >
-                Penuh
-              </Button>
-            ) : (
-              <Button
-                onClick={() => router.push(`/register/${competition.id}`)}
-                size="sm"
-                aria-label={`Daftar ${competition.title}`}
-                className="rounded-md flex-1 text-10 font-black uppercase tracking-[0.1em]"
-              >
-              Daftar
-            </Button>
+        <div className="flex flex-wrap items-center gap-1.5">
+          <Pill tone={category.tone} size="sm" className="shadow-gloss">
+            {category.label}
+          </Pill>
+          <Pill tone="glass" size="sm">
+            {competition.origin === "external" ? "Eksternal" : "Internal"}
+          </Pill>
+          {!isOpen && (
+            <Pill tone="pink" size="sm" className="shadow-gloss">
+              Ditutup
+            </Pill>
           )}
-          </div>
+          {isOpen && isFull && (
+            <Pill tone="gold" size="sm">
+              Penuh
+            </Pill>
+          )}
         </div>
-      </Surface>
+
+        <p className="line-clamp-1 text-sm font-medium text-ink/75">
+          {competition.tagline || "Informasi lomba segera diumumkan."}
+        </p>
+
+        <ul className="grid grid-cols-2 gap-x-3 gap-y-1.5 text-xs font-semibold text-ink">
+          {meta.map((item) => (
+            <li key={item.id} className="flex min-w-0 items-center gap-2">
+              <item.icon className="size-3.5 shrink-0 text-astro-blue" aria-hidden />
+              <span className="truncate">{item.label}</span>
+            </li>
+          ))}
+        </ul>
+
+        <div className="mt-auto flex items-center gap-2 pt-1">
+          <Button asChild variant="outline" size="sm" className="h-10 flex-1 rounded-full sm:h-8">
+            <Link href={`/competitions/${competition.id}`}>Detail</Link>
+          </Button>
+          {!isOpen || isFull ? (
+            <Button disabled size="sm" className="h-10 flex-1 rounded-full sm:h-8">
+              {actionLabel}
+            </Button>
+          ) : (
+            <CtaButton
+              href={`/register/${competition.id}`}
+              size="default"
+              showChevron={false}
+              className="h-10 flex-1 px-3 text-xs sm:h-8"
+            >
+              Daftar
+            </CtaButton>
+          )}
+        </div>
+      </WindowCard>
     </motion.div>
   );
 }
