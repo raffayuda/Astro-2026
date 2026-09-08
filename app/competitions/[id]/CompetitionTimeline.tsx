@@ -3,7 +3,8 @@
 import { motion, useReducedMotion } from 'motion/react';
 import { CalendarDays, Clock } from 'lucide-react';
 import type { TimelineItem } from '@/types/astro';
-import { Bubbles, ChromeText, Pattern } from "@/components/brand";
+import { SectionHeading } from "@/components/brand/SectionHeading";
+import { SectionShell } from "@/components/brand/SectionShell";
 
 interface Props {
   timeline: TimelineItem[];
@@ -31,36 +32,13 @@ export default function CompetitionTimeline({ timeline, lineColor, categoryColor
   const reduce = useReducedMotion();
 
   return (
-    <section className="bg-linear-to-b from-sky-bottom via-white to-white relative overflow-hidden py-16 md:py-20">
-      <Bubbles preset="sparse" />
-      <Pattern className="absolute inset-0 z-0 opacity-25" />
-      {/* Subtle background glow */}
-      <div className="absolute top-1/2 left-1/2 size-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-astro-cyan-2/12 blur-[150px] pointer-events-none" />
+    <SectionShell band="none" space="md">
+      <SectionHeading
+        title="Timeline lomba"
+        lead="Jadwal rangkaian acara dari awal sampai akhir."
+      />
 
-      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6">
-        {/* ─── Section header ─── */}
-        <motion.div
-          className="text-center mb-12 md:mb-14"
-          initial={reduce ? false : { opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] as const }}
-        >
-          <div className="flex justify-center mb-3">
-            <div
-              className="h-1.5 w-12 rounded-full bg-astro-gold shadow-sticker-sm"
-            />
-          </div>
-          <h2 className="text-2xl md:text-3xl font-black text-astro-navy uppercase tracking-tight mb-2">
-            Timeline <ChromeText>Lomba</ChromeText>
-          </h2>
-          <p className="text-sm md:text-base text-astro-blue/75 font-semibold leading-relaxed max-w-lg mx-auto">
-            Jadwal lengkap rangkaian acara lomba ini dari awal hingga akhir
-          </p>
-        </motion.div>
-
-        {/* ─── Timeline ─── */}
-        <div className="relative">
+      <div className="relative mt-10">
           {/* Vertical line — Desktop: centered, Mobile: 26px from left */}
           <div
             className="absolute top-0 bottom-0 w-[3px] z-0 hidden md:block left-1/2 -translate-x-1/2 rounded-full"
@@ -160,8 +138,7 @@ export default function CompetitionTimeline({ timeline, lineColor, categoryColor
             </div>
           </div>
         </div>
-      </div>
-    </section>
+    </SectionShell>
   );
 }
 

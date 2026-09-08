@@ -3,7 +3,6 @@
 import { useState, useMemo, useEffect, Suspense } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
-import { motion } from "motion/react";
 import {
   CheckCircle2,
   XCircle,
@@ -33,7 +32,7 @@ import { authClient } from "@/src/lib/auth-client";
 import { useRegistrations } from "@/src/lib/hooks/use-queries";
 import { apiHelpers } from "@/src/lib/api";
 import PrintableInvoice, { PrintPortal } from "@/components/PrintableInvoice";
-import Navbar from "@/components/Navbar";
+import { PageShell } from "@/components/brand";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -51,8 +50,6 @@ import {
 import { Spinner } from "@/components/ui/spinner";
 import { cn } from "@/lib/utils";
 import type { CompetitionCustomField } from "@/types/astro";
-
-const MotionImage = motion.create(Image);
 
 interface RegistrationItem {
   id: string;
@@ -241,75 +238,11 @@ function CheckRegistrationContent() {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-linear-to-b from-sky-top via-astro-cyan-2 to-white">
-      <Navbar />
-
-      {/* Floating Blobs */}
-      <MotionImage
-        src="/assets/blob-round.png"
-        alt=""
-        width={112}
-        height={112}
-        animate={{ y: [0, -18, 0] }}
-        transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-        className="pointer-events-none absolute top-[8%] right-[6%] z-0 size-20 object-contain select-none md:size-28"
-      />
-      <MotionImage
-        src="/assets/blob-round.png"
-        alt=""
-        width={96}
-        height={96}
-        animate={{ y: [0, -14, 0] }}
-        transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
-        className="pointer-events-none absolute top-[35%] left-[3%] z-0 size-16 object-contain select-none md:size-24"
-      />
-      <MotionImage
-        src="/assets/blob-round.png"
-        alt=""
-        width={72}
-        height={72}
-        animate={{ y: [0, -12, 0] }}
-        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-        className="pointer-events-none absolute top-[55%] right-[3%] z-0 size-12 object-contain select-none md:size-20"
-      />
-      <MotionImage
-        src="/assets/blob-round.png"
-        alt=""
-        width={88}
-        height={88}
-        animate={{ y: [0, -16, 0] }}
-        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        className="pointer-events-none absolute bottom-[12%] left-[4%] z-0 size-14 object-contain select-none md:size-22"
-      />
-
-      {/* Clouds */}
-      <MotionImage
-        src="/assets/awan1.png"
-        alt=""
-        width={160}
-        height={120}
-        animate={{ x: [0, 15, 0] }}
-        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-        className="pointer-events-none absolute top-[10%] left-[2%] z-0 h-auto w-16 object-contain opacity-30 select-none md:w-36"
-      />
-      <MotionImage
-        src="/assets/awan2.png"
-        alt=""
-        width={200}
-        height={140}
-        animate={{ x: [0, -12, 0] }}
-        transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-        className="pointer-events-none absolute top-[28%] right-[3%] z-0 h-auto w-20 object-contain opacity-25 select-none md:w-44"
-      />
-
-      <div className="relative z-10 mx-auto max-w-3xl px-4 pt-32 pb-20 md:pt-36 md:pb-28">
-        {/* Header */}
+    <PageShell>
+      <div className="mx-auto max-w-3xl px-4 pt-28 pb-20 md:pt-32">
         <div className="mb-8 text-center">
-          <div className="mb-3 flex justify-center">
-            <div className="block h-1.5 w-18 rounded-full bg-linear-to-r from-astro-gold via-astro-lime2 to-astro-blue" />
-          </div>
-          <h1 className="font-title mb-2 bg-linear-to-b from-astro-navy via-astro-navy to-black bg-clip-text text-4xl leading-tight text-transparent md:text-5xl">
-            Cek Pendaftaran
+          <h1 className="font-heading text-4xl font-black tracking-tight text-astro-navy md:text-5xl">
+            Cek pendaftaran
           </h1>
           <p className="mx-auto max-w-md text-xs md:text-sm font-normal text-ink">
             Periksa status verifikasi, invoice, dan berkas partisipasi lomba ASTRO 2026 Anda secara instan.
@@ -850,7 +783,7 @@ function CheckRegistrationContent() {
           <PrintableInvoice data={printTarget} />
         </PrintPortal>
       )}
-    </div>
+    </PageShell>
   );
 }
 

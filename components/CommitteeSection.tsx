@@ -10,13 +10,12 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { cn } from "@/lib/utils";
 import { normalizeImageUrl } from "@/components/ImportCommittee";
 import SkeletonImage from "@/components/SkeletonImage";
-import { Bubbles, ChromeText, Pattern } from "@/components/brand";
+import { SectionHeading } from "@/components/brand/SectionHeading";
+import { SectionShell } from "@/components/brand/SectionShell";
 import {
   useCommitteeMembers,
   useCommitteeDivisions,
 } from "@/src/lib/hooks/use-queries";
-
-const MotionImage = motion.create(Image);
 
 export default function CommitteeSection() {
   const reduce = useReducedMotion();
@@ -244,67 +243,13 @@ export default function CommitteeSection() {
   }, [selectedMemberIndex, filteredMembers.length]);
 
   return (
-    <section
-      id="committee"
-      className="bg-linear-to-b from-sky-bottom via-white to-white relative overflow-hidden py-20 text-astro-navy md:py-28"
-    >
-      <Bubbles preset="sparse" />
-      <Pattern className="absolute inset-0 z-0 opacity-25" />
-      {/* ─── SKY BACKGROUND GLOWS ─── */}
-      <div className="pointer-events-none absolute top-1/2 left-1/2 z-0 size-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-astro-cyan-2/20 blur-[140px]" />
-
-      {/* ─── FLOATING DECORATIVE CLOUDS & BLOBS ─── */}
-      <MotionImage
-        src="/assets/cloud.png"
-        alt=""
-        width={320}
-        height={220}
-        animate={reduce ? undefined : { x: [0, 20, 0] }}
-        transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-[8%] -left-12 w-64 md:w-80 h-auto opacity-60 pointer-events-none select-none z-0"
-      />
-      <MotionImage
-        src="/assets/cloud.png"
-        alt=""
-        width={280}
-        height={200}
-        animate={reduce ? undefined : { x: [0, -18, 0] }}
-        transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-[18%] -right-16 w-56 md:w-72 h-auto opacity-50 pointer-events-none select-none z-0"
-      />
-      <MotionImage
-        src="/assets/awan1.png"
-        alt=""
-        width={180}
-        height={140}
-        animate={reduce ? undefined : { x: [0, 15, 0] }}
-        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute bottom-[10%] left-[2%] w-24 md:w-40 h-auto opacity-75 pointer-events-none select-none z-0"
-      />
-      <MotionImage
-        src="/assets/awan2.png"
-        alt=""
-        width={200}
-        height={160}
-        animate={reduce ? undefined : { x: [0, -12, 0] }}
-        transition={{ duration: 11, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute bottom-[15%] right-[2%] w-28 md:w-48 h-auto opacity-70 pointer-events-none select-none z-0"
+    <SectionShell id="committee" band="none" space="sm">
+      <SectionHeading
+        title="Panitia ASTRO 2026"
+        lead="Tim yang menggerakkan kompetisi, festival, dan grand final."
       />
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* ── Section Header ── */}
-        <div className="text-center mb-10">
-          <div className="flex justify-center mb-3">
-            <div className="block h-1.5 w-18 rounded-full bg-linear-to-r from-astro-gold via-astro-lime2 to-astro-blue" />
-          </div>
-          <h2 className="font-title text-4xl md:text-5xl lg:text-6xl text-astro-navy leading-tight mb-3">
-            Our <ChromeText>Committee</ChromeText>
-          </h2>
-          <p className="rounded-full bg-white shadow-soft-sm mx-auto max-w-xl px-5 py-2 text-sm font-semibold text-astro-blue md:text-base">
-            Tim panitia penggerak ASTRO 2026 yang bekerja keras untuk kesuksesan
-            acara ini.
-          </p>
-        </div>
+      <div className="mt-10">
 
         {/* ── Filter Pills ── */}
         <div className="mb-8 flex flex-wrap justify-center gap-2">
@@ -641,6 +586,6 @@ export default function CommitteeSection() {
           </motion.div>
         )}
       </AnimatePresence>
-    </section>
+    </SectionShell>
   );
 }

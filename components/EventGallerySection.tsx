@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
 import { motion, useReducedMotion, AnimatePresence } from 'motion/react';
 import { Camera, ChevronLeft, ChevronRight, Heart, X, ZoomIn } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
@@ -11,9 +10,8 @@ import SkeletonImage from '@/components/SkeletonImage';
 import { cn } from '@/lib/utils';
 import { normalizeImageUrl } from '@/components/ImportCommittee';
 import { useGalleryPhotos, useGalleryCategories } from '@/src/lib/hooks/use-queries';
-import { Bubbles, ChromeText, Pattern } from "@/components/brand";
-
-const MotionImage = motion.create(Image);
+import { SectionHeading } from "@/components/brand/SectionHeading";
+import { SectionShell } from "@/components/brand/SectionShell";
 
 interface GalleryPhoto {
   id: string;
@@ -88,53 +86,13 @@ export default function EventGallerySection() {
   }, [selectedPhotoIndex, filteredPhotos.length]);
 
   return (
-    <section id="gallery" className="bg-linear-to-b from-sky-bottom via-white to-white relative overflow-hidden py-24 text-astro-navy md:py-32">
-      <Bubbles preset="sparse" />
-      <Pattern className="absolute inset-0 z-0 opacity-25" />
-      {/* ─── SKY BACKGROUND GLOWS ─── */}
-      <div className="pointer-events-none absolute top-1/2 left-1/2 z-0 size-[850px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-astro-cyan-2/25 blur-[140px]" />
-
-      {/* ─── FLOATING DECORATIVE CLOUDS & BLOBS ─── */}
-      <MotionImage
-        src="/assets/cloud.png"
-        alt=""
-        width={320}
-        height={220}
-        animate={reduce ? undefined : { x: [0, 20, 0] }}
-        transition={{ duration: 13, repeat: Infinity, ease: 'easeInOut' }}
-        className="pointer-events-none absolute top-[6%] -left-12 z-0 h-auto w-72 opacity-75 select-none md:w-96"
-      />
-      <MotionImage
-        src="/assets/cloud.png"
-        alt=""
-        width={350}
-        height={240}
-        animate={reduce ? undefined : { x: [0, -20, 0] }}
-        transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }}
-        className="pointer-events-none absolute top-[14%] -right-16 z-0 h-auto w-80 opacity-70 select-none md:w-[420px]"
-      />
-      <MotionImage
-        src="/assets/blob-round.png"
-        alt=""
-        width={112}
-        height={112}
-        animate={reduce ? undefined : { y: [0, -18, 0] }}
-        transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
-        className="pointer-events-none absolute top-[10%] right-[12%] z-0 size-16 object-contain opacity-80 select-none md:size-28"
+    <SectionShell id="gallery" band="none" space="sm">
+      <SectionHeading
+        title="Galeri acara"
+        lead="Dokumentasi lomba, seminar, dan perayaan ASTRO dari masa ke masa."
       />
 
-      <div className="relative z-10 w-full">
-        {/* ── Section Header ── */}
-        <div className="mx-auto mb-10 flex max-w-7xl flex-col items-center px-4 text-center sm:px-6 lg:px-8">
-          <div className="mb-3 flex justify-center">
-            <div className="block h-1.5 w-18 rounded-full bg-linear-to-r from-astro-gold via-astro-lime2 to-astro-blue" />
-          </div>
-          <h2 className="font-title mb-3 text-4xl leading-tight tracking-tight text-astro-navy sm:text-5xl md:text-6xl">
-            EVENT <ChromeText>GALLERY</ChromeText>
-          </h2>
-          <p className="rounded-full bg-white shadow-soft-sm mx-auto mb-6 max-w-xl px-5 py-2 text-xs font-black leading-relaxed text-astro-blue md:text-sm">
-            Kumpulan momen berharga, dokumentasi keseruan lomba, seminar, dan perayaan kemenangan ASTRO dari masa ke masa.
-          </p>
+      <div className="mt-10">
 
           {/* ── Category Filter Pills ── */}
           <div className="max-w-full overflow-x-auto px-2 pb-2 pt-1 no-scrollbar">
@@ -229,7 +187,6 @@ export default function EventGallerySection() {
             ))}
           </div>
         </div>
-      </div>
 
       {/* ═══ FULLSCREEN LIGHTBOX ═══ */}
       <AnimatePresence>
@@ -360,6 +317,6 @@ export default function EventGallerySection() {
           </motion.div>
         )}
       </AnimatePresence>
-    </section>
+    </SectionShell>
   );
 }

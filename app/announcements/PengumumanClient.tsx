@@ -2,8 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import Image from "next/image";
-import { motion, useReducedMotion } from "motion/react";
+import { motion } from "motion/react";
 import { Search, Eye } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -24,7 +23,8 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import WinnersModal from "./WinnersModal";
 import { apiHelpers } from "@/src/lib/api";
 import { queryKeys } from "@/src/lib/hooks/use-queries";
-import { Bubbles, ChevronRibbon, ChromeText, Pattern } from "@/components/brand";
+import { SectionHeading } from "@/components/brand/SectionHeading";
+import { SectionShell } from "@/components/brand/SectionShell";
 
 type CategoryType = "akademik" | "olahraga" | "esports" | "kesenian-/-seni";
 
@@ -97,10 +97,7 @@ const CATEGORIES: { label: string; value: CategoryType | "all" }[] = [
 
 const SKELETON_COUNT = 6;
 
-const MotionImage = motion.create(Image);
-
 export default function PengumumanClient() {
-  const reduce = useReducedMotion();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<
     CategoryType | "all"
@@ -167,78 +164,13 @@ export default function PengumumanClient() {
   };
 
   return (
-    <section className="bg-linear-to-b from-sky-top via-sky-mid to-white relative min-h-screen overflow-hidden pt-24 pb-20 text-astro-navy md:pt-32">
-      <Bubbles preset="sparse" />
-      <ChevronRibbon edge="top" />
-      <ChevronRibbon edge="bottom" />
-      <Pattern className="absolute inset-0 z-0 opacity-35" />
-      {/* Floating blobs — seperti hero halaman detail lomba */}
-      <MotionImage
-        src="/assets/blob-round.png" alt="" width={112} height={112}
-        animate={reduce ? undefined : { y: [0, -14, 0] }}
-        transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute top-[6%] -left-[2%] w-14 h-14 md:w-28 md:h-28 object-contain pointer-events-none select-none z-0"
-      />
-      <MotionImage
-        src="/assets/blob-round.png" alt="" width={96} height={96}
-        animate={reduce ? undefined : { y: [0, -12, 0] }}
-        transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut', delay: 0.15 }}
-        className="absolute top-[12%] -right-[2%] w-12 h-12 md:w-24 md:h-24 object-contain pointer-events-none select-none z-0"
-      />
-      <MotionImage
-        src="/assets/blob-round.png" alt="" width={80} height={80}
-        animate={reduce ? undefined : { y: [0, -10, 0] }}
-        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 0.3 }}
-        className="absolute bottom-[18%] left-[4%] w-10 h-10 md:w-20 md:h-20 object-contain pointer-events-none select-none z-0"
-      />
-      <MotionImage
-        src="/assets/blob-round.png" alt="" width={128} height={128}
-        animate={reduce ? undefined : { y: [0, -16, 0] }}
-        transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut', delay: 0.1 }}
-        className="absolute bottom-[8%] right-[3%] w-16 h-16 md:w-32 md:h-32 object-contain pointer-events-none select-none z-0"
+    <SectionShell band="none" space="md" className="pt-24 md:pt-28">
+      <SectionHeading
+        title="Pengumuman pemenang"
+        lead="Selamat kepada para pemenang di setiap cabang lomba ASTRO 2026."
       />
 
-      {/* Floating clouds — seperti hero halaman detail lomba */}
-      <MotionImage
-        src="/assets/awan1.png" alt="" width={160} height={120}
-        animate={reduce ? undefined : { x: [0, 15, 0] }}
-        transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute top-[10%] left-[2%] w-16 h-auto md:w-40 md:h-auto object-contain pointer-events-none select-none z-0 opacity-40"
-      />
-      <MotionImage
-        src="/assets/awan2.png" alt="" width={200} height={140}
-        animate={reduce ? undefined : { x: [0, -12, 0] }}
-        transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute top-[30%] right-[3%] w-20 h-auto md:w-48 md:h-auto object-contain pointer-events-none select-none z-0 opacity-35"
-      />
-
-      <div className="relative z-10 max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <div className="flex justify-center mb-3">
-            <div className="block h-1.5 w-18 rounded-full bg-linear-to-r from-astro-gold via-astro-lime2 to-astro-blue" />
-          </div>
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="font-title text-5xl md:text-6xl lg:text-7xl text-astro-navy leading-tight mb-3"
-          >
-            Pengumuman
-            <br />
-            <ChromeText>
-              Pemenang
-            </ChromeText>
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="rounded-full bg-white shadow-soft-sm mx-auto max-w-lg px-5 py-2 text-sm font-semibold leading-relaxed text-astro-blue md:text-base"
-          >
-            Selamat kepada para pemenang di setiap cabang lomba ASTRO 2026!
-          </motion.p>
-        </div>
+      <div className="mt-10">
 
         {/* Search & Filter */}
         <motion.div
@@ -334,7 +266,6 @@ export default function PengumumanClient() {
             {filtered.map((comp, index) => {
               const cat =
                 categoryConfig[comp.category] || categoryConfig.akademik;
-              const isTeam = comp.type === "team";
               const typeLabel =
                 comp.type === "both"
                   ? "TIM & INDIVIDU"
@@ -436,6 +367,6 @@ export default function PengumumanClient() {
           />
         )}
       </div>
-    </section>
+    </SectionShell>
   );
 }

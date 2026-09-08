@@ -20,25 +20,43 @@ import {
 import { FaWhatsapp } from "react-icons/fa6"
 
 import {
-  ChromeTitle,
   CtaButton,
+  PageShell,
   Pill,
   RetroMonitorWidget,
   SectionHeading,
   SectionShell,
-  SiteFooter,
   StatCard,
-  Subtitle,
   Surface,
+  WindowCard,
 } from "@/components/brand"
-import Navbar from "@/components/Navbar"
 
 const AUDIENCE = [
-  { metric: "1.500+", label: "Target Pengunjung", icon: Users },
-  { metric: "1.000+", label: "Peserta Kompetisi", icon: Trophy },
-  { metric: "350+", label: "Penonton Grand Final", icon: Eye },
-  { metric: "500+", label: "Audience Grand Opening", icon: PartyPopper },
-]
+  {
+    metric: "1.500+",
+    label: "Target partisipan",
+    icon: Users,
+    hint: "Jangkauan audiens yang masif dan terarah.",
+  },
+  {
+    metric: "1.000+",
+    label: "Peserta kompetisi",
+    icon: Trophy,
+    hint: "Siswa SMA/SMK dan mahasiswa aktif.",
+  },
+  {
+    metric: "350+",
+    label: "Penonton Astro Fest",
+    icon: Eye,
+    hint: "Puncak festival musik luring.",
+  },
+  {
+    metric: "300+",
+    label: "Audiens grand opening",
+    icon: PartyPopper,
+    hint: "Pembukaan Festival Nusantara.",
+  },
+] as const
 
 const CHANNELS = [
   { label: "Instagram Feed", icon: Camera },
@@ -77,44 +95,39 @@ export function SponsorshipClient() {
   const [tier, setTier] = React.useState("Gold")
 
   return (
-    <main className="relative min-h-screen">
-      <Navbar />
-
-      {/* ── Hero ── */}
-      <SectionShell
-        ribbon
-        sky="bright"
-        bubbles="dense"
-        className="pb-20 pt-32 md:pt-40"
-      >
+    <PageShell>
+      <SectionShell sky="soft" className="pt-24 md:pt-28" space="md">
         <div className="flex flex-col items-center gap-6 text-center">
-          <Pill tone="white" size="sm">
-            Sponsorship Proposal
-          </Pill>
-          <ChromeTitle depth="md" align="middle" className="mx-auto max-w-2xl">
-            Why Partner
-          </ChromeTitle>
-          <Subtitle>With Astro 2026</Subtitle>
-          <p className="max-w-2xl text-sm font-semibold text-astro-navy sm:text-base">
-            Hadirkan brand Anda langsung di hadapan generasi muda yang aktif dan
-            potensial se-Jabodetabek.
-          </p>
+          <SectionHeading
+            title="Jadi mitra ASTRO 2026"
+            lead="Hadirkan brand Anda di hadapan generasi muda yang aktif se-Jabodetabek."
+          />
 
-          <div className="mt-4 grid w-full max-w-3xl grid-cols-2 gap-4 md:grid-cols-4">
-            {AUDIENCE.map((stat) => (
-              <StatCard
-                key={stat.label}
-                icon={stat.icon}
-                metric={stat.metric}
-                label={stat.label}
-              />
-            ))}
-          </div>
+          <WindowCard
+            title="Why Partner with ASTRO 2026?"
+            className="mt-4 w-full max-w-3xl text-left"
+            bodyClassName="space-y-5"
+          >
+            <p className="text-sm font-medium leading-relaxed text-ink/80">
+              Hadirkan brand Anda langsung di hadapan generasi muda aktif dan potensial se-Jabodetabek.
+            </p>
+            <div className="grid grid-cols-2 gap-3 md:grid-cols-2">
+              {AUDIENCE.map((stat) => (
+                <StatCard
+                  key={stat.label}
+                  icon={stat.icon}
+                  metric={stat.metric}
+                  label={stat.label}
+                  hint={stat.hint}
+                />
+              ))}
+            </div>
+          </WindowCard>
         </div>
       </SectionShell>
 
       {/* ── Packages ── */}
-      <SectionShell sky="soft" clouds={false} bubbles="none" className="py-20">
+      <SectionShell sky="soft" clouds={false} bubbles="none" space="md">
         <SectionHeading
           eyebrow="Paket Kemitraan"
           title="Pilih Paket Terbaik"
@@ -154,12 +167,7 @@ export function SponsorshipClient() {
       </SectionShell>
 
       {/* ── Exposure ── */}
-      <SectionShell
-        ribbon
-        sky="bright"
-        bubbles="corners"
-        className="py-20 md:py-24"
-      >
+      <SectionShell ribbon sky="bright" bubbles="corners" space="lg">
         <SectionHeading
           eyebrow="Brand Exposure"
           title="Visibility"
@@ -185,7 +193,7 @@ export function SponsorshipClient() {
       </SectionShell>
 
       {/* ── Contact ── */}
-      <SectionShell sky="soft" clouds={false} bubbles="sparse" className="py-20">
+      <SectionShell sky="soft" clouds={false} bubbles="sparse" space="md">
         <SectionHeading eyebrow="Kontak" title="Let's Collaborate" />
 
         <Surface
@@ -199,11 +207,11 @@ export function SponsorshipClient() {
               untuk proposal lengkap.
             </p>
             <a
-              href="mailto:astrosttnf@nurulfikri.ac.id"
+              href="mailto:astro@nurulfikri.ac.id"
               className="flex items-center justify-center gap-2 text-sm font-bold text-astro-blue hover:underline md:justify-start"
             >
               <Mail className="size-4" aria-hidden />
-              astrosttnf@nurulfikri.ac.id
+              astro@nurulfikri.ac.id
             </a>
           </div>
 
@@ -218,8 +226,6 @@ export function SponsorshipClient() {
           </CtaButton>
         </Surface>
       </SectionShell>
-
-      <SiteFooter />
-    </main>
+    </PageShell>
   )
 }

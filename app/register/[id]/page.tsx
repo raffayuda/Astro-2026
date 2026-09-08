@@ -3,8 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import Link from "next/link";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import { PageShell } from "@/components/brand";
 import FormStep from "./FormStep";
 import PaymentStep from "./PaymentStep";
 import { ArrowLeft, Trophy, Lock, RotateCcw, Sparkles } from "lucide-react";
@@ -21,7 +20,6 @@ const MotionImage = motion.create(Image);
 import { getEffectiveCompetitionFee } from "@/src/lib/competitions";
 
 import type { CompetitionCustomField } from "@/types/astro";
-import { Bubbles, ChevronRibbon, Pattern } from "@/components/brand";
 
 interface CompetitionData {
   id: string;
@@ -307,31 +305,27 @@ export default function RegistrationPage({
 
   if (notFound || !competition) {
     return (
-      <>
-        <Navbar />
-        <div className="min-h-screen flex items-center justify-center bg-background">
+      <PageShell>
+        <div className="flex min-h-[60svh] items-center justify-center">
           <div className="space-y-4 text-center">
-            <h1 className="text-3xl font-extrabold uppercase leading-tight sm:text-4xl lg:text-5xl text-foreground">404</h1>
-            <p className="text-muted-foreground">Lomba tidak ditemukan.</p>
-            <Button asChild className="rounded-lg text-xs font-black uppercase tracking-wider">
+            <h1 className="font-heading text-3xl font-black text-astro-navy">Lomba tidak ditemukan</h1>
+            <p className="text-muted-foreground">Cabang lomba ini tidak ada atau sudah dihapus.</p>
+            <Button asChild>
               <Link href="/#competitions">
-                <ArrowLeft data-icon="inline-start" /> Kembali ke Lomba
+                <ArrowLeft data-icon="inline-start" /> Kembali ke lomba
               </Link>
             </Button>
           </div>
         </div>
-        <Footer />
-      </>
+      </PageShell>
     );
   }
 
   if (competition.isActive === false) {
     return (
-      <>
-        <Navbar />
-        <div className="relative bg-linear-to-b from-sky-bottom via-white to-white min-h-screen flex items-center justify-center px-4 py-20">
-          <Bubbles preset="sparse" />
-          <div className="rounded-xl bg-white shadow-soft p-8 sm:p-12 max-w-lg w-full text-center space-y-6">
+      <PageShell>
+        <div className="flex min-h-[60svh] items-center justify-center px-4 py-24">
+          <div className="w-full max-w-lg space-y-6 rounded-2xl bg-white p-8 text-center shadow-soft sm:p-12">
             <div className="size-16 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto ring-8 ring-red-50">
               <Lock className="size-8" />
             </div>
@@ -360,8 +354,7 @@ export default function RegistrationPage({
             </div>
           </div>
         </div>
-        <Footer />
-      </>
+      </PageShell>
     );
   }
 
@@ -435,19 +428,9 @@ export default function RegistrationPage({
   };
 
   return (
-    <>
-      <Navbar />
-
-      <div className="min-h-screen flex flex-col justify-between bg-linear-to-b from-sky-bottom via-white to-white">
-        <main className="flex-grow">
-          {/* ─── HEADER ─── */}
-          <section className="bg-linear-to-b from-sky-top via-sky-mid to-white relative overflow-hidden pt-36 pb-14 md:pt-40 md:pb-18">
-            <Bubbles preset="sparse" />
-            <ChevronRibbon edge="top" />
-            <ChevronRibbon edge="bottom" />
-            <Pattern className="absolute inset-0 z-0 opacity-35" />
-            {/* ─── SKY BACKGROUND ─── */}
-            <div className="absolute inset-0 -z-10 " />
+    <PageShell>
+      <div className="bg-white">
+          <section className="relative overflow-hidden bg-sky-bottom pt-28 pb-14 md:pt-32">
 
             {/* ─── FLOATING BLOBS ─── */}
             {[
@@ -778,10 +761,7 @@ export default function RegistrationPage({
               </AnimatePresence>
             </div>
           </section>
-        </main>
-
-        <Footer />
       </div>
-    </>
+    </PageShell>
   );
 }

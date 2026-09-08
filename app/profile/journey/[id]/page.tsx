@@ -1,386 +1,191 @@
-'use client';
+"use client";
 
+import { useMemo, useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { notFound, useParams } from "next/navigation";
+import { motion, useReducedMotion } from "motion/react";
+import { ArrowLeft, Camera, X } from "lucide-react";
 import { PageShell } from "@/components/brand";
-import { useMemo, useState } from 'react';
-import Link from 'next/link';
-import { notFound, useParams } from 'next/navigation';
-import Image from 'next/image';
-import { motion, useReducedMotion } from 'motion/react';
-import { ArrowLeft, Users, Award, Target, ArrowRight, Camera, X, Calendar } from 'lucide-react';
-import { useJourneys, useJourneyPhotos } from '@/src/lib/hooks/use-queries';
-
-const MotionImage = motion.create(Image);
-
-/* Fallback color per year (DB doesn't store colors).
-   Semua pakai biru sama seperti First Step (2023): cyan → sky. */
-const yearColors: Record<string, string> = {
-  '2023': 'from-astro-blue to-astro-blue',
-  '2024': 'from-astro-blue to-astro-blue',
-  '2025': 'from-astro-blue to-astro-blue',
-  '2026': 'from-astro-blue to-astro-blue',
-};
+import { SectionHeading } from "@/components/brand/SectionHeading";
+import { SectionShell } from "@/components/brand/SectionShell";
+import { StatCard } from "@/components/brand/StatCard";
+import { Surface } from "@/components/brand/Surface";
+import { Button } from "@/components/ui/button";
+import { toJourneyCard } from "@/lib/mappers";
+import { useJourneyPhotos, useJourneys } from "@/src/lib/hooks/use-queries";
+import { Calendar, Target, Users } from "lucide-react";
 
 export default function JourneyDetailPage() {
   const params = useParams();
-  const id = params?.id as string;
+  const id = typeof params.id === "string" ? params.id : "";
   const reduce = useReducedMotion();
   const [lightbox, setLightbox] = useState<string | null>(null);
 
   const { data: journeysData, isLoading: loadingJourneys } = useJourneys();
+  const row = (journeysData ?? []).find((j) => j.id === id || j.year === id);
+  const { data: photosData } = useJourneyPhotos(row?.id ?? "");
 
-  const row = (journeysData || []).find((j: { id: string; year?: string | null }) => j.id === id || j.year === id);
-  const { data: photosData } = useJourneyPhotos(row?.id ?? '');
-
-  const data = useMemo(() => {
-    if (!row) return null;
-    return {
-      year: row.year || row.id,
-      theme: row.theme,
-      participants: row.participants || 0,
-      date: row.date || '',
-      competitions: row.competitionsCount || 0,
-      achievement: row.achievement || '',
-      description: row.description || '',
-      highlights: row.highlights || [],
-      color: yearColors[row.year || row.id] || 'from-astro-blue to-astro-blue',
-    };
-  }, [row]);
-
-  const photos: { id: number; url: string; caption: string | null }[] = photosData ?? [];
+  const data = useMemo(() => (row ? toJourneyCard(row) : null), [row]);
+  const photos = photosData ?? [];
 
   if (!loadingJourneys && !data) {
     notFound();
   }
 
-  const fadeUp = {
-    hidden: { opacity: 0, y: 30 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as const } },
-  };
-
   if (!data) {
     return (
-      <div className="flex min-h-svh items-center justify-center bg-white">
-        <div className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-ink">
-          <span className="size-4 animate-spin rounded-full border-2 border-astro-cyan-2 border-t-astro-blue" />
+      <PageShell>
+        <div className="flex min-h-[60svh] items-center justify-center text-sm font-bold text-ink">
           Memuat...
         </div>
-      </div>
+      </PageShell>
     );
   }
 
+  const yearNum = Number.parseInt(data.year, 10);
+  const prevYear = Number.isFinite(yearNum) ? yearNum - 1 : null;
+  const nextYear = Number.isFinite(yearNum) ? yearNum + 1 : null;
+
   return (
     <PageShell>
+      <SectionShell id="journey-hero" sky="soft" space="lg" className="pt-24">
+        <Button asChild variant="ghost" size="sm" className="mb-8">
+          <Link href="/profile">
+            <ArrowLeft data-icon="inline-start" />
+            Kembali ke profil
+          </Link>
+        </Button>
 
-      {/* ═══ HERO BANNER ═══ */}
-      <section className={`relative pt-28 pb-28 md:pt-36 md:pb-36 bg-linear-to-br ${data.color} overflow-hidden`}>
-        {/* Radial glow */}
-        <div className="absolute inset-0">
-          <div className="absolute top-1/4 -left-[10%] w-[40%] h-[50%] bg-white/20 blur-[120px] rounded-full" />
-          <div className="absolute bottom-1/4 -right-[10%] w-[40%] h-[50%] bg-white/10 blur-[100px] rounded-full" />
+        <p className="text-11 font-black uppercase tracking-[0.22em] text-astro-blue">
+          ASTRO {data.year}
+        </p>
+        <h1 className="mt-3 max-w-3xl font-heading text-4xl font-black tracking-tight text-astro-navy sm:text-5xl md:text-6xl">
+          {data.theme}
+        </h1>
+
+        <div className="mt-10 grid gap-4 sm:grid-cols-3">
+          <StatCard
+            icon={Users}
+            metric={data.participants > 0 ? `${data.participants}+` : "–"}
+            label="Peserta"
+          />
+          <StatCard icon={Calendar} metric={data.date || "–"} label="Hari pelaksanaan" />
+          <StatCard icon={Target} metric={String(data.competitions)} label="Cabang lomba" />
         </div>
+      </SectionShell>
 
-        {/* Floating clouds */}
-        <MotionImage
-          src="/assets/awan1.png" alt="" width={180} height={120}
-          animate={reduce ? undefined : { x: [0, 18, 0] }}
-          transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute top-[6%] left-[2%] w-28 h-auto md:w-48 md:h-auto object-contain pointer-events-none select-none z-0 opacity-30"
-        />
-        <MotionImage
-          src="/assets/awan2.png" alt="" width={220} height={150}
-          animate={reduce ? undefined : { x: [0, -16, 0] }}
-          transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute top-[15%] -right-4 w-32 h-auto md:w-56 md:h-auto object-contain pointer-events-none select-none z-0 opacity-25"
-        />
-        <MotionImage
-          src="/assets/awan1.png" alt="" width={140} height={100}
-          animate={reduce ? undefined : { x: [0, 14, 0] }}
-          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute bottom-[10%] left-[4%] w-20 h-auto md:w-36 md:h-auto object-contain pointer-events-none select-none z-0 opacity-20"
-        />
-
-        {/* Floating blobs */}
-        <MotionImage
-          src="/assets/blob-round.png" alt="" width={80} height={80}
-          animate={reduce ? undefined : { y: [0, -12, 0] }}
-          transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute top-[20%] right-[15%] w-12 h-12 md:w-20 md:h-20 object-contain pointer-events-none select-none z-0 opacity-25"
-        />
-        <MotionImage
-          src="/assets/blob-round.png" alt="" width={64} height={64}
-          animate={reduce ? undefined : { y: [0, -10, 0] }}
-          transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
-          className="absolute bottom-[15%] right-[6%] w-10 h-10 md:w-16 md:h-16 object-contain pointer-events-none select-none z-0 opacity-20"
-        />
-
-        <div className="relative z-10 max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-12">
-          <motion.div initial="hidden" animate="visible" variants={fadeUp}>
-            {/* Back */}
-            <Link
-              href="/profile"
-              className="inline-flex items-center gap-2 text-white/70 hover:text-white text-11 font-bold uppercase tracking-wider mb-10 transition-colors group"
-            >
-              <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
-              Back to Journey
-            </Link>
-
-            <div className="grid lg:grid-cols-12 gap-8 lg:gap-16 items-end">
-              {/* Title */}
-              <div className="lg:col-span-8">
-                <span className="inline-flex items-center gap-2 px-3 py-1.5 text-10 font-black uppercase tracking-[0.18em] text-white/90 bg-white/15 border border-white/25 backdrop-blur-sm mb-5"
-                  style={{ clipPath: 'polygon(5px 0, 100% 0, calc(100% - 5px) 100%, 0 100%)' }}
-                >
-                  ASTRO {data.year}
-                </span>
-                <h1 className="font-title text-4xl md:text-6xl lg:text-7xl text-white leading-[0.95] drop-shadow-lg">
-                  {data.theme}
-                </h1>
-              </div>
-
-              {/* Stats row */}
-              <div className="lg:col-span-4 flex gap-3 flex-wrap">
-                {data.participants > 0 && (
-                  <div className="flex-1 min-w-[100px] bg-white/10 backdrop-blur-sm border border-white/15 p-4 text-center"
-                    style={{ clipPath: 'polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%)' }}
-                  >
-                    <div className="text-2xl md:text-3xl font-black text-white font-display">{data.participants}+</div>
-                    <div className="text-9 font-bold text-white/60 uppercase tracking-wider mt-1">Peserta</div>
-                  </div>
-                )}
-                {data.date && (
-                  <div className="flex-1 min-w-[100px] bg-white/10 backdrop-blur-sm border border-white/15 p-4 text-center"
-                    style={{ clipPath: 'polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%)' }}
-                  >
-                    <div className="text-sm md:text-base font-black text-white font-display leading-tight">{data.date}</div>
-                    <div className="text-9 font-bold text-white/60 uppercase tracking-wider mt-1">Hari Pelaksanaan</div>
-                  </div>
-                )}
-                <div className="flex-1 min-w-[100px] bg-white/10 backdrop-blur-sm border border-white/15 p-4 text-center"
-                  style={{ clipPath: 'polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%)' }}
-                >
-                  <div className="text-2xl md:text-3xl font-black text-white font-display">{data.competitions}</div>
-                  <div className="text-9 font-bold text-white/60 uppercase tracking-wider mt-1">Cabang Lomba</div>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-
-        <div className="absolute bottom-0 left-0 right-0 h-24 bg-linear-to-b from-transparent to-white" />
-      </section>
-
-      {/* ═══ CONTENT ═══ */}
-      <section className="py-16 md:py-24">
-        <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-12">
-          <div className="grid lg:grid-cols-12 gap-12 lg:gap-20">
-            {/* Left — Description & Highlights */}
-            <div className="lg:col-span-7">
-              <motion.div
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                variants={fadeUp}
-              >
-                <div className="w-16 h-[3px] bg-astro-cyan mb-5" />
-                <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-astro-navy tracking-tight leading-[0.95] mb-6">
-                  Tentang ASTRO
-                  <br />
-                  <span className="text-astro-cyan">{data.year}</span>
-                </h2>
-
-                <p className="text-sm md:text-base text-ink leading-relaxed mb-10 max-w-2xl">
-                  {data.description}
-                </p>
-
-                <h3 className="text-11 font-black uppercase tracking-[0.18em] text-astro-cyan mb-5">Highlights</h3>
-                <div className="grid sm:grid-cols-2 gap-3">
-                  {data.highlights.map((h, i) => (
-                    <motion.div
-                      key={i}
-                      initial={{ opacity: 0, y: 10 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: i * 0.05 }}
-                      className="flex items-center gap-3 text-sm text-ink bg-surface border border-astro-cyan-2/60 px-4 py-3"
-                      style={{ clipPath: 'polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%)' }}
-                    >
-                      <span className="w-5 h-5 rounded-full bg-astro-cyan/10 text-astro-cyan flex items-center justify-center shrink-0">
-                        <Target className="w-3 h-3" />
-                      </span>
+      <SectionShell band="none" space="md">
+        <div className="grid gap-10 lg:grid-cols-12 lg:gap-16">
+          <div className="lg:col-span-7">
+            <SectionHeading
+              align="start"
+              title={`Tentang ASTRO ${data.year}`}
+              lead={data.description}
+            />
+            {data.highlights.length > 0 && (
+              <ul className="mt-8 grid gap-3 sm:grid-cols-2">
+                {data.highlights.map((h) => (
+                  <li key={h}>
+                    <Surface tone="tint" radius="lg" pad="sm" className="text-sm text-ink">
                       {h}
-                    </motion.div>
-                  ))}
-                </div>
-              </motion.div>
-            </div>
-
-            {/* Right — Sidebar achievement card */}
-            <div className="lg:col-span-5">
-              <motion.div
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                variants={fadeUp}
-                className="sticky top-28"
-              >
-                <div className="bg-linear-to-br from-sky-bottom to-sky-bottom border border-sky-mid/80 p-8"
-                  style={{ clipPath: 'polygon(16px 0, 100% 0, calc(100% - 16px) 100%, 0 100%)' }}
-                >
-                  {/* Header */}
-                  <div className="flex items-center gap-3 mb-6">
-                    <div className="w-10 h-10 rounded-full bg-astro-cyan flex items-center justify-center shrink-0">
-                      <Award className="w-5 h-5 text-white" />
-                    </div>
-                    <h3 className="text-sm font-black text-astro-navy uppercase tracking-wider">Pencapaian</h3>
-                  </div>
-
-                  {/* Achievement block */}
-                  <div className="bg-white/80 border border-sky-mid/80 p-5 mb-5"
-                    style={{ clipPath: 'polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%)' }}
-                  >
-                    <div className="flex items-start gap-3">
-                      <Award className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
-                      <p className="text-sm font-bold text-astro-navy">{data.achievement}</p>
-                    </div>
-                  </div>
-
-                  {/* Mini stats grid */}
-                  <div className="grid grid-cols-3 gap-3 mb-6">
-                    <div className="bg-white/80 border border-sky-mid/70 p-4 text-center"
-                      style={{ clipPath: 'polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%)' }}
-                    >
-                      <Users className="w-4 h-4 text-astro-cyan mx-auto mb-1" />
-                      <p className="text-lg font-black text-astro-navy">{data.participants > 0 ? data.participants.toLocaleString() : '-'}</p>
-                      <p className="text-8 font-bold text-ink uppercase tracking-wider">Peserta</p>
-                    </div>
-                    <div className="bg-white/80 border border-sky-mid/70 p-4 text-center"
-                      style={{ clipPath: 'polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%)' }}
-                    >
-                      <Calendar className="w-4 h-4 text-astro-cyan mx-auto mb-1" />
-                      <p className="text-sm font-black text-astro-navy leading-tight">{data.date || '-'}</p>
-                      <p className="text-8 font-bold text-ink uppercase tracking-wider">Hari Pelaksanaan</p>
-                    </div>
-                    <div className="bg-white/80 border border-sky-mid/70 p-4 text-center"
-                      style={{ clipPath: 'polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%)' }}
-                    >
-                      <Target className="w-4 h-4 text-astro-cyan mx-auto mb-1" />
-                      <p className="text-lg font-black text-astro-navy">{data.competitions}</p>
-                      <p className="text-8 font-bold text-ink uppercase tracking-wider">Lomba</p>
-                    </div>
-                  </div>
-
-                  {/* Navigation between years */}
-                  <div className="flex justify-between items-center pt-5 border-t border-astro-cyan-2/60">
-                    {parseInt(data.year) > 2023 ? (
-                      <Link
-                        href={`/profile/journey/${String(parseInt(data.year) - 1)}`}
-                        className="inline-flex items-center gap-1.5 text-11 font-bold text-ink hover:text-astro-cyan transition-colors group"
-                      >
-                        <ArrowLeft className="w-3.5 h-3.5 transition-transform group-hover:-translate-x-0.5" />
-                        {parseInt(data.year) - 1}
-                      </Link>
-                    ) : <div />}
-                    {parseInt(data.year) < 2026 ? (
-                      <Link
-                        href={`/profile/journey/${String(parseInt(data.year) + 1)}`}
-                        className="inline-flex items-center gap-1.5 text-11 font-bold text-ink hover:text-astro-cyan transition-colors group"
-                      >
-                        {parseInt(data.year) + 1}
-                        <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
-                      </Link>
-                    ) : <div />}
-                  </div>
-                </div>
-              </motion.div>
-            </div>
+                    </Surface>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
 
-          {/* ═══ Documentation Gallery ═══ */}
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeUp}
-            className="mt-20 md:mt-28"
-          >
-            <div className="text-center mb-12">
-              <div className="w-16 h-[3px] bg-astro-cyan mx-auto mb-4" />
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-astro-navy tracking-tight mb-2">
-                Dokumentasi
+          <div className="lg:col-span-5">
+            <Surface tone="plain" radius="xl" pad="lg" className="lg:sticky lg:top-24">
+              <h2 className="text-sm font-bold uppercase tracking-wider text-astro-navy">
+                Pencapaian
               </h2>
-              <p className="text-sm text-ink font-light">Momen-momen berharga selama perjalanan ASTRO {data.year}</p>
-            </div>
-
-            {photos.length === 0 ? (
-              <div className="flex flex-col items-center justify-center border border-dashed border-astro-cyan-2 bg-surface/50 py-16 text-center"
-                style={{ clipPath: 'polygon(12px 0, 100% 0, calc(100% - 12px) 100%, 0 100%)' }}>
-                <Camera className="mb-3 size-8 text-astro-cyan-2" />
-                <p className="text-xs font-bold text-ink uppercase tracking-wider">
-                  Belum ada foto dokumentasi untuk ASTRO {data.year}
-                </p>
+              <p className="mt-3 text-sm font-medium leading-relaxed text-ink">
+                {data.achievement || "Dokumentasi pencapaian sedang dilengkapi."}
+              </p>
+              <div className="mt-6 flex justify-between border-t border-sky-mid/60 pt-5 text-sm font-bold text-astro-blue">
+                {prevYear && prevYear >= 2023 ? (
+                  <Link href={`/profile/journey/${prevYear}`}>{prevYear}</Link>
+                ) : (
+                  <span />
+                )}
+                {nextYear && nextYear <= 2026 ? (
+                  <Link href={`/profile/journey/${nextYear}`}>{nextYear}</Link>
+                ) : (
+                  <span />
+                )}
               </div>
-            ) : (
-              <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
-                {photos.map((doc, i) => (
-                  <motion.button
-                    key={doc.id}
-                    type="button"
-                    onClick={() => setLightbox(doc.url)}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.1 }}
-                    whileHover={reduce ? {} : { y: -6 }}
-                    className="group relative block aspect-[4/3] cursor-pointer overflow-hidden border border-astro-cyan-2/80 bg-surface hover:border-astro-cyan/40 text-left"
-                    style={{ clipPath: 'polygon(12px 0, 100% 0, calc(100% - 12px) 100%, 0 100%)' }}
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={doc.url}
-                      alt={doc.caption || `Dokumentasi ASTRO ${data.year}`}
-                      className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                    {doc.caption && (
-                      <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/70 to-transparent px-4 pb-3 pt-8">
-                        <p className="text-10 font-bold uppercase tracking-wider text-white">{doc.caption}</p>
-                      </div>
-                    )}
-                    <div className="absolute inset-0 bg-white/0 transition-all duration-300 group-hover:bg-astro-cyan/20 flex items-end justify-end p-4">
-                      <span className="flex items-center gap-1 text-9 font-black text-astro-blue uppercase tracking-wider opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                        <Camera className="size-3" /> Lihat
-                      </span>
-                    </div>
-                  </motion.button>
-                ))}
-              </div>
-            )}
-          </motion.div>
-
-          {/* ═══ Lightbox ═══ */}
-          {lightbox && (
-            <div
-              onClick={() => setLightbox(null)}
-              className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm"
-            >
-              <button
-                onClick={() => setLightbox(null)}
-                aria-label="Tutup"
-                className="absolute right-4 top-4 flex size-10 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20"
-              >
-                <X className="size-5" />
-              </button>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={lightbox}
-                alt="Dokumentasi ASTRO"
-                className="max-h-[85vh] max-w-[90vw] object-contain shadow-2xl"
-                onClick={(e) => e.stopPropagation()}
-              />
-            </div>
-          )}
+            </Surface>
+          </div>
         </div>
-      </section>
+      </SectionShell>
 
+      <SectionShell band="none" space="md">
+        <SectionHeading
+          title="Dokumentasi"
+          lead={`Momen selama perjalanan ASTRO ${data.year}.`}
+        />
+
+        {photos.length === 0 ? (
+          <Surface tone="plain" radius="xl" pad="lg" className="mt-10 text-center">
+            <Camera className="mx-auto mb-3 size-8 text-astro-cyan-2" />
+            <p className="text-sm font-medium text-ink">
+              Belum ada foto dokumentasi untuk ASTRO {data.year}
+            </p>
+          </Surface>
+        ) : (
+          <div className="mt-10 grid gap-4 sm:grid-cols-2 md:grid-cols-3">
+            {photos.map((doc, i) => (
+              <motion.button
+                key={doc.id}
+                type="button"
+                onClick={() => setLightbox(doc.url)}
+                initial={reduce ? false : { opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.05 }}
+                className="group relative aspect-[4/3] overflow-hidden rounded-xl bg-white text-left shadow-soft"
+              >
+                <Image
+                  src={doc.url}
+                  alt={doc.caption || `Dokumentasi ASTRO ${data.year}`}
+                  fill
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                />
+              </motion.button>
+            ))}
+          </div>
+        )}
+      </SectionShell>
+
+      {lightbox && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Dokumentasi"
+          onClick={() => setLightbox(null)}
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4"
+        >
+          <button
+            type="button"
+            onClick={() => setLightbox(null)}
+            aria-label="Tutup"
+            className="absolute right-4 top-4 grid size-10 place-items-center rounded-full bg-white/10 text-white"
+          >
+            <X className="size-5" />
+          </button>
+          <Image
+            src={lightbox}
+            alt="Dokumentasi ASTRO"
+            width={1600}
+            height={1200}
+            className="max-h-[85vh] w-auto max-w-[90vw] object-contain"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
     </PageShell>
   );
 }

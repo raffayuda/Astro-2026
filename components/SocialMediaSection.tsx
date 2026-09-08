@@ -3,29 +3,11 @@
 import Image from 'next/image';
 import { motion, useReducedMotion } from 'motion/react';
 import { ArrowUpRight } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Bubbles, ChevronRibbon, ChromeText, Pattern } from "@/components/brand";
+import { SectionHeading } from "@/components/brand/SectionHeading";
+import { SectionShell } from "@/components/brand/SectionShell";
 
 const MotionImage = motion.create(Image);
-
-function InstagramIcon({ className = 'w-4 h-4' }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
-      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-      <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
-    </svg>
-  );
-}
 
 export default function SocialMediaSection({ priority = false }: { priority?: boolean }) {
   const reduce = useReducedMotion();
@@ -33,75 +15,13 @@ export default function SocialMediaSection({ priority = false }: { priority?: bo
   // Pure clean neutral sky studio background matching adjacent sections
 
   return (
-    <section
-      id="social"
-      className="bg-linear-to-b from-sky-top via-sky-mid to-white relative min-h-screen w-full overflow-hidden py-16 font-sans text-astro-navy md:py-24"
-    >
-      <Bubbles preset="sparse" />
-      <ChevronRibbon edge="top" />
-      <ChevronRibbon edge="bottom" />
-      <Pattern className="absolute inset-0 z-0 opacity-40" />
-      {/* ── Subtle Sky Ambient Glow ── */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-astro-cyan-2/20 rounded-full blur-[130px] pointer-events-none z-0" />
-
-      {/* ── Subtle Sky Cloud Wisps ── */}
-      <MotionImage
-        src="/assets/awan1.png"
-        alt=""
-        width={200}
-        height={130}
-        animate={reduce ? undefined : { x: [0, 12, 0] }}
-        transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute top-[8%] left-[2%] w-24 md:w-44 h-auto opacity-[0.18] pointer-events-none select-none z-0"
-      />
-      <MotionImage
-        src="/assets/awan2.png"
-        alt=""
-        width={220}
-        height={140}
-        animate={reduce ? undefined : { x: [0, -15, 0] }}
-        transition={{ duration: 16, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute top-[14%] right-[2%] w-28 md:w-52 h-auto opacity-[0.15] pointer-events-none select-none z-0"
+    <SectionShell id="social" band="none" space="sm">
+      <SectionHeading
+        title="Lebih dekat dengan ASTRO"
+        lead="Kanal resmi Instagram, dokumentasi, dan press kit ASTRO 2026."
       />
 
-      <div className="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center">
-
-        {/* ── 1. HEADLINE AREA ── */}
-        <div className="text-center max-w-3xl mx-auto mb-10 md:mb-12">
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="mb-4"
-          >
-            <Badge variant="outline" className="rounded-full bg-white shadow-soft-sm gap-2 border-white/80 px-4 py-2 text-xs font-black text-astro-blue">
-              <InstagramIcon className="size-3.5 text-astro-navy" />
-              @astrosttnf
-            </Badge>
-          </motion.div>
-
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-            className="font-title text-3xl font-extrabold leading-tight tracking-tight text-astro-navy sm:text-5xl md:text-6xl lg:text-7xl"
-          >
-            Lebih Dekat. Lebih Seru.<br />
-            <ChromeText className="font-normal italic">Lebih ASTRO.</ChromeText>
-          </motion.h2>
-
-          <motion.p
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="rounded-full bg-white shadow-soft-sm mx-auto mt-4 w-fit px-5 py-2 text-xs font-black tracking-wide text-astro-blue sm:text-sm md:text-base"
-          >
-            Official Media Hub & Interactive Feed ASTRO 2026
-          </motion.p>
-        </div>
+      <div className="mt-10 flex flex-col items-center">
 
         {/* ── 2. PRODUCT IMAGE (Aligned exactly to the width of the spec grid) ── */}
         <div className="relative w-full max-w-7xl mb-12 md:mb-16 flex justify-center">
@@ -224,6 +144,6 @@ export default function SocialMediaSection({ priority = false }: { priority?: bo
         </motion.div>
 
       </div>
-    </section>
+    </SectionShell>
   );
 }
