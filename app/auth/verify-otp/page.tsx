@@ -1,6 +1,6 @@
 "use client";
 
-import { Bubbles, CenteredShell } from "@/components/brand";
+import { CenteredShell } from "@/components/brand";
 import { Suspense, useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -318,7 +318,6 @@ function VerifyOtpContent() {
 export default function VerifyOtpPage() {
   return (
     <CenteredShell>
-      <Bubbles preset="dense" />
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}

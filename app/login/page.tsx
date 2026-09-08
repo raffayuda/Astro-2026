@@ -20,7 +20,7 @@ import {
 import Image from 'next/image';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
-import { Bubbles, CenteredShell } from "@/components/brand";
+import { CenteredShell } from "@/components/brand";
 import { Card, CardContent } from '@/components/ui/card';
 import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
@@ -474,7 +474,6 @@ function LoginForm() {
 export default function LoginPage() {
   return (
     <CenteredShell>
-      <Bubbles preset="dense" />
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}

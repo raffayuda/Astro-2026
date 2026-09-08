@@ -14,7 +14,7 @@ import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 import { Spinner } from '@/components/ui/spinner';
-import { Bubbles, CenteredShell, ChevronRibbon, Pattern } from "@/components/brand";
+import { CenteredShell } from "@/components/brand";
 
 type Step = 'form' | 'otp' | 'success';
 
@@ -178,10 +178,6 @@ export default function SignupPage() {
   if (step === 'success') {
     return (
       <CenteredShell>
-        <Bubbles preset="sparse" />
-        <ChevronRibbon edge="top" />
-        <ChevronRibbon edge="bottom" />
-        <Pattern className="absolute inset-0 opacity-35" />
         <div>
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
@@ -207,10 +203,6 @@ export default function SignupPage() {
 
   return (
     <CenteredShell>
-      <Bubbles preset="sparse" />
-      <ChevronRibbon edge="top" />
-      <ChevronRibbon edge="bottom" />
-      <Pattern className="absolute inset-0 opacity-35" />
       <div className="relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 30 }}

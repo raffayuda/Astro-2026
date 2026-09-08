@@ -1,6 +1,6 @@
 'use client';
 
-import { Bubbles, CenteredShell } from "@/components/brand";
+import { CenteredShell } from "@/components/brand";
 import { use, useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -141,7 +141,6 @@ export default function InviteAcceptPage({
 
   return (
     <CenteredShell>
-      <Bubbles preset="sparse" />
 
       {/* Cloud & Planet Decorative Elements */}
       <Image
