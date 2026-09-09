@@ -19,17 +19,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import type { Competition, CompetitionCustomField } from "@/types/astro";
 import { useRegistrationApi } from "@/src/lib/hooks/use-registration";
-import {
-  buildRegistrationSchema,
-  type RegistrationFormValues,
-} from "@/src/lib/forms/registration";
+import { buildRegistrationSchema, type RegistrationFormValues } from "@/src/lib/forms/registration";
 import PlayerPhotoField from "./PlayerPhotoField";
 import CustomFieldUpload from "./CustomFieldUpload";
 
 interface Props {
   competition: Competition;
   isTeam: boolean;
-  regType: 'team' | 'individual';
+  regType: "team" | "individual";
   formData: RegistrationFormValues;
   setFormData: (data: RegistrationFormValues) => void;
   onContinue: (
@@ -116,11 +113,7 @@ export default function FormStep({
             );
           }
         } else {
-          const reg = await create(
-            competition.id,
-            regType,
-            value,
-          );
+          const reg = await create(competition.id, regType, value);
           if (reg) {
             onContinue(
               reg.id,
@@ -171,9 +164,7 @@ export default function FormStep({
     <form.Field
       name={name}
       children={(field) => {
-        const err = field.state.meta.errors?.[0] as
-          | { message?: string }
-          | undefined;
+        const err = field.state.meta.errors?.[0] as { message?: string } | undefined;
         const fieldId = `field-${String(name)}`;
         return (
           <Field data-invalid={!!err} className={opts?.className}>
@@ -186,18 +177,12 @@ export default function FormStep({
               value={field.state.value ?? ""}
               onBlur={field.handleBlur}
               onChange={(e) =>
-                field.handleChange(
-                  opts?.sanitize
-                    ? opts.sanitize(e.target.value)
-                    : e.target.value,
-                )
+                field.handleChange(opts?.sanitize ? opts.sanitize(e.target.value) : e.target.value)
               }
               placeholder={placeholder}
               aria-invalid={!!err}
             />
-            {err ? (
-              <FieldError>{err.message ?? "Field wajib diisi"}</FieldError>
-            ) : null}
+            {err ? <FieldError>{err.message ?? "Field wajib diisi"}</FieldError> : null}
           </Field>
         );
       }}
@@ -208,9 +193,7 @@ export default function FormStep({
     <form.Field
       name={name}
       children={(field) => {
-        const err = field.state.meta.errors?.[0] as
-          | { message?: string }
-          | undefined;
+        const err = field.state.meta.errors?.[0] as { message?: string } | undefined;
         return (
           <PlayerPhotoField
             label={label}
@@ -234,154 +217,153 @@ export default function FormStep({
       className="flex flex-col gap-6"
     >
       <WindowCard title="Data pendaftaran" bodyClassName="gap-6">
-          <p className="text-sm text-ink/70">
-            Isi data dengan benar untuk lomba <strong>{competition.title}</strong>.
-          </p>
-          <FieldGroup className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-            {isTeam ? (
-              <>
-                {renderField(
-                  "teamName",
-                  "Nama tim",
-                  "text",
-                  "Masukkan nama tim",
-                  { required: true, className: "sm:col-span-2" },
-                )}
-                {renderField(
-                  "leaderName",
-                  "Nama ketua",
-                  "text",
-                  "Nama lengkap ketua tim",
-                  { required: true },
-                )}
-                {renderField(
-                  "leaderIdentity",
-                  "NIM / nomor pelajar ketua",
-                  "text",
-                  "Nomor identitas ketua",
-                  { sanitize: (v) => v.replace(/\D/g, "") },
-                )}
-                {photoRequired &&
-                  renderField(
-                    "leaderGameId",
-                    "ID akun ketua",
-                    "text",
-                    "Contoh: 123456789 (1234)",
-                    { required: true },
-                  )}
-                {photoRequired &&
-                  renderPhotoField("leaderPhotoUrl", "Foto ketua tim")}
-              </>
-            ) : (
-              <>
-                {renderField(
-                  "fullName",
-                  "Nama lengkap",
-                  "text",
-                  "Nama lengkap pendaftar",
-                  { required: true },
-                )}
-                {renderField(
-                  "identityNumber",
-                  "NIM / nomor pelajar",
-                  "text",
-                  "Nomor identitas pendaftar",
-                  { sanitize: (v) => v.replace(/\D/g, "") },
-                )}
-                {photoRequired &&
-                  renderField(
-                    "leaderGameId",
-                    "ID akun pemain",
-                    "text",
-                    "Contoh: 123456789 (1234)",
-                    { required: true },
-                  )}
-                {photoRequired &&
-                  renderPhotoField("leaderPhotoUrl", "Foto peserta")}
-              </>
-            )}
-
-            {renderField(
-              "institution",
-              "Sekolah / instansi",
-              "text",
-              "Asal sekolah atau instansi",
-              { required: true, className: "sm:col-span-2" },
-            )}
-
-            {renderField(
-              "email",
-              `Alamat email${isTeam ? " ketua" : ""}`,
-              "email",
-              "contoh@email.com",
-              { required: true },
-            )}
-
-            {renderField(
-              "whatsapp",
-              `Nomor WhatsApp${isTeam ? " ketua" : ""}`,
-              "tel",
-              "62812XXXXXXXX",
-              { sanitize: (v) => v.replace(/\D/g, ""), required: true },
-            )}
-          </FieldGroup>
-
-          {/* Anggota Tim (team only) */}
-          {isTeam && (
-            <FieldSet>
-              <FieldLegend variant="label">
-                Anggota tim (min. {requiredMembers} selain ketua)
-              </FieldLegend>
-              {photoRequired && (
-                <p className="text-11 font-light text-muted-foreground">
-                  Setiap pemain wajib mengisi ID akun dan melampirkan foto. Foto
-                  formal atau non-formal keduanya diterima.
-                </p>
+        <p className="text-sm text-ink/70">
+          Isi data dengan benar untuk lomba <strong>{competition.title}</strong>.
+        </p>
+        <FieldGroup className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+          {isTeam ? (
+            <>
+              {renderField("teamName", "Nama tim", "text", "Masukkan nama tim", {
+                required: true,
+                className: "sm:col-span-2",
+              })}
+              {renderField("leaderName", "Nama ketua", "text", "Nama lengkap ketua tim", {
+                required: true,
+              })}
+              {renderField(
+                "leaderIdentity",
+                "NIM / nomor pelajar ketua",
+                "text",
+                "Nomor identitas ketua",
+                { sanitize: (v) => v.replace(/\D/g, "") },
               )}
-              {Array.from({ length: memberSlots }, (_, i) => {
-                const isRequiredSlot = i < requiredMembers;
-                const nameId = `member-${i}-name`;
-                const gameIdId = `member-${i}-game-id`;
-                return (
-                  <div
-                    key={i}
-                    className={
-                      photoRequired
-                        ? "flex flex-col gap-4 rounded-xl border border-astro-cyan-2/60 bg-white/60 p-4"
-                        : undefined
-                    }
-                  >
-                    {photoRequired && (
-                      <p className="text-11 font-black uppercase tracking-wider text-astro-navy">
-                        Anggota {i + 1}
-                        <span className="ml-1.5 font-medium normal-case tracking-normal text-ink/60">
-                          {isRequiredSlot ? "(wajib)" : "(opsional)"}
-                        </span>
-                      </p>
-                    )}
+              {photoRequired &&
+                renderField("leaderGameId", "ID akun ketua", "text", "Contoh: 123456789 (1234)", {
+                  required: true,
+                })}
+              {photoRequired && renderPhotoField("leaderPhotoUrl", "Foto ketua tim")}
+            </>
+          ) : (
+            <>
+              {renderField("fullName", "Nama lengkap", "text", "Nama lengkap pendaftar", {
+                required: true,
+              })}
+              {renderField(
+                "identityNumber",
+                "NIM / nomor pelajar",
+                "text",
+                "Nomor identitas pendaftar",
+                { sanitize: (v) => v.replace(/\D/g, "") },
+              )}
+              {photoRequired &&
+                renderField("leaderGameId", "ID akun pemain", "text", "Contoh: 123456789 (1234)", {
+                  required: true,
+                })}
+              {photoRequired && renderPhotoField("leaderPhotoUrl", "Foto peserta")}
+            </>
+          )}
 
+          {renderField("institution", "Sekolah / instansi", "text", "Asal sekolah atau instansi", {
+            required: true,
+            className: "sm:col-span-2",
+          })}
+
+          {renderField(
+            "email",
+            `Alamat email${isTeam ? " ketua" : ""}`,
+            "email",
+            "contoh@email.com",
+            { required: true },
+          )}
+
+          {renderField(
+            "whatsapp",
+            `Nomor WhatsApp${isTeam ? " ketua" : ""}`,
+            "tel",
+            "62812XXXXXXXX",
+            { sanitize: (v) => v.replace(/\D/g, ""), required: true },
+          )}
+        </FieldGroup>
+
+        {/* Anggota Tim (team only) */}
+        {isTeam && (
+          <FieldSet>
+            <FieldLegend variant="label">
+              Anggota tim (min. {requiredMembers} selain ketua)
+            </FieldLegend>
+            {photoRequired && (
+              <p className="text-11 font-light text-muted-foreground">
+                Setiap pemain wajib mengisi ID akun dan melampirkan foto. Foto formal atau
+                non-formal keduanya diterima.
+              </p>
+            )}
+            {Array.from({ length: memberSlots }, (_, i) => {
+              const isRequiredSlot = i < requiredMembers;
+              const nameId = `member-${i}-name`;
+              const gameIdId = `member-${i}-game-id`;
+              return (
+                <div
+                  key={i}
+                  className={
+                    photoRequired
+                      ? "flex flex-col gap-4 rounded-xl border border-astro-cyan-2/60 bg-white/60 p-4"
+                      : undefined
+                  }
+                >
+                  {photoRequired && (
+                    <p className="text-11 font-black uppercase tracking-wider text-astro-navy">
+                      Anggota {i + 1}
+                      <span className="ml-1.5 font-medium normal-case tracking-normal text-ink/60">
+                        {isRequiredSlot ? "(wajib)" : "(opsional)"}
+                      </span>
+                    </p>
+                  )}
+
+                  <form.Field
+                    name={`memberDetails[${i}].name` as never}
+                    children={(field) => {
+                      const err = field.state.meta.errors?.[0] as { message?: string } | undefined;
+                      return (
+                        <Field data-invalid={!!err}>
+                          <FieldLabel htmlFor={nameId} required={isRequiredSlot}>
+                            {photoRequired
+                              ? "Nama lengkap"
+                              : `Nama anggota ${i + 1}${isRequiredSlot ? "" : " (opsional)"}`}
+                          </FieldLabel>
+                          <Input
+                            id={nameId}
+                            type="text"
+                            value={(field.state.value as string) ?? ""}
+                            onBlur={field.handleBlur}
+                            onChange={(e) => field.handleChange(e.target.value as never)}
+                            placeholder="Nama sesuai identitas"
+                            aria-invalid={!!err}
+                          />
+                          {err ? <FieldError>{err.message}</FieldError> : null}
+                        </Field>
+                      );
+                    }}
+                  />
+
+                  {photoRequired && (
                     <form.Field
-                      name={`memberDetails[${i}].name` as never}
+                      name={`memberDetails[${i}].gameId` as never}
                       children={(field) => {
                         const err = field.state.meta.errors?.[0] as
                           | { message?: string }
                           | undefined;
                         return (
                           <Field data-invalid={!!err}>
-                            <FieldLabel htmlFor={nameId} required={isRequiredSlot}>
-                              {photoRequired
-                                ? "Nama lengkap"
-                                : `Nama anggota ${i + 1}${isRequiredSlot ? "" : " (opsional)"}`}
+                            <FieldLabel htmlFor={gameIdId} required>
+                              ID akun
                             </FieldLabel>
                             <Input
-                              id={nameId}
+                              id={gameIdId}
                               type="text"
                               value={(field.state.value as string) ?? ""}
                               onBlur={field.handleBlur}
-                              onChange={(e) =>
-                                field.handleChange(e.target.value as never)
-                              }
-                              placeholder="Nama sesuai identitas"
+                              onChange={(e) => field.handleChange(e.target.value as never)}
+                              placeholder="Contoh: 123456789 (1234)"
                               aria-invalid={!!err}
                             />
                             {err ? <FieldError>{err.message}</FieldError> : null}
@@ -389,234 +371,84 @@ export default function FormStep({
                         );
                       }}
                     />
+                  )}
 
-                    {photoRequired && (
-                      <form.Field
-                        name={`memberDetails[${i}].gameId` as never}
-                        children={(field) => {
-                          const err = field.state.meta.errors?.[0] as
-                            | { message?: string }
-                            | undefined;
-                          return (
-                            <Field data-invalid={!!err}>
-                              <FieldLabel htmlFor={gameIdId} required>
-                                ID akun
-                              </FieldLabel>
-                              <Input
-                                id={gameIdId}
-                                type="text"
-                                value={(field.state.value as string) ?? ""}
-                                onBlur={field.handleBlur}
-                                onChange={(e) =>
-                                  field.handleChange(e.target.value as never)
-                                }
-                                placeholder="Contoh: 123456789 (1234)"
-                                aria-invalid={!!err}
-                              />
-                              {err ? <FieldError>{err.message}</FieldError> : null}
-                            </Field>
-                          );
-                        }}
-                      />
-                    )}
+                  {photoRequired && (
+                    <form.Field
+                      name={`memberDetails[${i}].photoUrl` as never}
+                      children={(field) => {
+                        const err = field.state.meta.errors?.[0] as
+                          | { message?: string }
+                          | undefined;
+                        return (
+                          <PlayerPhotoField
+                            compact
+                            required
+                            label="Foto pemain"
+                            value={(field.state.value as string) ?? ""}
+                            onChange={(url) => field.handleChange(url as never)}
+                            error={err?.message}
+                          />
+                        );
+                      }}
+                    />
+                  )}
+                </div>
+              );
+            })}
+            <form.Field
+              name="memberDetails"
+              children={(field) => {
+                const err = field.state.meta.errors?.[0] as { message?: string } | undefined;
+                return err ? <FieldError>{err.message}</FieldError> : null;
+              }}
+            />
+          </FieldSet>
+        )}
 
-                    {photoRequired && (
-                      <form.Field
-                        name={`memberDetails[${i}].photoUrl` as never}
-                        children={(field) => {
-                          const err = field.state.meta.errors?.[0] as
-                            | { message?: string }
-                            | undefined;
-                          return (
-                            <PlayerPhotoField
-                              compact
-                              required
-                              label="Foto pemain"
-                              value={(field.state.value as string) ?? ""}
-                              onChange={(url) => field.handleChange(url as never)}
-                              error={err?.message}
-                            />
-                          );
-                        }}
-                      />
-                    )}
-                  </div>
-                );
-              })}
-              <form.Field
-                name="memberDetails"
-                children={(field) => {
-                  const err = field.state.meta.errors?.[0] as
-                    | { message?: string }
-                    | undefined;
-                  return err ? <FieldError>{err.message}</FieldError> : null;
-                }}
-              />
-            </FieldSet>
-          )}
+        {/* ─── FIELD KHUSUS KOMPETISI (DYNAMIC) ─── */}
+        {customFields && customFields.length > 0 && (
+          <div className="flex flex-col gap-5 border-t border-sky-mid/50 pt-6">
+            <div>
+              <h3 className="flex items-center gap-2 font-heading text-sm font-bold text-astro-navy">
+                <FileText className="size-4 text-astro-blue" />
+                {customFields.some((field) => field.id === "talent_category")
+                  ? "Aksi di panggung"
+                  : "Berkas khusus lomba"}
+              </h3>
+              <p className="mt-0.5 text-xs text-ink/65">
+                Lengkapi sesuai ketentuan guidebook <strong>{competition.title}</strong>.
+              </p>
+            </div>
 
-          {/* ─── FIELD KHUSUS KOMPETISI (DYNAMIC) ─── */}
-          {customFields && customFields.length > 0 && (
-            <div className="flex flex-col gap-5 border-t border-sky-mid/50 pt-6">
-              <div>
-                <h3 className="flex items-center gap-2 font-heading text-sm font-bold text-astro-navy">
-                  <FileText className="size-4 text-astro-blue" />
-                  {customFields.some((field) => field.id === "talent_category")
-                    ? "Aksi di panggung"
-                    : "Berkas khusus lomba"}
-                </h3>
-                <p className="mt-0.5 text-xs text-ink/65">
-                  Lengkapi sesuai ketentuan guidebook <strong>{competition.title}</strong>.
-                </p>
-              </div>
+            <FieldGroup className="gap-5">
+              {customFields.map((field) => {
+                const fieldName = `customFields.${field.id}`;
+                if (field.type === "image") {
+                  return (
+                    <form.Field
+                      key={field.id}
+                      name={fieldName as never}
+                      children={(subField) => {
+                        const err = subField.state.meta.errors?.[0] as
+                          | { message?: string }
+                          | undefined;
+                        return (
+                          <CustomFieldUpload
+                            label={field.label}
+                            description={field.description}
+                            required={field.required}
+                            value={(subField.state.value as string) ?? ""}
+                            onChange={(url) => subField.handleChange(url as never)}
+                            error={err?.message}
+                          />
+                        );
+                      }}
+                    />
+                  );
+                }
 
-              <FieldGroup className="gap-5">
-                {customFields.map((field) => {
-                  const fieldName = `customFields.${field.id}`;
-                  if (field.type === 'image') {
-                    return (
-                      <form.Field
-                        key={field.id}
-                        name={fieldName as never}
-                        children={(subField) => {
-                          const err = subField.state.meta.errors?.[0] as
-                            | { message?: string }
-                            | undefined;
-                          return (
-                            <CustomFieldUpload
-                              label={field.label}
-                              description={field.description}
-                              required={field.required}
-                              value={(subField.state.value as string) ?? ""}
-                              onChange={(url) => subField.handleChange(url as never)}
-                              error={err?.message}
-                            />
-                          );
-                        }}
-                      />
-                    );
-                  }
-
-                  if (field.type === 'textarea') {
-                    return (
-                      <form.Field
-                        key={field.id}
-                        name={fieldName as never}
-                        children={(subField) => {
-                          const err = subField.state.meta.errors?.[0] as
-                            | { message?: string }
-                            | undefined;
-                          const fieldId = `field-custom-${field.id}`;
-                          return (
-                            <Field data-invalid={!!err}>
-                              <FieldLabel htmlFor={fieldId} required={field.required}>
-                                {field.label}
-                              </FieldLabel>
-                              {field.description && (
-                                <p className="text-11 font-normal text-muted-foreground -mt-1">
-                                  {field.description}
-                                </p>
-                              )}
-                              <Textarea
-                                id={fieldId}
-                                value={(subField.state.value as string) ?? ""}
-                                onBlur={subField.handleBlur}
-                                onChange={(e) => subField.handleChange(e.target.value as never)}
-                                placeholder={field.placeholder || `Masukkan ${field.label.toLowerCase()}`}
-                                aria-invalid={!!err}
-                                rows={3}
-                              />
-                              {err ? <FieldError>{err.message}</FieldError> : null}
-                            </Field>
-                          );
-                        }}
-                      />
-                    );
-                  }
-
-                  if (field.type === "select" && field.id === "talent_category") {
-                    return (
-                      <form.Field
-                        key={field.id}
-                        name={fieldName as never}
-                        children={(subField) => {
-                          const err = subField.state.meta.errors?.[0] as
-                            | { message?: string }
-                            | undefined;
-                          const value = (subField.state.value as string) ?? "";
-                          return (
-                            <Field data-invalid={!!err}>
-                              <FieldLabel required={field.required}>{field.label}</FieldLabel>
-                              {field.description && (
-                                <p className="text-xs text-ink/65">{field.description}</p>
-                              )}
-                              <div className="grid grid-cols-2 gap-3 min-[400px]:grid-cols-3 sm:grid-cols-4">
-                                {(field.options || []).map((opt) => {
-                                  const meta = talentMeta(opt);
-                                  return (
-                                    <TalentCategoryCard
-                                      key={opt}
-                                      id={meta.id}
-                                      label={meta.label}
-                                      size="mini"
-                                      selected={value === opt}
-                                      onSelect={() => subField.handleChange(opt as never)}
-                                    />
-                                  );
-                                })}
-                              </div>
-                              {err ? <FieldError>{err.message}</FieldError> : null}
-                            </Field>
-                          );
-                        }}
-                      />
-                    );
-                  }
-
-                  if (field.type === 'select') {
-                    return (
-                      <form.Field
-                        key={field.id}
-                        name={fieldName as never}
-                        children={(subField) => {
-                          const err = subField.state.meta.errors?.[0] as
-                            | { message?: string }
-                            | undefined;
-                          const fieldId = `field-custom-${field.id}`;
-                          return (
-                            <Field data-invalid={!!err}>
-                              <FieldLabel htmlFor={fieldId} required={field.required}>
-                                {field.label}
-                              </FieldLabel>
-                              {field.description && (
-                                <p className="text-11 font-normal text-muted-foreground -mt-1">
-                                  {field.description}
-                                </p>
-                              )}
-                              <select
-                                id={fieldId}
-                                value={(subField.state.value as string) ?? ""}
-                                onBlur={subField.handleBlur}
-                                onChange={(e) => subField.handleChange(e.target.value as never)}
-                                aria-invalid={!!err}
-                                className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring md:text-sm"
-                              >
-                                <option value="">-- Pilih {field.label} --</option>
-                                {(field.options || []).map((opt) => (
-                                  <option key={opt} value={opt}>
-                                    {opt}
-                                  </option>
-                                ))}
-                              </select>
-                              {err ? <FieldError>{err.message}</FieldError> : null}
-                            </Field>
-                          );
-                        }}
-                      />
-                    );
-                  }
-
-                  // Default: input text
+                if (field.type === "textarea") {
                   return (
                     <form.Field
                       key={field.id}
@@ -636,14 +468,16 @@ export default function FormStep({
                                 {field.description}
                               </p>
                             )}
-                            <Input
+                            <Textarea
                               id={fieldId}
-                              type="text"
                               value={(subField.state.value as string) ?? ""}
                               onBlur={subField.handleBlur}
                               onChange={(e) => subField.handleChange(e.target.value as never)}
-                              placeholder={field.placeholder || `Masukkan ${field.label.toLowerCase()}`}
+                              placeholder={
+                                field.placeholder || `Masukkan ${field.label.toLowerCase()}`
+                              }
                               aria-invalid={!!err}
+                              rows={3}
                             />
                             {err ? <FieldError>{err.message}</FieldError> : null}
                           </Field>
@@ -651,16 +485,142 @@ export default function FormStep({
                       }}
                     />
                   );
-                })}
-              </FieldGroup>
-            </div>
-          )}
+                }
+
+                if (field.type === "select" && field.id === "talent_category") {
+                  return (
+                    <form.Field
+                      key={field.id}
+                      name={fieldName as never}
+                      children={(subField) => {
+                        const err = subField.state.meta.errors?.[0] as
+                          | { message?: string }
+                          | undefined;
+                        const value = (subField.state.value as string) ?? "";
+                        return (
+                          <Field data-invalid={!!err}>
+                            <FieldLabel required={field.required}>{field.label}</FieldLabel>
+                            {field.description && (
+                              <p className="text-xs text-ink/65">{field.description}</p>
+                            )}
+                            <div className="grid grid-cols-2 gap-3 min-[400px]:grid-cols-3 sm:grid-cols-4">
+                              {(field.options || []).map((opt) => {
+                                const meta = talentMeta(opt);
+                                return (
+                                  <TalentCategoryCard
+                                    key={opt}
+                                    id={meta.id}
+                                    label={meta.label}
+                                    size="mini"
+                                    selected={value === opt}
+                                    onSelect={() => subField.handleChange(opt as never)}
+                                  />
+                                );
+                              })}
+                            </div>
+                            {err ? <FieldError>{err.message}</FieldError> : null}
+                          </Field>
+                        );
+                      }}
+                    />
+                  );
+                }
+
+                if (field.type === "select") {
+                  return (
+                    <form.Field
+                      key={field.id}
+                      name={fieldName as never}
+                      children={(subField) => {
+                        const err = subField.state.meta.errors?.[0] as
+                          | { message?: string }
+                          | undefined;
+                        const fieldId = `field-custom-${field.id}`;
+                        return (
+                          <Field data-invalid={!!err}>
+                            <FieldLabel htmlFor={fieldId} required={field.required}>
+                              {field.label}
+                            </FieldLabel>
+                            {field.description && (
+                              <p className="text-11 font-normal text-muted-foreground -mt-1">
+                                {field.description}
+                              </p>
+                            )}
+                            <select
+                              id={fieldId}
+                              value={(subField.state.value as string) ?? ""}
+                              onBlur={subField.handleBlur}
+                              onChange={(e) => subField.handleChange(e.target.value as never)}
+                              aria-invalid={!!err}
+                              className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring md:text-sm"
+                            >
+                              <option value="">-- Pilih {field.label} --</option>
+                              {(field.options || []).map((opt) => (
+                                <option key={opt} value={opt}>
+                                  {opt}
+                                </option>
+                              ))}
+                            </select>
+                            {err ? <FieldError>{err.message}</FieldError> : null}
+                          </Field>
+                        );
+                      }}
+                    />
+                  );
+                }
+
+                // Default: input text
+                return (
+                  <form.Field
+                    key={field.id}
+                    name={fieldName as never}
+                    children={(subField) => {
+                      const err = subField.state.meta.errors?.[0] as
+                        | { message?: string }
+                        | undefined;
+                      const fieldId = `field-custom-${field.id}`;
+                      return (
+                        <Field data-invalid={!!err}>
+                          <FieldLabel htmlFor={fieldId} required={field.required}>
+                            {field.label}
+                          </FieldLabel>
+                          {field.description && (
+                            <p className="text-11 font-normal text-muted-foreground -mt-1">
+                              {field.description}
+                            </p>
+                          )}
+                          <Input
+                            id={fieldId}
+                            type="text"
+                            value={(subField.state.value as string) ?? ""}
+                            onBlur={subField.handleBlur}
+                            onChange={(e) => subField.handleChange(e.target.value as never)}
+                            placeholder={
+                              field.placeholder || `Masukkan ${field.label.toLowerCase()}`
+                            }
+                            aria-invalid={!!err}
+                          />
+                          {err ? <FieldError>{err.message}</FieldError> : null}
+                        </Field>
+                      );
+                    }}
+                  />
+                );
+              })}
+            </FieldGroup>
+          </div>
+        )}
       </WindowCard>
 
       <form.Subscribe
         selector={(s) => ({ isSubmitting: s.isSubmitting })}
         children={({ isSubmitting }) => (
-          <CtaButton type="submit" disabled={isSubmitting} size="lg" className="w-full sm:ml-auto sm:w-auto">
+          <CtaButton
+            type="submit"
+            disabled={isSubmitting}
+            size="lg"
+            className="w-full sm:ml-auto sm:w-auto"
+          >
             {isSubmitting ? "Memproses" : "Lanjut ke pembayaran"}
           </CtaButton>
         )}

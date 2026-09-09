@@ -6,8 +6,7 @@ import type { Competition } from "@/types/astro";
 
 export default function RegisterSection({ competition }: { competition: Competition }) {
   const isOpen = competition.isActive !== false;
-  const isFull =
-    competition.maxSlots > 0 && competition.filledSlots >= competition.maxSlots;
+  const isFull = competition.maxSlots > 0 && competition.filledSlots >= competition.maxSlots;
 
   if (!isOpen) {
     return (

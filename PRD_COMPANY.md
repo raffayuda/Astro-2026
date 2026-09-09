@@ -1,6 +1,7 @@
 PRD — ASTRO 2026 Company Profile Website
+
 1. Overview
-Nama Produk
+   Nama Produk
 
 ASTRO 2026 Company Profile
 
@@ -37,8 +38,7 @@ Floating bubble
 Glass card
 Blur effect
 Soft shadow
-Futuristic typography
-3. Website Structure
+Futuristic typography 3. Website Structure
 Hero Section
 
 ↓
@@ -75,8 +75,7 @@ Committee
 
 ↓
 
-Contact
-4. Hero Section
+Contact 4. Hero Section
 Tujuan
 
 Memberikan first impression mengenai ASTRO.
@@ -100,8 +99,7 @@ A yearly technology competition that brings together innovators, creators, and t
 Button:
 
 Explore ASTRO
-Contact Us
-5. About ASTRO
+Contact Us 5. About ASTRO
 Tujuan
 
 Memperkenalkan identitas penyelenggara.
@@ -124,8 +122,7 @@ Tambahkan:
 
 Tahun berdiri
 Penyelenggara
-Fokus kegiatan
-6. About ASTRO Event
+Fokus kegiatan 6. About ASTRO Event
 Tujuan
 
 Menjelaskan acara secara jelas.
@@ -152,8 +149,7 @@ Mobile Development
 
 Data Science
 
-Cyber Security
-7. ASTRO Journey
+Cyber Security 7. ASTRO Journey
 
 Bagian ini penting untuk membangun trust.
 
@@ -180,8 +176,7 @@ Setiap tahun:
 tema
 jumlah peserta
 dokumentasi kecil
-pencapaian
-8. Event Gallery ⭐
+pencapaian 8. Event Gallery ⭐
 
 Ini salah satu bagian utama.
 
@@ -230,8 +225,7 @@ Foto naik sedikit
 Glass overlay:
 
 ASTRO 2025
-Awarding Session
-9. Social Media Presence ⭐
+Awarding Session 9. Social Media Presence ⭐
 
 Nah ini sesuai yang Anda maksud.
 
@@ -250,16 +244,16 @@ Besar seperti profile card.
 Contoh:
 
 ┌─────────────────────┐
-│                     │
-│      Instagram      │
-│                     │
-│     @astro.event    │
-│                     │
-│   Follow Our Journey│
-│                     │
-│      12.5K          │
-│      Followers      │
-│                     │
+│ │
+│ Instagram │
+│ │
+│ @astro.event │
+│ │
+│ Follow Our Journey│
+│ │
+│ 12.5K │
+│ Followers │
+│ │
 └─────────────────────┘
 
 Tambahkan preview:
@@ -321,8 +315,7 @@ Universities
 Competition Categories
 
 100+
-Projects Submitted
-12. Committee
+Projects Submitted 12. Committee
 
 Menampilkan orang dibalik ASTRO.
 

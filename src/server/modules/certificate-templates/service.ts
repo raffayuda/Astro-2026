@@ -1,8 +1,8 @@
-import { db } from '@/src/db';
-import { certificateTemplates } from '@/src/db/schema';
-import { eq, asc } from 'drizzle-orm';
-import { deleteSupabaseFile } from '@/src/server/modules/upload';
-import type { CertificateTemplateInput } from './model';
+import { db } from "@/src/db";
+import { certificateTemplates } from "@/src/db/schema";
+import { eq, asc } from "drizzle-orm";
+import { deleteSupabaseFile } from "@/src/server/modules/upload";
+import type { CertificateTemplateInput } from "./model";
 
 export async function listTemplates(competitionId: string) {
   return db
@@ -13,10 +13,7 @@ export async function listTemplates(competitionId: string) {
 }
 
 export async function getTemplate(id: number) {
-  const [row] = await db
-    .select()
-    .from(certificateTemplates)
-    .where(eq(certificateTemplates.id, id));
+  const [row] = await db.select().from(certificateTemplates).where(eq(certificateTemplates.id, id));
   return row || null;
 }
 
@@ -25,8 +22,7 @@ export async function getTemplateByRank(competitionId: string, rank: string) {
     .select()
     .from(certificateTemplates)
     .where(
-      eq(certificateTemplates.competitionId, competitionId) &&
-      eq(certificateTemplates.rank, rank),
+      eq(certificateTemplates.competitionId, competitionId) && eq(certificateTemplates.rank, rank),
     );
   return row || null;
 }
@@ -37,7 +33,7 @@ export async function upsertTemplate(input: CertificateTemplateInput) {
     .from(certificateTemplates)
     .where(
       eq(certificateTemplates.competitionId, input.competitionId) &&
-      eq(certificateTemplates.rank, input.rank),
+        eq(certificateTemplates.rank, input.rank),
     );
 
   const values = {
@@ -45,7 +41,7 @@ export async function upsertTemplate(input: CertificateTemplateInput) {
     rank: input.rank,
     templateImageUrl: input.templateImageUrl,
     textOverlays: input.textOverlays,
-    is_active: input.isActive ? '1' : '0',
+    is_active: input.isActive ? "1" : "0",
     updatedAt: new Date(),
   };
 
@@ -58,10 +54,7 @@ export async function upsertTemplate(input: CertificateTemplateInput) {
     return updated;
   }
 
-  const [created] = await db
-    .insert(certificateTemplates)
-    .values(values)
-    .returning();
+  const [created] = await db.insert(certificateTemplates).values(values).returning();
   return created;
 }
 

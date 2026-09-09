@@ -1,5 +1,5 @@
-import { z } from 'zod';
-import type { CompetitionCustomField } from '@/types/astro';
+import { z } from "zod";
+import type { CompetitionCustomField } from "@/types/astro";
 
 /**
  * One player on a team roster: name, in-game account ID, and photo (formal or
@@ -25,11 +25,9 @@ export const registrationFormSchema = z.object({
   leaderPhotoUrl: z.string().optional(),
   members: z.string().optional(),
   memberDetails: z.array(memberDetailSchema).optional(),
-  institution: z.string().min(1, 'Nama sekolah/instansi wajib diisi'),
-  email: z.email('Format email tidak valid'),
-  whatsapp: z
-    .string()
-    .min(9, 'Nomor WhatsApp tidak valid (minimal 9 digit)'),
+  institution: z.string().min(1, "Nama sekolah/instansi wajib diisi"),
+  email: z.email("Format email tidak valid"),
+  whatsapp: z.string().min(9, "Nomor WhatsApp tidak valid (minimal 9 digit)"),
   customFields: z.record(z.string(), z.string()),
 });
 
@@ -55,21 +53,17 @@ export function buildRegistrationSchema(opts: {
     if (opts.photoRequired) {
       if (!values.leaderPhotoUrl) {
         ctx.addIssue({
-          code: 'custom',
-          path: ['leaderPhotoUrl'],
-          message: opts.isTeam
-            ? 'Foto ketua tim wajib diunggah'
-            : 'Foto pemain wajib diunggah',
+          code: "custom",
+          path: ["leaderPhotoUrl"],
+          message: opts.isTeam ? "Foto ketua tim wajib diunggah" : "Foto pemain wajib diunggah",
         });
       }
 
       if (!values.leaderGameId?.trim()) {
         ctx.addIssue({
-          code: 'custom',
-          path: ['leaderGameId'],
-          message: opts.isTeam
-            ? 'ID akun ketua tim wajib diisi'
-            : 'ID akun pemain wajib diisi',
+          code: "custom",
+          path: ["leaderGameId"],
+          message: opts.isTeam ? "ID akun ketua tim wajib diisi" : "ID akun pemain wajib diisi",
         });
       }
 
@@ -77,31 +71,31 @@ export function buildRegistrationSchema(opts: {
         const players = (values.memberDetails ?? []).filter((m) => m.name.trim());
         if (players.length < minMembers) {
           ctx.addIssue({
-            code: 'custom',
-            path: ['memberDetails'],
+            code: "custom",
+            path: ["memberDetails"],
             message: `Minimal ${minMembers} anggota (selain ketua) wajib diisi`,
           });
         }
         (values.memberDetails ?? []).forEach((m, i) => {
           if (m.name.trim() && !m.photoUrl) {
             ctx.addIssue({
-              code: 'custom',
-              path: ['memberDetails', i, 'photoUrl'],
-              message: 'Foto pemain wajib diunggah',
+              code: "custom",
+              path: ["memberDetails", i, "photoUrl"],
+              message: "Foto pemain wajib diunggah",
             });
           }
           if (m.name.trim() && !m.gameId.trim()) {
             ctx.addIssue({
-              code: 'custom',
-              path: ['memberDetails', i, 'gameId'],
-              message: 'ID akun pemain wajib diisi',
+              code: "custom",
+              path: ["memberDetails", i, "gameId"],
+              message: "ID akun pemain wajib diisi",
             });
           }
           if (!m.name.trim() && (m.photoUrl || m.gameId.trim())) {
             ctx.addIssue({
-              code: 'custom',
-              path: ['memberDetails', i, 'name'],
-              message: 'Nama pemain wajib diisi',
+              code: "custom",
+              path: ["memberDetails", i, "name"],
+              message: "Nama pemain wajib diisi",
             });
           }
         });
@@ -113,19 +107,19 @@ export function buildRegistrationSchema(opts: {
       opts.customFields.forEach((field) => {
         if (!field.required) return;
         const val = values.customFields?.[field.id];
-        if (field.type === 'image') {
-          if (!val || typeof val !== 'string' || !val.trim()) {
+        if (field.type === "image") {
+          if (!val || typeof val !== "string" || !val.trim()) {
             ctx.addIssue({
-              code: 'custom',
-              path: ['customFields', field.id],
+              code: "custom",
+              path: ["customFields", field.id],
               message: `${field.label} wajib diunggah`,
             });
           }
         } else {
           if (!val || !val.toString().trim()) {
             ctx.addIssue({
-              code: 'custom',
-              path: ['customFields', field.id],
+              code: "custom",
+              path: ["customFields", field.id],
               message: `${field.label} wajib diisi`,
             });
           }
@@ -139,7 +133,7 @@ export function buildRegistrationSchema(opts: {
 export function toRegistrationBody(
   values: RegistrationFormValues,
   competitionId: string,
-  type: 'team' | 'individual',
+  type: "team" | "individual",
 ) {
   const roster = (values.memberDetails ?? [])
     .filter((m) => m.name.trim())
@@ -159,7 +153,7 @@ export function toRegistrationBody(
     leaderIdentity: values.leaderIdentity || null,
     leaderGameId: values.leaderGameId?.trim() || null,
     leaderPhotoUrl: values.leaderPhotoUrl || null,
-    members: roster.length > 0 ? roster.map((m) => m.name).join('\n') : values.members || null,
+    members: roster.length > 0 ? roster.map((m) => m.name).join("\n") : values.members || null,
     memberDetails: roster,
     institution: values.institution,
     email: values.email,
@@ -170,10 +164,6 @@ export function toRegistrationBody(
 
 /** Body for the self-service PATCH (no competition/type switch involved). */
 export function toSelfServiceBody(values: RegistrationFormValues) {
-  const { competitionId: _c, type: _t, ...rest } = toRegistrationBody(
-    values,
-    '',
-    'individual',
-  );
+  const { competitionId: _c, type: _t, ...rest } = toRegistrationBody(values, "", "individual");
   return rest;
 }

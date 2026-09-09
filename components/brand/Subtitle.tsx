@@ -1,6 +1,6 @@
-import * as React from "react"
+import * as React from "react";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 /**
  * Secondary display line, set in Lexend Exa.
@@ -14,20 +14,17 @@ export function Subtitle({
   children,
   ...rest
 }: {
-  as?: React.ElementType
-  className?: string
-  children?: React.ReactNode
+  as?: React.ElementType;
+  className?: string;
+  children?: React.ReactNode;
 } & React.HTMLAttributes<HTMLElement>) {
   return (
     <Comp
       data-slot="subtitle"
-      className={cn(
-        "font-subtitle text-subtitle uppercase text-astro-navy",
-        className
-      )}
+      className={cn("font-subtitle text-subtitle uppercase text-astro-navy", className)}
       {...rest}
     >
       {children}
     </Comp>
-  )
+  );
 }

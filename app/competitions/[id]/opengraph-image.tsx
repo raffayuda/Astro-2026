@@ -27,9 +27,7 @@ const rupiah = new Intl.NumberFormat("id-ID", {
 export default async function Image({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
 
-  let comp:
-    | { title: string; category: string; tagline: string | null; fee: number }
-    | undefined;
+  let comp: { title: string; category: string; tagline: string | null; fee: number } | undefined;
   try {
     comp = await db.query.competitions.findFirst({
       where: eq(competitions.id, id),

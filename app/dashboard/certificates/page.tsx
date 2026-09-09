@@ -51,9 +51,7 @@ export default function SertifikatPage() {
   const [sending, setSending] = useState(false);
 
   const { data: compsData, isLoading: loading } = useCompetitions();
-  const competitions = (compsData ?? []).filter((c) =>
-    isFlagOn(c.certificateEnabled),
-  );
+  const competitions = (compsData ?? []).filter((c) => isFlagOn(c.certificateEnabled));
 
   const generateAllMut = useCertificateGenerate(selectedComp);
 

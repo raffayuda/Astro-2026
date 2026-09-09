@@ -56,12 +56,7 @@ export type OgImageOptions = {
  * Render one OG surface. Route files stay declarative: they export `alt`,
  * `size` and `contentType`, then call this.
  */
-export function ogImage({
-  title,
-  subtitle,
-  tag,
-  mascot: withMascot = true,
-}: OgImageOptions) {
+export function ogImage({ title, subtitle, tag, mascot: withMascot = true }: OgImageOptions) {
   return new ImageResponse(
     <div
       style={{
@@ -71,8 +66,7 @@ export function ogImage({
         width: "100%",
         height: "100%",
         padding: "72px 76px",
-        background:
-          "linear-gradient(160deg, #7EC8F5 0%, #B8E4FB 55%, #E8F6FE 100%)",
+        background: "linear-gradient(160deg, #7EC8F5 0%, #B8E4FB 55%, #E8F6FE 100%)",
       }}
     >
       {/* Grass crest. `GrassStrip` uses an SVG path; an oversized ellipse
@@ -171,8 +165,7 @@ export function ogImage({
               fontFamily: "Jakarta",
               fontSize: 24,
               fontWeight: 800,
-              boxShadow:
-                "inset 0 0 0 1px #FFFFFF, 0 8px 22px rgba(30,58,138,0.14)",
+              boxShadow: "inset 0 0 0 1px #FFFFFF, 0 8px 22px rgba(30,58,138,0.14)",
             }}
           >
             {tag}

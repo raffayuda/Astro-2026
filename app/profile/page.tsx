@@ -3,14 +3,7 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, useReducedMotion } from "motion/react";
-import {
-  ArrowRight,
-  Award,
-  Calendar,
-  ShieldCheck,
-  Sparkles,
-  Users,
-} from "lucide-react";
+import { ArrowRight, Award, Calendar, ShieldCheck, Sparkles, Users } from "lucide-react";
 import { PageShell } from "@/components/brand";
 import { CtaButton } from "@/components/brand/CtaButton";
 import { Pill } from "@/components/brand/Pill";
@@ -71,10 +64,7 @@ export default function ProfilePage() {
   const router = useRouter();
   const [showAllJourney, setShowAllJourney] = useState(false);
   const { data: journeysData } = useJourneys();
-  const journey = useMemo(
-    () => (journeysData ?? []).map(toJourneyCard),
-    [journeysData],
-  );
+  const journey = useMemo(() => (journeysData ?? []).map(toJourneyCard), [journeysData]);
 
   return (
     <PageShell>
@@ -108,15 +98,18 @@ export default function ProfilePage() {
           <div className="flex flex-col gap-6 lg:col-span-5">
             <WindowCard title="Visi">
               <p className="text-sm leading-relaxed text-ink md:text-base">
-                Menjadikan ASTRO 2026 festival mahasiswa yang mengintegrasikan olahraga,
-                pendidikan, dan kesenian dalam semangat pelestarian budaya Nusantara.
+                Menjadikan ASTRO 2026 festival mahasiswa yang mengintegrasikan olahraga, pendidikan,
+                dan kesenian dalam semangat pelestarian budaya Nusantara.
               </p>
             </WindowCard>
 
             <WindowCard title="Misi">
               <ol className="space-y-3">
                 {MISI.map((item, i) => (
-                  <li key={item} className="flex items-start gap-3 text-sm leading-relaxed text-ink">
+                  <li
+                    key={item}
+                    className="flex items-start gap-3 text-sm leading-relaxed text-ink"
+                  >
                     <span className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-sky-bottom text-xs font-bold text-astro-navy">
                       {i + 1}
                     </span>
@@ -203,9 +196,7 @@ export default function ProfilePage() {
             <DialogTitle className="font-heading text-2xl text-astro-navy">
               Perjalanan ASTRO
             </DialogTitle>
-            <DialogDescription>
-              Jelajahi setiap edisi dari awal sampai sekarang.
-            </DialogDescription>
+            <DialogDescription>Jelajahi setiap edisi dari awal sampai sekarang.</DialogDescription>
           </DialogHeader>
           <div className="max-h-[70vh] space-y-6 overflow-y-auto p-6">
             {journey.map((j) => (

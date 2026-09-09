@@ -1,23 +1,23 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 export type ChromeTextProps<T extends React.ElementType = "span"> = {
-  as?: T
+  as?: T;
   /** `blue` for emphasis on light grounds, `white` on saturated sky. */
-  tone?: "blue" | "navy" | "white" | "gold"
-  className?: string
-  children?: React.ReactNode
-}
+  tone?: "blue" | "navy" | "white" | "gold";
+  className?: string;
+  children?: React.ReactNode;
+};
 
 const TONE = {
   blue: "text-astro-blue",
   navy: "text-astro-navy",
   white: "text-white",
   gold: "text-astro-gold",
-} as const
+} as const;
 
 /**
  * Inline display emphasis — the highlighted word inside a heading, as in
@@ -34,9 +34,8 @@ export function ChromeText<T extends React.ElementType = "span">({
   className,
   children,
   ...rest
-}: ChromeTextProps<T> &
-  Omit<React.ComponentPropsWithoutRef<T>, keyof ChromeTextProps<T>>) {
-  const Comp = (as ?? "span") as React.ElementType
+}: ChromeTextProps<T> & Omit<React.ComponentPropsWithoutRef<T>, keyof ChromeTextProps<T>>) {
+  const Comp = (as ?? "span") as React.ElementType;
 
   return (
     <Comp
@@ -46,5 +45,5 @@ export function ChromeText<T extends React.ElementType = "span">({
     >
       {children}
     </Comp>
-  )
+  );
 }

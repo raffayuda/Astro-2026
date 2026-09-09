@@ -1,5 +1,5 @@
-import { NextResponse, type NextRequest } from 'next/server';
-import { getSessionCookie } from 'better-auth/cookies';
+import { NextResponse, type NextRequest } from "next/server";
+import { getSessionCookie } from "better-auth/cookies";
 
 /**
  * Next 16 renamed Middleware → Proxy. This runs the optimistic cookie check.
@@ -12,16 +12,16 @@ export function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
   // Protect dashboard routes
-  if (!sessionCookie && pathname.startsWith('/dashboard')) {
+  if (!sessionCookie && pathname.startsWith("/dashboard")) {
     const url = request.nextUrl.clone();
-    url.pathname = '/login';
+    url.pathname = "/login";
     return NextResponse.redirect(url);
   }
 
   // Redirect logged-in users away from login
-  if (sessionCookie && pathname.startsWith('/login')) {
+  if (sessionCookie && pathname.startsWith("/login")) {
     const url = request.nextUrl.clone();
-    url.pathname = '/';
+    url.pathname = "/";
     return NextResponse.redirect(url);
   }
 
@@ -29,5 +29,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/login', '/api/auth/:path*'],
+  matcher: ["/dashboard/:path*", "/login", "/api/auth/:path*"],
 };

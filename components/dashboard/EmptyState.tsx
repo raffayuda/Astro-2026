@@ -1,4 +1,4 @@
-import type * as React from "react"
+import type * as React from "react";
 
 import {
   Empty,
@@ -7,8 +7,8 @@ import {
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
-} from "@/components/ui/empty"
-import { cn } from "@/lib/utils"
+} from "@/components/ui/empty";
+import { cn } from "@/lib/utils";
 
 /**
  * Zero-state box for admin lists. Pages previously alternated between a bare
@@ -21,16 +21,14 @@ function EmptyState({
   children,
   className,
 }: {
-  icon?: React.ReactNode
-  title: React.ReactNode
-  description?: React.ReactNode
-  children?: React.ReactNode
-  className?: string
+  icon?: React.ReactNode;
+  title: React.ReactNode;
+  description?: React.ReactNode;
+  children?: React.ReactNode;
+  className?: string;
 }) {
   return (
-    <Empty
-      className={cn("border border-dashed border-border bg-background p-8", className)}
-    >
+    <Empty className={cn("border border-dashed border-border bg-background p-8", className)}>
       <EmptyHeader>
         {icon ? <EmptyMedia variant="icon">{icon}</EmptyMedia> : null}
         <EmptyTitle className="text-sm">{title}</EmptyTitle>
@@ -38,7 +36,7 @@ function EmptyState({
       </EmptyHeader>
       {children ? <EmptyContent>{children}</EmptyContent> : null}
     </Empty>
-  )
+  );
 }
 
-export { EmptyState }
+export { EmptyState };

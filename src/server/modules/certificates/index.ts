@@ -1,11 +1,11 @@
-import { Elysia, status } from 'elysia';
-import { authPlugin } from '@/src/server/plugins/auth';
-import { db } from '@/src/db';
-import { registrations, competitions } from '@/src/db/schema';
-import { eq } from 'drizzle-orm';
-import { z } from 'zod';
-import { Resend } from 'resend';
-import * as certService from './service';
+import { Elysia, status } from "elysia";
+import { authPlugin } from "@/src/server/plugins/auth";
+import { db } from "@/src/db";
+import { registrations, competitions } from "@/src/db/schema";
+import { eq } from "drizzle-orm";
+import { z } from "zod";
+import { Resend } from "resend";
+import * as certService from "./service";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -25,41 +25,42 @@ const generateSingleSchema = z.object({
 });
 
 /** Send certificate download links to a participant's email (admin). */
-export const certificatesModule = new Elysia({ prefix: '/certificates' })
+export const certificatesModule = new Elysia({ prefix: "/certificates" })
   .use(authPlugin)
-  .post('/send', async ({ body }) => {
-    const [reg] = await db
-      .select()
-      .from(registrations)
-      .where(eq(registrations.id, body.registrationId));
-    if (!reg) return status(404, { error: 'Pendaftaran tidak ditemukan' });
+  .post(
+    "/send",
+    async ({ body }) => {
+      const [reg] = await db
+        .select()
+        .from(registrations)
+        .where(eq(registrations.id, body.registrationId));
+      if (!reg) return status(404, { error: "Pendaftaran tidak ditemukan" });
 
-    const [comp] = await db
-      .select()
-      .from(competitions)
-      .where(eq(competitions.id, body.competitionId));
-    if (!comp) return status(404, { error: 'Lomba tidak ditemukan' });
+      const [comp] = await db
+        .select()
+        .from(competitions)
+        .where(eq(competitions.id, body.competitionId));
+      if (!comp) return status(404, { error: "Lomba tidak ditemukan" });
 
-    const certs: { name: string; url: string }[] = reg.certificates || [];
-    if (!certs.length) {
-      return status(400, { error: 'Belum ada sertifikat yang diupload untuk peserta ini.' });
-    }
+      const certs: { name: string; url: string }[] = reg.certificates || [];
+      if (!certs.length) {
+        return status(400, { error: "Belum ada sertifikat yang diupload untuk peserta ini." });
+      }
 
-    const participantName = reg.fullName || reg.teamName || reg.leaderName || 'Peserta';
-    const rank = reg.winnerRank ? `Juara ${reg.winnerRank}` : 'Peserta';
+      const participantName = reg.fullName || reg.teamName || reg.leaderName || "Peserta";
+      const rank = reg.winnerRank ? `Juara ${reg.winnerRank}` : "Peserta";
 
-    const certLinks = certs
-      .map(
-        (c) => {
+      const certLinks = certs
+        .map((c) => {
           // New uploads are absolute Supabase URLs. Legacy `/uploads/...`
           // paths now live in the public `uploads` Storage bucket.
-          const storageBase = process.env.NEXT_PUBLIC_SUPABASE_URL ||
-            'https://abhshprulipnmetfumrt.supabase.co';
-          const href = c.url?.startsWith('/uploads/')
-            ? `${storageBase}/storage/v1/object/public/uploads/${c.url.slice('/uploads/'.length)}`
-            : c.url?.startsWith('http')
+          const storageBase =
+            process.env.NEXT_PUBLIC_SUPABASE_URL || "https://abhshprulipnmetfumrt.supabase.co";
+          const href = c.url?.startsWith("/uploads/")
+            ? `${storageBase}/storage/v1/object/public/uploads/${c.url.slice("/uploads/".length)}`
+            : c.url?.startsWith("http")
               ? c.url
-              : `${process.env.NEXT_PUBLIC_BASE_URL || 'https://astro2026.example.com'}${c.url}`;
+              : `${process.env.NEXT_PUBLIC_BASE_URL || "https://astro2026.example.com"}${c.url}`;
           return `<tr><td style="padding: 6px 0; color: #64748b; font-size: 13px;">${c.name}</td>
             <td style="padding: 6px 0; text-align: right;">
               <a href="${href}"
@@ -67,16 +68,15 @@ export const certificatesModule = new Elysia({ prefix: '/certificates' })
                 Download
               </a>
             </td></tr>`;
-        },
-      )
-      .join('');
+        })
+        .join("");
 
-    try {
-      await resend.emails.send({
-        from: 'ASTRO 2026 <noreply@mailer.kta.blue>',
-        to: reg.email,
-        subject: `Sertifikat - ${comp.title} | ASTRO 2026`,
-        html: `
+      try {
+        await resend.emails.send({
+          from: "ASTRO 2026 <noreply@mailer.kta.blue>",
+          to: reg.email,
+          subject: `Sertifikat - ${comp.title} | ASTRO 2026`,
+          html: `
           <div style="font-family: Arial, sans-serif; max-width: 520px; margin: 0 auto; padding: 32px 24px; background: #f8fafc; border-radius: 16px;">
             <div style="text-align: center; margin-bottom: 24px;">
               <img src="https://i.ibb.co.com/yvSvfLK/logo-astro.png" alt="ASTRO" style="height: 48px;" />
@@ -106,63 +106,73 @@ export const certificatesModule = new Elysia({ prefix: '/certificates' })
               </p>
           </div>
         `,
-      });
-    } catch (emailErr) {
-      console.error('Failed to send certificate email:', emailErr);
-      return status(500, { error: 'Gagal mengirim email sertifikat' });
-    }
+        });
+      } catch (emailErr) {
+        console.error("Failed to send certificate email:", emailErr);
+        return status(500, { error: "Gagal mengirim email sertifikat" });
+      }
 
-    await db
-      .update(registrations)
-      .set({ certificateSent: '1', updatedAt: new Date() })
-      .where(eq(registrations.id, body.registrationId));
+      await db
+        .update(registrations)
+        .set({ certificateSent: "1", updatedAt: new Date() })
+        .where(eq(registrations.id, body.registrationId));
 
-    return { success: true, message: 'Sertifikat berhasil dikirim' };
-  }, {
-    body: sendSchema,
-    admin: true,
-  })
+      return { success: true, message: "Sertifikat berhasil dikirim" };
+    },
+    {
+      body: sendSchema,
+      admin: true,
+    },
+  )
 
   /** Generate semua sertifikat untuk semua pemenang (admin). */
-  .post('/generate', async ({ body }) => {
-    try {
-      const result = await certService.generateAllWinnerCertificates(
-        body.competitionId,
-        body.ranks,
-      );
-      return result;
-    } catch (err) {
-      console.error('Certificate batch generate failed:', err);
-      return status(500, {
-        error: 'Gagal generate sertifikat',
-        details: err instanceof Error ? err.message : String(err),
-      });
-    }
-  }, {
-    body: generateSchema,
-    admin: true,
-  })
-
-  /** Generate on-demand untuk satu pemenang (user-side). */
-  .post('/generate-single', async ({ body }) => {
-    try {
-      const result = await certService.generateSingleCertificate(
-        body.registrationId,
-        body.competitionId,
-      );
-      if (!result) {
-        return status(404, {
-          error: 'Sertifikat tidak tersedia. Anda belum memenangkan lomba ini.',
+  .post(
+    "/generate",
+    async ({ body }) => {
+      try {
+        const result = await certService.generateAllWinnerCertificates(
+          body.competitionId,
+          body.ranks,
+        );
+        return result;
+      } catch (err) {
+        console.error("Certificate batch generate failed:", err);
+        return status(500, {
+          error: "Gagal generate sertifikat",
+          details: err instanceof Error ? err.message : String(err),
         });
       }
-      return result;
-    } catch (err) {
-      // Unauthenticated route (a participant fetching their own certificate
-      // from the public winners modal) — the underlying failure (a storage
-      // error, a template fetch timeout) is logged, never echoed to the caller.
-      console.error('Single certificate generate failed:', err);
-      return status(500, { error: 'Gagal generate sertifikat, silakan coba lagi' });
-    }
-  }, {
-    body: generateSingleSchema,
-  });
+    },
+    {
+      body: generateSchema,
+      admin: true,
+    },
+  )
+
+  /** Generate on-demand untuk satu pemenang (user-side). */
+  .post(
+    "/generate-single",
+    async ({ body }) => {
+      try {
+        const result = await certService.generateSingleCertificate(
+          body.registrationId,
+          body.competitionId,
+        );
+        if (!result) {
+          return status(404, {
+            error: "Sertifikat tidak tersedia. Anda belum memenangkan lomba ini.",
+          });
+        }
+        return result;
+      } catch (err) {
+        // Unauthenticated route (a participant fetching their own certificate
+        // from the public winners modal) — the underlying failure (a storage
+        // error, a template fetch timeout) is logged, never echoed to the caller.
+        console.error("Single certificate generate failed:", err);
+        return status(500, { error: "Gagal generate sertifikat, silakan coba lagi" });
+      }
+    },
+    {
+      body: generateSingleSchema,
+    },
+  );

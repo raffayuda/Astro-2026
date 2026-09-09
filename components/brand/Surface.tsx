@@ -1,7 +1,7 @@
-import * as React from "react"
-import { cva, type VariantProps } from "class-variance-authority"
+import * as React from "react";
+import { cva, type VariantProps } from "class-variance-authority";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 const surfaceVariants = cva("relative", {
   variants: {
@@ -15,8 +15,7 @@ const surfaceVariants = cva("relative", {
       /** Pink gradient panel — the "Event Detail / Benefit" card. */
       pink: "bg-linear-to-br from-astro-pink to-pink-300 text-white shadow-glow-pink",
       /** Orange, for talent/category surfaces. */
-      orange:
-        "bg-linear-to-br from-pastel-orange to-orange-300 text-white shadow-glow-orange",
+      orange: "bg-linear-to-br from-pastel-orange to-orange-300 text-white shadow-glow-orange",
       /** Gold, for price and highlight surfaces. */
       gold: "bg-linear-to-br from-amber-400 to-astro-gold text-astro-navy shadow-soft",
       /** Poster cream plate — Cerdas Cermat title card. */
@@ -50,31 +49,21 @@ const surfaceVariants = cva("relative", {
     pad: "md",
     interactive: false,
   },
-})
+});
 
 export type SurfaceProps = React.ComponentProps<"div"> &
-  VariantProps<typeof surfaceVariants> & { asChild?: boolean }
+  VariantProps<typeof surfaceVariants> & { asChild?: boolean };
 
 /** The single card/panel primitive. Replaces the old `.rounded-xl bg-white shadow-soft` global class. */
-export function Surface({
-  className,
-  tone,
-  radius,
-  pad,
-  interactive,
-  ...props
-}: SurfaceProps) {
+export function Surface({ className, tone, radius, pad, interactive, ...props }: SurfaceProps) {
   return (
     <div
       data-slot="surface"
       data-tone={tone ?? "plain"}
-      className={cn(
-        surfaceVariants({ tone, radius, pad, interactive }),
-        className
-      )}
+      className={cn(surfaceVariants({ tone, radius, pad, interactive }), className)}
       {...props}
     />
-  )
+  );
 }
 
-export { surfaceVariants }
+export { surfaceVariants };

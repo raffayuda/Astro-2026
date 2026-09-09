@@ -28,9 +28,7 @@ export interface TextOverlayField {
 export const categories = pgTable("categories", {
   id: text("id").primaryKey(), // 'akademik' | 'olahraga' | 'esports' | custom
   label: text("label").notNull(), // 'Akademik' | 'Olahraga' | 'Esports'
-  color: text("color")
-    .notNull()
-    .default("text-cyan-700 bg-cyan-50 border-cyan-200"),
+  color: text("color").notNull().default("text-cyan-700 bg-cyan-50 border-cyan-200"),
   sortOrder: integer("sort_order").default(0),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
@@ -76,18 +74,12 @@ export const competitions = pgTable(
     description: text("description"),
     fee: integer("fee").notNull().default(0),
     hasBatches: text("has_batches").default("0"), // '0' = tidak ada batch, '1' = ada batch
-    batches: jsonb("batches")
-      .$type<CompetitionBatch[]>()
-      .default([])
-      .notNull(),
+    batches: jsonb("batches").$type<CompetitionBatch[]>().default([]).notNull(),
     guidebookSections: jsonb("guidebook_sections")
       .$type<CompetitionGuidebookSection[]>()
       .default([])
       .notNull(),
-    customFields: jsonb("custom_fields")
-      .$type<CompetitionCustomField[]>()
-      .default([])
-      .notNull(),
+    customFields: jsonb("custom_fields").$type<CompetitionCustomField[]>().default([]).notNull(),
     maxSlots: integer("max_slots").notNull().default(0),
     filledSlots: integer("filled_slots").notNull().default(0),
     scheduleDate: timestamp("schedule_date"),
@@ -95,10 +87,7 @@ export const competitions = pgTable(
     prizesFirst: text("prizes_first"),
     prizesSecond: text("prizes_second"),
     prizesThird: text("prizes_third"),
-    prizes: jsonb("prizes")
-      .$type<{ label: string; value: string }[]>()
-      .default([])
-      .notNull(),
+    prizes: jsonb("prizes").$type<{ label: string; value: string }[]>().default([]).notNull(),
     rulesSummary: jsonb("rules_summary").$type<string[]>(),
     rulebookUrl: text("rulebook_url"),
     contactName: text("contact_name"),
@@ -121,17 +110,14 @@ export const competitions = pgTable(
   (table) => [index("competitions_category_idx").on(table.category)],
 );
 
-export const competitionsRelations = relations(
-  competitions,
-  ({ one, many }) => ({
-    category: one(categories, {
-      fields: [competitions.category],
-      references: [categories.id],
-    }),
-    registrations: many(registrations),
-    timeline: many(competitionTimeline),
+export const competitionsRelations = relations(competitions, ({ one, many }) => ({
+  category: one(categories, {
+    fields: [competitions.category],
+    references: [categories.id],
   }),
-);
+  registrations: many(registrations),
+  timeline: many(competitionTimeline),
+}));
 
 /* ─── Registrations ─── */
 export const registrations = pgTable(
@@ -162,10 +148,7 @@ export const registrations = pgTable(
     institution: text("institution").notNull(),
     email: text("email").notNull(),
     whatsapp: text("whatsapp").notNull(),
-    customFields: jsonb("custom_fields")
-      .$type<Record<string, string>>()
-      .default({})
-      .notNull(),
+    customFields: jsonb("custom_fields").$type<Record<string, string>>().default({}).notNull(),
     // Payment
     paymentStatus: text("payment_status").notNull().default("pending"), // 'pending' | 'detecting' | 'paid' | 'failed'
     paymentMethod: text("payment_method"), // 'qris' | 'transfer'
@@ -227,20 +210,15 @@ export const competitionTimeline = pgTable(
     sortOrder: integer("sort_order").default(0),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
-  (table) => [
-    index("competition_timeline_competition_id_idx").on(table.competitionId),
-  ],
+  (table) => [index("competition_timeline_competition_id_idx").on(table.competitionId)],
 );
 
-export const competitionTimelineRelations = relations(
-  competitionTimeline,
-  ({ one }) => ({
-    competition: one(competitions, {
-      fields: [competitionTimeline.competitionId],
-      references: [competitions.id],
-    }),
+export const competitionTimelineRelations = relations(competitionTimeline, ({ one }) => ({
+  competition: one(competitions, {
+    fields: [competitionTimeline.competitionId],
+    references: [competitions.id],
   }),
-);
+}));
 
 /* ─── Certificate Templates ─── */
 export const certificateTemplates = pgTable(
@@ -252,32 +230,23 @@ export const certificateTemplates = pgTable(
       .references(() => competitions.id, { onDelete: "cascade" }),
     rank: text("rank").notNull(), // '1' | '2' | '3' | 'participant'
     templateImageUrl: text("template_image_url").notNull(),
-    textOverlays: jsonb("text_overlays")
-      .$type<TextOverlayField[]>()
-      .default([])
-      .notNull(),
+    textOverlays: jsonb("text_overlays").$type<TextOverlayField[]>().default([]).notNull(),
     is_active: text("is_active").default("1"), // '1' = active, '0' = inactive
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
   },
   (table) => [
     index("certificate_templates_competition_id_idx").on(table.competitionId),
-    unique("certificate_templates_competition_rank_unique").on(
-      table.competitionId,
-      table.rank,
-    ),
+    unique("certificate_templates_competition_rank_unique").on(table.competitionId, table.rank),
   ],
 );
 
-export const certificateTemplatesRelations = relations(
-  certificateTemplates,
-  ({ one }) => ({
-    competition: one(competitions, {
-      fields: [certificateTemplates.competitionId],
-      references: [competitions.id],
-    }),
+export const certificateTemplatesRelations = relations(certificateTemplates, ({ one }) => ({
+  competition: one(competitions, {
+    fields: [certificateTemplates.competitionId],
+    references: [competitions.id],
   }),
-);
+}));
 
 /* ─── Users ─── */
 export const users = pgTable("users", {
@@ -335,10 +304,7 @@ export const authAccounts = pgTable(
   },
   (table) => [
     index("accounts_user_id_idx").on(table.userId),
-    unique("accounts_provider_account_unique").on(
-      table.providerId,
-      table.accountId,
-    ),
+    unique("accounts_provider_account_unique").on(table.providerId, table.accountId),
   ],
 );
 

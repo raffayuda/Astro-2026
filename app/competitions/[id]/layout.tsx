@@ -1,9 +1,9 @@
-import type { Metadata } from 'next';
-import { db } from '@/src/db';
-import { competitions } from '@/src/db/schema';
-import { eq } from 'drizzle-orm';
+import type { Metadata } from "next";
+import { db } from "@/src/db";
+import { competitions } from "@/src/db/schema";
+import { eq } from "drizzle-orm";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export async function generateMetadata({
@@ -19,8 +19,8 @@ export async function generateMetadata({
 
     if (!comp) {
       return {
-        title: 'Detail Lomba | ASTRO 2026',
-        description: 'Informasi detail cabang perlombaan ASTRO 2026.',
+        title: "Detail Lomba | ASTRO 2026",
+        description: "Informasi detail cabang perlombaan ASTRO 2026.",
       };
     }
 
@@ -40,20 +40,16 @@ export async function generateMetadata({
         title,
         description,
         url: `https://astro.nurulfikri.ac.id/competitions/${id}`,
-        siteName: 'ASTRO 2026',
+        siteName: "ASTRO 2026",
       },
     };
   } catch {
     return {
-      title: 'Detail Kompetisi | ASTRO 2026',
+      title: "Detail Kompetisi | ASTRO 2026",
     };
   }
 }
 
-export default function CompetitionDetailLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function CompetitionDetailLayout({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }

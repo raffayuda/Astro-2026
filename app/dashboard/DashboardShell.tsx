@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
-import { signOut } from '@/src/lib/auth-client';
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { signOut } from "@/src/lib/auth-client";
 import {
   LayoutDashboard,
   ClipboardList,
@@ -16,11 +16,11 @@ import {
   ImageIcon,
   Award,
   User,
-} from 'lucide-react';
-import Image from 'next/image';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
+} from "lucide-react";
+import Image from "next/image";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import {
   Sidebar,
   SidebarContent,
@@ -36,8 +36,8 @@ import {
   SidebarProvider,
   SidebarRail,
   SidebarTrigger,
-} from '@/components/ui/sidebar';
-import { cn } from '@/lib/utils';
+} from "@/components/ui/sidebar";
+import { cn } from "@/lib/utils";
 
 interface Props {
   children: React.ReactNode;
@@ -52,28 +52,30 @@ export default function DashboardShell({ children, role, userName }: Props) {
 
   const handleLogout = async () => {
     await signOut();
-    router.replace('/auth/login');
+    router.replace("/auth/login");
   };
 
   const navItems = [
-    { href: '/dashboard', label: 'Overview', icon: LayoutDashboard },
-    ...(role === 'admin' ? [
-      { href: '/dashboard/registrations', label: 'Pendaftaran', icon: ClipboardList },
-      { href: '/dashboard/users', label: 'User', icon: Users },
-      { href: '/dashboard/competitions', label: 'Kompetisi', icon: Trophy },
-      { href: '/dashboard/faq', label: 'FAQ', icon: HelpCircle },
-      { href: '/dashboard/sponsor', label: 'Sponsor', icon: Star },
-      { href: '/dashboard/journey', label: 'Journey', icon: Calendar },
-      { href: '/dashboard/gallery', label: 'Gallery', icon: ImageIcon },
-      { href: '/dashboard/committee', label: 'Committee', icon: Users },
-      { href: '/dashboard/certificates', label: 'Sertifikat', icon: Award },
-      { href: '/dashboard/export', label: 'Export Data', icon: Download },
-    ] : []),
-    { href: '/dashboard/profile', label: 'Profil', icon: User },
+    { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
+    ...(role === "admin"
+      ? [
+          { href: "/dashboard/registrations", label: "Pendaftaran", icon: ClipboardList },
+          { href: "/dashboard/users", label: "User", icon: Users },
+          { href: "/dashboard/competitions", label: "Kompetisi", icon: Trophy },
+          { href: "/dashboard/faq", label: "FAQ", icon: HelpCircle },
+          { href: "/dashboard/sponsor", label: "Sponsor", icon: Star },
+          { href: "/dashboard/journey", label: "Journey", icon: Calendar },
+          { href: "/dashboard/gallery", label: "Gallery", icon: ImageIcon },
+          { href: "/dashboard/committee", label: "Committee", icon: Users },
+          { href: "/dashboard/certificates", label: "Sertifikat", icon: Award },
+          { href: "/dashboard/export", label: "Export Data", icon: Download },
+        ]
+      : []),
+    { href: "/dashboard/profile", label: "Profil", icon: User },
   ];
 
   const isActive = (href: string) => {
-    if (href === '/dashboard') return pathname === '/dashboard';
+    if (href === "/dashboard") return pathname === "/dashboard";
     return pathname.startsWith(href);
   };
 
@@ -89,9 +91,7 @@ export default function DashboardShell({ children, role, userName }: Props) {
               height={36}
               className="size-8 object-contain"
             />
-            <span className="font-title text-lg text-sidebar-foreground">
-              ASTRO 2026
-            </span>
+            <span className="font-title text-lg text-sidebar-foreground">ASTRO 2026</span>
           </Link>
         </SidebarHeader>
 
@@ -109,7 +109,7 @@ export default function DashboardShell({ children, role, userName }: Props) {
                         isActive={isActive(item.href)}
                         className={cn(
                           isActive(item.href) &&
-                            'border border-astro-cyan-2/70 bg-linear-to-b from-astro-blue/15 to-astro-blue/10 text-astro-blue hover:bg-sky-bottom hover:text-astro-blue'
+                            "border border-astro-cyan-2/70 bg-linear-to-b from-astro-blue/15 to-astro-blue/10 text-astro-blue hover:bg-sky-bottom hover:text-astro-blue",
                         )}
                       >
                         <Link href={item.href}>

@@ -3,13 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
-import {
-  CheckCircle2,
-  Clock,
-  XCircle,
-  ShieldCheck,
-  QrCode,
-} from "lucide-react";
+import { CheckCircle2, Clock, XCircle, ShieldCheck, QrCode } from "lucide-react";
 
 export interface PrintableInvoiceData {
   id: string;
@@ -27,9 +21,7 @@ export interface PrintableInvoiceData {
   email: string;
   whatsapp: string;
   members?: string | null;
-  memberDetails?:
-    | { name: string; gameId?: string | null; photoUrl?: string | null }[]
-    | null;
+  memberDetails?: { name: string; gameId?: string | null; photoUrl?: string | null }[] | null;
   customFields?: Record<string, string> | null;
   competitionName: string;
   competitionCategory?: string | null;
@@ -165,9 +157,7 @@ export default function PrintableInvoice({ data }: Props) {
           <p className="font-mono text-sm font-black text-astro-navy">
             {data.paymentReference || "INV-ASTRO-2026"}
           </p>
-          <p className="text-11 text-ink">
-            Terbit: {formatDate(data.createdAt || new Date())}
-          </p>
+          <p className="text-11 text-ink">Terbit: {formatDate(data.createdAt || new Date())}</p>
         </div>
       </div>
 
@@ -225,9 +215,7 @@ export default function PrintableInvoice({ data }: Props) {
             Total Biaya
           </span>
           <span className="text-base font-black text-astro-navy">
-            {data.paymentAmount > 0
-              ? formatCurrency(data.paymentAmount)
-              : "GRATIS"}
+            {data.paymentAmount > 0 ? formatCurrency(data.paymentAmount) : "GRATIS"}
           </span>
         </div>
       </div>
@@ -247,23 +235,16 @@ export default function PrintableInvoice({ data }: Props) {
               <dt className="text-9 text-ink uppercase font-semibold">
                 {data.type === "team" ? "Nama Tim" : "Nama Lengkap"}
               </dt>
-              <dd className="font-bold text-astro-navy text-sm mt-0.5">
-                {participantTitle}
-              </dd>
+              <dd className="font-bold text-astro-navy text-sm mt-0.5">{participantTitle}</dd>
             </div>
 
             {data.type === "team" && data.leaderName && (
               <div>
-                <dt className="text-9 text-ink uppercase font-semibold">
-                  Ketua Tim
-                </dt>
+                <dt className="text-9 text-ink uppercase font-semibold">Ketua Tim</dt>
                 <dd className="font-medium text-astro-navy mt-0.5">
                   {data.leaderName}
                   {data.leaderGameId ? (
-                    <span className="text-ink font-normal">
-                      {" "}
-                      — ID {data.leaderGameId}
-                    </span>
+                    <span className="text-ink font-normal"> — ID {data.leaderGameId}</span>
                   ) : null}
                 </dd>
               </div>
@@ -273,27 +254,17 @@ export default function PrintableInvoice({ data }: Props) {
               <dt className="text-9 text-ink uppercase font-semibold">
                 Asal Instansi / Sekolah / Kampus
               </dt>
-              <dd className="font-semibold text-astro-navy mt-0.5">
-                {data.institution || "—"}
-              </dd>
+              <dd className="font-semibold text-astro-navy mt-0.5">{data.institution || "—"}</dd>
             </div>
 
             <div className="grid grid-cols-2 gap-2 pt-1 border-t border-surface">
               <div>
-                <dt className="text-9 text-ink uppercase font-semibold">
-                  Email
-                </dt>
-                <dd className="font-medium text-astro-navy truncate mt-0.5">
-                  {data.email}
-                </dd>
+                <dt className="text-9 text-ink uppercase font-semibold">Email</dt>
+                <dd className="font-medium text-astro-navy truncate mt-0.5">{data.email}</dd>
               </div>
               <div>
-                <dt className="text-9 text-ink uppercase font-semibold">
-                  WhatsApp
-                </dt>
-                <dd className="font-mono font-medium text-astro-navy mt-0.5">
-                  {data.whatsapp}
-                </dd>
+                <dt className="text-9 text-ink uppercase font-semibold">WhatsApp</dt>
+                <dd className="font-mono font-medium text-astro-navy mt-0.5">{data.whatsapp}</dd>
               </div>
             </div>
           </dl>
@@ -303,33 +274,23 @@ export default function PrintableInvoice({ data }: Props) {
         <div className="border border-astro-cyan-2 rounded-lg p-3.5 bg-white">
           <h2 className="text-10 font-black uppercase tracking-wider text-astro-navy pb-1.5 border-b border-surface flex items-center justify-between">
             <span>Kompetisi Terdaftar</span>
-            <span className="text-9 font-mono text-ink uppercase">
-              Ref: {data.id.slice(0, 8)}
-            </span>
+            <span className="text-9 font-mono text-ink uppercase">Ref: {data.id.slice(0, 8)}</span>
           </h2>
           <dl className="mt-2.5 space-y-1.5 text-xs">
             <div>
-              <dt className="text-9 text-ink uppercase font-semibold">
-                Nama Lomba
-              </dt>
-              <dd className="font-black text-astro-navy text-sm mt-0.5">
-                {data.competitionName}
-              </dd>
+              <dt className="text-9 text-ink uppercase font-semibold">Nama Lomba</dt>
+              <dd className="font-black text-astro-navy text-sm mt-0.5">{data.competitionName}</dd>
             </div>
 
             <div className="grid grid-cols-2 gap-2">
               <div>
-                <dt className="text-9 text-ink uppercase font-semibold">
-                  Kategori Bidang
-                </dt>
+                <dt className="text-9 text-ink uppercase font-semibold">Kategori Bidang</dt>
                 <dd className="font-bold text-astro-navy uppercase mt-0.5">
                   {data.competitionCategory || "Umum"}
                 </dd>
               </div>
               <div>
-                <dt className="text-9 text-ink uppercase font-semibold">
-                  Gelombang
-                </dt>
+                <dt className="text-9 text-ink uppercase font-semibold">Gelombang</dt>
                 <dd className="font-bold text-astro-navy uppercase mt-0.5">
                   {data.batchName || "Reguler"}
                 </dd>
@@ -338,9 +299,7 @@ export default function PrintableInvoice({ data }: Props) {
 
             {data.competitionContactName && (
               <div className="pt-1.5 border-t border-surface">
-                <dt className="text-9 text-ink uppercase font-semibold">
-                  Contact Person Panitia
-                </dt>
+                <dt className="text-9 text-ink uppercase font-semibold">Contact Person Panitia</dt>
                 <dd className="text-astro-navy font-medium mt-0.5">
                   {data.competitionContactName}{" "}
                   {data.competitionContactWhatsapp && (
@@ -356,37 +315,33 @@ export default function PrintableInvoice({ data }: Props) {
       </div>
 
       {/* ─── ANGGOTA TIM (JIKA KATEGORI TIM) ─── */}
-      {data.type === "team" &&
-        data.memberDetails &&
-        data.memberDetails.length > 0 && (
-          <div className="my-4 border border-astro-cyan-2 rounded-lg p-3.5 bg-white">
-            <h3 className="text-10 font-black uppercase tracking-wider text-astro-navy pb-1.5 border-b border-surface">
-              Susunan Anggota Tim ({data.memberDetails.length} Pemain)
-            </h3>
-            <div className="mt-2 grid grid-cols-2 sm:grid-cols-3 gap-2">
-              {data.memberDetails.map((m, idx) => (
-                <div
-                  key={idx}
-                  className="p-1.5 bg-surface border border-surface rounded text-xs flex items-center gap-2"
-                >
-                  <span className="size-4 rounded-full bg-astro-cyan-2 text-ink font-bold text-9 flex items-center justify-center shrink-0">
-                    {idx + 1}
+      {data.type === "team" && data.memberDetails && data.memberDetails.length > 0 && (
+        <div className="my-4 border border-astro-cyan-2 rounded-lg p-3.5 bg-white">
+          <h3 className="text-10 font-black uppercase tracking-wider text-astro-navy pb-1.5 border-b border-surface">
+            Susunan Anggota Tim ({data.memberDetails.length} Pemain)
+          </h3>
+          <div className="mt-2 grid grid-cols-2 sm:grid-cols-3 gap-2">
+            {data.memberDetails.map((m, idx) => (
+              <div
+                key={idx}
+                className="p-1.5 bg-surface border border-surface rounded text-xs flex items-center gap-2"
+              >
+                <span className="size-4 rounded-full bg-astro-cyan-2 text-ink font-bold text-9 flex items-center justify-center shrink-0">
+                  {idx + 1}
+                </span>
+                <span className="min-w-0">
+                  <span className="block font-medium text-astro-navy truncate text-11">
+                    {m.name}
                   </span>
-                  <span className="min-w-0">
-                    <span className="block font-medium text-astro-navy truncate text-11">
-                      {m.name}
-                    </span>
-                    {m.gameId ? (
-                      <span className="block text-ink truncate text-9">
-                        ID {m.gameId}
-                      </span>
-                    ) : null}
-                  </span>
-                </div>
-              ))}
-            </div>
+                  {m.gameId ? (
+                    <span className="block text-ink truncate text-9">ID {m.gameId}</span>
+                  ) : null}
+                </span>
+              </div>
+            ))}
           </div>
-        )}
+        </div>
+      )}
 
       {/* ─── DATA TAMBAHAN / CUSTOM FIELDS (JIKA ADA) ─── */}
       {data.customFields && Object.keys(data.customFields).length > 0 && (
@@ -398,10 +353,7 @@ export default function PrintableInvoice({ data }: Props) {
             {Object.entries(data.customFields).map(([key, val]) => {
               const isUrl = typeof val === "string" && val.startsWith("http");
               return (
-                <div
-                  key={key}
-                  className="p-2 rounded bg-surface border border-surface"
-                >
+                <div key={key} className="p-2 rounded bg-surface border border-surface">
                   <span className="text-9 font-bold uppercase text-ink block">
                     {formatCustomFieldKey(key)}
                   </span>
@@ -434,34 +386,24 @@ export default function PrintableInvoice({ data }: Props) {
           <tbody className="divide-y divide-surface bg-white">
             <tr>
               <td className="py-2.5 px-3.5">
-                <p className="font-bold text-astro-navy">
-                  {data.competitionName}
-                </p>
+                <p className="font-bold text-astro-navy">{data.competitionName}</p>
                 <p className="text-10 text-ink">
-                  Gelombang: {data.batchName || "Reguler"} • Ref:{" "}
-                  {data.paymentReference}
+                  Gelombang: {data.batchName || "Reguler"} • Ref: {data.paymentReference}
                 </p>
               </td>
               <td className="py-2.5 px-3.5 text-center font-medium text-ink uppercase text-10">
                 {data.type === "team" ? "Tim" : "Individu"}
               </td>
               <td className="py-2.5 px-3.5 text-right font-mono font-bold text-astro-navy">
-                {data.paymentAmount > 0
-                  ? formatCurrency(data.paymentAmount)
-                  : "Rp 0"}
+                {data.paymentAmount > 0 ? formatCurrency(data.paymentAmount) : "Rp 0"}
               </td>
             </tr>
             <tr className="bg-surface/80 font-bold">
-              <td
-                colSpan={2}
-                className="py-2 px-3.5 text-ink uppercase text-10"
-              >
+              <td colSpan={2} className="py-2 px-3.5 text-ink uppercase text-10">
                 Total Pembayaran
               </td>
               <td className="py-2 px-3.5 text-right font-mono text-sm font-black text-astro-navy">
-                {data.paymentAmount > 0
-                  ? formatCurrency(data.paymentAmount)
-                  : "Rp 0 (GRATIS)"}
+                {data.paymentAmount > 0 ? formatCurrency(data.paymentAmount) : "Rp 0 (GRATIS)"}
               </td>
             </tr>
           </tbody>
@@ -472,23 +414,20 @@ export default function PrintableInvoice({ data }: Props) {
       <div className="pt-3 border-t border-astro-cyan-2 flex flex-row items-center justify-between gap-4 text-10 text-ink">
         <div className="space-y-0.5 max-w-md">
           <p className="font-bold text-astro-navy flex items-center gap-1 text-11">
-            <ShieldCheck className="size-3.5 text-emerald-600" /> Dokumen
-            Otentik Terverifikasi Sistem ASTRO
+            <ShieldCheck className="size-3.5 text-emerald-600" /> Dokumen Otentik Terverifikasi
+            Sistem ASTRO
           </p>
           <p className="text-9 leading-relaxed text-ink">
-            Bukti pendaftaran resmi diterbitkan oleh Panitia ASTRO 2026.
-            Tunjukkan bukti ini saat verifikasi dan registrasi ulang lomba.
+            Bukti pendaftaran resmi diterbitkan oleh Panitia ASTRO 2026. Tunjukkan bukti ini saat
+            verifikasi dan registrasi ulang lomba.
           </p>
         </div>
 
         <div className="flex items-center gap-2.5 shrink-0">
           <div className="text-right">
-            <span className="text-8 font-mono text-ink uppercase block">
-              Kode Verifikasi
-            </span>
+            <span className="text-8 font-mono text-ink uppercase block">Kode Verifikasi</span>
             <span className="font-mono text-11 font-bold text-astro-navy">
-              {data.paymentReference?.replace("INV-", "") ||
-                data.id.slice(0, 8).toUpperCase()}
+              {data.paymentReference?.replace("INV-", "") || data.id.slice(0, 8).toUpperCase()}
             </span>
           </div>
           <div className="size-11 border border-astro-cyan-2 rounded p-1 flex items-center justify-center bg-surface text-ink">

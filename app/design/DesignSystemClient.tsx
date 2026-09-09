@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 import {
   Clapperboard,
   Eye,
@@ -15,7 +15,7 @@ import {
   Trophy,
   Users,
   Video,
-} from "lucide-react"
+} from "lucide-react";
 
 import {
   AccentLine,
@@ -39,9 +39,9 @@ import {
   TalentCategoryCard,
   WindowCard,
   type TalentId,
-} from "@/components/brand"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+} from "@/components/brand";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -49,26 +49,22 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Input } from "@/components/ui/input"
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-} from "@/components/ui/input-otp"
-import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+} from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { Switch } from "@/components/ui/switch"
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
-import { Textarea } from "@/components/ui/textarea"
+} from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { Textarea } from "@/components/ui/textarea";
 
 const COLOR_GROUPS = [
   {
@@ -98,7 +94,7 @@ const COLOR_GROUPS = [
       { name: "ink", hex: "#1F2937", cls: "bg-ink" },
     ],
   },
-]
+];
 
 const SCHEDULE = [
   { phase: "Pendaftaran Batch 1", dateLabel: "15-30 Sep 2026", status: "done" as const },
@@ -106,14 +102,14 @@ const SCHEDULE = [
   { phase: "Technical Meeting", dateLabel: "11 Nov 2026", status: "upcoming" as const },
   { phase: "Showcase", dateLabel: "6 Des 2026", status: "upcoming" as const },
   { phase: "Grand Final", dateLabel: "13 Des 2026", status: "upcoming" as const },
-]
+];
 
 const AUDIENCE = [
   { metric: "1.500+", label: "Target Pengunjung", icon: Users },
   { metric: "1.000+", label: "Peserta Kompetisi", icon: Trophy },
   { metric: "350+", label: "Penonton Grand Final", icon: Eye },
   { metric: "500+", label: "Audience Grand Opening", icon: PartyPopper },
-]
+];
 
 const CHANNELS = [
   { label: "Instagram Feed", icon: Camera },
@@ -125,7 +121,7 @@ const CHANNELS = [
   { label: "Booth Exhibition", icon: Store },
   { label: "ID Card", icon: IdCard },
   { label: "X-Banner dan Venue", icon: Flag },
-]
+];
 
 const BUTTON_TONES = [
   "default",
@@ -137,9 +133,9 @@ const BUTTON_TONES = [
   "ghost",
   "destructive",
   "link",
-] as const
+] as const;
 
-const BUTTON_SIZES = ["xs", "sm", "default", "lg", "xl"] as const
+const BUTTON_SIZES = ["xs", "sm", "default", "lg", "xl"] as const;
 
 const SURFACE_TONES = [
   "plain",
@@ -150,26 +146,11 @@ const SURFACE_TONES = [
   "gold",
   "cream",
   "sticker",
-] as const
+] as const;
 
-const PILL_TONES = [
-  "white",
-  "blue",
-  "navy",
-  "gold",
-  "pink",
-  "orange",
-  "glass",
-] as const
+const PILL_TONES = ["white", "blue", "navy", "gold", "pink", "orange", "glass"] as const;
 
-const BADGE_VARIANTS = [
-  "default",
-  "secondary",
-  "outline",
-  "destructive",
-  "ghost",
-  "link",
-] as const
+const BADGE_VARIANTS = ["default", "secondary", "outline", "destructive", "ghost", "link"] as const;
 
 const SHADOWS = [
   { name: "shadow-soft-sm", cls: "shadow-soft-sm" },
@@ -177,18 +158,30 @@ const SHADOWS = [
   { name: "shadow-soft-lg", cls: "shadow-soft-lg" },
   { name: "shadow-glow-blue", cls: "shadow-glow-blue" },
   { name: "shadow-sticker", cls: "shadow-sticker" },
-]
+];
 
 const PAGE_LAYOUTS = [
   {
     name: "Participant Landing",
     route: "/",
     sections: [
-      { band: "hero", label: "Hero", parts: ["SkyBackdrop", "ChromeTitle", "Subtitle", "CountdownTimer", "CtaButton"] },
+      {
+        band: "hero",
+        label: "Hero",
+        parts: ["SkyBackdrop", "ChromeTitle", "Subtitle", "CountdownTimer", "CtaButton"],
+      },
       { band: "tint", label: "Stats", parts: ["ChevronRibbon", "Surface", "StatCard"] },
       { band: "sky", label: "Categories", parts: ["SectionShell", "SectionHeading", "Pill"] },
-      { band: "soft", label: "Schedule + Pricing", parts: ["ScheduleCard", "BenefitCard", "QRCode", "CtaButton"] },
-      { band: "tint", label: "Competitions", parts: ["AboutSection", "CompetitionCard", "ToggleGroup"] },
+      {
+        band: "soft",
+        label: "Schedule + Pricing",
+        parts: ["ScheduleCard", "BenefitCard", "QRCode", "CtaButton"],
+      },
+      {
+        band: "tint",
+        label: "Competitions",
+        parts: ["AboutSection", "CompetitionCard", "ToggleGroup"],
+      },
       { band: "soft", label: "FAQ", parts: ["Accordion", "SectionHeading"] },
       { band: "tint", label: "Sponsors", parts: ["SponsorSection"] },
       { band: "navy", label: "Footer", parts: ["SiteFooter", "FloatingCta"] },
@@ -210,7 +203,11 @@ const PAGE_LAYOUTS = [
     route: "/register/[id]",
     sections: [
       { band: "hero", label: "Header + Steps", parts: ["ChevronRibbon", "Pill", "PricePill"] },
-      { band: "soft", label: "Form", parts: ["Surface", "Label", "Input", "Select", "TalentCategoryCard"] },
+      {
+        band: "soft",
+        label: "Form",
+        parts: ["Surface", "Label", "Input", "Select", "TalentCategoryCard"],
+      },
       { band: "soft", label: "Payment", parts: ["Surface", "Badge", "CtaButton"] },
       { band: "navy", label: "Footer", parts: ["SiteFooter"] },
     ],
@@ -221,7 +218,11 @@ const PAGE_LAYOUTS = [
     sections: [
       { band: "hero", label: "Profile Hero", parts: ["ChromeTitle", "SkyBackdrop"] },
       { band: "soft", label: "About + Journey", parts: ["SectionHeading", "Surface"] },
-      { band: "tint", label: "Gallery + Social", parts: ["EventGallerySection", "SocialMediaSection"] },
+      {
+        band: "tint",
+        label: "Gallery + Social",
+        parts: ["EventGallerySection", "SocialMediaSection"],
+      },
       { band: "sky", label: "Committee", parts: ["CommitteeSection", "Pill"] },
       { band: "navy", label: "Footer", parts: ["SiteFooter"] },
     ],
@@ -230,7 +231,11 @@ const PAGE_LAYOUTS = [
     name: "Auth",
     route: "/auth/login, /auth/signup",
     sections: [
-      { band: "hero", label: "Centred Card", parts: ["CenteredShell", "Surface", "Label", "Input", "InputOTP", "Button"] },
+      {
+        band: "hero",
+        label: "Centred Card",
+        parts: ["CenteredShell", "Surface", "Label", "Input", "InputOTP", "Button"],
+      },
     ],
   },
   {
@@ -238,10 +243,14 @@ const PAGE_LAYOUTS = [
     route: "/dashboard/*",
     sections: [
       { band: "navy", label: "Sidebar + Topbar", parts: ["Sidebar", "Button"] },
-      { band: "soft", label: "Content", parts: ["Surface", "Card", "Table", "Badge", "Select", "Switch"] },
+      {
+        band: "soft",
+        label: "Content",
+        parts: ["Surface", "Card", "Table", "Badge", "Select", "Switch"],
+      },
     ],
   },
-] as const
+] as const;
 
 const BAND: Record<string, string> = {
   hero: "bg-linear-to-b from-sky-top to-sky-mid text-astro-navy",
@@ -249,7 +258,7 @@ const BAND: Record<string, string> = {
   soft: "bg-sky-bottom text-astro-navy",
   tint: "bg-surface text-astro-navy",
   navy: "bg-astro-navy text-white",
-}
+};
 
 /** One labelled block in the style guide. */
 function Spec({
@@ -257,9 +266,9 @@ function Spec({
   hint,
   children,
 }: {
-  title: string
-  hint?: string
-  children: React.ReactNode
+  title: string;
+  hint?: string;
+  children: React.ReactNode;
 }) {
   return (
     <section className="flex flex-col gap-4">
@@ -267,26 +276,24 @@ function Spec({
         <h3 className="font-heading text-xl font-extrabold uppercase tracking-tight text-astro-navy">
           {title}
         </h3>
-        {hint && (
-          <p className="text-xs font-medium text-muted-foreground">{hint}</p>
-        )}
+        {hint && <p className="text-xs font-medium text-muted-foreground">{hint}</p>}
         <AccentLine />
       </div>
       <Surface pad="lg" radius="xl">
         {children}
       </Surface>
     </section>
-  )
+  );
 }
 
 export function DesignSystemClient() {
-  const [talent, setTalent] = React.useState<TalentId>("dance")
-  const [tier, setTier] = React.useState("Gold")
-  const [checked, setChecked] = React.useState(true)
-  const [toggled, setToggled] = React.useState(true)
-  const [radio, setRadio] = React.useState("individu")
-  const [filter, setFilter] = React.useState("semua")
-  const [otp, setOtp] = React.useState("")
+  const [talent, setTalent] = React.useState<TalentId>("dance");
+  const [tier, setTier] = React.useState("Gold");
+  const [checked, setChecked] = React.useState(true);
+  const [toggled, setToggled] = React.useState(true);
+  const [radio, setRadio] = React.useState("individu");
+  const [filter, setFilter] = React.useState("semua");
+  const [otp, setOtp] = React.useState("");
 
   return (
     <main className="relative min-h-screen pb-24">
@@ -300,9 +307,9 @@ export function DesignSystemClient() {
 Components`}
           </ChromeTitle>
           <p className="max-w-2xl text-sm font-semibold text-astro-navy sm:text-base">
-            Every ASTRO 2026 surface is composed from the components below. No
-            global astro-star CSS classes and no arbitrary Tailwind values:
-            tokens live in globals.css, behaviour lives in React.
+            Every ASTRO 2026 surface is composed from the components below. No global astro-star CSS
+            classes and no arbitrary Tailwind values: tokens live in globals.css, behaviour lives in
+            React.
           </p>
           <CtaButton href="/">Kembali ke Beranda</CtaButton>
         </div>
@@ -323,16 +330,9 @@ Components`}
                   <div className="flex flex-wrap gap-3">
                     {group.swatches.map((swatch) => (
                       <div key={swatch.name} className="flex flex-col gap-1.5">
-                        <div
-                          className={cnSwatch(swatch.cls)}
-                          aria-hidden
-                        />
-                        <p className="text-10 font-bold uppercase text-astro-navy">
-                          {swatch.name}
-                        </p>
-                        <p className="font-mono text-10 text-muted-foreground">
-                          {swatch.hex}
-                        </p>
+                        <div className={cnSwatch(swatch.cls)} aria-hidden />
+                        <p className="text-10 font-bold uppercase text-astro-navy">{swatch.name}</p>
+                        <p className="font-mono text-10 text-muted-foreground">{swatch.hex}</p>
                       </div>
                     ))}
                   </div>
@@ -375,8 +375,7 @@ Okta R.`}
                   Heading &mdash; Plus Jakarta Sans
                 </p>
                 <p className="text-base text-ink">
-                  Geist body copy, used for all running text, form labels and
-                  table content.
+                  Geist body copy, used for all running text, form labels and table content.
                 </p>
                 <p className="text-10 font-bold uppercase tracking-widest text-muted-foreground">
                   Micro label &mdash; text-10
@@ -400,23 +399,15 @@ Okta R.`}
           >
             <div className="flex flex-wrap gap-4">
               {SHADOWS.map((shadow) => (
-                <div
-                  key={shadow.name}
-                  className="flex flex-col items-center gap-2"
-                >
+                <div key={shadow.name} className="flex flex-col items-center gap-2">
                   <div className={cnShadowSwatch(shadow.cls)} aria-hidden />
-                  <p className="font-mono text-10 text-muted-foreground">
-                    {shadow.name}
-                  </p>
+                  <p className="font-mono text-10 text-muted-foreground">{shadow.name}</p>
                 </div>
               ))}
             </div>
           </Spec>
 
-          <Spec
-            title="Primary CTA"
-            hint="CtaButton: gradient pill, white ring, circled chevron."
-          >
+          <Spec title="Primary CTA" hint="CtaButton: gradient pill, white ring, circled chevron.">
             <div className="flex flex-wrap items-center gap-4">
               <CtaButton size="xl">Daftar Segera</CtaButton>
               <CtaButton size="lg">Daftar Segera</CtaButton>
@@ -525,12 +516,7 @@ Okta R.`}
               </div>
               <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
                 {CHANNELS.map((channel) => (
-                  <StatCard
-                    key={channel.label}
-                    icon={channel.icon}
-                    label={channel.label}
-                    checked
-                  />
+                  <StatCard key={channel.label} icon={channel.icon} label={channel.label} checked />
                 ))}
               </div>
             </div>
@@ -555,10 +541,7 @@ Okta R.`}
             </WindowCard>
           </Spec>
 
-          <Spec
-            title="Surface tones"
-            hint="Surface is the single card and panel primitive."
-          >
+          <Spec title="Surface tones" hint="Surface is the single card and panel primitive.">
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {SURFACE_TONES.map((tone) => (
                 <Surface key={tone} tone={tone} pad="md" interactive>
@@ -612,11 +595,7 @@ Okta R.`}
                 >
                   Email
                 </label>
-                <Input
-                  id="ds-email"
-                  type="email"
-                  placeholder="nama@nurulfikri.ac.id"
-                />
+                <Input id="ds-email" type="email" placeholder="nama@nurulfikri.ac.id" />
               </div>
               <div className="flex flex-col gap-1.5 sm:col-span-2">
                 <label
@@ -646,11 +625,7 @@ Okta R.`}
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <Switch
-                    id="ds-switch"
-                    checked={toggled}
-                    onCheckedChange={setToggled}
-                  />
+                  <Switch id="ds-switch" checked={toggled} onCheckedChange={setToggled} />
                   <Label htmlFor="ds-switch">Notifikasi email</Label>
                 </div>
 
@@ -662,23 +637,14 @@ Okta R.`}
 
               <div className="flex flex-col gap-2">
                 <Label variant="micro">Tipe Pendaftaran</Label>
-                <RadioGroup
-                  value={radio}
-                  onValueChange={setRadio}
-                  className="flex flex-wrap gap-6"
-                >
+                <RadioGroup value={radio} onValueChange={setRadio} className="flex flex-wrap gap-6">
                   {[
                     { value: "individu", label: "Individu" },
                     { value: "kelompok", label: "Kelompok" },
                   ].map((option) => (
                     <div key={option.value} className="flex items-center gap-2">
-                      <RadioGroupItem
-                        id={`ds-radio-${option.value}`}
-                        value={option.value}
-                      />
-                      <Label htmlFor={`ds-radio-${option.value}`}>
-                        {option.label}
-                      </Label>
+                      <RadioGroupItem id={`ds-radio-${option.value}`} value={option.value} />
+                      <Label htmlFor={`ds-radio-${option.value}`}>{option.label}</Label>
                     </div>
                   ))}
                 </RadioGroup>
@@ -756,9 +722,7 @@ Okta R.`}
                   <CardDescription>Tighter spacing scale</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-ink">
-                    Used inside the dashboard tables.
-                  </p>
+                  <p className="text-sm text-ink">Used inside the dashboard tables.</p>
                 </CardContent>
               </Card>
             </div>
@@ -770,8 +734,8 @@ Okta R.`}
           >
             <div className="flex flex-col gap-3">
               <p className="text-sm font-medium text-ink">
-                Scroll this page and the CTA docks bottom-right. It exits on
-                scroll back to the top and is hidden when printing.
+                Scroll this page and the CTA docks bottom-right. It exits on scroll back to the top
+                and is hidden when printing.
               </p>
               <Pill tone="glass" className="font-mono">
                 showAfter=600px
@@ -799,9 +763,7 @@ Okta R.`}
                     <p className="font-heading text-sm font-extrabold uppercase tracking-tight text-astro-navy">
                       {page.name}
                     </p>
-                    <code className="font-mono text-9 text-muted-foreground">
-                      {page.route}
-                    </code>
+                    <code className="font-mono text-9 text-muted-foreground">{page.route}</code>
                   </div>
 
                   <div className="overflow-hidden rounded-xl shadow-soft">
@@ -861,13 +823,13 @@ Okta R.`}
         />
       </SectionShell>
     </main>
-  )
+  );
 }
 
 function cnSwatch(colorClass: string) {
-  return `size-20 rounded-lg shadow-soft ring-1 ring-inset ring-black/5 ${colorClass}`
+  return `size-20 rounded-lg shadow-soft ring-1 ring-inset ring-black/5 ${colorClass}`;
 }
 
 function cnShadowSwatch(shadowClass: string) {
-  return `size-24 rounded-xl bg-white ${shadowClass}`
+  return `size-24 rounded-xl bg-white ${shadowClass}`;
 }

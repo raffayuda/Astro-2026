@@ -1,6 +1,6 @@
-import type * as React from "react"
+import type * as React from "react";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 /**
  * Label-over-value pair used across admin detail views. Keeps the label
@@ -13,10 +13,10 @@ function DetailItem({
   children,
   className,
 }: {
-  label: React.ReactNode
-  icon?: React.ReactNode
-  children: React.ReactNode
-  className?: string
+  label: React.ReactNode;
+  icon?: React.ReactNode;
+  children: React.ReactNode;
+  className?: string;
 }) {
   return (
     <div className={cn("space-y-0.5", className)}>
@@ -26,7 +26,7 @@ function DetailItem({
       </span>
       <div className="text-sm font-medium text-foreground">{children}</div>
     </div>
-  )
+  );
 }
 
-export { DetailItem }
+export { DetailItem };

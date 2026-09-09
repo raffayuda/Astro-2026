@@ -1,13 +1,9 @@
-"use client"
+"use client";
 
-import { Search } from "lucide-react"
+import { Search } from "lucide-react";
 
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "@/components/ui/input-group"
-import { cn } from "@/lib/utils"
+import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
+import { cn } from "@/lib/utils";
 
 /**
  * Single search control for every admin list. Call sites used to re-assemble
@@ -20,11 +16,11 @@ function SearchField({
   className,
   "aria-label": ariaLabel,
 }: {
-  value: string
-  onValueChange: (value: string) => void
-  placeholder?: string
-  className?: string
-  "aria-label"?: string
+  value: string;
+  onValueChange: (value: string) => void;
+  placeholder?: string;
+  className?: string;
+  "aria-label"?: string;
 }) {
   return (
     <InputGroup className={cn("h-10 rounded-lg", className)}>
@@ -40,7 +36,7 @@ function SearchField({
         className="text-xs font-medium"
       />
     </InputGroup>
-  )
+  );
 }
 
-export { SearchField }
+export { SearchField };

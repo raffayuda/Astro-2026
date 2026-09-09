@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 /**
  * SumoPod webhook body — see .env.example for the signing secret / token.
@@ -8,12 +8,12 @@ import { z } from 'zod';
  */
 export const sumoPodWebhookSchema = z.object({
   event_type: z.enum([
-    'payment.completed',
-    'payment.failed',
-    'payment.expired',
-    'payment.canceled',
-    'payment.cancelled',
-    'payment.test',
+    "payment.completed",
+    "payment.failed",
+    "payment.expired",
+    "payment.canceled",
+    "payment.cancelled",
+    "payment.test",
   ]),
   data: z
     .object({
@@ -34,9 +34,9 @@ export type SumoPodWebhookBody = z.infer<typeof sumoPodWebhookSchema>;
 
 /** Map a SumoPod webhook event to this app's `registrations.paymentStatus`. */
 export const EVENT_TO_STATUS: Record<string, string> = {
-  'payment.completed': 'paid',
-  'payment.failed': 'failed',
-  'payment.expired': 'expired',
-  'payment.canceled': 'failed',
-  'payment.cancelled': 'failed',
+  "payment.completed": "paid",
+  "payment.failed": "failed",
+  "payment.expired": "expired",
+  "payment.canceled": "failed",
+  "payment.cancelled": "failed",
 };

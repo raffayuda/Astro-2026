@@ -1,4 +1,4 @@
-import { redirect } from 'next/navigation';
+import { redirect } from "next/navigation";
 
 export default async function CommitteeAliasPage({
   searchParams,
@@ -10,5 +10,5 @@ export default async function CommitteeAliasPage({
   if (division) {
     redirect(`/panitia?division=${encodeURIComponent(division)}`);
   }
-  redirect('/panitia');
+  redirect("/panitia");
 }

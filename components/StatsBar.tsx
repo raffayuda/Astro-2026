@@ -42,7 +42,12 @@ export default function StatsBar({ data }: Props) {
       <WindowCard title="Kenapa ASTRO 2026?">
         <div className="grid grid-cols-2 gap-2 sm:gap-3">
           {items.map((stat) => (
-            <StatCard key={stat.label} metric={stat.value} label={stat.label} className="p-3 sm:p-5" />
+            <StatCard
+              key={stat.label}
+              metric={stat.value}
+              label={stat.label}
+              className="p-3 sm:p-5"
+            />
           ))}
         </div>
       </WindowCard>

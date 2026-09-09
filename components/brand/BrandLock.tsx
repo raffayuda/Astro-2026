@@ -46,10 +46,7 @@ export function BrandLock({
         alt="ASTRO 2026"
         width={s.astro}
         height={Math.round(s.astro * 0.73)}
-        className={cn(
-          "w-auto object-contain mt-2",
-          tone === "plain" ? "h-full" : "h-2/3",
-        )}
+        className={cn("w-auto object-contain mt-2", tone === "plain" ? "h-full" : "h-2/3")}
       />
     </span>
   );

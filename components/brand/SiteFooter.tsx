@@ -1,23 +1,19 @@
-import * as React from "react"
-import Link from "next/link"
-import { Mail, Phone } from "lucide-react"
-import { FaInstagram, FaTiktok, FaWhatsapp } from "react-icons/fa6"
+import * as React from "react";
+import Link from "next/link";
+import { Mail, Phone } from "lucide-react";
+import { FaInstagram, FaTiktok, FaWhatsapp } from "react-icons/fa6";
 
-import { cn } from "@/lib/utils"
-import { BrandLock } from "./BrandLock"
-import {
-  ASTRO_EMAIL,
-  ASTRO_SOCIALS,
-  type SocialLink,
-} from "./GlassBar"
+import { cn } from "@/lib/utils";
+import { BrandLock } from "./BrandLock";
+import { ASTRO_EMAIL, ASTRO_SOCIALS, type SocialLink } from "./GlassBar";
 
-export { ASTRO_EMAIL, ASTRO_SOCIALS, type SocialLink }
+export { ASTRO_EMAIL, ASTRO_SOCIALS, type SocialLink };
 
 const SOCIAL_ICONS = {
   instagram: FaInstagram,
   tiktok: FaTiktok,
   whatsapp: FaWhatsapp,
-} as const
+} as const;
 
 const NAV = [
   { label: "Kompetisi", href: "/#competitions" },
@@ -26,7 +22,7 @@ const NAV = [
   { label: "Pengumuman", href: "/announcements" },
   { label: "Cek Pendaftaran", href: "/check-registration" },
   { label: "Sponsorship", href: "/sponsorship" },
-]
+];
 
 export function SiteFooter({
   socials = ASTRO_SOCIALS,
@@ -34,10 +30,10 @@ export function SiteFooter({
   phone,
   className,
 }: {
-  socials?: SocialLink[]
-  email?: string
-  phone?: string
-  className?: string
+  socials?: SocialLink[];
+  email?: string;
+  phone?: string;
+  className?: string;
 }) {
   return (
     <footer data-slot="site-footer" className={cn("relative z-10", className)}>
@@ -68,7 +64,7 @@ export function SiteFooter({
             <div className="flex flex-col items-center gap-3 md:items-end">
               <div className="flex items-center gap-2">
                 {socials.map((social) => {
-                  const Icon = SOCIAL_ICONS[social.kind]
+                  const Icon = SOCIAL_ICONS[social.kind];
                   return (
                     <a
                       key={social.href}
@@ -80,7 +76,7 @@ export function SiteFooter({
                     >
                       <Icon className="size-4" aria-hidden />
                     </a>
-                  )
+                  );
                 })}
               </div>
 
@@ -111,5 +107,5 @@ export function SiteFooter({
         </div>
       </div>
     </footer>
-  )
+  );
 }

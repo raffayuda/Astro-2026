@@ -1,19 +1,19 @@
-import * as dotenv from 'dotenv';
-dotenv.config({ path: '.env.local' });
-dotenv.config({ path: '.env' });
+import * as dotenv from "dotenv";
+dotenv.config({ path: ".env.local" });
+dotenv.config({ path: ".env" });
 
-import { db } from './index';
-import { competitions } from './schema';
-import { eq } from 'drizzle-orm';
+import { db } from "./index";
+import { competitions } from "./schema";
+import { eq } from "drizzle-orm";
 
 async function restore() {
-  console.log('Restoring competition data...');
+  console.log("Restoring competition data...");
 
   // 1. Restore AGT
   const agtGuidebook = [
     {
-      id: 'agt-babak',
-      title: 'Tahapan & Jadwal Babak',
+      id: "agt-babak",
+      title: "Tahapan & Jadwal Babak",
       content: `Babak perlombaan ASTRO Got Talent dibagi menjadi 2 tahapan utama yang dilaksanakan di Auditorium Kampus B:
 
 - **Babak Showcase**: 6 Desember 2026 (Auditorium Kampus B)
@@ -22,16 +22,16 @@ async function restore() {
 Sebanyak **8–10 peserta terbaik** dari babak Showcase akan melaju ke panggung Grand Final untuk memperebutkan gelar Juara ASTRO 2026!`,
     },
     {
-      id: 'agt-ketentuan',
-      title: 'Ketentuan Penampilan & Fasilitas',
+      id: "agt-ketentuan",
+      title: "Ketentuan Penampilan & Fasilitas",
       content: `- **Durasi Tampil**: Maksimal **5 menit**. Jika membawa properti tambahan (alat musik, kanvas, dll), waktu setup panggung dibatasi maksimal **2 menit**.
 - **Kategori Bakat**: Bebas berekspresi (Bernyanyi, Dance/Tari, Teater/Monolog, Sulap, Melukis, dll) selama TIDAK mengandung unsur SARA, kekerasan, pornografi, politik praktis, maupun lirik terlarang (kata kasar/makian).
 - **Fasilitas Panitia**: Panitia hanya menyediakan sound system, laptop operator, dan 2 unit mic wireless. Kebutuhan properti lainnya dibawa sendiri oleh peserta.
 - **Audio/Video Pendukung**: Wajib diserahkan kepada panitia maksimal **H-7** sebelum hari penampilan.`,
     },
     {
-      id: 'agt-penilaian',
-      title: 'Sistem Penilaian',
+      id: "agt-penilaian",
+      title: "Sistem Penilaian",
       content: `Penilaian dewan juri didasarkan pada 4 kriteria utama:
 
 - **Kreativitas & Orisinalitas**: **30%** (Keunikan konsep, keaslian karya, dan daya tarik pertunjukan)
@@ -42,8 +42,8 @@ Sebanyak **8–10 peserta terbaik** dari babak Showcase akan melaju ke panggung 
 ⚠️ Catatan Penting: Keputusan dewan juri bersifat mutlak dan tidak dapat diganggu gugat.`,
     },
     {
-      id: 'agt-tatatertib',
-      title: 'Tata Tertib & Diskualifikasi',
+      id: "agt-tatatertib",
+      title: "Tata Tertib & Diskualifikasi",
       content: `- **Syarat Kepesertaan**: Mahasiswa aktif STT Terpadu Nurul Fikri, baik secara individu maupun kelompok (maksimal 10 orang).
 - Setiap peserta hanya diperbolehkan tampil dalam satu penampilan dengan membawakan karya/aksi yang bersifat orisinil.
 - Peserta wajib melakukan registrasi ulang di hari H dan harus standby di backstage minimal **30 menit** sebelum giliran.
@@ -58,43 +58,45 @@ Sebanyak **8–10 peserta terbaik** dari babak Showcase akan melaju ke panggung 
 
   const agtCustomFields = [
     {
-      id: 'talent_category',
-      label: 'Kategori Bakat',
-      type: 'select' as const,
+      id: "talent_category",
+      label: "Kategori Bakat",
+      type: "select" as const,
       options: [
-        'Bernyanyi (Vokal / Solo / Duo)',
-        'Dance / Seni Tari',
-        'Teater / Monolog / Puisi',
-        'Sulap / Magic Performance',
-        'Akustik / Musik Instrumen',
-        'Melukis / Speed Painting',
-        'Lainnya',
+        "Bernyanyi (Vokal / Solo / Duo)",
+        "Dance / Seni Tari",
+        "Teater / Monolog / Puisi",
+        "Sulap / Magic Performance",
+        "Akustik / Musik Instrumen",
+        "Melukis / Speed Painting",
+        "Lainnya",
       ],
       required: true,
-      description: 'Pilih jenis pertunjukan atau bakat utama yang akan ditampilkan',
+      description: "Pilih jenis pertunjukan atau bakat utama yang akan ditampilkan",
     },
     {
-      id: 'performance_title',
-      label: 'Judul / Konsep Karya Penampilan',
-      type: 'text' as const,
-      placeholder: 'Contoh: Cover Lagu Bendera - Cokelat',
+      id: "performance_title",
+      label: "Judul / Konsep Karya Penampilan",
+      type: "text" as const,
+      placeholder: "Contoh: Cover Lagu Bendera - Cokelat",
       required: true,
-      description: 'Nama atau judul aksi pertunjukan yang akan dibawakan di panggung',
+      description: "Nama atau judul aksi pertunjukan yang akan dibawakan di panggung",
     },
     {
-      id: 'stage_property',
-      label: 'Kebutuhan Properti & Alat Panggung',
-      type: 'textarea' as const,
-      placeholder: 'Tuliskan alat/properti yang dibawa sendiri (misal: 1 gitar akustik, stand kanvas lukis, dll)',
+      id: "stage_property",
+      label: "Kebutuhan Properti & Alat Panggung",
+      type: "textarea" as const,
+      placeholder:
+        "Tuliskan alat/properti yang dibawa sendiri (misal: 1 gitar akustik, stand kanvas lukis, dll)",
       required: false,
-      description: 'Panitia hanya menyediakan sound system, laptop operator, dan 2 mic wireless. Kebutuhan properti lain dibawa sendiri oleh peserta.',
+      description:
+        "Panitia hanya menyediakan sound system, laptop operator, dan 2 mic wireless. Kebutuhan properti lain dibawa sendiri oleh peserta.",
     },
     {
-      id: 'ktm_url',
-      label: 'Foto KTM / Bukti Mahasiswa STT-NF',
-      type: 'image' as const,
+      id: "ktm_url",
+      label: "Foto KTM / Bukti Mahasiswa STT-NF",
+      type: "image" as const,
       required: true,
-      description: 'Unggah foto Kartu Tanda Mahasiswa (KTM) aktif STT-NF sebagai bukti kepesertaan',
+      description: "Unggah foto Kartu Tanda Mahasiswa (KTM) aktif STT-NF sebagai bukti kepesertaan",
     },
   ];
 
@@ -103,7 +105,8 @@ Sebanyak **8–10 peserta terbaik** dari babak Showcase akan melaju ke panggung 
     .set({
       title: "ASTRO Got Talent (AGT)",
       tagline: "Panggung Ekspresi dan Bakat Mahasiswa STT-NF",
-      description: "Ajang unjuk kreativitas dan bakat terbesar mahasiswa STT Terpadu Nurul Fikri. Tampilkan aksi terbaikmu baik solo maupun kelompok di panggung megah ASTRO 2026!",
+      description:
+        "Ajang unjuk kreativitas dan bakat terbesar mahasiswa STT Terpadu Nurul Fikri. Tampilkan aksi terbaikmu baik solo maupun kelompok di panggung megah ASTRO 2026!",
       category: "kesenian-/-seni",
       type: "both",
       minTeamMembers: 1,
@@ -141,14 +144,14 @@ Sebanyak **8–10 peserta terbaik** dari babak Showcase akan melaju ke panggung 
       customFields: agtCustomFields,
       isActive: "1",
     })
-    .where(eq(competitions.id, 'astro-got-talent'));
-  console.log('✓ Restored ASTRO Got Talent');
+    .where(eq(competitions.id, "astro-got-talent"));
+  console.log("✓ Restored ASTRO Got Talent");
 
   // 2. Restore Cerdas Cermat
   const ccGuidebook = [
     {
-      id: 'cc-alur',
-      title: 'Alur & Teknis Perlombaan',
+      id: "cc-alur",
+      title: "Alur & Teknis Perlombaan",
       content: `Perlombaan dilaksanakan secara luring (offline) dalam satu hari pada **29 November 2026** di Auditorium Kampus B STT-NF.
 
 - **Materi Pertanyaan**: Nusantara, Pengetahuan Umum, dan Matematika.
@@ -158,8 +161,8 @@ Sebanyak **8–10 peserta terbaik** dari babak Showcase akan melaju ke panggung 
 3. **Babak 3 - Final (Individu)**: Peserta terbaik dari kelompok pemenang bertanding secara individu di babak grand final.`,
     },
     {
-      id: 'cc-penilaian',
-      title: 'Sistem Penilaian & Aturan Bel',
+      id: "cc-penilaian",
+      title: "Sistem Penilaian & Aturan Bel",
       content: `Aturan menjawab pada Babak Rebutan dan Babak Final:
 
 - Hak menjawab diberikan kepada peserta/kelompok tercepat menekan bel.
@@ -171,8 +174,8 @@ Perhitungan Poin:
 - Jawaban SALAH: **-50 poin** (pengurangan nilai)`,
     },
     {
-      id: 'cc-syarat',
-      title: 'Syarat & Berkas Pendaftaran',
+      id: "cc-syarat",
+      title: "Syarat & Berkas Pendaftaran",
       content: `- Terbuka untuk seluruh Mahasiswa aktif STT Terpadu Nurul Fikri (Pendaftaran dilakukan secara individu).
 - Wajib membaca dan menyetujui Guidebook resmi lomba.
 - **Dokumen yang Wajib Disiapkan saat Pendaftaran**:
@@ -182,8 +185,8 @@ Perhitungan Poin:
 - Peserta wajib melakukan registrasi ulang di lokasi perlombaan pada hari H.`,
     },
     {
-      id: 'cc-tatatertib',
-      title: 'Tata Tertib & Sanksi Ketat',
+      id: "cc-tatatertib",
+      title: "Tata Tertib & Sanksi Ketat",
       content: `⚠️ Pengumpulan Barang Elektronik:
 Seluruh peserta WAJIB mengumpulkan seluruh barang elektronik (HP, smartphone, kalkulator, smartwatch/jam tangan digital) kepada panitia sebelum acara dimulai. Peserta yang ketahuan membawa atau menggunakan alat elektronik selama lomba berlangsung akan LANGSUNG DIDISKUALIFIKASI!
 
@@ -195,44 +198,47 @@ Seluruh peserta WAJIB mengumpulkan seluruh barang elektronik (HP, smartphone, ka
 
   const ccCustomFields = [
     {
-      id: 'major',
-      label: 'Program Studi & Angkatan',
-      type: 'select' as const,
+      id: "major",
+      label: "Program Studi & Angkatan",
+      type: "select" as const,
       options: [
-        'Teknik Informatika 2024',
-        'Teknik Informatika 2025',
-        'Teknik Informatika 2026',
-        'Sistem Informasi 2024',
-        'Sistem Informasi 2025',
-        'Sistem Informasi 2026',
-        'Bisnis Digital 2024',
-        'Bisnis Digital 2025',
-        'Bisnis Digital 2026',
-        'Lainnya',
+        "Teknik Informatika 2024",
+        "Teknik Informatika 2025",
+        "Teknik Informatika 2026",
+        "Sistem Informasi 2024",
+        "Sistem Informasi 2025",
+        "Sistem Informasi 2026",
+        "Bisnis Digital 2024",
+        "Bisnis Digital 2025",
+        "Bisnis Digital 2026",
+        "Lainnya",
       ],
       required: true,
-      description: 'Pilih program studi dan tahun angkatan aktif Anda di STT-NF',
+      description: "Pilih program studi dan tahun angkatan aktif Anda di STT-NF",
     },
     {
-      id: 'ktm_url',
-      label: 'Foto Kartu Tanda Mahasiswa (KTM)',
-      type: 'image' as const,
+      id: "ktm_url",
+      label: "Foto Kartu Tanda Mahasiswa (KTM)",
+      type: "image" as const,
       required: true,
-      description: 'Unggah foto KTM aktif atau tangkapan layar SIAK resmi sebagai bukti Mahasiswa aktif STT-NF',
+      description:
+        "Unggah foto KTM aktif atau tangkapan layar SIAK resmi sebagai bukti Mahasiswa aktif STT-NF",
     },
     {
-      id: 'profile_photo_url',
-      label: 'Foto Profil untuk Publikasi',
-      type: 'image' as const,
+      id: "profile_photo_url",
+      label: "Foto Profil untuk Publikasi",
+      type: "image" as const,
       required: true,
-      description: 'Foto portrait diri peserta untuk kebutuhan kartu peserta, bagan, dan pamflet publikasi',
+      description:
+        "Foto portrait diri peserta untuk kebutuhan kartu peserta, bagan, dan pamflet publikasi",
     },
     {
-      id: 'instagram_proof_url',
-      label: 'Screenshot Bukti Follow Instagram @bemsttnf & @astrosttnf',
-      type: 'image' as const,
+      id: "instagram_proof_url",
+      label: "Screenshot Bukti Follow Instagram @bemsttnf & @astrosttnf",
+      type: "image" as const,
       required: true,
-      description: 'Unggah tangkapan layar bukti telah mengikuti (follow) akun Instagram resmi BEM STT-NF dan ASTRO',
+      description:
+        "Unggah tangkapan layar bukti telah mengikuti (follow) akun Instagram resmi BEM STT-NF dan ASTRO",
     },
   ];
 
@@ -241,7 +247,8 @@ Seluruh peserta WAJIB mengumpulkan seluruh barang elektronik (HP, smartphone, ka
     .set({
       title: "Cerdas Cermat",
       tagline: "Uji Ketangkasan Nalar, Wawasan, dan Kecepatan Berpikir",
-      description: "Kompetisi adu wawasan seputar Nusantara, Pengetahuan Umum, dan Matematika dengan sistem bel cepat tepat beregu dan individual.",
+      description:
+        "Kompetisi adu wawasan seputar Nusantara, Pengetahuan Umum, dan Matematika dengan sistem bel cepat tepat beregu dan individual.",
       category: "akademik",
       type: "individual",
       minTeamMembers: 1,
@@ -279,8 +286,8 @@ Seluruh peserta WAJIB mengumpulkan seluruh barang elektronik (HP, smartphone, ka
       customFields: ccCustomFields,
       isActive: "1",
     })
-    .where(eq(competitions.id, 'cerdas-cermat'));
-  console.log('✓ Restored Cerdas Cermat');
+    .where(eq(competitions.id, "cerdas-cermat"));
+  console.log("✓ Restored Cerdas Cermat");
 
   // 3. Restore Futsal Internal
   await db
@@ -288,7 +295,8 @@ Seluruh peserta WAJIB mengumpulkan seluruh barang elektronik (HP, smartphone, ka
     .set({
       title: "Futsal Internal",
       tagline: "Ajang Adu Taktik dan Solidaritas Lapangan Hijau",
-      description: "Turnamen futsal bergengsi antar mahasiswa STT-NF. Tunjukkan skil olah bola, kerja sama tim terbaik, dan bawa pulang trofi kebanggaan!",
+      description:
+        "Turnamen futsal bergengsi antar mahasiswa STT-NF. Tunjukkan skil olah bola, kerja sama tim terbaik, dan bawa pulang trofi kebanggaan!",
       category: "olahraga",
       type: "team",
       minTeamMembers: 5,
@@ -315,8 +323,8 @@ Seluruh peserta WAJIB mengumpulkan seluruh barang elektronik (HP, smartphone, ka
       ],
       isActive: "1",
     })
-    .where(eq(competitions.id, 'futsal-internal'));
-  console.log('✓ Restored Futsal Internal');
+    .where(eq(competitions.id, "futsal-internal"));
+  console.log("✓ Restored Futsal Internal");
 
   // 4. Restore Badminton
   await db
@@ -324,7 +332,8 @@ Seluruh peserta WAJIB mengumpulkan seluruh barang elektronik (HP, smartphone, ka
     .set({
       title: "Badminton",
       tagline: "Smash Keras, Raih Prestasi di Puncak Gelanggang",
-      description: "Kompetisi bulu tangkis antar mahasiswa STT-NF dalam kategori tunggal dan ganda. Uji ketahanan fisik, kelincahan gerak, dan ketepatan pukulan!",
+      description:
+        "Kompetisi bulu tangkis antar mahasiswa STT-NF dalam kategori tunggal dan ganda. Uji ketahanan fisik, kelincahan gerak, dan ketepatan pukulan!",
       category: "olahraga",
       type: "both",
       minTeamMembers: 1,
@@ -349,8 +358,8 @@ Seluruh peserta WAJIB mengumpulkan seluruh barang elektronik (HP, smartphone, ka
       ],
       isActive: "1",
     })
-    .where(eq(competitions.id, 'badminton'));
-  console.log('✓ Restored Badminton');
+    .where(eq(competitions.id, "badminton"));
+  console.log("✓ Restored Badminton");
 
   // 5. Restore Mobile Legends
   await db
@@ -358,7 +367,8 @@ Seluruh peserta WAJIB mengumpulkan seluruh barang elektronik (HP, smartphone, ka
     .set({
       title: "Mobile Legends (MLBB)",
       tagline: "Taklukkan Land of Dawn dan Rebut Tahta Juara",
-      description: "Turnamen Mobile Legends: Bang Bang resmi ASTRO 2026. Susun draft terbaik, menangkan teamfight, dan hancurkan nexus lawan!",
+      description:
+        "Turnamen Mobile Legends: Bang Bang resmi ASTRO 2026. Susun draft terbaik, menangkan teamfight, dan hancurkan nexus lawan!",
       category: "esports",
       type: "team",
       minTeamMembers: 5,
@@ -386,10 +396,10 @@ Seluruh peserta WAJIB mengumpulkan seluruh barang elektronik (HP, smartphone, ka
       ],
       isActive: "1",
     })
-    .where(eq(competitions.id, 'mobile-legends-mlbb'));
-  console.log('✓ Restored Mobile Legends');
+    .where(eq(competitions.id, "mobile-legends-mlbb"));
+  console.log("✓ Restored Mobile Legends");
 
-  console.log('All competitions restored successfully!');
+  console.log("All competitions restored successfully!");
   process.exit(0);
 }
 

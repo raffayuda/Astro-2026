@@ -16,33 +16,28 @@ import OverviewCharts from "@/components/OverviewCharts";
 export default async function DashboardOverview() {
   // Five independent aggregates — issue them together rather than paying five
   // sequential round trips before the page can render.
-  const [
-    totalRegistrations,
-    totalCompetitions,
-    paidRegistrations,
-    totalRevenue,
-    perCompetition,
-  ] = await Promise.all([
-    db.select({ count: count() }).from(registrations),
-    db.select({ count: count() }).from(competitions),
-    db
-      .select({ count: count() })
-      .from(registrations)
-      .where(eq(registrations.paymentStatus, "paid")),
-    db
-      .select({ total: sql<number>`COALESCE(SUM(payment_amount), 0)` })
-      .from(registrations)
-      .where(eq(registrations.paymentStatus, "paid")),
-    db
-      .select({
-        name: competitions.title,
-        category: competitions.category,
-        count: count(),
-      })
-      .from(registrations)
-      .innerJoin(competitions, eq(registrations.competitionId, competitions.id))
-      .groupBy(competitions.id, competitions.title, competitions.category),
-  ]);
+  const [totalRegistrations, totalCompetitions, paidRegistrations, totalRevenue, perCompetition] =
+    await Promise.all([
+      db.select({ count: count() }).from(registrations),
+      db.select({ count: count() }).from(competitions),
+      db
+        .select({ count: count() })
+        .from(registrations)
+        .where(eq(registrations.paymentStatus, "paid")),
+      db
+        .select({ total: sql<number>`COALESCE(SUM(payment_amount), 0)` })
+        .from(registrations)
+        .where(eq(registrations.paymentStatus, "paid")),
+      db
+        .select({
+          name: competitions.title,
+          category: competitions.category,
+          count: count(),
+        })
+        .from(registrations)
+        .innerJoin(competitions, eq(registrations.competitionId, competitions.id))
+        .groupBy(competitions.id, competitions.title, competitions.category),
+    ]);
 
   const stats = [
     {

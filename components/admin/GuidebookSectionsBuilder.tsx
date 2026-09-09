@@ -43,9 +43,7 @@ export default function GuidebookSectionsBuilder({ sections, onChange }: Props) 
   };
 
   const updateSection = (id: string, field: "title" | "content", val: string) => {
-    onChange(
-      sections.map((s) => (s.id === id ? { ...s, [field]: val } : s))
-    );
+    onChange(sections.map((s) => (s.id === id ? { ...s, [field]: val } : s)));
   };
 
   const removeSection = (id: string) => {
@@ -89,12 +87,14 @@ export default function GuidebookSectionsBuilder({ sections, onChange }: Props) 
       </div>
 
       <p className="text-11 text-muted-foreground">
-        Tambahkan bagian panduan interaktif (misal: Tahapan Babak, Kriteria Penilaian, Tata Tertib, Fasilitas). Bagian ini akan dirender sebagai Tab panduan resmi di halaman detail lomba.
+        Tambahkan bagian panduan interaktif (misal: Tahapan Babak, Kriteria Penilaian, Tata Tertib,
+        Fasilitas). Bagian ini akan dirender sebagai Tab panduan resmi di halaman detail lomba.
       </p>
 
       {sections.length === 0 ? (
         <div className="rounded-lg border border-dashed border-border py-6 text-center text-xs text-muted-foreground">
-          Belum ada bagian artikel guidebook. Klik &quot;Tambah Bagian&quot; di atas untuk membuat panduan modular.
+          Belum ada bagian artikel guidebook. Klik &quot;Tambah Bagian&quot; di atas untuk membuat
+          panduan modular.
         </div>
       ) : (
         <div className="space-y-3">
@@ -217,7 +217,13 @@ export default function GuidebookSectionsBuilder({ sections, onChange }: Props) 
                       </button>
                       <button
                         type="button"
-                        onClick={() => insertFormat(sec.id, sec.content, "⚠️ Catatan Penting / Diskualifikasi: ...")}
+                        onClick={() =>
+                          insertFormat(
+                            sec.id,
+                            sec.content,
+                            "⚠️ Catatan Penting / Diskualifikasi: ...",
+                          )
+                        }
                         className="rounded px-1.5 py-0.5 text-10 font-bold text-amber-600 hover:bg-amber-500/10"
                         title="Peringatan / Diskualifikasi"
                       >
@@ -239,7 +245,11 @@ export default function GuidebookSectionsBuilder({ sections, onChange }: Props) 
                       {sec.title || "Tanpa Judul"}
                     </p>
                     <div className="whitespace-pre-line text-foreground/90">
-                      {sec.content || <span className="italic text-muted-foreground">Belum ada konten ditulis.</span>}
+                      {sec.content || (
+                        <span className="italic text-muted-foreground">
+                          Belum ada konten ditulis.
+                        </span>
+                      )}
                     </div>
                   </div>
                 )}

@@ -1,6 +1,6 @@
-import type { Metadata } from "next"
+import type { Metadata } from "next";
 
-import { SponsorshipClient } from "./SponsorshipClient"
+import { SponsorshipClient } from "./SponsorshipClient";
 
 export const metadata: Metadata = {
   title: "Sponsorship — ASTRO 2026",
@@ -13,8 +13,8 @@ export const metadata: Metadata = {
       "Paket kemitraan ASTRO 2026 dengan eksposur brand di media fisik dan digital resmi.",
     url: "/sponsorship",
   },
-}
+};
 
 export default function SponsorshipPage() {
-  return <SponsorshipClient />
+  return <SponsorshipClient />;
 }

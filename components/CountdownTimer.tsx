@@ -69,17 +69,9 @@ export default function CountdownTimer({
   ];
 
   return (
-    <div
-      className={cn(
-        "flex w-fit items-stretch divide-x divide-astro-cyan-2/45",
-        className,
-      )}
-    >
+    <div className={cn("flex w-fit items-stretch divide-x divide-astro-cyan-2/45", className)}>
       {items.map((item) => (
-        <div
-          key={item.label}
-          className="flex flex-col items-center px-4 first:pl-0 last:pr-0"
-        >
+        <div key={item.label} className="flex flex-col items-center px-4 first:pl-0 last:pr-0">
           <span className="font-heading text-3xl font-black leading-none tabular-nums text-astro-navy sm:text-4xl">
             {item.value === undefined ? "--" : pad(item.value)}
           </span>

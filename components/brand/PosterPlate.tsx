@@ -1,6 +1,6 @@
-import * as React from "react"
+import * as React from "react";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 /**
  * The cream title plate from the ASTRO GOT TALENT poster.
@@ -18,10 +18,10 @@ export function PosterPlate({
   contentClassName,
 }: {
   /** Text for the ribbon across the top edge. Omit for a plain plate. */
-  banner?: React.ReactNode
-  children: React.ReactNode
-  className?: string
-  contentClassName?: string
+  banner?: React.ReactNode;
+  children: React.ReactNode;
+  className?: string;
+  contentClassName?: string;
 }) {
   return (
     <div
@@ -47,5 +47,5 @@ export function PosterPlate({
 
       <div className={cn("px-5 pb-6 sm:px-8 md:pb-8", contentClassName)}>{children}</div>
     </div>
-  )
+  );
 }

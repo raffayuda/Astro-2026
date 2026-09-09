@@ -18,44 +18,52 @@ User peserta dapat mengklik **"Cetak Sertifikat"** di modal pengumuman (`Winners
 ## 1. Kondisi Saat Ini (Existing State)
 
 ### 1.1 Database Schema (dari `src/db/schema/index.ts`)
+
 Kolom yang relevan sudah ada tetapi belum optimal dimanfaatkan:
 
-| Tabel | Kolom | Tipe | Deskripsi |
-|-------|-------|------|-----------|
-| `competitions` | `certificate_enabled` | text '0'/'1' | Aktif/nonaktif sertifikat |
-| `competitions` | `certificate_type` | text 'winner'\|'all' | 'winner' = juara saja, 'all' = semua peserta |
-| `competitions` | `certificate_template` | text (nullable) | **Belum dipakai** — hanya kolom tunggal URL |
-| `registrations` | `certificates` | jsonb `[{name, url}]` | URL sertifikat yang diupload manual |
-| `registrations` | `is_winner` | text '0'/'1' | Flag juara |
-| `registrations` | `winner_rank` | text '1'\|'2'\|'3' | Peringkat juara |
-| `registrations` | `certificate_sent` | text '0'/'1' | Apakah sertifikat sudah dikirim via email |
-| `registrations` | `members` | text | Daftar anggota tim (newline-separated, untuk team) |
+| Tabel           | Kolom                  | Tipe                  | Deskripsi                                          |
+| --------------- | ---------------------- | --------------------- | -------------------------------------------------- |
+| `competitions`  | `certificate_enabled`  | text '0'/'1'          | Aktif/nonaktif sertifikat                          |
+| `competitions`  | `certificate_type`     | text 'winner'\|'all'  | 'winner' = juara saja, 'all' = semua peserta       |
+| `competitions`  | `certificate_template` | text (nullable)       | **Belum dipakai** — hanya kolom tunggal URL        |
+| `registrations` | `certificates`         | jsonb `[{name, url}]` | URL sertifikat yang diupload manual                |
+| `registrations` | `is_winner`            | text '0'/'1'          | Flag juara                                         |
+| `registrations` | `winner_rank`          | text '1'\|'2'\|'3'    | Peringkat juara                                    |
+| `registrations` | `certificate_sent`     | text '0'/'1'          | Apakah sertifikat sudah dikirim via email          |
+| `registrations` | `members`              | text                  | Daftar anggota tim (newline-separated, untuk team) |
 
 ### 1.2 Backend API (dari graphify: Community 14, 17, 31)
 
 **`certificatesModule`** (`src/server/modules/certificates/index.ts`):
+
 - `POST /api/certificates/send` — admin only; kirim link download sertifikat via email Resend.
 
 **`registrationsModule`** (`src/server/modules/registrations/index.ts` + `service.ts`):
+
 - `GET /api/registrations/winners?competitionId=` — public; kembalikan `winners` (juara) + `certHolders` (yang punya sertifikat).
 - `PATCH /api/registrations/{id}` — admin bisa update `certificates`, `isWinner`, `winnerRank`, `certificateSent`.
 
 **`uploadModule`** (`src/server/modules/upload/index.ts`):
+
 - `POST /api/upload` — admin only; upload file ke Supabase Storage (PNG/JPG/WEBP/GIF/PDF, max 10MB).
 
 **`competitionsModule`** (`src/server/modules/competitions/index.ts`):
+
 - CRUD lengkap kompetisi termasuk `certificateEnabled`, `certificateType`, `certificateTemplate`.
 
 ### 1.3 Frontend (dari graphify: Community 1, 19, 31)
 
 **`SertifikatPage`** (`app/dashboard/certificates/page.tsx`):
+
 - Halaman admin: pilih lomba → lihat daftar peserta lunas → tandai juara 1/2/3 → upload sertifikat manual per peserta → klik "Kirim" sertifikat via email.
 
 **`WinnerManager`** (`components/WinnerManager.tsx`):
+
 - Komponen dipanggil di dashboard kompetisi (`app/dashboard/competitions/page.tsx`).
 - Toggle juara 1/2/3 (draft mode), bulk save, upload sertifikat per peserta, delete sertifikat, kirim sertifikat.
 
 **`WinnersModal`** (`app/announcements/WinnersModal.tsx`):
+
 - Modal pengumuman pemenang (di halaman `PengumumanClient`).
 - Menampilkan podium juara 1/2/3 + tombol **"Dapatkan Sertifikat"** yang membuka sub-modal `CertModal`.
 - `CertModal` hanya menampilkan **link download sertifikat yang sudah diupload** — belum ada tombol generate.
@@ -66,13 +74,13 @@ Kolom yang relevan sudah ada tetapi belum optimal dimanfaatkan:
 
 ### 2.1 Prinsip Dasar
 
-| Aspek | Konsep Baru |
-|-------|-------------|
-| **Template** | Admin upload **gambar template hasil desain Canva** per peringkat (Juara 1, 2, 3) — bukan HTML editor |
+| Aspek            | Konsep Baru                                                                                                  |
+| ---------------- | ------------------------------------------------------------------------------------------------------------ |
+| **Template**     | Admin upload **gambar template hasil desain Canva** per peringkat (Juara 1, 2, 3) — bukan HTML editor        |
 | **Text Overlay** | Admin atur **posisi (X, Y)** dan styling teks overlay di UI; sistem replace placeholder-value di atas gambar |
-| **Generate** | Sistem render: gambar template + text overlay → PDF |
-| **Trigger** | Dua trigger: admin "Generate Semua" atau user "Cetak Sertifikat" |
-| **Team Support** | Untuk tim, generate sertifikat terpisah untuk **setiap anggota tim** |
+| **Generate**     | Sistem render: gambar template + text overlay → PDF                                                          |
+| **Trigger**      | Dua trigger: admin "Generate Semua" atau user "Cetak Sertifikat"                                             |
+| **Team Support** | Untuk tim, generate sertifikat terpisah untuk **setiap anggota tim**                                         |
 
 ### 2.2 Placeholder System
 
@@ -92,6 +100,7 @@ Saat generate, nilai-nilai berikut **di-overlay ke gambar template** di posisi y
 ```
 
 Setiap placeholder dikaitkan dengan sebuah **"text overlay field"** yang punya:
+
 - `field` — nama placeholder (mis. `participantName`)
 - `x`, `y` — posisi piksel dari kiri/atas (relatif terhadap gambar template)
 - `fontSize` — ukuran font (default 16)
@@ -155,15 +164,25 @@ CREATE TABLE certificate_templates (
 ```
 
 `text_overlays` JSONB contoh:
+
 ```json
 [
-  { "field": "participantName", "x": 400, "y": 350, "fontSize": 24, "color": "#0f172a", "align": "center", "maxWidth": 300 },
+  {
+    "field": "participantName",
+    "x": 400,
+    "y": 350,
+    "fontSize": 24,
+    "color": "#0f172a",
+    "align": "center",
+    "maxWidth": 300
+  },
   { "field": "rank", "x": 680, "y": 420, "fontSize": 18, "color": "#d97706", "align": "center" },
   { "field": "date", "x": 500, "y": 560, "fontSize": 12, "color": "#64748b", "align": "center" }
 ]
 ```
 
 Keuntungan dengan tabel terpisah:
+
 - Bisa menyimpan **3 template berbeda** (juara 1/2/3) plus template untuk semua peserta
 - Setiap template = 1 gambar + konfigurasi posisi teks overlay
 - Bisa versioning (update template, generate ulang)
@@ -171,10 +190,10 @@ Keuntungan dengan tabel terpisah:
 
 #### Kolom tambahan di `registrations`
 
-| Kolom | Tipe | Deskripsi |
-|-------|------|-----------|
-| `certificate_generated_at` | timestamp nullable | Kapan sertifikat generate otomatis |
-| `certificate_template_version` | integer nullable | Versi template yang dipakai (untuk regenerasi) |
+| Kolom                          | Tipe               | Deskripsi                                      |
+| ------------------------------ | ------------------ | ---------------------------------------------- |
+| `certificate_generated_at`     | timestamp nullable | Kapan sertifikat generate otomatis             |
+| `certificate_template_version` | integer nullable   | Versi template yang dipakai (untuk regenerasi) |
 
 > Kolom `certificates` (jsonb) tetap dipakai — sekarang diisi oleh sistem generate otomatis bukan upload manual.
 
@@ -183,17 +202,21 @@ Keuntungan dengan tabel terpisah:
 #### Module baru: `src/server/modules/certificate-templates/`
 
 **`GET /api/certificate-templates?competitionId=xxx`** (admin)
+
 - List semua template (juara 1/2/3/peserta) untuk sebuah kompetisi.
 
 **`POST /api/certificate-templates`** (admin)
+
 - Create/update template: `{ competitionId, rank, templateImageUrl, textOverlays }`
 
 **`DELETE /api/certificate-templates/{id}`** (admin)
+
 - Hapus template.
 
 #### Module baru di `certificatesModule`:
 
 **`POST /api/certificates/generate`** (admin)
+
 ```ts
 // Generate semua sertifikat untuk semua pemenang
 {
@@ -201,6 +224,7 @@ Keuntungan dengan tabel terpisah:
   ranks?: string[]  // default ['1','2','3']; boleh kosong = semua
 }
 ```
+
 - Ambil semua pemenang (juara 1/2/3) yang paymentStatus 'paid'.
 - Untuk tim: parse `members` field, generate sertifikat per anggota.
 - Render gambar template + text overlay → PDF.
@@ -211,6 +235,7 @@ Keuntungan dengan tabel terpisah:
 - Return summary: `{ generated: N, skipped: M, errors: [...] }`.
 
 **`POST /api/certificates/generate-single`** (public — but only for the user's own registration)
+
 ```ts
 // Generate on-demand untuk satu pemenang (user-side)
 {
@@ -218,6 +243,7 @@ Keuntungan dengan tabel terpisah:
   registrationId: string  // atau email + competitionId untuk verifikasi
 }
 ```
+
 - Verifikasi bahwa registration itu memang juara (isWinner='1' && paymentStatus='paid').
 - Render gambar template + text overlay → PDF, upload ke Supabase.
 - Update `registrations.certificates`, kembalikan URL.
@@ -231,7 +257,7 @@ Keuntungan dengan tabel terpisah:
 async function generateCertificatePdf(
   templateImageUrl: string,
   textOverlays: TextOverlayField[],
-  values: Record<string, string>
+  values: Record<string, string>,
 ): Promise<Buffer> {
   // 1. Download gambar template (PNG/JPG) dari Supabase
   // 2. Render text overlay di atas gambar:
@@ -242,6 +268,7 @@ async function generateCertificatePdf(
 ```
 
 **Rendering engine rekomendasi:**
+
 - **`pdf-lib`** — embed gambar ke PDF halaman, drawText di overlay. Ringan, pure JS, tidak butuh native deps. Cocia untuk gambar Canva.
 - **`node-canvas`** (canvas) — compositing gambar + teks di canvas, render ke PNG, lalu bungkus di PDF pakai pdf-lib. Fleksibel untuk text wrapping & styling, tapi butuh native deps (cairo).
 
@@ -260,6 +287,7 @@ Setiap kartu kompetisi yang sudah di-expand (WinnerManager terbuka) mendapatkan 
 ```
 
 **Tab "Template Sertifikat"** berisi:
+
 - Toggle "Aktifkan Sertifikat"
 - Radio: `certificate_type` = "Juara saja" atau "Semua peserta"
 - **Template Juara 1**: upload gambar PNG/JPG hasil Canva + daftar text overlay field
@@ -270,6 +298,7 @@ Setiap kartu kompetisi yang sudah di-expand (WinnerManager terbuka) mendapatkan 
 - Preview: render gambar + overlay teks dummy di modal
 
 #### UI Mock — Upload Gambar Template:
+
 ```
 ┌────────────────────────────────────────────────────────┐
 │ Juara 1                     [Simpan] [Preview]          │
@@ -286,6 +315,7 @@ Setiap kartu kompetisi yang sudah di-expand (WinnerManager terbuka) mendapatkan 
 ```
 
 #### UI — Overlay Position Picker
+
 - Gambar template ditampilkan full-preview di modal.
 - Admin klik pada posisi X,Y langsung di gambar (klik koordinat) untuk set posisi field.
 - Atau input manual angka X/Y.
@@ -306,6 +336,7 @@ Setiap kartu pemenang mendapatkan tombol tambahan:
 ```
 
 **Flow:**
+
 1. User klik "Cetak Sertifikat" pada juara tertentu.
 2. Sistem panggil `POST /api/certificates/generate-single`.
 3. Tunggu loading → dapatkan URL PDF.
@@ -320,6 +351,7 @@ Setiap kartu pemenang mendapatkan tombol tambahan:
 #### Perubahan di `app/dashboard/certificates/page.tsx`
 
 Setelah memilih kompetisi:
+
 - Tab baru: **"Auto Generate"** di samping view manual lama.
 - Di tab ini:
   - Preview template yang sudah disetting
@@ -381,16 +413,16 @@ User buka /announcements
 
 ## 5. Keamanan & Edge Cases
 
-| Kasus | Penanganan |
-|-------|-----------|
-| Template gambar belum diupload | API return 400, tombol "Cetak" disabled di frontend |
-| Text overlay belum dikonfigurasi | Warning di frontend, generate tetap jalan dengan nilai default |
-| User klik generate tapi bukan juara | Backend reject 403 |
-| User tim klik cetak | Generate untuk ketua + semua anggota, download zip atau link individual |
-| pdf-lib render gagal | Retry 1x, log error, fallback ke error message |
-| Template sudah pernah digenerate | Return URL existing, jangan generate ulang (cache) |
-| Competition belum punya template | Sembunyikan tombol "Cetak Sertifikat" |
-| File PDF terlalu besar | Validasi ukuran di service, max 5MB per PDF |
+| Kasus                               | Penanganan                                                              |
+| ----------------------------------- | ----------------------------------------------------------------------- |
+| Template gambar belum diupload      | API return 400, tombol "Cetak" disabled di frontend                     |
+| Text overlay belum dikonfigurasi    | Warning di frontend, generate tetap jalan dengan nilai default          |
+| User klik generate tapi bukan juara | Backend reject 403                                                      |
+| User tim klik cetak                 | Generate untuk ketua + semua anggota, download zip atau link individual |
+| pdf-lib render gagal                | Retry 1x, log error, fallback ke error message                          |
+| Template sudah pernah digenerate    | Return URL existing, jangan generate ulang (cache)                      |
+| Competition belum punya template    | Sembunyikan tombol "Cetak Sertifikat"                                   |
+| File PDF terlalu besar              | Validasi ukuran di service, max 5MB per PDF                             |
 
 ---
 
@@ -415,12 +447,12 @@ User buka /announcements
 
 Karena template berupa **gambar** (bukan HTML), opsi rendering berubah:
 
-| Pendekatan | Pros | Cons |
-|-----------|------|------|
-| `pdf-lib` (rekomendasi) | Pure JS, ringan, embed gambar + drawText langsung ke PDF | Font terbatas (harus register), text wrapping manual |
+| Pendekatan                | Pros                                                                                | Cons                                                       |
+| ------------------------- | ----------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| `pdf-lib` (rekomendasi)   | Pure JS, ringan, embed gambar + drawText langsung ke PDF                            | Font terbatas (harus register), text wrapping manual       |
 | `node-canvas` + `pdf-lib` | Text rendering fleksibel (font, warna, wrapping), compositing gambar+teks di canvas | Butuh native deps (cairo, pango) — ribet di Windows/Vercel |
-| `puppeteer` | CSS penuh, font Google Fonts, text wrapping otomatis | Berat (~300MB Chrome), overkill untuk gambar statis |
-| `sharp` + `pdfkit` | Ringan untuk image processing | sharp tidak punya text rendering; butuh canvas lagi |
+| `puppeteer`               | CSS penuh, font Google Fonts, text wrapping otomatis                                | Berat (~300MB Chrome), overkill untuk gambar statis        |
+| `sharp` + `pdfkit`        | Ringan untuk image processing                                                       | sharp tidak punya text rendering; butuh canvas lagi        |
 
 **Rekomendasi utama: `pdf-lib`** — karena gambar template sudah jadi desain Canva yang lengkap, kita hanya perlu embed ke PDF + draw teks overlay di posisi tetap. Pure JS, support semua platform, perfect untuk workflow ini.
 

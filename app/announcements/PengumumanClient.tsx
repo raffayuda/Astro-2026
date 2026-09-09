@@ -64,9 +64,7 @@ const SKELETON_COUNT = 6;
 
 export default function PengumumanClient() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<
-    CategoryType | "all"
-  >("all");
+  const [selectedCategory, setSelectedCategory] = useState<CategoryType | "all">("all");
   const [modalOpen, setModalOpen] = useState<string | null>(null);
   const [modalData, setModalData] = useState<{
     competition: CompetitionItem;
@@ -87,12 +85,9 @@ export default function PengumumanClient() {
     const q = searchQuery.toLowerCase().trim();
     return list
       .filter((c) => {
-        const matchCat =
-          selectedCategory === "all" || c.category === selectedCategory;
+        const matchCat = selectedCategory === "all" || c.category === selectedCategory;
         const matchQ =
-          !q ||
-          c.title.toLowerCase().includes(q) ||
-          c.tagline?.toLowerCase().includes(q);
+          !q || c.title.toLowerCase().includes(q) || c.tagline?.toLowerCase().includes(q);
         return matchCat && matchQ;
       })
       .sort((a, b) => {
@@ -150,11 +145,7 @@ export default function PengumumanClient() {
         </div>
         <div className="flex flex-wrap gap-1.5">
           {CATEGORIES.map((cat) => (
-            <button
-              key={cat.value}
-              type="button"
-              onClick={() => setSelectedCategory(cat.value)}
-            >
+            <button key={cat.value} type="button" onClick={() => setSelectedCategory(cat.value)}>
               <Pill tone={selectedCategory === cat.value ? "blue" : "glass"} size="sm">
                 {cat.label}
               </Pill>
@@ -178,11 +169,7 @@ export default function PengumumanClient() {
           {filtered.map((comp) => {
             const cat = CATEGORY_PILL[comp.category] ?? CATEGORY_PILL.akademik;
             const typeLabel =
-              comp.type === "both"
-                ? "Tim & individu"
-                : comp.type === "team"
-                  ? "Tim"
-                  : "Individu";
+              comp.type === "both" ? "Tim & individu" : comp.type === "team" ? "Tim" : "Individu";
 
             return (
               <WindowCard key={comp.id} title={comp.title} close={false} pad="compact">
@@ -198,10 +185,7 @@ export default function PengumumanClient() {
                   <p className="text-sm leading-relaxed text-ink/75">{comp.tagline}</p>
                 )}
                 {comp.hasWinners ? (
-                  <Button
-                    onClick={() => openModal(comp)}
-                    className="mt-auto w-full rounded-full"
-                  >
+                  <Button onClick={() => openModal(comp)} className="mt-auto w-full rounded-full">
                     <Eye data-icon="inline-start" />
                     Lihat juara
                   </Button>

@@ -12,21 +12,14 @@ import { normalizeImageUrl } from "@/components/ImportCommittee";
 import SkeletonImage from "@/components/SkeletonImage";
 import { SectionHeading } from "@/components/brand/SectionHeading";
 import { SectionShell } from "@/components/brand/SectionShell";
-import {
-  useCommitteeMembers,
-  useCommitteeDivisions,
-} from "@/src/lib/hooks/use-queries";
+import { useCommitteeMembers, useCommitteeDivisions } from "@/src/lib/hooks/use-queries";
 
 export default function CommitteeSection() {
   const reduce = useReducedMotion();
   const [activeDivision, setActiveDivision] = useState<string>("");
   const [hoveredId, setHoveredId] = useState<number | null>(null);
-  const [selectedMemberIndex, setSelectedMemberIndex] = useState<number | null>(
-    null,
-  );
-  const [loadedMemberId, setLoadedMemberId] = useState<number | string | null>(
-    null,
-  );
+  const [selectedMemberIndex, setSelectedMemberIndex] = useState<number | null>(null);
+  const [loadedMemberId, setLoadedMemberId] = useState<number | string | null>(null);
   const [isPaused, setIsPaused] = useState<boolean>(false);
   const [canScrollLeft, setCanScrollLeft] = useState<boolean>(false);
   const [canScrollRight, setCanScrollRight] = useState<boolean>(false);
@@ -78,19 +71,14 @@ export default function CommitteeSection() {
   }, [members, divList]);
 
   useEffect(() => {
-    if (divisions.length > 0 && !activeDivision)
-      setActiveDivision(divisions[0].slug);
+    if (divisions.length > 0 && !activeDivision) setActiveDivision(divisions[0].slug);
   }, [divisions, activeDivision]);
 
   const getRoleWeight = (role: string) => {
     if (!role) return 99;
     const r = role.toLowerCase();
     if (r.includes("sc") || r.includes("steering")) return 1;
-    if (
-      r.includes("po") ||
-      r.includes("project officer") ||
-      r.includes("ketua pelaksana")
-    )
+    if (r.includes("po") || r.includes("project officer") || r.includes("ketua pelaksana"))
       return 2;
     if (r.includes("wakil")) return 3;
     if (r.includes("sekretaris") || r.includes("sekre")) return 4;
@@ -106,8 +94,7 @@ export default function CommitteeSection() {
       .sort((a, b) => {
         const weightDiff = getRoleWeight(a.role) - getRoleWeight(b.role);
         if (weightDiff !== 0) return weightDiff;
-        if (a.sortOrder !== b.sortOrder)
-          return (a.sortOrder || 0) - (b.sortOrder || 0);
+        if (a.sortOrder !== b.sortOrder) return (a.sortOrder || 0) - (b.sortOrder || 0);
         return a.name.localeCompare(b.name);
       });
   }, [members, activeDivision]);
@@ -143,13 +130,7 @@ export default function CommitteeSection() {
 
   // Auto-scroll loop (pauses on hover or when modal is active)
   useEffect(() => {
-    if (
-      reduce ||
-      isPaused ||
-      selectedMemberIndex !== null ||
-      filteredMembers.length <= 3
-    )
-      return;
+    if (reduce || isPaused || selectedMemberIndex !== null || filteredMembers.length <= 3) return;
 
     const interval = setInterval(() => {
       const el = carouselRef.current;
@@ -205,11 +186,8 @@ export default function CommitteeSection() {
     setHoveredId((prev) => (prev === id ? null : id));
   }, []);
 
-  const viewerMember =
-    selectedMemberIndex !== null ? filteredMembers[selectedMemberIndex] : null;
-  const isMemberReady = viewerMember
-    ? loadedMemberId === viewerMember.id
-    : false;
+  const viewerMember = selectedMemberIndex !== null ? filteredMembers[selectedMemberIndex] : null;
+  const isMemberReady = viewerMember ? loadedMemberId === viewerMember.id : false;
 
   const handlePrevMember = () => {
     if (selectedMemberIndex === null || filteredMembers.length === 0) return;
@@ -252,7 +230,6 @@ export default function CommitteeSection() {
       />
 
       <div className="mt-10">
-
         {/* ── Filter Pills ── */}
         <div className="mb-8 flex flex-wrap justify-center gap-2">
           <ToggleGroup
@@ -276,9 +253,7 @@ export default function CommitteeSection() {
                 <span
                   className={cn(
                     "size-1.5 rounded-full",
-                    activeDivision === div.slug
-                      ? "bg-astro-cyan"
-                      : "bg-astro-cyan-2",
+                    activeDivision === div.slug ? "bg-astro-cyan" : "bg-astro-cyan-2",
                   )}
                 />
                 {div.shortDisplay}
@@ -416,9 +391,7 @@ export default function CommitteeSection() {
 
                           {(member.studyProgram || member.batch) && (
                             <p className="mt-1 text-10 font-semibold uppercase tracking-wider text-astro-cyan-2/90 drop-shadow-sm">
-                              {[member.studyProgram, member.batch]
-                                .filter(Boolean)
-                                .join(" ")}
+                              {[member.studyProgram, member.batch].filter(Boolean).join(" ")}
                             </p>
                           )}
 
@@ -452,8 +425,7 @@ export default function CommitteeSection() {
           <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/60 backdrop-blur-xl rounded-xl ring-1 ring-astro-cyan-2 shadow-sm">
             <Users className="w-4 h-4 text-astro-cyan" />
             <span className="text-xs font-bold text-ink">
-              {filteredMembers.length} Anggota —{" "}
-              {currentDivision?.name || activeDivision}
+              {filteredMembers.length} Anggota — {currentDivision?.name || activeDivision}
             </span>
           </div>
         </div>
@@ -491,9 +463,7 @@ export default function CommitteeSection() {
                 <div className="flex items-center gap-2">
                   {isMemberReady ? (
                     <Badge className="rounded-md bg-astro-cyan text-11 font-black uppercase tracking-wider text-astro-navy shadow-sm">
-                      {currentDivision?.shortDisplay ||
-                        currentDivision?.name ||
-                        activeDivision}
+                      {currentDivision?.shortDisplay || currentDivision?.name || activeDivision}
                     </Badge>
                   ) : (
                     <div className="h-5 w-28 rounded bg-astro-cyan-2/40 animate-pulse rounded-md" />
@@ -514,9 +484,7 @@ export default function CommitteeSection() {
               <div className="relative w-full aspect-[3/4] max-h-[46vh] sm:max-h-[50vh] overflow-hidden rounded-2xl border border-white/10 bg-astro-navy shadow-inner">
                 <SkeletonImage
                   key={viewerMember.id}
-                  src={
-                    normalizeImageUrl(viewerMember.image) || "/assets/users.png"
-                  }
+                  src={normalizeImageUrl(viewerMember.image) || "/assets/users.png"}
                   alt={viewerMember.name}
                   imgKey={viewerMember.id}
                   className="h-full w-full"
@@ -559,9 +527,7 @@ export default function CommitteeSection() {
                     </p>
                     {(viewerMember.studyProgram || viewerMember.batch) && (
                       <p className="mt-1 text-10 font-bold uppercase tracking-wider text-astro-cyan-2/90">
-                        {[viewerMember.studyProgram, viewerMember.batch]
-                          .filter(Boolean)
-                          .join(" ")}
+                        {[viewerMember.studyProgram, viewerMember.batch].filter(Boolean).join(" ")}
                       </p>
                     )}
                     {viewerMember.quote && (
@@ -570,8 +536,7 @@ export default function CommitteeSection() {
                       </p>
                     )}
                     <p className="mt-2 text-11 font-semibold text-ink">
-                      {selectedMemberIndex! + 1} dari {filteredMembers.length}{" "}
-                      anggota
+                      {selectedMemberIndex! + 1} dari {filteredMembers.length} anggota
                     </p>
                   </>
                 ) : (

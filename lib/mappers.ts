@@ -1,12 +1,7 @@
 import { isFlagOn, type FlagLike } from "@/lib/flags";
 import { toIsoString } from "@/lib/date";
 import { getEffectiveCompetitionFee } from "@/src/lib/competitions";
-import type {
-  Competition,
-  CompetitionCustomField,
-  JourneyCard,
-  TimelineItem,
-} from "@/types/astro";
+import type { Competition, CompetitionCustomField, JourneyCard, TimelineItem } from "@/types/astro";
 
 export type CompetitionSource = {
   id: string;

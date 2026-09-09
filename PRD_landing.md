@@ -1,17 +1,19 @@
 # Product Requirement Document (PRD) — Landing Page Focus
+
 ## Project: Astro Event Web Application (Next.js App Router Edition)
 
 ---
 
 ## 1. Goal & Context
 
-**Primary Goal:** Membangun landing page *single-page application* yang cepat, responsif, dan SEO-friendly untuk event **Astro**.
+**Primary Goal:** Membangun landing page _single-page application_ yang cepat, responsif, dan SEO-friendly untuk event **Astro**.
 **Tech Stack Baseline:**
-* **Framework:** Next.js (App Router, React 18/19, TypeScript)
-* **Styling:** Tailwind CSS v3/v4 + `clsx` / `tailwind-merge`
-* **Icons:** `lucide-react`
-* **Data Source:** Local JSON file (`src/data/astro-data.json`)
-* **Deployment Target:** Vercel / Netlify
+
+- **Framework:** Next.js (App Router, React 18/19, TypeScript)
+- **Styling:** Tailwind CSS v3/v4 + `clsx` / `tailwind-merge`
+- **Icons:** `lucide-react`
+- **Data Source:** Local JSON file (`src/data/astro-data.json`)
+- **Deployment Target:** Vercel / Netlify
 
 ---
 
@@ -132,3 +134,4 @@ Di app/page.tsx, import langsung data JSON dari @/data/astro-data.json secara sy
 ---
 
 <FollowUp label="Mau saya buatkan file setup awal (app/page.tsx & types/astro.ts) agar siap di-copy?" query="Tolong buatkan file app/page.tsx dan src/types/astro.ts untuk Next.js App Router berdasarkan PRD terbaru di atas."/>
+```

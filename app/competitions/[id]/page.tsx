@@ -5,15 +5,7 @@ import { useParams, notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, useReducedMotion } from "motion/react";
-import {
-  ArrowLeft,
-  Award,
-  FileText,
-  MapPin,
-  MessageCircle,
-  Sparkles,
-  Users,
-} from "lucide-react";
+import { ArrowLeft, Award, FileText, MapPin, MessageCircle, Sparkles, Users } from "lucide-react";
 
 import {
   BenefitCard,
@@ -176,7 +168,10 @@ export default function CompetitionDetailPage() {
               </Link>
             </motion.div>
 
-            <motion.div variants={stage} className="mt-5 flex flex-wrap items-center justify-center gap-2 lg:justify-start">
+            <motion.div
+              variants={stage}
+              className="mt-5 flex flex-wrap items-center justify-center gap-2 lg:justify-start"
+            >
               <Pill tone={category.tone} size="sm" className="shadow-gloss">
                 {category.label}
               </Pill>

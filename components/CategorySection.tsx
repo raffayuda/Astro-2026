@@ -78,14 +78,15 @@ export default function CategorySection({ competitions }: Props) {
                 <Link href="#competitions" className="group flex h-full flex-col gap-4">
                   <span
                     aria-hidden
-                    className={cn("grid size-11 place-items-center rounded-xl text-white", cat.face)}
+                    className={cn(
+                      "grid size-11 place-items-center rounded-xl text-white",
+                      cat.face,
+                    )}
                   >
                     <cat.icon className="size-5" />
                   </span>
 
-                  <p className="text-sm font-medium leading-relaxed text-ink/75">
-                    {cat.blurb}
-                  </p>
+                  <p className="text-sm font-medium leading-relaxed text-ink/75">{cat.blurb}</p>
 
                   <span className="mt-auto flex items-center justify-between gap-2 border-t border-astro-cyan-2/35 pt-3 text-sm font-bold text-astro-blue">
                     {total} lomba

@@ -225,19 +225,32 @@
    Keyframes
    ═══════════════════════════════════════════════════════════════════ */
 @keyframes shimmer {
-  0% { background-position: -200% center; }
-  100% { background-position: 200% center; }
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
 }
 
 /* Transform-only so hero text paints immediately (LCP-friendly) */
 @keyframes hero-rise {
-  from { transform: translateY(24px); }
-  to { transform: translateY(0); }
+  from {
+    transform: translateY(24px);
+  }
+  to {
+    transform: translateY(0);
+  }
 }
 
 @keyframes bubble-drift {
-  0%, 100% { transform: translateY(0) scale(1); }
-  50% { transform: translateY(-18px) scale(1.04); }
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-18px) scale(1.04);
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -270,10 +283,20 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: #e8f6fe; }
-::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 999px; border: 2px solid #e8f6fe; }
-::-webkit-scrollbar-thumb:hover { background: #1e3a8a; }
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #e8f6fe;
+}
+::-webkit-scrollbar-thumb {
+  background: #3b82f6;
+  border-radius: 999px;
+  border: 2px solid #e8f6fe;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #1e3a8a;
+}
 
 ::selection {
   background-color: rgba(250, 204, 21, 0.6);

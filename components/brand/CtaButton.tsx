@@ -1,14 +1,14 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import Link from "next/link"
-import { ChevronRight } from "lucide-react"
+import * as React from "react";
+import Link from "next/link";
+import { ChevronRight } from "lucide-react";
 
-import { cn } from "@/lib/utils"
-import { Button, type buttonVariants } from "@/components/ui/button"
-import type { VariantProps } from "class-variance-authority"
+import { cn } from "@/lib/utils";
+import { Button, type buttonVariants } from "@/components/ui/button";
+import type { VariantProps } from "class-variance-authority";
 
-type Tone = NonNullable<VariantProps<typeof buttonVariants>["variant"]>
+type Tone = NonNullable<VariantProps<typeof buttonVariants>["variant"]>;
 
 /**
  * Primary call-to-action — "DAFTAR SEGERA >" from the component style guide.
@@ -26,12 +26,12 @@ export function CtaButton({
   className,
   ...props
 }: {
-  children: React.ReactNode
-  href?: string
-  tone?: Tone
-  size?: "default" | "lg" | "xl"
-  showChevron?: boolean
-  className?: string
+  children: React.ReactNode;
+  href?: string;
+  tone?: Tone;
+  size?: "default" | "lg" | "xl";
+  showChevron?: boolean;
+  className?: string;
 } & Omit<React.ComponentProps<"button">, "children" | "className">) {
   const content = (
     <>
@@ -45,12 +45,12 @@ export function CtaButton({
         </span>
       )}
     </>
-  )
+  );
 
   const classes = cn(
     "ring-3 ring-white/70 shadow-gloss transition-transform duration-200 hover:-translate-y-0.5 active:scale-[0.97]",
     className,
-  )
+  );
 
   if (href) {
     return (
@@ -59,18 +59,12 @@ export function CtaButton({
           {content}
         </Link>
       </Button>
-    )
+    );
   }
 
   return (
-    <Button
-      variant={tone}
-      size={size}
-      className={classes}
-      data-icon="inline-end"
-      {...props}
-    >
+    <Button variant={tone} size={size} className={classes} data-icon="inline-end" {...props}>
       {content}
     </Button>
-  )
+  );
 }

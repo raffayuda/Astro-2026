@@ -1,15 +1,9 @@
-import * as React from "react"
+import * as React from "react";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 /** Short gradient rule used under section headings. */
-export function AccentLine({
-  wide = false,
-  className,
-}: {
-  wide?: boolean
-  className?: string
-}) {
+export function AccentLine({ wide = false, className }: { wide?: boolean; className?: string }) {
   return (
     <span
       aria-hidden
@@ -17,8 +11,8 @@ export function AccentLine({
       className={cn(
         "block rounded-full bg-linear-to-r from-astro-gold via-astro-lime2 to-astro-blue",
         wide ? "h-1.5 w-35" : "h-1.5 w-18",
-        className
+        className,
       )}
     />
-  )
+  );
 }

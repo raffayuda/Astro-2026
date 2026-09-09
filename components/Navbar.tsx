@@ -3,14 +3,7 @@
 import { useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useMotionValueEvent, useScroll } from "motion/react";
-import {
-  LogIn,
-  ChevronDown,
-  LogOut,
-  LayoutDashboard,
-  Menu,
-  Search,
-} from "lucide-react";
+import { LogIn, ChevronDown, LogOut, LayoutDashboard, Menu, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -123,10 +116,7 @@ export default function Navbar() {
           <BrandLock size="md" tone="plain" />
         </button>
 
-        <nav
-          className="hidden items-center justify-center gap-7 lg:flex"
-          aria-label="Utama"
-        >
+        <nav className="hidden items-center justify-center gap-7 lg:flex" aria-label="Utama">
           {sectionLinks.map((link) => (
             <NavLink
               key={link.label}
@@ -150,9 +140,7 @@ export default function Navbar() {
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-44">
-                <DropdownMenuItem
-                  onClick={() => router.push("/check-registration")}
-                >
+                <DropdownMenuItem onClick={() => router.push("/check-registration")}>
                   <Search /> Cek pendaftaran
                 </DropdownMenuItem>
                 {userRole === "admin" && (
@@ -199,16 +187,11 @@ export default function Navbar() {
                 <Menu />
               </Button>
             </SheetTrigger>
-            <SheetContent
-              side="right"
-              className="flex h-full w-80 flex-col bg-white p-0"
-            >
+            <SheetContent side="right" className="flex h-full w-80 flex-col bg-white p-0">
               <SheetHeader className="border-b border-sky-mid/60 p-5">
                 <BrandLock size="sm" />
                 <SheetTitle className="sr-only">ASTRO 2026</SheetTitle>
-                <SheetDescription className="sr-only">
-                  Menu navigasi ASTRO 2026
-                </SheetDescription>
+                <SheetDescription className="sr-only">Menu navigasi ASTRO 2026</SheetDescription>
               </SheetHeader>
 
               <div className="flex flex-col gap-1 p-4">

@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 /** Shared pagination query schema: ?page (1-based) & pageSize (default 20, max 1000). */
 export const paginationSchema = z.object({

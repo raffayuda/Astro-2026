@@ -321,9 +321,8 @@ function FormFields({
         </ToggleGroup>
         {form.playerPhotoRequired && (
           <p className="mt-1.5 text-10 text-muted-foreground">
-            Setiap pemain (ketua + anggota) wajib mengisi ID akun game dan
-            mengunggah foto saat mendaftar. Pakai untuk lomba esports seperti
-            Mobile Legends.
+            Setiap pemain (ketua + anggota) wajib mengisi ID akun game dan mengunggah foto saat
+            mendaftar. Pakai untuk lomba esports seperti Mobile Legends.
           </p>
         )}
       </Field>

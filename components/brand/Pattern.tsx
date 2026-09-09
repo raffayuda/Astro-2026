@@ -1,6 +1,6 @@
-import * as React from "react"
+import * as React from "react";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 /**
  * Dotted + diagonal-stripe texture overlay.
@@ -24,5 +24,5 @@ export function Pattern({ className }: { className?: string }) {
         backgroundSize: "2.8rem 2.8rem, 4rem 4rem, 4rem 4rem",
       }}
     />
-  )
+  );
 }

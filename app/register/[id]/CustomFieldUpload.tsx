@@ -75,9 +75,7 @@ export default function CustomFieldUpload({
     <Field data-invalid={!!error}>
       <FieldLabel required={required}>{label}</FieldLabel>
       {description && (
-        <p className="text-11 font-normal text-muted-foreground -mt-1">
-          {description}
-        </p>
+        <p className="text-11 font-normal text-muted-foreground -mt-1">{description}</p>
       )}
       <div
         onDragOver={handleDragOver}
@@ -92,7 +90,7 @@ export default function CustomFieldUpload({
             : value
               ? "border-border/80 bg-muted/20 hover:border-primary/50 hover:bg-muted/40"
               : "border-border hover:border-primary/60 hover:bg-muted/30 bg-muted/10",
-          uploading && "opacity-60 pointer-events-none"
+          uploading && "opacity-60 pointer-events-none",
         )}
       >
         <input
@@ -105,18 +103,9 @@ export default function CustomFieldUpload({
         />
 
         {value ? (
-          <div
-            className="flex items-center gap-3 w-full"
-            onClick={(e) => e.stopPropagation()}
-          >
+          <div className="flex items-center gap-3 w-full" onClick={(e) => e.stopPropagation()}>
             <span className="relative size-14 shrink-0 overflow-hidden rounded-md border border-border bg-muted">
-              <Image
-                src={value}
-                alt={label}
-                fill
-                sizes="56px"
-                className="object-cover"
-              />
+              <Image src={value} alt={label} fill sizes="56px" className="object-cover" />
             </span>
             <div className="flex-1 text-left min-w-0">
               <p className="text-xs font-bold text-foreground truncate">
@@ -170,14 +159,10 @@ export default function CustomFieldUpload({
                 "flex size-10 items-center justify-center rounded-full transition-colors",
                 isDragging
                   ? "bg-primary text-primary-foreground animate-bounce"
-                  : "bg-muted text-muted-foreground group-hover:text-primary group-hover:bg-primary/10"
+                  : "bg-muted text-muted-foreground group-hover:text-primary group-hover:bg-primary/10",
               )}
             >
-              {uploading ? (
-                <Spinner className="size-5" />
-              ) : (
-                <UploadCloud className="size-5" />
-              )}
+              {uploading ? <Spinner className="size-5" /> : <UploadCloud className="size-5" />}
             </div>
             <div>
               <p className="text-xs font-semibold text-foreground">

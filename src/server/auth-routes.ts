@@ -1,8 +1,8 @@
-import { Elysia, status } from 'elysia';
-import { db } from '@/src/db';
-import { users, authVerifications } from '@/src/db/schema';
-import { eq, or, like, desc } from 'drizzle-orm';
-import { z } from 'zod';
+import { Elysia, status } from "elysia";
+import { db } from "@/src/db";
+import { users, authVerifications } from "@/src/db/schema";
+import { eq, or, like, desc } from "drizzle-orm";
+import { z } from "zod";
 
 const checkEmailSchema = z.object({
   email: z.string().email(),
@@ -20,11 +20,12 @@ const checkEmailSchema = z.object({
  * Returns email availability, verification status, and whether an active
  * unexpired OTP exists for this email.
  */
-export const authRoutes = new Elysia({ prefix: '/auth' })
-  .post('/check-email', async ({ body }) => {
+export const authRoutes = new Elysia({ prefix: "/auth" }).post(
+  "/check-email",
+  async ({ body }) => {
     const parsed = checkEmailSchema.safeParse(body);
     if (!parsed.success) {
-      return status(400, { available: false, error: 'Email tidak valid' });
+      return status(400, { available: false, error: "Email tidak valid" });
     }
 
     const email = parsed.data.email.toLowerCase();
@@ -62,6 +63,8 @@ export const authRoutes = new Elysia({ prefix: '/auth' })
       hasActiveOtp,
       otpExpiresAt,
     };
-  }, {
+  },
+  {
     body: checkEmailSchema,
-  });
+  },
+);

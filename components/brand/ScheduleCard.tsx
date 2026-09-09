@@ -54,10 +54,7 @@ export function ScheduleCard({
       className={cn("relative flex gap-3 py-2.5 first:pt-0 last:pb-0", className)}
     >
       {!isLast && (
-        <span
-          aria-hidden
-          className="absolute top-3 bottom-0 left-[11px] w-px bg-astro-cyan-2/55"
-        />
+        <span aria-hidden className="absolute top-3 bottom-0 left-[11px] w-px bg-astro-cyan-2/55" />
       )}
 
       <span
@@ -81,9 +78,7 @@ export function ScheduleCard({
           <span className="sr-only">{s.label}</span>
         </div>
         <p className={cn("text-xs font-semibold", s.date)}>{dateLabel}</p>
-        {detail && (
-          <p className="mt-0.5 text-sm leading-relaxed text-ink/70">{detail}</p>
-        )}
+        {detail && <p className="mt-0.5 text-sm leading-relaxed text-ink/70">{detail}</p>}
       </div>
     </article>
   );

@@ -92,10 +92,14 @@ export default function PlayerPhotoField({
           <Image src={value} alt={label} fill sizes="56px" className="object-cover" />
         </span>
       ) : (
-        <span className={cn(
-          "flex size-14 shrink-0 items-center justify-center rounded-md border border-dashed transition-colors",
-          isDragging ? "border-primary bg-primary/20 text-primary" : "border-border bg-muted/40 text-muted-foreground"
-        )}>
+        <span
+          className={cn(
+            "flex size-14 shrink-0 items-center justify-center rounded-md border border-dashed transition-colors",
+            isDragging
+              ? "border-primary bg-primary/20 text-primary"
+              : "border-border bg-muted/40 text-muted-foreground",
+          )}
+        >
           {uploading ? <Spinner className="size-5" /> : <ImageUp className="size-5" />}
         </span>
       )}
@@ -148,7 +152,7 @@ export default function PlayerPhotoField({
           onDrop={handleDrop}
           className={cn(
             "rounded-lg border border-transparent p-1 transition-all",
-            isDragging && "border-dashed border-primary bg-primary/10"
+            isDragging && "border-dashed border-primary bg-primary/10",
           )}
         >
           {picker}
@@ -174,7 +178,7 @@ export default function PlayerPhotoField({
             : value
               ? "border-border/80 bg-muted/20 hover:border-primary/50 hover:bg-muted/40"
               : "border-border hover:border-primary/60 hover:bg-muted/30 bg-muted/10",
-          uploading && "opacity-60 pointer-events-none"
+          uploading && "opacity-60 pointer-events-none",
         )}
       >
         <input
@@ -235,7 +239,7 @@ export default function PlayerPhotoField({
                 "flex size-10 items-center justify-center rounded-full transition-colors",
                 isDragging
                   ? "bg-primary text-primary-foreground animate-bounce"
-                  : "bg-muted text-muted-foreground group-hover:text-primary group-hover:bg-primary/10"
+                  : "bg-muted text-muted-foreground group-hover:text-primary group-hover:bg-primary/10",
               )}
             >
               {uploading ? <Spinner className="size-5" /> : <UploadCloud className="size-5" />}

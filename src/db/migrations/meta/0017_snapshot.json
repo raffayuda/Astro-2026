@@ -111,12 +111,8 @@
           "name": "accounts_user_id_users_id_fk",
           "tableFrom": "accounts",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -126,10 +122,7 @@
         "accounts_provider_account_unique": {
           "name": "accounts_provider_account_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "provider_id",
-            "account_id"
-          ]
+          "columns": ["provider_id", "account_id"]
         }
       },
       "policies": {},
@@ -219,12 +212,8 @@
           "name": "sessions_user_id_users_id_fk",
           "tableFrom": "sessions",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -234,9 +223,7 @@
         "sessions_token_unique": {
           "name": "sessions_token_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "token"
-          ]
+          "columns": ["token"]
         }
       },
       "policies": {},
@@ -383,9 +370,7 @@
         "committee_divisions_slug_unique": {
           "name": "committee_divisions_slug_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "slug"
-          ]
+          "columns": ["slug"]
         }
       },
       "policies": {},
@@ -506,12 +491,8 @@
           "name": "committee_members_division_committee_divisions_slug_fk",
           "tableFrom": "committee_members",
           "tableTo": "committee_divisions",
-          "columnsFrom": [
-            "division"
-          ],
-          "columnsTo": [
-            "slug"
-          ],
+          "columnsFrom": ["division"],
+          "columnsTo": ["slug"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -593,12 +574,8 @@
           "name": "competition_timeline_competition_id_competitions_id_fk",
           "tableFrom": "competition_timeline",
           "tableTo": "competitions",
-          "columnsFrom": [
-            "competition_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["competition_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -824,12 +801,8 @@
           "name": "competitions_category_categories_id_fk",
           "tableFrom": "competitions",
           "tableTo": "categories",
-          "columnsFrom": [
-            "category"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["category"],
+          "columnsTo": ["id"],
           "onDelete": "restrict",
           "onUpdate": "no action"
         }
@@ -915,16 +888,12 @@
         "gallery_categories_name_unique": {
           "name": "gallery_categories_name_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "name"
-          ]
+          "columns": ["name"]
         },
         "gallery_categories_slug_unique": {
           "name": "gallery_categories_slug_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "slug"
-          ]
+          "columns": ["slug"]
         }
       },
       "policies": {},
@@ -1009,12 +978,8 @@
           "name": "gallery_photos_category_gallery_categories_slug_fk",
           "tableFrom": "gallery_photos",
           "tableTo": "gallery_categories",
-          "columnsFrom": [
-            "category"
-          ],
-          "columnsTo": [
-            "slug"
-          ],
+          "columnsFrom": ["category"],
+          "columnsTo": ["slug"],
           "onDelete": "restrict",
           "onUpdate": "no action"
         }
@@ -1090,12 +1055,8 @@
           "name": "journey_photos_journey_id_journeys_id_fk",
           "tableFrom": "journey_photos",
           "tableTo": "journeys",
-          "columnsFrom": [
-            "journey_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["journey_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1429,12 +1390,8 @@
           "name": "registrations_competition_id_competitions_id_fk",
           "tableFrom": "registrations",
           "tableTo": "competitions",
-          "columnsFrom": [
-            "competition_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["competition_id"],
+          "columnsTo": ["id"],
           "onDelete": "restrict",
           "onUpdate": "no action"
         },
@@ -1442,12 +1399,8 @@
           "name": "registrations_user_id_users_id_fk",
           "tableFrom": "registrations",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -1600,9 +1553,7 @@
         "users_email_unique": {
           "name": "users_email_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
+          "columns": ["email"]
         }
       },
       "policies": {},

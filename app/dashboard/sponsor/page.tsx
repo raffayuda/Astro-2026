@@ -44,17 +44,8 @@ import {
 import { Spinner } from "@/components/ui/spinner";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  EmptyState,
-  ImageUploadField,
-  PageHeader,
-  SectionCard,
-} from "@/components/dashboard";
-import {
-  useMediaPartners,
-  useSponsors,
-  queryKeys,
-} from "@/src/lib/hooks/use-queries";
+import { EmptyState, ImageUploadField, PageHeader, SectionCard } from "@/components/dashboard";
+import { useMediaPartners, useSponsors, queryKeys } from "@/src/lib/hooks/use-queries";
 import { apiHelpers } from "@/src/lib/api";
 import { cn } from "@/lib/utils";
 
@@ -141,10 +132,7 @@ export default function SponsorPage() {
         description="Kelola brand pendukung ASTRO 2026 dan portofolio periode lalu."
       />
 
-      <Tabs
-        value={tab}
-        onValueChange={(value) => setTab(value as "sponsor" | "media-partner")}
-      >
+      <Tabs value={tab} onValueChange={(value) => setTab(value as "sponsor" | "media-partner")}>
         <TabsList className="rounded-lg border border-border bg-muted/50 p-1">
           <TabsTrigger value="sponsor" className="rounded-md gap-2">
             <Star className="size-3.5" /> Sponsor ({sponsors.length})
@@ -220,8 +208,7 @@ function PartnerManager({
       closeForm();
       onMutated();
     },
-    onError: (err: Error) =>
-      toast.error(err.message || `Gagal menyimpan ${label}`),
+    onError: (err: Error) => toast.error(err.message || `Gagal menyimpan ${label}`),
   });
 
   const deleteMutation = useMutation({
@@ -231,8 +218,7 @@ function PartnerManager({
       setDeleteTarget(null);
       onMutated();
     },
-    onError: (err: Error) =>
-      toast.error(err.message || `Gagal menghapus ${label}`),
+    onError: (err: Error) => toast.error(err.message || `Gagal menghapus ${label}`),
   });
 
   const reorderMutation = useMutation({
@@ -357,10 +343,7 @@ function PartnerManager({
       </div>
 
       {showForm ? (
-        <SectionCard
-          title={`${editingId ? "Edit" : "Tambah"} ${label}`}
-          bodyClassName="space-y-4"
-        >
+        <SectionCard title={`${editingId ? "Edit" : "Tambah"} ${label}`} bodyClassName="space-y-4">
           <FieldGroup className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <Field>
               <FieldLabel>
@@ -378,9 +361,7 @@ function PartnerManager({
             <Field>
               <FieldLabel>
                 Website{" "}
-                <span className="font-normal normal-case text-muted-foreground">
-                  (opsional)
-                </span>
+                <span className="font-normal normal-case text-muted-foreground">(opsional)</span>
               </FieldLabel>
               <Input
                 value={form.website}
@@ -432,17 +413,14 @@ function PartnerManager({
                     {label} ASTRO 2026
                   </Label>
                   <p className="text-11 text-muted-foreground">
-                    Aktifkan jika brand ini mendukung ASTRO 2026 yang sedang
-                    berlangsung. Matikan untuk menyimpannya sebagai portofolio
-                    periode lalu.
+                    Aktifkan jika brand ini mendukung ASTRO 2026 yang sedang berlangsung. Matikan
+                    untuk menyimpannya sebagai portofolio periode lalu.
                   </p>
                 </div>
                 <Switch
                   id={`is-current-${label}`}
                   checked={form.isCurrent}
-                  onCheckedChange={(checked) =>
-                    setForm({ ...form, isCurrent: checked })
-                  }
+                  onCheckedChange={(checked) => setForm({ ...form, isCurrent: checked })}
                 />
               </div>
             </Field>
@@ -507,14 +485,9 @@ function PartnerManager({
                     {item.name || "(tanpa nama)"}
                   </span>
                   {item.isCurrent ? (
-                    <Badge className={cn("text-10 font-bold", accent.badge)}>
-                      ASTRO 2026
-                    </Badge>
+                    <Badge className={cn("text-10 font-bold", accent.badge)}>ASTRO 2026</Badge>
                   ) : (
-                    <Badge
-                      variant="outline"
-                      className="text-10 font-medium text-muted-foreground"
-                    >
+                    <Badge variant="outline" className="text-10 font-medium text-muted-foreground">
                       Periode Lalu
                     </Badge>
                   )}
@@ -529,19 +502,11 @@ function PartnerManager({
                     variant="ghost"
                     size="icon-sm"
                     onClick={() => toggleCurrent(item)}
-                    title={
-                      item.isCurrent
-                        ? "Ubah ke periode lalu"
-                        : `Jadikan ${label} ASTRO 2026`
-                    }
+                    title={item.isCurrent ? "Ubah ke periode lalu" : `Jadikan ${label} ASTRO 2026`}
                     aria-label={
-                      item.isCurrent
-                        ? "Ubah ke periode lalu"
-                        : `Jadikan ${label} ASTRO 2026`
+                      item.isCurrent ? "Ubah ke periode lalu" : `Jadikan ${label} ASTRO 2026`
                     }
-                    className={
-                      item.isCurrent ? accent.toggleOn : accent.toggleOff
-                    }
+                    className={item.isCurrent ? accent.toggleOn : accent.toggleOff}
                   >
                     <Sparkles className="size-3.5" />
                   </Button>
@@ -600,8 +565,7 @@ function PartnerManager({
               Urutkan {label}
             </DialogTitle>
             <DialogDescription className="text-xs">
-              Geser item di bawah ini untuk mengatur urutan tampil di halaman
-              publik.
+              Geser item di bawah ini untuk mengatur urutan tampil di halaman publik.
             </DialogDescription>
           </DialogHeader>
 
@@ -629,9 +593,7 @@ function PartnerManager({
                       className="size-6 object-contain"
                     />
                   ) : null}
-                  <span className="truncate text-sm font-bold">
-                    {item.name || "(tanpa nama)"}
-                  </span>
+                  <span className="truncate text-sm font-bold">{item.name || "(tanpa nama)"}</span>
                 </Reorder.Item>
               ))}
             </Reorder.Group>
@@ -646,9 +608,7 @@ function PartnerManager({
               Batal
             </Button>
             <Button
-              onClick={() =>
-                reorderMutation.mutate((reorderList ?? []).map((item) => item.id))
-              }
+              onClick={() => reorderMutation.mutate((reorderList ?? []).map((item) => item.id))}
               disabled={reorderMutation.isPending}
               className="gap-2 text-xs font-bold uppercase tracking-wider"
             >

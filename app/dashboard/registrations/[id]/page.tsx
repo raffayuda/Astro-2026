@@ -1,7 +1,7 @@
-import { db } from '@/src/db';
-import { registrations, competitions } from '@/src/db/schema';
-import { eq } from 'drizzle-orm';
-import { notFound } from 'next/navigation';
+import { db } from "@/src/db";
+import { registrations, competitions } from "@/src/db/schema";
+import { eq } from "drizzle-orm";
+import { notFound } from "next/navigation";
 import {
   ArrowLeft,
   Building2,
@@ -17,29 +17,38 @@ import {
   User,
   XCircle,
   type LucideIcon,
-} from 'lucide-react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { DetailItem, SectionCard } from '@/components/dashboard';
-import { asStringRecord } from '@/lib/flags';
-import { isSafeUrl, safeHref } from '@/lib/urls';
-import { cn } from '@/lib/utils';
-import PaymentStatusUpdate from './PaymentStatusUpdate';
-import RegistrationDetailActions from './RegistrationDetailActions';
+} from "lucide-react";
+import Link from "next/link";
+import Image from "next/image";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { DetailItem, SectionCard } from "@/components/dashboard";
+import { asStringRecord } from "@/lib/flags";
+import { isSafeUrl, safeHref } from "@/lib/urls";
+import { cn } from "@/lib/utils";
+import PaymentStatusUpdate from "./PaymentStatusUpdate";
+import RegistrationDetailActions from "./RegistrationDetailActions";
 
-const statusConfig: Record<
-  string,
-  { label: string; color: string; icon: LucideIcon }
-> = {
-  pending: { label: 'Pending', color: 'bg-amber-50 text-amber-700 border-amber-200', icon: XCircle },
-  detecting: { label: 'Detecting', color: 'bg-sky-bottom text-astro-navy border-astro-cyan-2', icon: XCircle },
-  paid: { label: 'Lunas', color: 'bg-emerald-50 text-emerald-700 border-emerald-200', icon: CheckCircle2 },
-  failed: { label: 'Gagal', color: 'bg-red-50 text-red-700 border-red-200', icon: XCircle },
+const statusConfig: Record<string, { label: string; color: string; icon: LucideIcon }> = {
+  pending: {
+    label: "Pending",
+    color: "bg-amber-50 text-amber-700 border-amber-200",
+    icon: XCircle,
+  },
+  detecting: {
+    label: "Detecting",
+    color: "bg-sky-bottom text-astro-navy border-astro-cyan-2",
+    icon: XCircle,
+  },
+  paid: {
+    label: "Lunas",
+    color: "bg-emerald-50 text-emerald-700 border-emerald-200",
+    icon: CheckCircle2,
+  },
+  failed: { label: "Gagal", color: "bg-red-50 text-red-700 border-red-200", icon: XCircle },
 };
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export default async function RegistrationDetailPage({
   params,
@@ -116,7 +125,7 @@ export default async function RegistrationDetailPage({
           <Badge
             variant="outline"
             className={cn(
-              'gap-1.5 rounded-md border text-10 font-bold uppercase tracking-wider',
+              "gap-1.5 rounded-md border text-10 font-bold uppercase tracking-wider",
               status.color,
             )}
           >
@@ -135,7 +144,7 @@ export default async function RegistrationDetailPage({
               fullName: reg.fullName,
               teamName: reg.teamName,
               leaderName: reg.leaderName,
-              institution: reg.institution || '—',
+              institution: reg.institution || "—",
               email: reg.email,
               whatsapp: reg.whatsapp,
               members: reg.members,
@@ -153,19 +162,17 @@ export default async function RegistrationDetailPage({
         <div className="space-y-6 lg:col-span-2">
           <SectionCard
             icon={<User className="size-4 text-primary" />}
-            title={reg.type === 'team' ? 'Data Tim' : 'Data Peserta'}
+            title={reg.type === "team" ? "Data Tim" : "Data Peserta"}
           >
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              {reg.type === 'team' ? (
+              {reg.type === "team" ? (
                 <>
                   <DetailItem label="Nama Tim">{reg.teamName}</DetailItem>
                   <DetailItem label="Ketua Tim">{reg.leaderName}</DetailItem>
                   <DetailItem label="Identitas Ketua">{reg.leaderIdentity}</DetailItem>
                   {reg.leaderGameId && (
                     <DetailItem label="ID Akun Ketua">
-                      <code className="font-mono text-xs font-bold">
-                        {reg.leaderGameId}
-                      </code>
+                      <code className="font-mono text-xs font-bold">{reg.leaderGameId}</code>
                     </DetailItem>
                   )}
                   {isSafeUrl(reg.leaderPhotoUrl) && (
@@ -178,7 +185,7 @@ export default async function RegistrationDetailPage({
                       >
                         <Image
                           src={reg.leaderPhotoUrl}
-                          alt={reg.leaderName || 'Foto ketua'}
+                          alt={reg.leaderName || "Foto ketua"}
                           width={80}
                           height={80}
                           className="size-20 object-cover"
@@ -192,11 +199,7 @@ export default async function RegistrationDetailPage({
                         {reg.memberDetails.map((m, i) => (
                           <div key={`${m.name}-${i}`} className="w-20">
                             {isSafeUrl(m.photoUrl) ? (
-                              <a
-                                href={safeHref(m.photoUrl)}
-                                target="_blank"
-                                rel="noreferrer"
-                              >
+                              <a href={safeHref(m.photoUrl)} target="_blank" rel="noreferrer">
                                 <Image
                                   src={m.photoUrl}
                                   alt={m.name}
@@ -234,17 +237,12 @@ export default async function RegistrationDetailPage({
                   <DetailItem label="Nomor Identitas">{reg.identityNumber}</DetailItem>
                   {reg.leaderGameId && (
                     <DetailItem label="ID Akun Pemain">
-                      <code className="font-mono text-xs font-bold">
-                        {reg.leaderGameId}
-                      </code>
+                      <code className="font-mono text-xs font-bold">{reg.leaderGameId}</code>
                     </DetailItem>
                   )}
                 </>
               )}
-              <DetailItem
-                label="Sekolah / Instansi"
-                icon={<Building2 className="size-3" />}
-              >
+              <DetailItem label="Sekolah / Instansi" icon={<Building2 className="size-3" />}>
                 {reg.institution}
               </DetailItem>
             </div>
@@ -257,15 +255,14 @@ export default async function RegistrationDetailPage({
             >
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 {Object.entries(customFields).map(([key, val]) => {
-                  const label =
-                    customFieldDefs.find((f) => f.id === key)?.label || key;
+                  const label = customFieldDefs.find((f) => f.id === key)?.label || key;
                   // Only a safe http(s) target is treated as a viewable file.
                   const isImg = isSafeUrl(val);
 
                   if (!isImg) {
                     return (
                       <DetailItem key={key} label={label}>
-                        <span className="whitespace-pre-line">{val || '-'}</span>
+                        <span className="whitespace-pre-line">{val || "-"}</span>
                       </DetailItem>
                     );
                   }
@@ -328,25 +325,25 @@ export default async function RegistrationDetailPage({
                   className="gap-1 border-astro-cyan-2 bg-sky-bottom text-9 font-bold uppercase tracking-wider text-astro-navy"
                 >
                   <Globe className="size-2.5" />
-                  {reg.competitionOrigin === 'external' ? 'Eksternal' : 'Internal'}
+                  {reg.competitionOrigin === "external" ? "Eksternal" : "Internal"}
                 </Badge>
                 <Badge
                   variant="outline"
                   className={cn(
-                    'text-9 font-bold uppercase tracking-wider',
-                    reg.competitionIsFree === '1'
-                      ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
-                      : 'border-amber-200 bg-amber-50 text-amber-700',
+                    "text-9 font-bold uppercase tracking-wider",
+                    reg.competitionIsFree === "1"
+                      ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+                      : "border-amber-200 bg-amber-50 text-amber-700",
                   )}
                 >
-                  {reg.competitionIsFree === '1' ? 'Gratis' : 'Berbayar'}
+                  {reg.competitionIsFree === "1" ? "Gratis" : "Berbayar"}
                 </Badge>
               </div>
               {reg.competitionFee > 0 && (
                 <div className="border-t border-border pt-3">
                   <DetailItem label="Biaya">
                     <span className="font-bold">
-                      Rp {reg.competitionFee.toLocaleString('id-ID')}
+                      Rp {reg.competitionFee.toLocaleString("id-ID")}
                     </span>
                   </DetailItem>
                 </div>
@@ -360,34 +357,29 @@ export default async function RegistrationDetailPage({
             bodyClassName="space-y-4"
           >
             <DetailItem label="Referensi">
-              <code className="font-mono text-xs font-bold">
-                {reg.paymentReference || '—'}
-              </code>
+              <code className="font-mono text-xs font-bold">{reg.paymentReference || "—"}</code>
             </DetailItem>
             <DetailItem label="Jumlah">
               <span className="text-lg font-black text-primary">
-                Rp {reg.paymentAmount.toLocaleString('id-ID')}
+                Rp {reg.paymentAmount.toLocaleString("id-ID")}
               </span>
             </DetailItem>
             <DetailItem label="Metode">
-              <span className="capitalize">{reg.paymentMethod || '—'}</span>
+              <span className="capitalize">{reg.paymentMethod || "—"}</span>
             </DetailItem>
             <DetailItem label="Didaftarkan" icon={<CalendarDays className="size-3" />}>
               {reg.createdAt
-                ? new Date(reg.createdAt).toLocaleDateString('id-ID', {
-                    day: 'numeric',
-                    month: 'long',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
+                ? new Date(reg.createdAt).toLocaleDateString("id-ID", {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
                   })
-                : '—'}
+                : "—"}
             </DetailItem>
 
-            <PaymentStatusUpdate
-              registrationId={reg.id}
-              currentStatus={reg.paymentStatus}
-            />
+            <PaymentStatusUpdate registrationId={reg.id} currentStatus={reg.paymentStatus} />
           </SectionCard>
         </div>
       </div>

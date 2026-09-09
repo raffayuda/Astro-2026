@@ -78,9 +78,7 @@ function parseSectionContent(raw: string) {
         .trim();
       blocks.push({
         type: "warning",
-        title: line.toLowerCase().includes("diskualifikasi")
-          ? "Diskualifikasi"
-          : "Catatan",
+        title: line.toLowerCase().includes("diskualifikasi") ? "Diskualifikasi" : "Catatan",
         text: cleaned,
       });
       continue;

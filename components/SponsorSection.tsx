@@ -119,11 +119,7 @@ export default function SponsorSection({ variant = "home", id = "sponsor" }: Spo
   const visibleGroups = groups.filter((group) => group.items.length > 0 || group.fallback);
 
   return (
-    <SectionShell
-      id={id}
-      band={variant === "home" ? "gold" : "white"}
-      space="md"
-    >
+    <SectionShell id={id} band={variant === "home" ? "gold" : "white"} space="md">
       <SectionHeading
         eyebrow="Kolaborasi"
         pillTone="gold"
@@ -175,7 +171,12 @@ export default function SponsorSection({ variant = "home", id = "sponsor" }: Spo
           </div>
 
           <div className="flex w-full shrink-0 flex-col gap-2 sm:w-auto sm:flex-row">
-            <CtaButton href={SPONSOR_CP.waLink} size="default" showChevron={false} className="w-full sm:w-auto">
+            <CtaButton
+              href={SPONSOR_CP.waLink}
+              size="default"
+              showChevron={false}
+              className="w-full sm:w-auto"
+            >
               Hubungi sponsor
             </CtaButton>
             <Button asChild variant="outline" className="w-full sm:w-auto">
@@ -219,7 +220,12 @@ function PartnerShelf({
 
 function SponsorFallback() {
   return (
-    <Surface tone="tint" radius="xl" pad="md" className="flex min-h-36 flex-1 flex-col justify-center shadow-none">
+    <Surface
+      tone="tint"
+      radius="xl"
+      pad="md"
+      className="flex min-h-36 flex-1 flex-col justify-center shadow-none"
+    >
       <h3 className="font-heading text-base font-black text-astro-navy">
         Slot sponsor masih dibuka
       </h3>
@@ -232,7 +238,12 @@ function SponsorFallback() {
 
 function MediaPartnerFallback() {
   return (
-    <Surface tone="tint" radius="xl" pad="md" className="flex min-h-36 flex-1 flex-col justify-center shadow-none">
+    <Surface
+      tone="tint"
+      radius="xl"
+      pad="md"
+      className="flex min-h-36 flex-1 flex-col justify-center shadow-none"
+    >
       <p className="text-sm font-medium leading-relaxed text-ink/75">
         Media partner dapat menghubungi contact person publikasi untuk kerja sama konten dan liputan
         acara.

@@ -1,4 +1,4 @@
-export type CategoryType = 'akademik' | 'olahraga' | 'esports' | 'kesenian-/-seni' | (string & {});
+export type CategoryType = "akademik" | "olahraga" | "esports" | "kesenian-/-seni" | (string & {});
 
 export interface Competition {
   id: string;
@@ -22,7 +22,7 @@ export interface Competition {
   minTeamMembers?: number;
   registrationUrl: string;
   isFree?: boolean;
-  origin?: 'internal' | 'external';
+  origin?: "internal" | "external";
   contactPerson: {
     name: string;
     whatsapp: string;
@@ -50,7 +50,7 @@ export interface Competition {
 export interface CompetitionCustomField {
   id: string;
   label: string;
-  type: 'text' | 'textarea' | 'select' | 'image';
+  type: "text" | "textarea" | "select" | "image";
   placeholder?: string;
   options?: string[];
   required: boolean;
@@ -151,9 +151,7 @@ export interface PublicRegistration {
   leaderGameId: string | null;
   leaderPhotoUrl: string | null;
   members: string | null;
-  memberDetails:
-    | { name: string; gameId: string | null; photoUrl: string | null }[]
-    | null;
+  memberDetails: { name: string; gameId: string | null; photoUrl: string | null }[] | null;
   institution: string;
   email: string;
   whatsapp: string;

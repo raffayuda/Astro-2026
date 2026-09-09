@@ -58,9 +58,7 @@ export function ResponsiveAlertDialog({
         <DrawerContent>
           <DrawerHeader className="text-left">
             {title && <DrawerTitle>{title}</DrawerTitle>}
-            {description && (
-              <DrawerDescription>{description}</DrawerDescription>
-            )}
+            {description && <DrawerDescription>{description}</DrawerDescription>}
           </DrawerHeader>
           <DrawerFooter className="flex-row justify-end gap-2 pt-2">
             <Button
@@ -90,12 +88,8 @@ export function ResponsiveAlertDialog({
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent className="rounded-xl p-8">
         <AlertDialogHeader>
-          {title && (
-            <AlertDialogTitle className="uppercase">{title}</AlertDialogTitle>
-          )}
-          {description && (
-            <AlertDialogDescription>{description}</AlertDialogDescription>
-          )}
+          {title && <AlertDialogTitle className="uppercase">{title}</AlertDialogTitle>}
+          {description && <AlertDialogDescription>{description}</AlertDialogDescription>}
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel disabled={loading}>{cancelText}</AlertDialogCancel>

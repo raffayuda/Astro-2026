@@ -40,9 +40,7 @@ export default function HeroSection({ eventConfig, competitionCount }: Props) {
       id="home"
       className="relative isolate flex min-h-[100dvh] flex-col overflow-x-clip pt-20"
     >
-      <h1 className="sr-only">
-        ASTRO 2026. {eventConfig.tagline}
-      </h1>
+      <h1 className="sr-only">ASTRO 2026. {eventConfig.tagline}</h1>
       <img
         src="/assets/agt/swirl-left.svg"
         alt=""

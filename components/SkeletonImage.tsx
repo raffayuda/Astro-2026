@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useCallback } from 'react';
-import Image from 'next/image';
-import { cn } from '@/lib/utils';
+import { useState, useEffect, useCallback } from "react";
+import Image from "next/image";
+import { cn } from "@/lib/utils";
 
 interface SkeletonImageProps {
   src: string;
@@ -17,7 +17,7 @@ interface SkeletonImageProps {
   sizes?: string;
   priority?: boolean;
   skeletonClassName?: string;
-  objectFit?: 'cover' | 'contain';
+  objectFit?: "cover" | "contain";
   onReady?: () => void;
   onError?: () => void;
 }
@@ -40,7 +40,7 @@ export default function SkeletonImage({
   sizes,
   priority,
   skeletonClassName,
-  objectFit = 'cover',
+  objectFit = "cover",
   onReady,
   onError,
 }: SkeletonImageProps) {
@@ -66,9 +66,14 @@ export default function SkeletonImage({
   }, [loaded, onReady]);
 
   return (
-    <div className={cn('relative overflow-hidden bg-astro-navy/60', className)}>
+    <div className={cn("relative overflow-hidden bg-astro-navy/60", className)}>
       {!loaded && (
-        <div className={cn('absolute inset-0 z-10 h-full w-full animate-pulse bg-astro-cyan-2/40', skeletonClassName)} />
+        <div
+          className={cn(
+            "absolute inset-0 z-10 h-full w-full animate-pulse bg-astro-cyan-2/40",
+            skeletonClassName,
+          )}
+        />
       )}
       {fill ? (
         <Image
@@ -79,9 +84,9 @@ export default function SkeletonImage({
           priority={priority}
           sizes={sizes}
           className={cn(
-            'relative z-20 transition-opacity duration-500',
-            objectFit === 'contain' ? 'object-contain' : 'object-cover',
-            loaded ? 'opacity-100' : 'opacity-0',
+            "relative z-20 transition-opacity duration-500",
+            objectFit === "contain" ? "object-contain" : "object-cover",
+            loaded ? "opacity-100" : "opacity-0",
             imgClassName,
           )}
           ref={(img) => {
@@ -102,8 +107,8 @@ export default function SkeletonImage({
           priority={priority}
           sizes={sizes}
           className={cn(
-            'relative z-20 transition-opacity duration-500',
-            loaded ? 'opacity-100' : 'opacity-0',
+            "relative z-20 transition-opacity duration-500",
+            loaded ? "opacity-100" : "opacity-0",
             imgClassName,
           )}
           ref={(img) => {
@@ -118,4 +123,3 @@ export default function SkeletonImage({
     </div>
   );
 }
-

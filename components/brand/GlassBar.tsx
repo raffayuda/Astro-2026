@@ -1,14 +1,14 @@
-import * as React from "react"
-import { Mail } from "lucide-react"
-import { FaInstagram, FaTiktok, FaWhatsapp } from "react-icons/fa6"
+import * as React from "react";
+import { Mail } from "lucide-react";
+import { FaInstagram, FaTiktok, FaWhatsapp } from "react-icons/fa6";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 export type SocialLink = {
-  kind: "instagram" | "tiktok" | "whatsapp"
-  handle: string
-  href: string
-}
+  kind: "instagram" | "tiktok" | "whatsapp";
+  handle: string;
+  href: string;
+};
 
 export const ASTRO_SOCIALS: SocialLink[] = [
   {
@@ -21,15 +21,15 @@ export const ASTRO_SOCIALS: SocialLink[] = [
     handle: "astro2026",
     href: "https://tiktok.com/@astro2026",
   },
-]
+];
 
-export const ASTRO_EMAIL = "astro@nurulfikri.ac.id"
+export const ASTRO_EMAIL = "astro@nurulfikri.ac.id";
 
 const ICONS = {
   instagram: FaInstagram,
   tiktok: FaTiktok,
   whatsapp: FaWhatsapp,
-} as const
+} as const;
 
 /**
  * Frosted contact strip from the Cerdas Cermat posters: glass pill with
@@ -40,9 +40,9 @@ export function GlassBar({
   email = ASTRO_EMAIL,
   className,
 }: {
-  socials?: SocialLink[]
-  email?: string
-  className?: string
+  socials?: SocialLink[];
+  email?: string;
+  className?: string;
 }) {
   return (
     <div
@@ -53,7 +53,7 @@ export function GlassBar({
       )}
     >
       {socials.map((social) => {
-        const Icon = ICONS[social.kind]
+        const Icon = ICONS[social.kind];
         return (
           <a
             key={social.href}
@@ -65,7 +65,7 @@ export function GlassBar({
             <Icon className="size-3.5" aria-hidden />
             <span>@{social.handle}</span>
           </a>
-        )
+        );
       })}
       <a
         href={`mailto:${email}`}
@@ -76,5 +76,5 @@ export function GlassBar({
         <span className="sm:hidden">Email</span>
       </a>
     </div>
-  )
+  );
 }

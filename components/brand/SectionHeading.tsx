@@ -1,7 +1,7 @@
-import * as React from "react"
+import * as React from "react";
 
-import { cn } from "@/lib/utils"
-import { Pill, type PillProps } from "./Pill"
+import { cn } from "@/lib/utils";
+import { Pill, type PillProps } from "./Pill";
 
 /**
  * Section opener: optional colored pill (Timeline / Materi / Benefit from the
@@ -16,15 +16,15 @@ export function SectionHeading({
   chrome = false,
   className,
 }: {
-  eyebrow?: string
+  eyebrow?: string;
   /** Pill color when `eyebrow` is set. Matches poster section tags. */
-  pillTone?: PillProps["tone"]
-  title: React.ReactNode
-  lead?: React.ReactNode
-  align?: "center" | "start"
+  pillTone?: PillProps["tone"];
+  title: React.ReactNode;
+  lead?: React.ReactNode;
+  align?: "center" | "start";
   /** Blue display title instead of navy. For poster-style pages. */
-  chrome?: boolean
-  className?: string
+  chrome?: boolean;
+  className?: string;
 }) {
   return (
     <div
@@ -51,8 +51,10 @@ export function SectionHeading({
       </h2>
 
       {lead && (
-        <p className="max-w-2xl text-sm font-medium leading-relaxed text-ink/75 sm:text-base">{lead}</p>
+        <p className="max-w-2xl text-sm font-medium leading-relaxed text-ink/75 sm:text-base">
+          {lead}
+        </p>
       )}
     </div>
-  )
+  );
 }

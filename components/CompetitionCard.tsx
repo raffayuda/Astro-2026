@@ -40,11 +40,7 @@ export default function CompetitionCard({ competition, index }: Props) {
   const isOpen = competition.isActive !== false;
   const isFull = left <= 0;
 
-  const feeLabel = competition.isFree
-    ? "Gratis"
-    : effective.fee > 0
-      ? toIdr(effective.fee)
-      : "TBA";
+  const feeLabel = competition.isFree ? "Gratis" : effective.fee > 0 ? toIdr(effective.fee) : "TBA";
 
   const meta = [
     { id: "fee", icon: Coins, label: feeLabel },

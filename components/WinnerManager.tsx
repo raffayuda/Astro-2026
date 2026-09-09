@@ -1,25 +1,32 @@
-'use client';
+"use client";
 
-import { useState, useMemo } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useState, useMemo } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
-  Trophy, Award, Check, X, Send, Users, Mail,
-  Upload, ExternalLink, Save, FileText, Download,
-} from 'lucide-react';
-import { toast } from 'sonner';
-import Pagination from '@/components/Pagination';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Spinner } from '@/components/ui/spinner';
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import { apiHelpers } from '@/src/lib/api';
-import {
-  useRegistrations,
-  useCertificateGenerate,
-} from '@/src/lib/hooks/use-queries';
-import TemplateManagement from '@/components/TemplateManagement';
-import { cn } from '@/lib/utils';
+  Trophy,
+  Award,
+  Check,
+  X,
+  Send,
+  Users,
+  Mail,
+  Upload,
+  ExternalLink,
+  Save,
+  FileText,
+  Download,
+} from "lucide-react";
+import { toast } from "sonner";
+import Pagination from "@/components/Pagination";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Spinner } from "@/components/ui/spinner";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { apiHelpers } from "@/src/lib/api";
+import { useRegistrations, useCertificateGenerate } from "@/src/lib/hooks/use-queries";
+import TemplateManagement from "@/components/TemplateManagement";
+import { cn } from "@/lib/utils";
 
 const PAGE_SIZE = 5;
 
@@ -57,26 +64,28 @@ export default function WinnerManager({ competitionId }: WinnerManagerProps) {
   const [page, setPage] = useState(1);
   const [draftChanges, setDraftChanges] = useState<Record<string, DraftEntry>>({});
 
-  const [newCert, setNewCert] = useState<Record<string, { name: string; uploading: boolean; preview?: string }>>({});
+  const [newCert, setNewCert] = useState<
+    Record<string, { name: string; uploading: boolean; preview?: string }>
+  >({});
   const [deletingCerts, setDeletingCerts] = useState<Set<string>>(new Set());
 
-  const [activeTab, setActiveTab] = useState<'winners' | 'templates'>('winners');
+  const [activeTab, setActiveTab] = useState<"winners" | "templates">("winners");
   const generateAllMut = useCertificateGenerate(competitionId);
 
   const { data: regsRaw, isLoading: loading } = useRegistrations({ competitionId, pageSize: 100 });
 
   const registrations: Registration[] = useMemo(() => {
-    const list = Array.isArray(regsRaw) ? regsRaw : (regsRaw as any)?.data ?? [];
+    const list = Array.isArray(regsRaw) ? regsRaw : ((regsRaw as any)?.data ?? []);
     const seen = new Set<string>();
     return list.filter((r: Registration) => {
-      if (r.paymentStatus !== 'paid') return false;
+      if (r.paymentStatus !== "paid") return false;
       if (seen.has(r.id)) return false;
       seen.add(r.id);
       return true;
     });
   }, [regsRaw]);
 
-  const invalidate = () => qc.invalidateQueries({ queryKey: ['registrations'] });
+  const invalidate = () => qc.invalidateQueries({ queryKey: ["registrations"] });
 
   const updateRegistrationMutation = useMutation({
     mutationFn: ({ regId, body }: { regId: string; body: unknown }) =>
@@ -94,9 +103,9 @@ export default function WinnerManager({ competitionId }: WinnerManagerProps) {
   const handleUploadCert = async (e: React.ChangeEvent<HTMLInputElement>, regId: string) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const name = newCert[regId]?.name?.trim() || file.name.replace(/\.[^/.]+$/, '');
+    const name = newCert[regId]?.name?.trim() || file.name.replace(/\.[^/.]+$/, "");
     if (!name) {
-      toast.error('Masukkan nama peserta untuk sertifikat ini');
+      toast.error("Masukkan nama peserta untuk sertifikat ini");
       return;
     }
 
@@ -107,7 +116,11 @@ export default function WinnerManager({ competitionId }: WinnerManagerProps) {
       const uploadRes = await apiHelpers.upload(file);
       const url = (uploadRes as any)?.url;
       URL.revokeObjectURL(preview);
-      if (!url) { toast.error('Gagal upload'); setNewCert((prev) => ({ ...prev, [regId]: { name, uploading: false } })); return; }
+      if (!url) {
+        toast.error("Gagal upload");
+        setNewCert((prev) => ({ ...prev, [regId]: { name, uploading: false } }));
+        return;
+      }
 
       // Get current certs
       const reg = registrations.find((r) => r.id === regId);
@@ -123,7 +136,7 @@ export default function WinnerManager({ competitionId }: WinnerManagerProps) {
       });
     } catch {
       URL.revokeObjectURL(preview);
-      toast.error('Upload gagal');
+      toast.error("Upload gagal");
       setNewCert((prev) => ({ ...prev, [regId]: { name, uploading: false } }));
     }
   };
@@ -135,9 +148,9 @@ export default function WinnerManager({ competitionId }: WinnerManagerProps) {
     const updated = reg.certificates.filter((c) => c.url !== certUrl);
     try {
       await updateRegistrationMutation.mutateAsync({ regId, body: { certificates: updated } });
-      toast.success('Sertifikat dihapus');
+      toast.success("Sertifikat dihapus");
     } catch {
-      toast.error('Gagal menghapus');
+      toast.error("Gagal menghapus");
     } finally {
       setDeletingCerts((prev) => {
         const next = new Set(prev);
@@ -160,11 +173,11 @@ export default function WinnerManager({ competitionId }: WinnerManagerProps) {
     const eff = getEffective(reg);
     // rank === '' berarti ToggleGroup dideaktivasi (klik tombol juara yang sama
     // untuk membatalkan) → batalkan status juara
-    if (!rank || (eff.isWinner === '1' && eff.winnerRank === rank)) {
-      setDraftChanges((prev) => ({ ...prev, [regId]: { isWinner: '0', winnerRank: null } }));
+    if (!rank || (eff.isWinner === "1" && eff.winnerRank === rank)) {
+      setDraftChanges((prev) => ({ ...prev, [regId]: { isWinner: "0", winnerRank: null } }));
       return;
     }
-    setDraftChanges((prev) => ({ ...prev, [regId]: { isWinner: '1', winnerRank: rank } }));
+    setDraftChanges((prev) => ({ ...prev, [regId]: { isWinner: "1", winnerRank: rank } }));
   };
 
   // ─── Bulk Save ───
@@ -186,7 +199,9 @@ export default function WinnerManager({ competitionId }: WinnerManagerProps) {
           body: { isWinner: change.isWinner, winnerRank: change.winnerRank },
         });
         success++;
-      } catch { fail++; }
+      } catch {
+        fail++;
+      }
     }
     if (fail === 0) toast.success(`Semua ${success} perubahan berhasil disimpan`);
     else toast.warning(`${success} berhasil, ${fail} gagal`);
@@ -198,109 +213,131 @@ export default function WinnerManager({ competitionId }: WinnerManagerProps) {
   const sendCertificate = async (reg: Registration) => {
     try {
       await sendCertMutation.mutateAsync({ registrationId: reg.id, competitionId });
-      toast.success('Sertifikat berhasil dikirim ke ' + reg.email);
+      toast.success("Sertifikat berhasil dikirim ke " + reg.email);
     } catch {
-      toast.error('Gagal mengirim sertifikat');
+      toast.error("Gagal mengirim sertifikat");
     }
   };
 
   // ─── Generate Otomatis (admin) ───
   const handleGenerateAll = async () => {
-    if (!window.confirm('Generate otomatis semua sertifikat untuk juara 1/2/3?')) return;
+    if (!window.confirm("Generate otomatis semua sertifikat untuk juara 1/2/3?")) return;
     try {
       const result = await generateAllMut.mutateAsync({ competitionId });
       toast.success(
         `${result.generated} sertifikat berhasil digenerate, ${result.skipped} dilewati`,
       );
       if (result.errors?.length) {
-        toast.error(`${result.errors.length} error`, { description: result.errors.join(', ') });
+        toast.error(`${result.errors.length} error`, { description: result.errors.join(", ") });
       }
-      qc.invalidateQueries({ queryKey: ['registrations'] });
+      qc.invalidateQueries({ queryKey: ["registrations"] });
     } catch (err: any) {
-      toast.error('Generate gagal: ' + (err?.message || 'unknown error'));
+      toast.error("Generate gagal: " + (err?.message || "unknown error"));
     }
   };
 
   const paginated = registrations.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   if (loading) {
-    return <div className="flex justify-center py-8"><Spinner className="size-5 text-primary" /></div>;
+    return (
+      <div className="flex justify-center py-8">
+        <Spinner className="size-5 text-primary" />
+      </div>
+    );
   }
 
   return (
     <div className="space-y-5 text-left text-foreground">
-     <div className="flex flex-col justify-between gap-3 border-b border-border pb-3 md:flex-row md:items-center">
-       <div>
-         <h4 className="flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-foreground">
-           <Award className="size-4 text-primary" /> Kelola Juara & Sertifikat
-         </h4>
-         <p className="mt-0.5 text-10 text-muted-foreground">
-           Tentukan juara dan kelola template sertifikat untuk kompetisi ini.
-         </p>
-       </div>
-       <div className="flex gap-1 overflow-x-auto">
-         <Button
-           size="sm"
-           variant={activeTab === 'winners' ? 'default' : 'outline'}
-           className="rounded-md text-10 font-black uppercase tracking-wider"
-           onClick={() => setActiveTab('winners')}
-         >
-           <Users className="size-3.5" /> Juara & Peserta
-         </Button>
-         <Button
-           size="sm"
-           variant={activeTab === 'templates' ? 'default' : 'outline'}
-           className="rounded-md text-10 font-black uppercase tracking-wider"
-           onClick={() => setActiveTab('templates')}
-         >
-           <FileText className="size-3.5" /> Template Sertifikat
-         </Button>
-       </div>
-     </div>
+      <div className="flex flex-col justify-between gap-3 border-b border-border pb-3 md:flex-row md:items-center">
+        <div>
+          <h4 className="flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-foreground">
+            <Award className="size-4 text-primary" /> Kelola Juara & Sertifikat
+          </h4>
+          <p className="mt-0.5 text-10 text-muted-foreground">
+            Tentukan juara dan kelola template sertifikat untuk kompetisi ini.
+          </p>
+        </div>
+        <div className="flex gap-1 overflow-x-auto">
+          <Button
+            size="sm"
+            variant={activeTab === "winners" ? "default" : "outline"}
+            className="rounded-md text-10 font-black uppercase tracking-wider"
+            onClick={() => setActiveTab("winners")}
+          >
+            <Users className="size-3.5" /> Juara & Peserta
+          </Button>
+          <Button
+            size="sm"
+            variant={activeTab === "templates" ? "default" : "outline"}
+            className="rounded-md text-10 font-black uppercase tracking-wider"
+            onClick={() => setActiveTab("templates")}
+          >
+            <FileText className="size-3.5" /> Template Sertifikat
+          </Button>
+        </div>
+      </div>
 
-     {activeTab === 'templates' && (
-       <TemplateManagement competitionId={competitionId} />
-     )}
+      {activeTab === "templates" && <TemplateManagement competitionId={competitionId} />}
 
       {/* Registrations List */}
       <div className="space-y-2">
         <div className="flex justify-between items-center text-10 text-ink font-bold uppercase tracking-wider">
           <span>Daftar Peserta ({registrations.length} Lunas)</span>
-          <span>Halaman {page} dari {Math.max(1, Math.ceil(registrations.length / PAGE_SIZE))}</span>
+          <span>
+            Halaman {page} dari {Math.max(1, Math.ceil(registrations.length / PAGE_SIZE))}
+          </span>
         </div>
 
         <div className="grid grid-cols-1 gap-2">
           {paginated.map((reg) => {
-            const name = reg.fullName || reg.teamName || reg.leaderName || 'Peserta';
+            const name = reg.fullName || reg.teamName || reg.leaderName || "Peserta";
             const eff = getEffective(reg);
-            const isWinner = eff.isWinner === '1';
-            const isSent = reg.certificateSent === '1';
+            const isWinner = eff.isWinner === "1";
+            const isSent = reg.certificateSent === "1";
             const isDraft = !!draftChanges[reg.id];
             const certs = reg.certificates || [];
 
             return (
-              <div key={reg.id}
+              <div
+                key={reg.id}
                 className={`border p-3 transition-colors ${
-                  isDraft ? 'bg-amber-50/80 border-amber-200' : 'bg-surface border-astro-cyan-2'
+                  isDraft ? "bg-amber-50/80 border-amber-200" : "bg-surface border-astro-cyan-2"
                 }`}
               >
                 {/* Info Baris Atas */}
                 <div className="mb-2 flex items-start justify-between gap-2">
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="text-xs font-black uppercase tracking-tight text-foreground">{name}</span>
-                      {reg.type === 'team' && (
-                        <Badge variant="secondary" className="rounded bg-muted text-8 font-bold uppercase tracking-wider text-muted-foreground">Tim</Badge>
+                      <span className="text-xs font-black uppercase tracking-tight text-foreground">
+                        {name}
+                      </span>
+                      {reg.type === "team" && (
+                        <Badge
+                          variant="secondary"
+                          className="rounded bg-muted text-8 font-bold uppercase tracking-wider text-muted-foreground"
+                        >
+                          Tim
+                        </Badge>
                       )}
                       {isWinner && (
-                        <Badge variant="outline" className={cn('rounded-md gap-0.5 border text-9 font-bold uppercase tracking-wider',
-                          isDraft ? 'border-amber-300 bg-amber-200 text-amber-900' : 'border-amber-200 bg-amber-100 text-amber-800')}>
+                        <Badge
+                          variant="outline"
+                          className={cn(
+                            "rounded-md gap-0.5 border text-9 font-bold uppercase tracking-wider",
+                            isDraft
+                              ? "border-amber-300 bg-amber-200 text-amber-900"
+                              : "border-amber-200 bg-amber-100 text-amber-800",
+                          )}
+                        >
                           <Trophy className="size-2.5" /> Juara {eff.winnerRank}
                           {isDraft && <span className="ml-0.5 text-8 opacity-60">(draft)</span>}
                         </Badge>
                       )}
                       {isSent && (
-                        <Badge variant="outline" className="rounded-md gap-0.5 border border-emerald-200 bg-emerald-100 text-9 font-bold uppercase tracking-wider text-emerald-800">
+                        <Badge
+                          variant="outline"
+                          className="rounded-md gap-0.5 border border-emerald-200 bg-emerald-100 text-9 font-bold uppercase tracking-wider text-emerald-800"
+                        >
                           <Check className="size-2.5" /> Terkirim
                         </Badge>
                       )}
@@ -314,14 +351,26 @@ export default function WinnerManager({ competitionId }: WinnerManagerProps) {
 
                   <div className="flex flex-shrink-0 items-center gap-1.5">
                     {/* Winner Buttons */}
-                    <ToggleGroup type="single" value={isWinner && eff.winnerRank ? eff.winnerRank : ''} onValueChange={(v) => handleToggleWinner(reg.id, v)} spacing={0} className="border border-border bg-background p-0.5">
-                      {['1', '2', '3'].map((rank) => {
+                    <ToggleGroup
+                      type="single"
+                      value={isWinner && eff.winnerRank ? eff.winnerRank : ""}
+                      onValueChange={(v) => handleToggleWinner(reg.id, v)}
+                      spacing={0}
+                      className="border border-border bg-background p-0.5"
+                    >
+                      {["1", "2", "3"].map((rank) => {
                         const active = isWinner && eff.winnerRank === rank;
                         return (
-                          <ToggleGroupItem key={rank} value={rank}
-                            className={cn('size-7 text-10 font-black text-muted-foreground hover:bg-muted hover:text-muted-foreground',
-                              active && 'bg-amber-400 text-amber-950 shadow-sm hover:bg-amber-400 hover:text-amber-950')}
-                            title={active ? `Batalkan Juara ${rank}` : `Tandai Juara ${rank}`}>
+                          <ToggleGroupItem
+                            key={rank}
+                            value={rank}
+                            className={cn(
+                              "size-7 text-10 font-black text-muted-foreground hover:bg-muted hover:text-muted-foreground",
+                              active &&
+                                "bg-amber-400 text-amber-950 shadow-sm hover:bg-amber-400 hover:text-amber-950",
+                            )}
+                            title={active ? `Batalkan Juara ${rank}` : `Tandai Juara ${rank}`}
+                          >
                             {rank}
                           </ToggleGroupItem>
                         );
@@ -329,9 +378,17 @@ export default function WinnerManager({ competitionId }: WinnerManagerProps) {
                     </ToggleGroup>
 
                     {/* Send button */}
-                    <Button onClick={() => sendCertificate(reg)} disabled={saving} size="sm"
-                      className={cn('rounded-md gap-1 text-9 font-bold uppercase tracking-wider', isSent && 'bg-muted text-muted-foreground hover:bg-muted')}>
-                      <Send data-icon="inline-start" className="size-2.5" /> {isSent ? 'Kirim Ulang' : 'Kirim'}
+                    <Button
+                      onClick={() => sendCertificate(reg)}
+                      disabled={saving}
+                      size="sm"
+                      className={cn(
+                        "rounded-md gap-1 text-9 font-bold uppercase tracking-wider",
+                        isSent && "bg-muted text-muted-foreground hover:bg-muted",
+                      )}
+                    >
+                      <Send data-icon="inline-start" className="size-2.5" />{" "}
+                      {isSent ? "Kirim Ulang" : "Kirim"}
                     </Button>
                   </div>
                 </div>
@@ -339,22 +396,37 @@ export default function WinnerManager({ competitionId }: WinnerManagerProps) {
                 {/* ─── Daftar Sertifikat yang sudah diupload ─── */}
                 {certs.length > 0 && (
                   <div className="border-t border-astro-cyan-2 pt-2 mt-2 space-y-1.5">
-                    <p className="text-9 font-bold text-ink uppercase tracking-wider">Sertifikat Terupload:</p>
+                    <p className="text-9 font-bold text-ink uppercase tracking-wider">
+                      Sertifikat Terupload:
+                    </p>
                     {certs.map((c, i) => (
-                      <div key={i} className="flex items-center justify-between bg-white border border-surface px-2.5 py-1.5"
->
+                      <div
+                        key={i}
+                        className="flex items-center justify-between bg-white border border-surface px-2.5 py-1.5"
+                      >
                         <div className="flex items-center gap-2 min-w-0">
                           <FileText className="w-3 h-3 text-ink flex-shrink-0" />
                           <span className="text-11 font-bold text-ink truncate">{c.name}</span>
-                          <a href={c.url} target="_blank" rel="noopener noreferrer"
-                            className="text-ink hover:text-astro-cyan flex-shrink-0" title="Lihat">
+                          <a
+                            href={c.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-ink hover:text-astro-cyan flex-shrink-0"
+                            title="Lihat"
+                          >
                             <ExternalLink className="w-3 h-3" />
                           </a>
                         </div>
-                        <button onClick={() => handleDeleteCert(reg.id, c.url)}
+                        <button
+                          onClick={() => handleDeleteCert(reg.id, c.url)}
                           disabled={deletingCerts.has(c.url)}
-                          className="p-0.5 text-ink hover:text-red-500 transition-colors cursor-pointer flex-shrink-0 disabled:opacity-60 disabled:cursor-not-allowed">
-                          {deletingCerts.has(c.url) ? <Spinner className="w-3 h-3" /> : <X className="w-3 h-3" />}
+                          className="p-0.5 text-ink hover:text-red-500 transition-colors cursor-pointer flex-shrink-0 disabled:opacity-60 disabled:cursor-not-allowed"
+                        >
+                          {deletingCerts.has(c.url) ? (
+                            <Spinner className="w-3 h-3" />
+                          ) : (
+                            <X className="w-3 h-3" />
+                          )}
                         </button>
                       </div>
                     ))}
@@ -364,31 +436,55 @@ export default function WinnerManager({ competitionId }: WinnerManagerProps) {
                 {/* ─── Upload Sertifikat Baru ─── */}
                 <div className="mt-2 flex items-center gap-2 border-t border-border pt-2">
                   <Input
-                    value={newCert[reg.id]?.name || ''}
-                    onChange={(e) => setNewCert((prev) => ({ ...prev, [reg.id]: { name: e.target.value, uploading: prev[reg.id]?.uploading || false } }))}
+                    value={newCert[reg.id]?.name || ""}
+                    onChange={(e) =>
+                      setNewCert((prev) => ({
+                        ...prev,
+                        [reg.id]: {
+                          name: e.target.value,
+                          uploading: prev[reg.id]?.uploading || false,
+                        },
+                      }))
+                    }
                     placeholder="Nama anggota..."
                     className="min-w-0 flex-1 bg-background"
                   />
                   <label className="flex-shrink-0 cursor-pointer">
-                    <Button asChild size="sm" variant="outline" disabled={newCert[reg.id]?.uploading}
-                      className="rounded-md gap-1 text-9 font-bold uppercase tracking-wider">
+                    <Button
+                      asChild
+                      size="sm"
+                      variant="outline"
+                      disabled={newCert[reg.id]?.uploading}
+                      className="rounded-md gap-1 text-9 font-bold uppercase tracking-wider"
+                    >
                       <span>
-                        {newCert[reg.id]?.uploading ? <Spinner className="size-3" /> : <Upload className="size-3" />}
-                        {newCert[reg.id]?.uploading ? 'Mengunggah...' : 'Upload'}
+                        {newCert[reg.id]?.uploading ? (
+                          <Spinner className="size-3" />
+                        ) : (
+                          <Upload className="size-3" />
+                        )}
+                        {newCert[reg.id]?.uploading ? "Mengunggah..." : "Upload"}
                       </span>
                     </Button>
-                    <input type="file" accept="image/*,.pdf" className="hidden"
+                    <input
+                      type="file"
+                      accept="image/*,.pdf"
+                      className="hidden"
                       disabled={newCert[reg.id]?.uploading}
-                      onChange={(e) => handleUploadCert(e, reg.id)} />
+                      onChange={(e) => handleUploadCert(e, reg.id)}
+                    />
                   </label>
                 </div>
                 {newCert[reg.id]?.preview && (
-                  <div className="mt-2 flex items-center gap-2 border border-surface bg-surface px-2 py-1.5"
->
+                  <div className="mt-2 flex items-center gap-2 border border-surface bg-surface px-2 py-1.5">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={newCert[reg.id]?.preview} alt={newCert[reg.id]?.name || 'Preview'} className="size-7 rounded object-cover" />
+                    <img
+                      src={newCert[reg.id]?.preview}
+                      alt={newCert[reg.id]?.name || "Preview"}
+                      className="size-7 rounded object-cover"
+                    />
                     <span className="text-10 font-semibold text-ink">
-                      {newCert[reg.id]?.uploading ? 'Mengunggah...' : 'Preview sertifikat'}
+                      {newCert[reg.id]?.uploading ? "Mengunggah..." : "Preview sertifikat"}
                     </span>
                   </div>
                 )}
@@ -397,15 +493,21 @@ export default function WinnerManager({ competitionId }: WinnerManagerProps) {
           })}
 
           {registrations.length === 0 && (
-            <div className="bg-surface border border-astro-cyan-2 border-dashed py-8 text-center"
->
+            <div className="bg-surface border border-astro-cyan-2 border-dashed py-8 text-center">
               <Users className="w-8 h-8 text-astro-cyan-2 mx-auto mb-2" />
-              <p className="text-xs text-ink italic">Belum ada peserta yang melakukan pembayaran lunas.</p>
+              <p className="text-xs text-ink italic">
+                Belum ada peserta yang melakukan pembayaran lunas.
+              </p>
             </div>
           )}
         </div>
 
-        <Pagination currentPage={page} totalItems={registrations.length} pageSize={PAGE_SIZE} onPageChange={setPage} />
+        <Pagination
+          currentPage={page}
+          totalItems={registrations.length}
+          pageSize={PAGE_SIZE}
+          onPageChange={setPage}
+        />
       </div>
 
       {/* Sticky Bottom Bulk Save */}
@@ -416,17 +518,33 @@ export default function WinnerManager({ competitionId }: WinnerManagerProps) {
               <p className="text-xs font-black uppercase tracking-tight text-foreground">
                 {hasChanges} perubahan belum disimpan
               </p>
-              <p className="mt-0.5 text-10 text-muted-foreground">Klik simpan untuk mengirim perubahan juara ke server.</p>
+              <p className="mt-0.5 text-10 text-muted-foreground">
+                Klik simpan untuk mengirim perubahan juara ke server.
+              </p>
             </div>
             <div className="flex gap-2">
-              <Button variant="outline" onClick={() => { setDraftChanges({}); toast.info('Perubahan dibatalkan'); }}
-                disabled={saving} className="rounded-md gap-1 text-xs font-bold uppercase tracking-wider">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setDraftChanges({});
+                  toast.info("Perubahan dibatalkan");
+                }}
+                disabled={saving}
+                className="rounded-md gap-1 text-xs font-bold uppercase tracking-wider"
+              >
                 <X data-icon="inline-start" className="size-3.5" /> Batal
               </Button>
-              <Button onClick={handleSaveAll} disabled={saving}
-                className="rounded-md gap-1.5 bg-amber-500 text-xs font-black uppercase tracking-wider text-amber-950 hover:bg-amber-400">
-                {saving ? <Spinner data-icon="inline-start" className="size-3.5" /> : <Save data-icon="inline-start" className="size-3.5" />}
-                {saving ? 'Menyimpan...' : 'Simpan Semua'}
+              <Button
+                onClick={handleSaveAll}
+                disabled={saving}
+                className="rounded-md gap-1.5 bg-amber-500 text-xs font-black uppercase tracking-wider text-amber-950 hover:bg-amber-400"
+              >
+                {saving ? (
+                  <Spinner data-icon="inline-start" className="size-3.5" />
+                ) : (
+                  <Save data-icon="inline-start" className="size-3.5" />
+                )}
+                {saving ? "Menyimpan..." : "Simpan Semua"}
               </Button>
             </div>
           </div>
@@ -434,14 +552,18 @@ export default function WinnerManager({ competitionId }: WinnerManagerProps) {
       )}
 
       {/* Generate Otomatis (admin) — hanya di tab winners */}
-      {activeTab === 'winners' && hasChanges === false && (
+      {activeTab === "winners" && hasChanges === false && (
         <div className="border-t border-border pt-4 pb-2">
           <Button
             onClick={handleGenerateAll}
             disabled={generateAllMut.isPending}
             className="rounded-md w-full gap-2 bg-astro-blue px-6 py-4 text-xs font-black uppercase tracking-wider text-astro-navy hover:bg-astro-sky"
           >
-            {generateAllMut.isPending ? <Spinner className="size-4" /> : <Download className="size-4" />}
+            {generateAllMut.isPending ? (
+              <Spinner className="size-4" />
+            ) : (
+              <Download className="size-4" />
+            )}
             Generate Otomatis untuk Semua Juara
           </Button>
           <p className="mt-1.5 text-10 text-muted-foreground">

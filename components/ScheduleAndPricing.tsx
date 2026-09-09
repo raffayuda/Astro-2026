@@ -89,11 +89,13 @@ export default function ScheduleAndPricing({ timeline }: Props) {
           </ol>
         </WindowCard>
 
-        <WindowCard title="Pendaftaran" className="lg:h-full" bodyClassName="gap-4 sm:gap-5 lg:h-full">
+        <WindowCard
+          title="Pendaftaran"
+          className="lg:h-full"
+          bodyClassName="gap-4 sm:gap-5 lg:h-full"
+        >
           <div>
-            <p className="text-xs font-bold text-ink/60">
-              Biaya mulai dari
-            </p>
+            <p className="text-xs font-bold text-ink/60">Biaya mulai dari</p>
             <div className="mt-3">
               <PricePill amount="Rp 20.000" unit="Orang" />
             </div>

@@ -1,5 +1,5 @@
-import { clsx, type ClassValue } from "clsx"
-import { extendTailwindMerge } from "tailwind-merge"
+import { clsx, type ClassValue } from "clsx";
+import { extendTailwindMerge } from "tailwind-merge";
 
 /**
  * The brand shadow ramp lives in `app/globals.css` under the `--shadow-*`
@@ -23,12 +23,12 @@ const BRAND_SHADOWS = [
   "inset-top",
   "inset-screen",
   "plate",
-]
+];
 
 const twMerge = extendTailwindMerge({
   extend: { classGroups: { shadow: [{ shadow: BRAND_SHADOWS }] } },
-})
+});
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }

@@ -20,10 +20,7 @@ function SectionFallback() {
 export default function HomeClient({ data }: { data: AstroData }) {
   return (
     <PageShell>
-      <HeroSection
-        eventConfig={data.eventConfig}
-        competitionCount={data.competitions.length}
-      />
+      <HeroSection eventConfig={data.eventConfig} competitionCount={data.competitions.length} />
       <StatsBar data={data} />
       <CategorySection competitions={data.competitions} />
       <ScheduleAndPricing timeline={data.timeline} eventConfig={data.eventConfig} />

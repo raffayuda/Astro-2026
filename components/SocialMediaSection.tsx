@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import Image from 'next/image';
-import { motion, useReducedMotion } from 'motion/react';
+import Image from "next/image";
+import { motion, useReducedMotion } from "motion/react";
 import { CtaButton } from "@/components/brand/CtaButton";
 import { SectionHeading } from "@/components/brand/SectionHeading";
 import { SectionShell } from "@/components/brand/SectionShell";
@@ -9,11 +9,7 @@ import { WindowCard } from "@/components/brand/WindowCard";
 
 const MotionImage = motion.create(Image);
 
-export default function SocialMediaSection({
-  priority = false,
-}: {
-  priority?: boolean;
-}) {
+export default function SocialMediaSection({ priority = false }: { priority?: boolean }) {
   const reduce = useReducedMotion();
 
   return (
@@ -26,7 +22,6 @@ export default function SocialMediaSection({
       />
 
       <div className="mt-10 flex flex-col items-center">
-
         {/* ── 2. PRODUCT IMAGE (Aligned exactly to the width of the spec grid) ── */}
         <div className="relative w-full max-w-7xl mb-12 md:mb-16 flex justify-center">
           <motion.div
@@ -44,11 +39,11 @@ export default function SocialMediaSection({
               height={1303}
               sizes="(max-width: 1024px) 90vw, 1200px"
               animate={reduce ? undefined : { y: [0, -8, 0] }}
-              transition={{ duration: 5.5, repeat: Infinity, ease: 'easeInOut' }}
+              transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut" }}
               className="hidden sm:block w-full h-auto object-contain select-none z-0"
               style={{
-                maskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 96%)',
-                WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 96%)',
+                maskImage: "linear-gradient(to bottom, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 96%)",
+                WebkitMaskImage: "linear-gradient(to bottom, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 96%)",
               }}
               priority={priority}
             />
@@ -69,11 +64,11 @@ export default function SocialMediaSection({
             width={800}
             height={1600}
             animate={reduce ? undefined : { y: [0, -6, 0] }}
-            transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
+            transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
             className="w-full h-auto object-contain select-none z-0"
             style={{
-              maskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 92%)',
-              WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 92%)',
+              maskImage: "linear-gradient(to bottom, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 92%)",
+              WebkitMaskImage: "linear-gradient(to bottom, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 92%)",
             }}
             priority={priority}
           />
@@ -122,7 +117,6 @@ export default function SocialMediaSection({
             Ikuti @astrosttnf
           </CtaButton>
         </div>
-
       </div>
     </SectionShell>
   );

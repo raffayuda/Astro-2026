@@ -28,12 +28,7 @@ export default function FAQSection({ faqs }: Props) {
       />
 
       <WindowCard title="FAQ" className="mt-6 sm:mt-8">
-        <Accordion
-          type="single"
-          collapsible
-          defaultValue="item-0"
-          className="flex flex-col gap-2"
-        >
+        <Accordion type="single" collapsible defaultValue="item-0" className="flex flex-col gap-2">
           {faqs.map((faq, index) => (
             <AccordionItem
               key={faq.q}
@@ -59,7 +54,12 @@ export default function FAQSection({ faqs }: Props) {
           <p className="text-sm font-semibold text-ink/80">
             Belum ketemu jawaban? Tanya panitia di Instagram.
           </p>
-          <Button asChild variant="outline" size="sm" className="w-full shrink-0 rounded-full sm:w-auto">
+          <Button
+            asChild
+            variant="outline"
+            size="sm"
+            className="w-full shrink-0 rounded-full sm:w-auto"
+          >
             <a href="https://instagram.com/astrosttnf" target="_blank" rel="noopener noreferrer">
               <FaInstagram data-icon="inline-start" />
               @astrosttnf

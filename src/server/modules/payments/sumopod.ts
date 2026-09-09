@@ -1,11 +1,11 @@
-import crypto from 'node:crypto';
-import ky, { HTTPError } from 'ky';
+import crypto from "node:crypto";
+import ky, { HTTPError } from "ky";
 
 /**
  * SumoPod payment-gateway client. Docs: https://sumopod.com (Managed Payment).
  * Base URL and credentials come from env — see .env.example.
  */
-const SUMOPOD_BASE_URL = process.env.SUMOPOD_BASE_URL || 'https://api-pay.sumopod.com/api/v1';
+const SUMOPOD_BASE_URL = process.env.SUMOPOD_BASE_URL || "https://api-pay.sumopod.com/api/v1";
 const SUMOPOD_API_KEY = process.env.SUMOPOD_API_KEY;
 
 export type CreatePaymentInput = {
@@ -35,7 +35,7 @@ export type SumoPodPayment = {
 };
 
 export type SumoPodPublicCheckout = {
-  status: 'pending' | 'completed' | 'canceled' | 'expired' | string;
+  status: "pending" | "completed" | "canceled" | "expired" | string;
   order_id: string;
   amount: number;
   currency: string;
@@ -57,21 +57,21 @@ export async function fetchPublicPaymentCheckout(
   paymentIdOrUrl: string,
   paymentLinkUrl?: string | null,
 ): Promise<SumoPodPublicCheckout | null> {
-  const targetUrl = paymentLinkUrl || (paymentIdOrUrl?.startsWith('http') ? paymentIdOrUrl : null);
-  const paymentId = !paymentIdOrUrl?.startsWith('http') ? paymentIdOrUrl : null;
+  const targetUrl = paymentLinkUrl || (paymentIdOrUrl?.startsWith("http") ? paymentIdOrUrl : null);
+  const paymentId = !paymentIdOrUrl?.startsWith("http") ? paymentIdOrUrl : null;
 
   // 1. Direct managed checkout API (e.g. checkout.pymnt.app/api/checkout/{id})
   if (targetUrl) {
     try {
       const urlObj = new URL(targetUrl);
-      const checkoutId = urlObj.pathname.split('/').filter(Boolean).pop();
+      const checkoutId = urlObj.pathname.split("/").filter(Boolean).pop();
       if (checkoutId) {
         const checkoutApiUrl = `${urlObj.origin}/api/checkout/${checkoutId}`;
         const res = await ky
           .get(checkoutApiUrl, {
             headers: {
-              Accept: 'application/json',
-              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+              Accept: "application/json",
+              "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
             },
             timeout: 6_000,
             retry: 0,
@@ -79,31 +79,31 @@ export async function fetchPublicPaymentCheckout(
           .json<any>();
 
         if (res) {
-          const rawStatus = (res.status || '').toLowerCase();
+          const rawStatus = (res.status || "").toLowerCase();
           const normalizedStatus =
-            rawStatus === 'completed' || rawStatus === 'paid' || rawStatus === 'success'
-              ? 'completed'
-              : rawStatus === 'canceled' || rawStatus === 'cancelled'
-              ? 'canceled'
-              : rawStatus === 'expired'
-              ? 'expired'
-              : rawStatus === 'failed'
-              ? 'failed'
-              : 'pending';
+            rawStatus === "completed" || rawStatus === "paid" || rawStatus === "success"
+              ? "completed"
+              : rawStatus === "canceled" || rawStatus === "cancelled"
+                ? "canceled"
+                : rawStatus === "expired"
+                  ? "expired"
+                  : rawStatus === "failed"
+                    ? "failed"
+                    : "pending";
 
           const paymentCode = res.paymentCode || null;
           const paymentCodeType =
-            res.paymentCodeType || (paymentCode?.startsWith('000201') ? 'QR_TEXT' : null);
+            res.paymentCodeType || (paymentCode?.startsWith("000201") ? "QR_TEXT" : null);
 
           return {
             status: normalizedStatus,
-            order_id: res.referenceCode || '',
+            order_id: res.referenceCode || "",
             amount: Number(res.initiatedAmount || res.amount || 0),
-            currency: res.currency || 'IDR',
-            expires_at: res.expirationTime || '',
+            currency: res.currency || "IDR",
+            expires_at: res.expirationTime || "",
             payment_code: paymentCode,
             payment_code_type: paymentCodeType,
-            payment_channel_used: res.paymentChannel || 'QRIS',
+            payment_channel_used: res.paymentChannel || "QRIS",
           };
         }
       }
@@ -116,8 +116,8 @@ export async function fetchPublicPaymentCheckout(
       const html = await ky
         .get(targetUrl, {
           headers: {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-            Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+            Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
           },
           timeout: 6_000,
           retry: 0,
@@ -136,14 +136,14 @@ export async function fetchPublicPaymentCheckout(
           html.match(/"paymentCodeType"\s*:\s*"([^"]+)"/);
 
         return {
-          status: 'pending',
-          order_id: '',
+          status: "pending",
+          order_id: "",
           amount: 0,
-          currency: 'IDR',
-          expires_at: '',
+          currency: "IDR",
+          expires_at: "",
           payment_code: paymentCode,
-          payment_code_type: typeMatch ? typeMatch[1] : 'QR_TEXT',
-          payment_channel_used: 'QRIS',
+          payment_code_type: typeMatch ? typeMatch[1] : "QR_TEXT",
+          payment_channel_used: "QRIS",
         };
       }
     } catch {
@@ -169,40 +169,42 @@ export async function fetchPublicPaymentCheckout(
 }
 
 export class SumoPodError extends Error {
-  constructor(message: string, public status: number, public body: unknown) {
+  constructor(
+    message: string,
+    public status: number,
+    public body: unknown,
+  ) {
     super(message);
-    this.name = 'SumoPodError';
+    this.name = "SumoPodError";
   }
 }
 
 /** Create a SumoPod payment link. Throws `SumoPodError` on a non-2xx response. */
 export async function createPayment(input: CreatePaymentInput): Promise<SumoPodPayment> {
-  if (!SUMOPOD_API_KEY) throw new Error('SUMOPOD_API_KEY tidak dikonfigurasi');
+  if (!SUMOPOD_API_KEY) throw new Error("SUMOPOD_API_KEY tidak dikonfigurasi");
 
   // SumoPod regex requires order_id to match ^[a-zA-Z0-9-_]+$
-  const safeOrderId = input.orderId.replace(/[^a-zA-Z0-9-_]/g, '-');
+  const safeOrderId = input.orderId.replace(/[^a-zA-Z0-9-_]/g, "-");
 
   // SumoPod validates return URLs with /^https:\/\//; omit when running locally on http://
   const successUrl =
-    input.successReturnUrl && input.successReturnUrl.startsWith('https://')
+    input.successReturnUrl && input.successReturnUrl.startsWith("https://")
       ? input.successReturnUrl
       : undefined;
   const cancelUrl =
-    input.cancelReturnUrl && input.cancelReturnUrl.startsWith('https://')
+    input.cancelReturnUrl && input.cancelReturnUrl.startsWith("https://")
       ? input.cancelReturnUrl
       : undefined;
 
   const payload: Record<string, unknown> = {
     order_id: safeOrderId,
     amount: Math.round(input.amount),
-    currency: input.currency ?? 'IDR',
+    currency: input.currency ?? "IDR",
     expires_in_hours: input.expiresInHours ?? 24,
   };
 
   const paymentMethod =
-    input.paymentMethodTypeCode ||
-    process.env.SUMOPOD_DEFAULT_PAYMENT_METHOD ||
-    'QRIS';
+    input.paymentMethodTypeCode || process.env.SUMOPOD_DEFAULT_PAYMENT_METHOD || "QRIS";
 
   if (successUrl) payload.success_return_url = successUrl;
   if (cancelUrl) payload.cancel_return_url = cancelUrl;
@@ -210,7 +212,7 @@ export async function createPayment(input: CreatePaymentInput): Promise<SumoPodP
 
   if (input.amount < 1000) {
     throw new SumoPodError(
-      `Nominal pembayaran (Rp ${input.amount.toLocaleString('id-ID')}) di bawah batas minimum transaksi gateway pembayaran (minimal Rp 1.000). Jika lomba ini gratis, silakan atur status biaya menjadi 'Gratis' di dashboard admin.`,
+      `Nominal pembayaran (Rp ${input.amount.toLocaleString("id-ID")}) di bawah batas minimum transaksi gateway pembayaran (minimal Rp 1.000). Jika lomba ini gratis, silakan atur status biaya menjadi 'Gratis' di dashboard admin.`,
       400,
       null,
     );
@@ -219,7 +221,7 @@ export async function createPayment(input: CreatePaymentInput): Promise<SumoPodP
   try {
     return await ky
       .post(`${SUMOPOD_BASE_URL}/payments`, {
-        headers: { 'X-Api-Key': SUMOPOD_API_KEY },
+        headers: { "X-Api-Key": SUMOPOD_API_KEY },
         json: payload,
         timeout: 15_000,
         retry: 0,
@@ -228,23 +230,26 @@ export async function createPayment(input: CreatePaymentInput): Promise<SumoPodP
   } catch (err) {
     if (err instanceof HTTPError) {
       let body: any = (err as any).data;
-      let rawText = '';
+      let rawText = "";
       if (!body) {
-        rawText = await err.response.text().catch(() => '');
+        rawText = await err.response.text().catch(() => "");
         try {
           body = JSON.parse(rawText);
         } catch {
           body = rawText;
         }
       }
-      console.error('SumoPod API error detail:', {
+      console.error("SumoPod API error detail:", {
         status: err.response.status,
         body,
         raw: rawText,
         payload: JSON.stringify(payload),
       });
       const message =
-        (body && typeof body === 'object' && ('message' in body || 'error' in body) && (body.message || body.error)) ||
+        (body &&
+          typeof body === "object" &&
+          ("message" in body || "error" in body) &&
+          (body.message || body.error)) ||
         rawText ||
         `SumoPod create payment failed (${err.response.status})`;
       throw new SumoPodError(String(message), err.response.status, body);
@@ -264,15 +269,15 @@ export function verifyWebhookSignature(
   svixSignature: string,
   rawBody: string,
 ): boolean {
-  const secretBytes = Buffer.from(secret.replace('whsec_', ''), 'base64');
+  const secretBytes = Buffer.from(secret.replace("whsec_", ""), "base64");
   const signedContent = `${svixId}.${svixTimestamp}.${rawBody}`;
 
   const expectedSignature = crypto
-    .createHmac('sha256', secretBytes)
+    .createHmac("sha256", secretBytes)
     .update(signedContent)
-    .digest('base64');
+    .digest("base64");
 
-  const signatures = svixSignature.split(' ').map((s) => s.split(',')[1]);
+  const signatures = svixSignature.split(" ").map((s) => s.split(",")[1]);
   return signatures.includes(expectedSignature);
 }
 

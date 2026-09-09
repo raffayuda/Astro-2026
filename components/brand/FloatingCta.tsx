@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import Link from "next/link"
-import { AnimatePresence, motion, useReducedMotion } from "motion/react"
-import { ChevronRight } from "lucide-react"
+import * as React from "react";
+import Link from "next/link";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { ChevronRight } from "lucide-react";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 /**
  * Persistent registration CTA.
@@ -19,26 +19,25 @@ export function FloatingCta({
   label = "Daftar segera",
   className,
 }: {
-  href?: string
-  label?: string
-  className?: string
+  href?: string;
+  label?: string;
+  className?: string;
 }) {
-  const reduce = useReducedMotion()
-  const [visible, setVisible] = React.useState(false)
+  const reduce = useReducedMotion();
+  const [visible, setVisible] = React.useState(false);
 
   React.useEffect(() => {
-    const hero = document.getElementById("home")
+    const hero = document.getElementById("home");
     if (!hero) {
-      setVisible(true)
-      return
+      setVisible(true);
+      return;
     }
-    const io = new IntersectionObserver(
-      ([entry]) => setVisible(!entry.isIntersecting),
-      { threshold: 0.12 },
-    )
-    io.observe(hero)
-    return () => io.disconnect()
-  }, [])
+    const io = new IntersectionObserver(([entry]) => setVisible(!entry.isIntersecting), {
+      threshold: 0.12,
+    });
+    io.observe(hero);
+    return () => io.disconnect();
+  }, []);
 
   return (
     <AnimatePresence>
@@ -51,7 +50,7 @@ export function FloatingCta({
           className={cn(
             "fixed z-50 print:hidden",
             "inset-x-4 bottom-[max(1rem,env(safe-area-inset-bottom))] sm:inset-x-auto sm:right-5 sm:bottom-5",
-            className
+            className,
           )}
         >
           <Link
@@ -69,5 +68,5 @@ export function FloatingCta({
         </motion.div>
       )}
     </AnimatePresence>
-  )
+  );
 }

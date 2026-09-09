@@ -1,11 +1,11 @@
-import { betterAuth } from 'better-auth';
-import { drizzleAdapter } from 'better-auth/adapters/drizzle';
-import { nextCookies } from 'better-auth/next-js';
-import { emailOTP } from 'better-auth/plugins';
-import { admin } from 'better-auth/plugins';
-import { Resend } from 'resend';
-import { db } from '@/src/db';
-import { users, authSessions, authAccounts, authVerifications } from '@/src/db/schema';
+import { betterAuth } from "better-auth";
+import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { nextCookies } from "better-auth/next-js";
+import { emailOTP } from "better-auth/plugins";
+import { admin } from "better-auth/plugins";
+import { Resend } from "resend";
+import { db } from "@/src/db";
+import { users, authSessions, authAccounts, authVerifications } from "@/src/db/schema";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -13,19 +13,19 @@ export const auth = betterAuth({
   baseURL:
     process.env.BETTER_AUTH_URL ||
     process.env.NEXT_PUBLIC_BASE_URL ||
-    'https://astro.nurulfikri.ac.id',
+    "https://astro.nurulfikri.ac.id",
   trustedOrigins: [
-    'https://astro.nurulfikri.ac.id',
-    'http://localhost:3000',
-    'http://localhost:3001',
+    "https://astro.nurulfikri.ac.id",
+    "http://localhost:3000",
+    "http://localhost:3001",
     ...(process.env.BETTER_AUTH_TRUSTED_ORIGINS
-      ? process.env.BETTER_AUTH_TRUSTED_ORIGINS.split(',').map((s) => s.trim())
+      ? process.env.BETTER_AUTH_TRUSTED_ORIGINS.split(",").map((s) => s.trim())
       : []),
     ...(process.env.BETTER_AUTH_URL ? [process.env.BETTER_AUTH_URL] : []),
     ...(process.env.NEXT_PUBLIC_BASE_URL ? [process.env.NEXT_PUBLIC_BASE_URL] : []),
   ],
   database: drizzleAdapter(db, {
-    provider: 'pg',
+    provider: "pg",
     usePlural: true,
     schema: {
       users,
@@ -45,30 +45,28 @@ export const auth = betterAuth({
       allowedAttempts: 3, // Maksimal 3 kali salah memasukkan kode OTP
       sendVerificationOnSignUp: true,
       overrideDefaultEmailVerification: true,
-      storeOTP: 'hashed',
+      storeOTP: "hashed",
       rateLimit: {
         window: 600, // 10 menit
         max: 3, // Maksimal 3 kali pengiriman OTP dalam 10 menit
       },
       sendVerificationOTP: async ({ email, otp, type }) => {
         const subject =
-          type === 'forget-password'
-            ? 'Reset Password ASTRO 2026'
-            : 'Kode OTP ASTRO 2026';
+          type === "forget-password" ? "Reset Password ASTRO 2026" : "Kode OTP ASTRO 2026";
         const message =
-          type === 'forget-password'
-            ? 'Gunakan kode berikut untuk mereset password akun ASTRO 2026'
-            : 'Gunakan kode berikut untuk memverifikasi akun ASTRO 2026';
+          type === "forget-password"
+            ? "Gunakan kode berikut untuk mereset password akun ASTRO 2026"
+            : "Gunakan kode berikut untuk memverifikasi akun ASTRO 2026";
 
         const baseUrl = (
           process.env.NEXT_PUBLIC_BASE_URL ||
           process.env.BETTER_AUTH_URL ||
-          'https://astro.nurulfikri.ac.id'
-        ).replace(/\/+$/, '');
+          "https://astro.nurulfikri.ac.id"
+        ).replace(/\/+$/, "");
         const verifyUrl = `${baseUrl}/auth/verify-otp?email=${encodeURIComponent(email)}`;
 
         await resend.emails.send({
-          from: 'ASTRO 2026 <noreply@mailer.kta.blue>',
+          from: "ASTRO 2026 <noreply@mailer.kta.blue>",
           to: email,
           subject,
           html: `
@@ -104,8 +102,8 @@ export const auth = betterAuth({
       },
     }),
     admin({
-      defaultRole: 'participant',
-      adminRoles: ['admin'],
+      defaultRole: "participant",
+      adminRoles: ["admin"],
     }),
     nextCookies(),
   ],
@@ -114,11 +112,11 @@ export const auth = betterAuth({
     window: 60,
     max: 100,
     customRules: {
-      '/email-otp/send-verification-otp': {
+      "/email-otp/send-verification-otp": {
         window: 600, // 10 menit
         max: 3, // Maksimal 3 kali request kirim OTP per 10 menit
       },
-      '/email-otp/verify-email': {
+      "/email-otp/verify-email": {
         window: 600,
         max: 5, // Maksimal 5 kali salah/coba verifikasi per 10 menit
       },

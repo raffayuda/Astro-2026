@@ -2,24 +2,14 @@
 
 import { useState, useEffect } from "react";
 import { motion, useReducedMotion, AnimatePresence } from "motion/react";
-import {
-  Camera,
-  ChevronLeft,
-  ChevronRight,
-  Heart,
-  X,
-  ZoomIn,
-} from "lucide-react";
+import { Camera, ChevronLeft, ChevronRight, Heart, X, ZoomIn } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import SkeletonImage from "@/components/SkeletonImage";
 import { cn } from "@/lib/utils";
 import { normalizeImageUrl } from "@/components/ImportCommittee";
-import {
-  useGalleryPhotos,
-  useGalleryCategories,
-} from "@/src/lib/hooks/use-queries";
+import { useGalleryPhotos, useGalleryCategories } from "@/src/lib/hooks/use-queries";
 import { SectionHeading } from "@/components/brand/SectionHeading";
 import { SectionShell } from "@/components/brand/SectionShell";
 
@@ -41,9 +31,7 @@ interface GalleryCategory {
 export default function EventGallerySection() {
   const reduce = useReducedMotion();
   const [activeCategory, setActiveCategory] = useState<string>("ALL");
-  const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(
-    null,
-  );
+  const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(null);
   const [loadedPhotoId, setLoadedPhotoId] = useState<string | null>(null);
   const [likedPhotos, setLikedPhotos] = useState<Record<string, boolean>>({});
   const [isMarqueeHovered, setIsMarqueeHovered] = useState(false);
@@ -52,14 +40,10 @@ export default function EventGallerySection() {
   const { data: categories = [] } = useGalleryCategories() as {
     data: GalleryCategory[];
   };
-  const photos: GalleryPhoto[] = Array.isArray(gData)
-    ? gData
-    : ((gData as any)?.data ?? []);
+  const photos: GalleryPhoto[] = Array.isArray(gData) ? gData : ((gData as any)?.data ?? []);
 
   const filteredPhotos =
-    activeCategory === "ALL"
-      ? photos
-      : photos.filter((p) => p.category === activeCategory);
+    activeCategory === "ALL" ? photos : photos.filter((p) => p.category === activeCategory);
 
   // Lebih cepat saat filter kategori tertentu (non-ALL), biar tidak terasa lambat/berat.
   const marqueeDuration = activeCategory === "ALL" ? 90 : 32;
@@ -91,8 +75,7 @@ export default function EventGallerySection() {
     setLikedPhotos((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
-  const photo =
-    selectedPhotoIndex !== null ? filteredPhotos[selectedPhotoIndex] : null;
+  const photo = selectedPhotoIndex !== null ? filteredPhotos[selectedPhotoIndex] : null;
   const isPhotoReady = photo ? loadedPhotoId === photo.id : false;
 
   useEffect(() => {
@@ -129,18 +112,16 @@ export default function EventGallerySection() {
             onValueChange={(v) => v && setActiveCategory(v)}
             spacing={2}
           >
-            {[{ name: "All", slug: "ALL" } as any, ...categories].map(
-              (cat: any) => (
-                <ToggleGroupItem
-                  key={cat.slug}
-                  value={cat.slug}
-                  className="rounded-full gap-2 border border-white/80 bg-white/70 px-4 py-2 text-xs font-bold text-astro-navy backdrop-blur-xl data-[state=on]:border-white data-[state=on]:bg-astro-navy data-[state=on]:text-white data-[state=on]:shadow-md"
-                >
-                  <Camera className="size-3.5" />
-                  {cat.name}
-                </ToggleGroupItem>
-              ),
-            )}
+            {[{ name: "All", slug: "ALL" } as any, ...categories].map((cat: any) => (
+              <ToggleGroupItem
+                key={cat.slug}
+                value={cat.slug}
+                className="rounded-full gap-2 border border-white/80 bg-white/70 px-4 py-2 text-xs font-bold text-astro-navy backdrop-blur-xl data-[state=on]:border-white data-[state=on]:bg-astro-navy data-[state=on]:text-white data-[state=on]:shadow-md"
+              >
+                <Camera className="size-3.5" />
+                {cat.name}
+              </ToggleGroupItem>
+            ))}
           </ToggleGroup>
         </div>
       </div>
@@ -160,16 +141,13 @@ export default function EventGallerySection() {
             <div key={rowIdx} className="relative flex w-full overflow-hidden">
               <motion.div
                 animate={
-                  isMarqueeHovered
-                    ? false
-                    : { x: rowIdx === 0 ? ["0%", "-50%"] : ["-50%", "0%"] }
+                  isMarqueeHovered ? false : { x: rowIdx === 0 ? ["0%", "-50%"] : ["-50%", "0%"] }
                 }
                 transition={{
                   x: {
                     repeat: Infinity,
                     repeatType: "loop",
-                    duration:
-                      rowIdx === 0 ? marqueeDuration : marqueeDuration + 10,
+                    duration: rowIdx === 0 ? marqueeDuration : marqueeDuration + 10,
                     ease: "linear",
                   },
                 }}
@@ -178,9 +156,7 @@ export default function EventGallerySection() {
                 {row.map((photoItem, idx) => (
                   <div
                     key={`r${rowIdx}-${photoItem.id}-${idx}`}
-                    onClick={() =>
-                      setSelectedPhotoIndex(idx % filteredPhotos.length)
-                    }
+                    onClick={() => setSelectedPhotoIndex(idx % filteredPhotos.length)}
                     className="group relative aspect-[4/3] w-[280px] shrink-0 cursor-pointer overflow-hidden rounded-2xl border-2 border-white/80 bg-white/60 p-3 shadow-md backdrop-blur-2xl transition-all duration-500 hover:border-white hover:shadow-2xl sm:w-[330px] md:w-[380px]"
                   >
                     {/* Glass Refraction Highlight */}
@@ -253,9 +229,7 @@ export default function EventGallerySection() {
                     <Badge className="rounded-full bg-white px-2.5 py-0.5 text-xs font-bold text-astro-navy">
                       {photo.year}
                     </Badge>
-                    <span className="text-xs font-medium text-white/80">
-                      {photo.category}
-                    </span>
+                    <span className="text-xs font-medium text-white/80">{photo.category}</span>
                   </>
                 ) : (
                   <>
@@ -277,9 +251,7 @@ export default function EventGallerySection() {
                   )}
                   aria-label="Suka foto ini"
                 >
-                  <Heart
-                    className={cn(likedPhotos[photo.id] && "fill-current")}
-                  />
+                  <Heart className={cn(likedPhotos[photo.id] && "fill-current")} />
                 </Button>
                 <Button
                   variant="ghost"
@@ -336,12 +308,9 @@ export default function EventGallerySection() {
               <div>
                 {isPhotoReady ? (
                   <>
-                    <h3 className="text-base font-black text-white md:text-lg">
-                      {photo.title}
-                    </h3>
+                    <h3 className="text-base font-black text-white md:text-lg">{photo.title}</h3>
                     <p className="mt-0.5 text-xs font-semibold text-astro-cyan-2">
-                      Foto {selectedPhotoIndex! + 1} dari{" "}
-                      {filteredPhotos.length} dokumentasi resmi
+                      Foto {selectedPhotoIndex! + 1} dari {filteredPhotos.length} dokumentasi resmi
                     </p>
                   </>
                 ) : (
@@ -354,8 +323,7 @@ export default function EventGallerySection() {
 
               {isPhotoReady ? (
                 <div className="hidden items-center gap-1.5 border border-sky-top/30 bg-astro-blue/10 px-3 py-1.5 text-xs font-bold text-astro-cyan-2 rounded-lg shadow-sm sm:flex">
-                  <ZoomIn className="size-3.5 text-astro-cyan-2" /> HD
-                  Documentation
+                  <ZoomIn className="size-3.5 text-astro-cyan-2" /> HD Documentation
                 </div>
               ) : (
                 <div className="hidden sm:block h-7 w-32 rounded bg-astro-cyan-2/40 animate-pulse" />

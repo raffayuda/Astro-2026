@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   Pagination as PaginationRoot,
   PaginationContent,
   PaginationEllipsis,
   PaginationItem,
-} from '@/components/ui/pagination';
+} from "@/components/ui/pagination";
 
 interface Props {
   currentPage: number;
@@ -20,12 +20,12 @@ export default function Pagination({ currentPage, totalItems, pageSize, onPageCh
   const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
   if (totalPages <= 1) return null;
 
-  const pages: (number | '...')[] = [];
+  const pages: (number | "...")[] = [];
   const start = Math.max(1, currentPage - 1);
   const end = Math.min(totalPages, currentPage + 1);
-  if (start > 2) pages.push(1, '...');
+  if (start > 2) pages.push(1, "...");
   for (let i = start; i <= end; i++) pages.push(i);
-  if (end < totalPages - 1) pages.push('...', totalPages);
+  if (end < totalPages - 1) pages.push("...", totalPages);
   else if (end < totalPages) pages.push(totalPages);
 
   return (
@@ -43,22 +43,22 @@ export default function Pagination({ currentPage, totalItems, pageSize, onPageCh
           </Button>
         </PaginationItem>
         {pages.map((p, i) =>
-          p === '...' ? (
+          p === "..." ? (
             <PaginationItem key={`ellipsis-${i}`}>
               <PaginationEllipsis />
             </PaginationItem>
           ) : (
             <PaginationItem key={p}>
               <Button
-                variant={p === currentPage ? 'default' : 'outline'}
+                variant={p === currentPage ? "default" : "outline"}
                 size="icon-sm"
                 onClick={() => onPageChange(p)}
-                aria-current={p === currentPage ? 'page' : undefined}
+                aria-current={p === currentPage ? "page" : undefined}
               >
                 {p}
               </Button>
             </PaginationItem>
-          )
+          ),
         )}
         <PaginationItem>
           <Button

@@ -24,10 +24,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { authClient } from "@/src/lib/auth-client";
 import { useRegistrations } from "@/src/lib/hooks/use-queries";
 import { apiHelpers } from "@/src/lib/api";
-import PrintableInvoice, {
-  PrintPortal,
-  usePrintInvoice,
-} from "@/components/PrintableInvoice";
+import PrintableInvoice, { PrintPortal, usePrintInvoice } from "@/components/PrintableInvoice";
 import {
   CtaButton,
   PageShell,
@@ -59,9 +56,7 @@ interface RegistrationItem {
   leaderGameId: string | null;
   leaderPhotoUrl: string | null;
   members: string | null;
-  memberDetails:
-    | { name: string; gameId: string | null; photoUrl: string | null }[]
-    | null;
+  memberDetails: { name: string; gameId: string | null; photoUrl: string | null }[] | null;
   institution: string;
   email: string;
   whatsapp: string;
@@ -222,7 +217,10 @@ function CheckRegistrationContent() {
         />
 
         <WindowCard title="Cari" className="mt-8">
-          <form onSubmit={handleSearchSubmit} className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <form
+            onSubmit={handleSearchSubmit}
+            className="flex flex-col gap-3 sm:flex-row sm:items-center"
+          >
             <div className="relative flex-1">
               <Search
                 className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-ink/45"
@@ -316,7 +314,12 @@ function CheckRegistrationContent() {
               <Surface tone="tint" radius="xl" pad="lg" className="text-center">
                 <p className="font-heading font-bold text-astro-navy">Belum ada pendaftaran</p>
                 <p className="mt-1 text-sm text-ink/70">Akun ini belum punya riwayat lomba.</p>
-                <CtaButton href="/#competitions" size="default" className="mt-4" showChevron={false}>
+                <CtaButton
+                  href="/#competitions"
+                  size="default"
+                  className="mt-4"
+                  showChevron={false}
+                >
                   Pilih lomba
                 </CtaButton>
               </Surface>
@@ -450,9 +453,7 @@ function RegistrationCard({
             {" · "}
             {reg.paymentReference || "Tanpa referensi"}
             {" · "}
-            {reg.paymentAmount === 0
-              ? "Gratis"
-              : `Rp ${reg.paymentAmount.toLocaleString("id-ID")}`}
+            {reg.paymentAmount === 0 ? "Gratis" : `Rp ${reg.paymentAmount.toLocaleString("id-ID")}`}
           </p>
         </div>
 
@@ -594,9 +595,7 @@ function RegistrationDetail({
               {reg.leaderGameId && (
                 <div>
                   <dt className="text-xs text-ink/55">ID akun ketua</dt>
-                  <dd className="font-mono font-semibold text-astro-navy">
-                    {reg.leaderGameId}
-                  </dd>
+                  <dd className="font-mono font-semibold text-astro-navy">{reg.leaderGameId}</dd>
                 </div>
               )}
               {isSafeUrl(reg.leaderPhotoUrl) && (
@@ -696,7 +695,8 @@ function RegistrationDetail({
             {Object.entries(reg.customFields).map(([key, val]) => {
               const fieldDef = reg.competitionCustomFields?.find((field) => field.id === key);
               const label = fieldDef?.label ?? key;
-              const isImage = typeof val === "string" && (val.startsWith("http") || val.startsWith("/"));
+              const isImage =
+                typeof val === "string" && (val.startsWith("http") || val.startsWith("/"));
               if (!val) return null;
               return (
                 <div key={key} className="text-sm">

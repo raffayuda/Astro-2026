@@ -1,11 +1,18 @@
-'use client';
+"use client";
 
 import {
-  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell,
-} from 'recharts';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { useRegistrationStats } from '@/src/lib/hooks/use-queries';
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+} from "recharts";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useRegistrationStats } from "@/src/lib/hooks/use-queries";
 
 interface ChartData {
   name: string;
@@ -32,20 +39,20 @@ interface TooltipContentProps {
  * instead of a second palette living here.
  */
 const SERIES_COLORS = [
-  'var(--color-astro-blue)',
-  'var(--color-astro-sky)',
-  'var(--color-astro-navy)',
-  'var(--color-astro-cyan-2)',
+  "var(--color-astro-blue)",
+  "var(--color-astro-sky)",
+  "var(--color-astro-navy)",
+  "var(--color-astro-cyan-2)",
 ];
-const AXIS_LABEL = 'var(--color-ink)';
-const AXIS_LINE = 'var(--color-astro-cyan-2)';
-const CURSOR_FILL = 'var(--color-surface)';
+const AXIS_LABEL = "var(--color-ink)";
+const AXIS_LINE = "var(--color-astro-cyan-2)";
+const CURSOR_FILL = "var(--color-surface)";
 
 const STATUS_LABELS: Record<string, string> = {
-  pending: 'Pending',
-  detecting: 'Detecting',
-  paid: 'Paid',
-  failed: 'Failed',
+  pending: "Pending",
+  detecting: "Detecting",
+  paid: "Paid",
+  failed: "Failed",
 };
 
 export default function OverviewCharts() {
@@ -96,11 +103,20 @@ export default function OverviewCharts() {
                   textAnchor="end"
                   height={60}
                 />
-                <YAxis tick={{ fontSize: 10, fill: AXIS_LABEL }} tickLine={false} axisLine={false} allowDecimals={false} />
+                <YAxis
+                  tick={{ fontSize: 10, fill: AXIS_LABEL }}
+                  tickLine={false}
+                  axisLine={false}
+                  allowDecimals={false}
+                />
                 <Tooltip content={<CustomTooltip />} cursor={{ fill: CURSOR_FILL }} />
                 <Bar dataKey="count" name="Pendaftar" radius={[4, 4, 0, 0]} barSize={32}>
                   {perCompetition.map((_, idx) => (
-                    <Cell key={`cell-${idx}`} fill={SERIES_COLORS[idx % SERIES_COLORS.length]} fillOpacity={0.85} />
+                    <Cell
+                      key={`cell-${idx}`}
+                      fill={SERIES_COLORS[idx % SERIES_COLORS.length]}
+                      fillOpacity={0.85}
+                    />
                   ))}
                 </Bar>
               </BarChart>

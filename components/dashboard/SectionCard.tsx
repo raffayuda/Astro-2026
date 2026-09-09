@@ -1,4 +1,4 @@
-import type * as React from "react"
+import type * as React from "react";
 
 import {
   Card,
@@ -7,8 +7,8 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { cn } from "@/lib/utils"
+} from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 
 /**
  * Panel wrapper for dashboard sections: inline forms, list containers, detail
@@ -24,15 +24,15 @@ function SectionCard({
   className,
   bodyClassName,
 }: {
-  title?: React.ReactNode
-  description?: React.ReactNode
-  actions?: React.ReactNode
-  icon?: React.ReactNode
-  children: React.ReactNode
-  className?: string
-  bodyClassName?: string
+  title?: React.ReactNode;
+  description?: React.ReactNode;
+  actions?: React.ReactNode;
+  icon?: React.ReactNode;
+  children: React.ReactNode;
+  className?: string;
+  bodyClassName?: string;
 }) {
-  const hasHeader = Boolean(title || description || actions)
+  const hasHeader = Boolean(title || description || actions);
 
   return (
     <Card className={cn("border border-border", className)}>
@@ -50,11 +50,9 @@ function SectionCard({
           {actions ? <CardAction>{actions}</CardAction> : null}
         </CardHeader>
       ) : null}
-      <CardContent className={cn(hasHeader && "pt-0", bodyClassName)}>
-        {children}
-      </CardContent>
+      <CardContent className={cn(hasHeader && "pt-0", bodyClassName)}>{children}</CardContent>
     </Card>
-  )
+  );
 }
 
-export { SectionCard }
+export { SectionCard };

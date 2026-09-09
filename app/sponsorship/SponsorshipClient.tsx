@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 import {
   Camera,
   Clapperboard,
@@ -16,8 +16,8 @@ import {
   Trophy,
   Users,
   Video,
-} from "lucide-react"
-import { FaWhatsapp } from "react-icons/fa6"
+} from "lucide-react";
+import { FaWhatsapp } from "react-icons/fa6";
 
 import {
   CtaButton,
@@ -29,7 +29,7 @@ import {
   StatCard,
   Surface,
   WindowCard,
-} from "@/components/brand"
+} from "@/components/brand";
 
 const AUDIENCE = [
   {
@@ -56,7 +56,7 @@ const AUDIENCE = [
     icon: PartyPopper,
     hint: "Pembukaan Festival Nusantara.",
   },
-] as const
+] as const;
 
 const CHANNELS = [
   { label: "Instagram Feed", icon: Camera },
@@ -68,7 +68,7 @@ const CHANNELS = [
   { label: "Booth Exhibition Space", icon: Store },
   { label: "ID Card", icon: IdCard },
   { label: "Opening & Closing Video", icon: Clapperboard },
-]
+];
 
 const TIER_DETAIL: Record<string, string[]> = {
   Platinum: [
@@ -83,16 +83,12 @@ const TIER_DETAIL: Record<string, string[]> = {
     "Instagram feed & story",
     "Logo di ID Card peserta",
   ],
-  Silver: [
-    "Logo di banner venue",
-    "Instagram story",
-    "Logo di website resmi",
-  ],
+  Silver: ["Logo di banner venue", "Instagram story", "Logo di website resmi"],
   Bronze: ["Logo di website resmi", "Penyebutan di Instagram story"],
-}
+};
 
 export function SponsorshipClient() {
-  const [tier, setTier] = React.useState("Gold")
+  const [tier, setTier] = React.useState("Gold");
 
   return (
     <PageShell>
@@ -109,7 +105,8 @@ export function SponsorshipClient() {
             bodyClassName="space-y-5"
           >
             <p className="text-sm font-medium leading-relaxed text-ink/80">
-              Hadirkan brand Anda langsung di hadapan generasi muda aktif dan potensial se-Jabodetabek.
+              Hadirkan brand Anda langsung di hadapan generasi muda aktif dan potensial
+              se-Jabodetabek.
             </p>
             <div className="grid grid-cols-2 gap-3 md:grid-cols-2">
               {AUDIENCE.map((stat) => (
@@ -153,10 +150,7 @@ export function SponsorshipClient() {
                     key={item}
                     className="flex items-start gap-2 rounded-md bg-sky-bottom px-3 py-2 text-sm font-semibold text-ink"
                   >
-                    <span
-                      aria-hidden
-                      className="mt-1 size-2 shrink-0 rounded-full bg-astro-blue"
-                    />
+                    <span aria-hidden className="mt-1 size-2 shrink-0 rounded-full bg-astro-blue" />
                     {item}
                   </li>
                 ))}
@@ -176,12 +170,7 @@ export function SponsorshipClient() {
 
         <div className="mx-auto mt-12 grid max-w-4xl grid-cols-2 gap-4 md:grid-cols-3">
           {CHANNELS.map((channel) => (
-            <StatCard
-              key={channel.label}
-              icon={channel.icon}
-              label={channel.label}
-              checked
-            />
+            <StatCard key={channel.label} icon={channel.icon} label={channel.label} checked />
           ))}
           <StatCard
             icon={Flag}
@@ -203,8 +192,8 @@ export function SponsorshipClient() {
         >
           <div className="flex flex-col gap-3">
             <p className="text-sm font-semibold text-ink">
-              Tertarik menjadi sponsor ASTRO 2026? Hubungi tim kemitraan kami
-              untuk proposal lengkap.
+              Tertarik menjadi sponsor ASTRO 2026? Hubungi tim kemitraan kami untuk proposal
+              lengkap.
             </p>
             <a
               href="mailto:astro@nurulfikri.ac.id"
@@ -227,5 +216,5 @@ export function SponsorshipClient() {
         </Surface>
       </SectionShell>
     </PageShell>
-  )
+  );
 }

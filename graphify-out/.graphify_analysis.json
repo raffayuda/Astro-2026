@@ -912,11 +912,7 @@
       "src_db_migrations_0012_add_better_auth_sessions",
       "src_db_migrations_0012_add_better_auth_verifications"
     ],
-    "34": [
-      "next_config",
-      "next_config_nextconfig",
-      "next_config_securityheaders"
-    ],
+    "34": ["next_config", "next_config_nextconfig", "next_config_securityheaders"],
     "35": [
       "public_journeys",
       "src_db_migrations_0016_ordinary_talisman",
@@ -937,195 +933,57 @@
       "src_db_migrations_0006_add_categories_divisions_committee_divisions",
       "src_db_migrations_0006_add_categories_divisions_gallery_categories"
     ],
-    "39": [
-      "src_proxy",
-      "src_proxy_config",
-      "src_proxy_proxy"
-    ],
-    "40": [
-      "app_committee_page",
-      "app_committee_page_committeealiaspage"
-    ],
-    "41": [
-      "app_og_preview_page",
-      "app_og_preview_page_ogpreview"
-    ],
-    "42": [
-      "better_auth",
-      "package_dependencies_better_auth"
-    ],
-    "43": [
-      "canvas_confetti",
-      "package_dependencies_canvas_confetti"
-    ],
-    "44": [
-      "class_variance_authority",
-      "package_dependencies_class_variance_authority"
-    ],
-    "45": [
-      "clsx",
-      "package_dependencies_clsx"
-    ],
-    "46": [
-      "components_ui_sonner",
-      "components_ui_sonner_toaster"
-    ],
-    "47": [
-      "dotenv",
-      "package_dependencies_dotenv"
-    ],
-    "48": [
-      "elysia",
-      "package_dependencies_elysia"
-    ],
-    "49": [
-      "elysiajs_eden",
-      "package_dependencies_elysiajs_eden"
-    ],
-    "50": [
-      "input_otp",
-      "package_dependencies_input_otp"
-    ],
-    "51": [
-      "ky",
-      "package_dependencies_ky"
-    ],
-    "52": [
-      "lucide_react",
-      "package_dependencies_lucide_react"
-    ],
-    "53": [
-      "motion",
-      "package_dependencies_motion"
-    ],
-    "54": [
-      "package_dependencies_drizzle_orm",
-      "package_json_drizzle_orm"
-    ],
-    "55": [
-      "package_dependencies_papaparse",
-      "papaparse"
-    ],
-    "56": [
-      "package_dependencies_postgres",
-      "postgres"
-    ],
-    "57": [
-      "package_dependencies_qrcode_react",
-      "qrcode_react"
-    ],
-    "58": [
-      "package_dependencies_radix_ui",
-      "radix_ui"
-    ],
-    "59": [
-      "package_dependencies_react",
-      "react"
-    ],
-    "60": [
-      "package_dependencies_react_dom",
-      "react_dom"
-    ],
-    "61": [
-      "package_dependencies_react_icons",
-      "react_icons"
-    ],
-    "62": [
-      "package_dependencies_resend",
-      "resend"
-    ],
-    "63": [
-      "package_dependencies_shadcn",
-      "shadcn"
-    ],
-    "64": [
-      "package_dependencies_sonner",
-      "sonner"
-    ],
-    "65": [
-      "package_dependencies_supabase_supabase_js",
-      "supabase_supabase_js"
-    ],
-    "66": [
-      "package_dependencies_tailwind_merge",
-      "tailwind_merge"
-    ],
-    "67": [
-      "package_dependencies_tanstack_react_form",
-      "tanstack_react_form"
-    ],
-    "68": [
-      "package_dependencies_tanstack_react_query",
-      "tanstack_react_query"
-    ],
-    "69": [
-      "package_dependencies_tw_animate_css",
-      "tw_animate_css"
-    ],
-    "70": [
-      "package_dependencies_types_canvas_confetti",
-      "types_canvas_confetti"
-    ],
-    "71": [
-      "package_dependencies_xlsx",
-      "xlsx"
-    ],
-    "72": [
-      "package_dependencies_zod",
-      "zod"
-    ],
-    "73": [
-      "postcss_config",
-      "postcss_config_config"
-    ],
-    "74": [
-      "drizzle_config"
-    ],
-    "75": [
-      "drizzle_orm_drizzle_orm"
-    ],
-    "76": [
-      "src_db_migrations_0003_fresh_jigsaw"
-    ],
-    "77": [
-      "src_db_migrations_0004_add_logo_to_sponsors"
-    ],
-    "78": [
-      "src_db_migrations_0007_add_shortname_to_divisions"
-    ],
-    "79": [
-      "src_db_migrations_0008_add_certificate_fields"
-    ],
-    "80": [
-      "src_db_migrations_0009_add_certificate_template"
-    ],
-    "81": [
-      "src_db_migrations_0010_add_winner_fields"
-    ],
-    "82": [
-      "src_db_migrations_0011_add_prizes_jsonb"
-    ],
-    "83": [
-      "src_db_migrations_0013_drop_otp_codes"
-    ],
-    "84": [
-      "src_db_migrations_0014_bizarre_sunspot"
-    ],
-    "85": [
-      "src_db_migrations_0015_classy_barracuda"
-    ],
-    "86": [
-      "src_db_migrations_0017_committee_study_program_batch"
-    ],
-    "87": [
-      "src_db_migrations_0018_journeys_year"
-    ],
-    "88": [
-      "src_db_migrations_0019_wise_black_knight"
-    ],
-    "89": [
-      "src_lib_auth_client_usesession_signin_signup_signout"
-    ]
+    "39": ["src_proxy", "src_proxy_config", "src_proxy_proxy"],
+    "40": ["app_committee_page", "app_committee_page_committeealiaspage"],
+    "41": ["app_og_preview_page", "app_og_preview_page_ogpreview"],
+    "42": ["better_auth", "package_dependencies_better_auth"],
+    "43": ["canvas_confetti", "package_dependencies_canvas_confetti"],
+    "44": ["class_variance_authority", "package_dependencies_class_variance_authority"],
+    "45": ["clsx", "package_dependencies_clsx"],
+    "46": ["components_ui_sonner", "components_ui_sonner_toaster"],
+    "47": ["dotenv", "package_dependencies_dotenv"],
+    "48": ["elysia", "package_dependencies_elysia"],
+    "49": ["elysiajs_eden", "package_dependencies_elysiajs_eden"],
+    "50": ["input_otp", "package_dependencies_input_otp"],
+    "51": ["ky", "package_dependencies_ky"],
+    "52": ["lucide_react", "package_dependencies_lucide_react"],
+    "53": ["motion", "package_dependencies_motion"],
+    "54": ["package_dependencies_drizzle_orm", "package_json_drizzle_orm"],
+    "55": ["package_dependencies_papaparse", "papaparse"],
+    "56": ["package_dependencies_postgres", "postgres"],
+    "57": ["package_dependencies_qrcode_react", "qrcode_react"],
+    "58": ["package_dependencies_radix_ui", "radix_ui"],
+    "59": ["package_dependencies_react", "react"],
+    "60": ["package_dependencies_react_dom", "react_dom"],
+    "61": ["package_dependencies_react_icons", "react_icons"],
+    "62": ["package_dependencies_resend", "resend"],
+    "63": ["package_dependencies_shadcn", "shadcn"],
+    "64": ["package_dependencies_sonner", "sonner"],
+    "65": ["package_dependencies_supabase_supabase_js", "supabase_supabase_js"],
+    "66": ["package_dependencies_tailwind_merge", "tailwind_merge"],
+    "67": ["package_dependencies_tanstack_react_form", "tanstack_react_form"],
+    "68": ["package_dependencies_tanstack_react_query", "tanstack_react_query"],
+    "69": ["package_dependencies_tw_animate_css", "tw_animate_css"],
+    "70": ["package_dependencies_types_canvas_confetti", "types_canvas_confetti"],
+    "71": ["package_dependencies_xlsx", "xlsx"],
+    "72": ["package_dependencies_zod", "zod"],
+    "73": ["postcss_config", "postcss_config_config"],
+    "74": ["drizzle_config"],
+    "75": ["drizzle_orm_drizzle_orm"],
+    "76": ["src_db_migrations_0003_fresh_jigsaw"],
+    "77": ["src_db_migrations_0004_add_logo_to_sponsors"],
+    "78": ["src_db_migrations_0007_add_shortname_to_divisions"],
+    "79": ["src_db_migrations_0008_add_certificate_fields"],
+    "80": ["src_db_migrations_0009_add_certificate_template"],
+    "81": ["src_db_migrations_0010_add_winner_fields"],
+    "82": ["src_db_migrations_0011_add_prizes_jsonb"],
+    "83": ["src_db_migrations_0013_drop_otp_codes"],
+    "84": ["src_db_migrations_0014_bizarre_sunspot"],
+    "85": ["src_db_migrations_0015_classy_barracuda"],
+    "86": ["src_db_migrations_0017_committee_study_program_batch"],
+    "87": ["src_db_migrations_0018_journeys_year"],
+    "88": ["src_db_migrations_0019_wise_black_knight"],
+    "89": ["src_lib_auth_client_usesession_signin_signup_signout"]
   },
   "cohesion": {
     "0": 0.09236947791164658,
@@ -1275,10 +1133,7 @@
     {
       "source": "DashboardOverview()",
       "target": "cn()",
-      "source_files": [
-        "app/dashboard/page.tsx",
-        "lib/utils.ts"
-      ],
+      "source_files": ["app/dashboard/page.tsx", "lib/utils.ts"],
       "confidence": "EXTRACTED",
       "relation": "calls",
       "why": "connects across different repos/directories; bridges separate communities; peripheral node `DashboardOverview()` unexpectedly reaches hub `cn()`"
@@ -1286,10 +1141,7 @@
     {
       "source": "RootLayout()",
       "target": "cn()",
-      "source_files": [
-        "app/layout.tsx",
-        "lib/utils.ts"
-      ],
+      "source_files": ["app/layout.tsx", "lib/utils.ts"],
       "confidence": "EXTRACTED",
       "relation": "calls",
       "why": "connects across different repos/directories; bridges separate communities; peripheral node `RootLayout()` unexpectedly reaches hub `cn()`"
@@ -1297,10 +1149,7 @@
     {
       "source": "CompetitionModal()",
       "target": "cn()",
-      "source_files": [
-        "components/CompetitionModal.tsx",
-        "lib/utils.ts"
-      ],
+      "source_files": ["components/CompetitionModal.tsx", "lib/utils.ts"],
       "confidence": "EXTRACTED",
       "relation": "calls",
       "why": "connects across different repos/directories; bridges separate communities; peripheral node `CompetitionModal()` unexpectedly reaches hub `cn()`"
@@ -1308,10 +1157,7 @@
     {
       "source": "AlertDialogOverlay()",
       "target": "cn()",
-      "source_files": [
-        "components/ui/alert-dialog.tsx",
-        "lib/utils.ts"
-      ],
+      "source_files": ["components/ui/alert-dialog.tsx", "lib/utils.ts"],
       "confidence": "EXTRACTED",
       "relation": "calls",
       "why": "connects across different repos/directories; bridges separate communities; peripheral node `AlertDialogOverlay()` unexpectedly reaches hub `cn()`"
@@ -1319,10 +1165,7 @@
     {
       "source": "AlertDialogMedia()",
       "target": "cn()",
-      "source_files": [
-        "components/ui/alert-dialog.tsx",
-        "lib/utils.ts"
-      ],
+      "source_files": ["components/ui/alert-dialog.tsx", "lib/utils.ts"],
       "confidence": "EXTRACTED",
       "relation": "calls",
       "why": "connects across different repos/directories; bridges separate communities; peripheral node `AlertDialogMedia()` unexpectedly reaches hub `cn()`"

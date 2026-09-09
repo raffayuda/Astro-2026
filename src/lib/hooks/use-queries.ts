@@ -1,45 +1,44 @@
-'use client';
+"use client";
 
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { apiHelpers } from '@/src/lib/api';
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { apiHelpers } from "@/src/lib/api";
 
 /** Standard query-key factory for the app's resources. */
 export const queryKeys = {
   competitions: {
-    all: ['competitions'] as const,
-    detail: (id: string) => ['competitions', id] as const,
-    timeline: (id: string) => ['competitions', id, 'timeline'] as const,
-    withWinners: ['competitions', 'with-winners'] as const,
+    all: ["competitions"] as const,
+    detail: (id: string) => ["competitions", id] as const,
+    timeline: (id: string) => ["competitions", id, "timeline"] as const,
+    withWinners: ["competitions", "with-winners"] as const,
   },
   registrations: {
-    all: ['registrations'] as const,
-    list: (query: Record<string, unknown>) => ['registrations', query] as const,
-    detail: (id: string) => ['registrations', id] as const,
-    stats: ['registrations', 'stats'] as const,
-    winners: (competitionId: string) => ['registrations', 'winners', competitionId] as const,
+    all: ["registrations"] as const,
+    list: (query: Record<string, unknown>) => ["registrations", query] as const,
+    detail: (id: string) => ["registrations", id] as const,
+    stats: ["registrations", "stats"] as const,
+    winners: (competitionId: string) => ["registrations", "winners", competitionId] as const,
   },
-  categories: { all: ['categories'] as const },
-  faqs: { all: ['faqs'] as const },
-  committeeMembers: { all: ['committee-members'] as const },
-  committeeDivisions: { all: ['committee-divisions'] as const },
+  categories: { all: ["categories"] as const },
+  faqs: { all: ["faqs"] as const },
+  committeeMembers: { all: ["committee-members"] as const },
+  committeeDivisions: { all: ["committee-divisions"] as const },
   galleryPhotos: {
-    all: ['gallery-photos'] as const,
-    list: (query: Record<string, unknown>) => ['gallery-photos', query] as const,
+    all: ["gallery-photos"] as const,
+    list: (query: Record<string, unknown>) => ["gallery-photos", query] as const,
   },
-  galleryCategories: { all: ['gallery-categories'] as const },
-  journeys: { all: ['journeys'] as const },
+  galleryCategories: { all: ["gallery-categories"] as const },
+  journeys: { all: ["journeys"] as const },
   journeyPhotos: {
-    all: ['journey-photos'] as const,
-    list: (journeyId: string) => ['journey-photos', journeyId] as const,
+    all: ["journey-photos"] as const,
+    list: (journeyId: string) => ["journey-photos", journeyId] as const,
   },
-  sponsors: { all: ['sponsors'] as const },
-  mediaPartners: { all: ['media-partners'] as const },
-  users: { all: ['users'] as const },
-  invitations: { all: ['invitations'] as const },
+  sponsors: { all: ["sponsors"] as const },
+  mediaPartners: { all: ["media-partners"] as const },
+  users: { all: ["users"] as const },
+  invitations: { all: ["invitations"] as const },
   certificateTemplates: {
-    all: ['certificate-templates'] as const,
-    list: (competitionId: string) =>
-      ['certificate-templates', competitionId] as const,
+    all: ["certificate-templates"] as const,
+    list: (competitionId: string) => ["certificate-templates", competitionId] as const,
   },
 };
 
@@ -118,10 +117,7 @@ export function useRegistrations(
   });
 }
 
-export function useRegistration(
-  id: string,
-  options: { refetchInterval?: number | false } = {},
-) {
+export function useRegistration(id: string, options: { refetchInterval?: number | false } = {}) {
   return useQuery({
     queryKey: queryKeys.registrations.detail(id),
     queryFn: () => apiHelpers.registrations.get(id),
@@ -147,8 +143,7 @@ export function useWinners(competitionId: string) {
 
 export function useRegistrationMutations() {
   const qc = useQueryClient();
-  const invalidate = () =>
-    qc.invalidateQueries({ queryKey: ['registrations'] });
+  const invalidate = () => qc.invalidateQueries({ queryKey: ["registrations"] });
   return {
     create: useMutation({
       mutationFn: apiHelpers.registrations.create,
@@ -243,8 +238,7 @@ export function useInvitations() {
 
 export function useInvitationMutations() {
   const qc = useQueryClient();
-  const invalidate = () =>
-    qc.invalidateQueries({ queryKey: queryKeys.invitations.all });
+  const invalidate = () => qc.invalidateQueries({ queryKey: queryKeys.invitations.all });
   return {
     create: useMutation({
       mutationFn: apiHelpers.invitations.create,

@@ -1,17 +1,21 @@
-import { db } from '@/src/db';
-import { registrations, competitions, users } from '@/src/db/schema';
-import { eq, desc, sql, count, and } from 'drizzle-orm';
-import { Resend } from 'resend';
-import { deleteSupabaseFile } from '@/src/server/modules/upload';
-import { createPayment, fetchPublicPaymentCheckout, SumoPodError } from '@/src/server/modules/payments/sumopod';
-import { getEffectiveFee } from '@/src/server/modules/competitions/service';
-import { isRecord } from '@/lib/flags';
-import { isSafeUrl } from '@/lib/urls';
-import type { MemberDetail, RegistrationCreate, RegistrationListQuery } from './model';
-import { SELF_SERVICE_FIELDS, ADMIN_FIELDS } from './model';
+import { db } from "@/src/db";
+import { registrations, competitions, users } from "@/src/db/schema";
+import { eq, desc, sql, count, and } from "drizzle-orm";
+import { Resend } from "resend";
+import { deleteSupabaseFile } from "@/src/server/modules/upload";
+import {
+  createPayment,
+  fetchPublicPaymentCheckout,
+  SumoPodError,
+} from "@/src/server/modules/payments/sumopod";
+import { getEffectiveFee } from "@/src/server/modules/competitions/service";
+import { isRecord } from "@/lib/flags";
+import { isSafeUrl } from "@/lib/urls";
+import type { MemberDetail, RegistrationCreate, RegistrationListQuery } from "./model";
+import { SELF_SERVICE_FIELDS, ADMIN_FIELDS } from "./model";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
 /**
  * Competitions with `playerPhotoRequired` (esports, e.g. Mobile Legends) need a
@@ -28,14 +32,14 @@ function validatePlayerPhotos(
     memberDetails?: MemberDetail[] | null;
   },
 ): string | null {
-  if (comp.playerPhotoRequired !== '1') return null;
-  if (input.type === 'individual') {
-    if (!input.leaderPhotoUrl) return 'Foto pemain wajib diunggah';
-    return input.leaderGameId?.trim() ? null : 'ID akun pemain wajib diisi';
+  if (comp.playerPhotoRequired !== "1") return null;
+  if (input.type === "individual") {
+    if (!input.leaderPhotoUrl) return "Foto pemain wajib diunggah";
+    return input.leaderGameId?.trim() ? null : "ID akun pemain wajib diisi";
   }
 
-  if (!input.leaderPhotoUrl) return 'Foto ketua tim wajib diunggah';
-  if (!input.leaderGameId?.trim()) return 'ID akun ketua tim wajib diisi';
+  if (!input.leaderPhotoUrl) return "Foto ketua tim wajib diunggah";
+  if (!input.leaderGameId?.trim()) return "ID akun ketua tim wajib diisi";
 
   const players = (input.memberDetails ?? []).filter((m) => m.name?.trim());
   // Clamp to the roster size — some competitions have min > max configured.
@@ -45,10 +49,10 @@ function validatePlayerPhotos(
     return `Minimal ${minMembers} anggota (selain ketua) wajib diisi`;
   }
   if (players.some((m) => !m.photoUrl)) {
-    return 'Setiap anggota tim wajib mengunggah foto pemain';
+    return "Setiap anggota tim wajib mengunggah foto pemain";
   }
   if (players.some((m) => !m.gameId?.trim())) {
-    return 'Setiap anggota tim wajib mengisi ID akun pemain';
+    return "Setiap anggota tim wajib mengisi ID akun pemain";
   }
   return null;
 }
@@ -60,27 +64,23 @@ function validatePlayerPhotos(
  */
 function validateUploadedUrls(updates: Record<string, unknown>): string | null {
   const leaderPhoto = updates.leaderPhotoUrl;
-  if (
-    typeof leaderPhoto === 'string' &&
-    leaderPhoto !== '' &&
-    !isSafeUrl(leaderPhoto)
-  ) {
-    return 'URL foto ketua tidak valid';
+  if (typeof leaderPhoto === "string" && leaderPhoto !== "" && !isSafeUrl(leaderPhoto)) {
+    return "URL foto ketua tidak valid";
   }
 
   if (Array.isArray(updates.memberDetails)) {
     for (const member of updates.memberDetails as MemberDetail[]) {
       const photo = member?.photoUrl;
-      if (typeof photo === 'string' && photo !== '' && !isSafeUrl(photo)) {
-        return 'URL foto anggota tidak valid';
+      if (typeof photo === "string" && photo !== "" && !isSafeUrl(photo)) {
+        return "URL foto anggota tidak valid";
       }
     }
   }
 
   if (isRecord(updates.customFields)) {
     for (const value of Object.values(updates.customFields)) {
-      if (typeof value === 'string' && /^\s*(javascript|data|vbscript):/i.test(value)) {
-        return 'Nilai field khusus tidak valid';
+      if (typeof value === "string" && /^\s*(javascript|data|vbscript):/i.test(value)) {
+        return "Nilai field khusus tidak valid";
       }
     }
   }
@@ -91,23 +91,23 @@ function validateUploadedUrls(updates: Record<string, unknown>): string | null {
 /** Names of the listed players, one per line — kept for CSV/email compatibility. */
 function membersText(memberDetails: MemberDetail[] | null | undefined, fallback?: string | null) {
   const names = (memberDetails ?? []).map((m) => m.name?.trim()).filter(Boolean);
-  return names.length > 0 ? names.join('\n') : (fallback ?? null);
+  return names.length > 0 ? names.join("\n") : (fallback ?? null);
 }
 
 /** Build the `where` clause from list filters. */
 function buildWhere(q: RegistrationListQuery, forceUserId?: string, forceUserEmail?: string) {
-  const conditions: import('drizzle-orm').SQL[] = [];
+  const conditions: import("drizzle-orm").SQL[] = [];
   if (q.search) {
     conditions.push(
-      sql`(${registrations.fullName} ILIKE ${'%' + q.search + '%'} OR ${registrations.teamName} ILIKE ${'%' + q.search + '%'} OR ${registrations.email} ILIKE ${'%' + q.search + '%'})`,
+      sql`(${registrations.fullName} ILIKE ${"%" + q.search + "%"} OR ${registrations.teamName} ILIKE ${"%" + q.search + "%"} OR ${registrations.email} ILIKE ${"%" + q.search + "%"})`,
     );
   }
   if (q.status) conditions.push(eq(registrations.paymentStatus, q.status));
   if (q.competitionId) conditions.push(eq(registrations.competitionId, q.competitionId));
-  
+
   if (q.userId && !forceUserId) {
     conditions.push(
-      sql`(${registrations.userId} = ${q.userId} OR lower(${registrations.email}) = (SELECT lower(email) FROM ${users} WHERE id = ${q.userId} LIMIT 1))`
+      sql`(${registrations.userId} = ${q.userId} OR lower(${registrations.email}) = (SELECT lower(email) FROM ${users} WHERE id = ${q.userId} LIMIT 1))`,
     );
   }
 
@@ -115,7 +115,7 @@ function buildWhere(q: RegistrationListQuery, forceUserId?: string, forceUserEma
   if (forceUserId) {
     if (forceUserEmail) {
       conditions.push(
-        sql`(${registrations.userId} = ${forceUserId} OR lower(${registrations.email}) = lower(${forceUserEmail.trim()}))`
+        sql`(${registrations.userId} = ${forceUserId} OR lower(${registrations.email}) = lower(${forceUserEmail.trim()}))`,
       );
     } else {
       conditions.push(eq(registrations.userId, forceUserId));
@@ -127,8 +127,12 @@ function buildWhere(q: RegistrationListQuery, forceUserId?: string, forceUserEma
     : undefined;
 }
 
-export async function listRegistrations(q: RegistrationListQuery, role: string, sessionUserId?: string) {
-  const isAdmin = role === 'admin';
+export async function listRegistrations(
+  q: RegistrationListQuery,
+  role: string,
+  sessionUserId?: string,
+) {
+  const isAdmin = role === "admin";
   let userEmail: string | undefined;
 
   if (!isAdmin && sessionUserId) {
@@ -147,18 +151,15 @@ export async function listRegistrations(q: RegistrationListQuery, role: string, 
         .where(
           and(
             sql`lower(${registrations.email}) = lower(${u.email.trim()})`,
-            sql`${registrations.userId} IS NULL`
-          )
+            sql`${registrations.userId} IS NULL`,
+          ),
         );
     }
   }
 
   const where = buildWhere(q, isAdmin ? undefined : sessionUserId, userEmail);
 
-  const [total] = await db
-    .select({ total: count() })
-    .from(registrations)
-    .where(where);
+  const [total] = await db.select({ total: count() }).from(registrations).where(where);
 
   const data = await db
     .select({
@@ -237,39 +238,43 @@ export async function getRegistration(id: string) {
   if (!row) return null;
 
   // Active sync with SumoPod live checkout API if outcome is undecided or payment code is missing
-  if (row.paymentStatus === 'pending' && (row.paymentLinkId || row.paymentLinkUrl)) {
+  if (row.paymentStatus === "pending" && (row.paymentLinkId || row.paymentLinkUrl)) {
     try {
       const checkout = await fetchPublicPaymentCheckout(
-        row.paymentLinkUrl || row.paymentLinkId || '',
+        row.paymentLinkUrl || row.paymentLinkId || "",
         row.paymentLinkUrl,
       );
       if (checkout) {
         let shouldUpdate = false;
         const updates: Partial<typeof registrations.$inferInsert> = {};
 
-        if (checkout.status === 'completed') {
-          updates.paymentStatus = 'paid';
+        if (checkout.status === "completed") {
+          updates.paymentStatus = "paid";
           shouldUpdate = true;
-          await applyPaymentStatusSideEffects(row, 'paid');
+          await applyPaymentStatusSideEffects(row, "paid");
         } else if (
-          checkout.status === 'canceled' ||
-          checkout.status === 'cancelled' ||
-          checkout.status === 'failed'
+          checkout.status === "canceled" ||
+          checkout.status === "cancelled" ||
+          checkout.status === "failed"
         ) {
-          updates.paymentStatus = 'failed';
+          updates.paymentStatus = "failed";
           shouldUpdate = true;
-        } else if (checkout.status === 'expired') {
-          updates.paymentStatus = 'expired';
+        } else if (checkout.status === "expired") {
+          updates.paymentStatus = "expired";
           shouldUpdate = true;
         }
 
         if (!row.paymentCode && checkout.payment_code) {
           updates.paymentCode = checkout.payment_code;
-          updates.paymentCodeType = checkout.payment_code_type ?? 'QR_TEXT';
+          updates.paymentCodeType = checkout.payment_code_type ?? "QR_TEXT";
           shouldUpdate = true;
         }
 
-        if (checkout.amount && Number(checkout.amount) > 0 && checkout.amount !== row.paymentAmount) {
+        if (
+          checkout.amount &&
+          Number(checkout.amount) > 0 &&
+          checkout.amount !== row.paymentAmount
+        ) {
           updates.paymentAmount = checkout.amount;
           shouldUpdate = true;
         }
@@ -284,7 +289,7 @@ export async function getRegistration(id: string) {
         }
       }
     } catch (err) {
-      console.warn('Auto-sync checkout status error:', err);
+      console.warn("Auto-sync checkout status error:", err);
     }
   }
 
@@ -298,28 +303,28 @@ export async function createRegistration(input: RegistrationCreate, userId: stri
     .from(competitions)
     .where(eq(competitions.id, input.competitionId));
 
-  if (!comp) return { error: 'Kompetisi tidak ditemukan', status: 404 } as const;
+  if (!comp) return { error: "Kompetisi tidak ditemukan", status: 404 } as const;
 
-  if (comp.isActive !== '1') {
-    return { error: 'Pendaftaran untuk lomba ini sedang ditutup', status: 400 } as const;
+  if (comp.isActive !== "1") {
+    return { error: "Pendaftaran untuk lomba ini sedang ditutup", status: 400 } as const;
   }
 
   if (comp.maxSlots > 0 && (comp.filledSlots ?? 0) >= comp.maxSlots) {
-    return { error: 'Kuota pendaftaran untuk lomba ini sudah penuh', status: 400 } as const;
+    return { error: "Kuota pendaftaran untuk lomba ini sudah penuh", status: 400 } as const;
   }
 
   // A competition is `individual`, `team`, or `both`. Reject a registration
   // type the competition does not allow.
-  const compType = comp.type || 'individual';
-  if (input.type !== 'individual' && input.type !== 'team') {
-    return { error: 'Tipe pendaftaran tidak valid', status: 400 } as const;
+  const compType = comp.type || "individual";
+  if (input.type !== "individual" && input.type !== "team") {
+    return { error: "Tipe pendaftaran tidak valid", status: 400 } as const;
   }
-  if (compType !== 'both' && compType !== input.type) {
+  if (compType !== "both" && compType !== input.type) {
     return {
       error:
-        compType === 'team'
-          ? 'Lomba ini hanya menerima pendaftaran tim'
-          : 'Lomba ini hanya menerima pendaftaran individu',
+        compType === "team"
+          ? "Lomba ini hanya menerima pendaftaran tim"
+          : "Lomba ini hanya menerima pendaftaran individu",
       status: 400,
     } as const;
   }
@@ -339,7 +344,7 @@ export async function createRegistration(input: RegistrationCreate, userId: stri
     }
   }
 
-  const isFree = comp.isFree === '1' || comp.isFree === 'true' || (comp as any).isFree === true;
+  const isFree = comp.isFree === "1" || comp.isFree === "true" || (comp as any).isFree === true;
   const { fee: effectiveFee, batchName } = getEffectiveFee(comp);
   const paymentAmount = isFree ? 0 : effectiveFee;
   const ref = `INV-ASTRO-2026-${Date.now().toString().slice(-8)}`;
@@ -362,7 +367,7 @@ export async function createRegistration(input: RegistrationCreate, userId: stri
       email: input.email.trim(),
       whatsapp: input.whatsapp,
       customFields: input.customFields ?? {},
-      paymentStatus: 'pending',
+      paymentStatus: "pending",
       paymentMethod: input.paymentMethod ?? null,
       paymentAmount,
       batchName: batchName ?? null,
@@ -386,7 +391,7 @@ export async function createRegistration(input: RegistrationCreate, userId: stri
       let finalAmount = payment.amount || paymentAmount;
       let finalPaymentCode = payment.payment_code ?? null;
       let finalPaymentCodeType = payment.payment_code_type ?? null;
-      let finalChannel = reg.paymentMethod ?? payment.payment_channel_used ?? 'QRIS';
+      let finalChannel = reg.paymentMethod ?? payment.payment_channel_used ?? "QRIS";
 
       try {
         const checkout = await fetchPublicPaymentCheckout(
@@ -399,7 +404,7 @@ export async function createRegistration(input: RegistrationCreate, userId: stri
           }
           if (checkout.payment_code) {
             finalPaymentCode = checkout.payment_code;
-            finalPaymentCodeType = checkout.payment_code_type ?? 'QR_TEXT';
+            finalPaymentCodeType = checkout.payment_code_type ?? "QR_TEXT";
           }
           if (checkout.payment_channel_used) {
             finalChannel = checkout.payment_channel_used;
@@ -424,13 +429,13 @@ export async function createRegistration(input: RegistrationCreate, userId: stri
       return { reg: withPayment };
     } catch (err) {
       await db.delete(registrations).where(eq(registrations.id, reg.id));
-      console.error('SumoPod create payment failed:', err);
+      console.error("SumoPod create payment failed:", err);
       // Only SumoPodError carries a message written for participants. Any
       // other failure (a missing API key, a driver error) stays in the log.
       const message =
         err instanceof SumoPodError
           ? err.message
-          : 'Gagal terhubung ke layanan pembayaran, silakan coba lagi';
+          : "Gagal terhubung ke layanan pembayaran, silakan coba lagi";
       return { error: message, status: 502 } as const;
     }
   }
@@ -448,7 +453,7 @@ export async function updateRegistration(
   isAdmin: boolean,
 ) {
   const current = await getRegistration(id);
-  if (!current) return { kind: 'notfound' } as const;
+  if (!current) return { kind: "notfound" } as const;
 
   const allowedFields = isAdmin
     ? ([...SELF_SERVICE_FIELDS, ...ADMIN_FIELDS] as readonly string[])
@@ -460,17 +465,17 @@ export async function updateRegistration(
   }
 
   // Anonymous self-service edits only allowed while payment is still pending
-  if (!isAdmin && updates.paymentStatus !== undefined) return { kind: 'forbidden' } as const;
-  if (!isAdmin && current.paymentStatus !== 'pending') {
-    return { kind: 'locked' } as const;
+  if (!isAdmin && updates.paymentStatus !== undefined) return { kind: "forbidden" } as const;
+  if (!isAdmin && current.paymentStatus !== "pending") {
+    return { kind: "locked" } as const;
   }
-  if (Object.keys(updates).length === 0) return { kind: 'empty' } as const;
+  if (Object.keys(updates).length === 0) return { kind: "empty" } as const;
 
   // The PUT route accepts a loose record, so uploaded-file values are checked
   // here as well as in `registrationCreateSchema`. These end up as `href`
   // targets in the admin views; a `javascript:` URI must never reach the row.
   const urlError = validateUploadedUrls(updates);
-  if (urlError) return { kind: 'invalid', error: urlError } as const;
+  if (urlError) return { kind: "invalid", error: urlError } as const;
 
   // Keep the newline-joined `members` text in sync with the roster, and re-check
   // the photo requirement whenever the roster or the leader photo changes.
@@ -491,7 +496,7 @@ export async function updateRegistration(
         memberDetails:
           (updates.memberDetails as MemberDetail[] | undefined) ?? current.memberDetails,
       });
-      if (photoError) return { kind: 'invalid', error: photoError } as const;
+      if (photoError) return { kind: "invalid", error: photoError } as const;
     }
   }
 
@@ -505,9 +510,7 @@ export async function updateRegistration(
   // files whose URLs were dropped from the list (cascade delete to storage).
   if (isAdmin && updates.certificates !== undefined) {
     const oldUrls = (current.certificates || []).map((c) => c.url);
-    const newUrls = new Set(
-      ((updates.certificates as { url: string }[]) || []).map((c) => c.url),
-    );
+    const newUrls = new Set(((updates.certificates as { url: string }[]) || []).map((c) => c.url));
     for (const url of oldUrls) {
       if (url && !newUrls.has(url)) {
         deleteSupabaseFile(url).catch(console.error);
@@ -520,7 +523,7 @@ export async function updateRegistration(
     await applyPaymentStatusSideEffects(current, updates.paymentStatus as string);
   }
 
-  return { kind: 'ok', reg: updated };
+  return { kind: "ok", reg: updated };
 }
 
 /**
@@ -529,9 +532,9 @@ export async function updateRegistration(
  */
 export async function deleteRegistration(id: string) {
   const current = await getRegistration(id);
-  if (!current) return { kind: 'notfound' } as const;
+  if (!current) return { kind: "notfound" } as const;
 
-  if (current.paymentStatus === 'paid') {
+  if (current.paymentStatus === "paid") {
     await db
       .update(competitions)
       .set({ filledSlots: sql`GREATEST(${competitions.filledSlots} - 1, 0)` })
@@ -544,9 +547,9 @@ export async function deleteRegistration(id: string) {
     ...((current.certificates as { url: string }[]) || []).map((c) => c.url),
   ];
 
-  if (current.customFields && typeof current.customFields === 'object') {
+  if (current.customFields && typeof current.customFields === "object") {
     for (const val of Object.values(current.customFields as Record<string, unknown>)) {
-      if (typeof val === 'string' && val.includes('supabase.co')) {
+      if (typeof val === "string" && val.includes("supabase.co")) {
         filesToDelete.push(val);
       }
     }
@@ -559,7 +562,7 @@ export async function deleteRegistration(id: string) {
   }
 
   await db.delete(registrations).where(eq(registrations.id, id));
-  return { kind: 'ok' } as const;
+  return { kind: "ok" } as const;
 }
 
 /**
@@ -571,8 +574,8 @@ async function applyPaymentStatusSideEffects(
   current: typeof registrations.$inferSelect,
   newStatus: string,
 ) {
-  const wasPaid = current.paymentStatus === 'paid';
-  const nowPaid = newStatus === 'paid';
+  const wasPaid = current.paymentStatus === "paid";
+  const nowPaid = newStatus === "paid";
   const delta = 1; // each approved registration = 1 slot
 
   if (!wasPaid && nowPaid) {
@@ -591,34 +594,35 @@ async function applyPaymentStatusSideEffects(
       .from(competitions)
       .where(eq(competitions.id, current.competitionId));
 
-    const participantName =
-      current.fullName || current.teamName || current.leaderName || 'Peserta';
-    const regType = current.type === 'team' ? 'Tim' : 'Individu';
-    const reference = current.paymentReference || '-';
-    const formattedAmount = new Intl.NumberFormat('id-ID', {
-      style: 'currency',
-      currency: 'IDR',
+    const participantName = current.fullName || current.teamName || current.leaderName || "Peserta";
+    const regType = current.type === "team" ? "Tim" : "Individu";
+    const reference = current.paymentReference || "-";
+    const formattedAmount = new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(current.paymentAmount || 0);
 
-    const paymentDate = new Date(current.updatedAt || current.createdAt || Date.now()).toLocaleDateString('id-ID', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
+    const paymentDate = new Date(
+      current.updatedAt || current.createdAt || Date.now(),
+    ).toLocaleDateString("id-ID", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
 
     const invoiceUrl = `${baseUrl}/check-registration?regId=${current.id}`;
-    const batchText = current.batchName || 'Reguler';
-    const paymentMethod = current.paymentMethod || 'QRIS';
+    const batchText = current.batchName || "Reguler";
+    const paymentMethod = current.paymentMethod || "QRIS";
 
     try {
       await resend.emails.send({
-        from: 'ASTRO 2026 <noreply@mailer.kta.blue>',
+        from: "ASTRO 2026 <noreply@mailer.kta.blue>",
         to: current.email,
-        subject: `Bukti Pembayaran & Invoice Resmi - ${comp?.title || 'ASTRO 2026'}`,
+        subject: `Bukti Pembayaran & Invoice Resmi - ${comp?.title || "ASTRO 2026"}`,
         html: `
           <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 560px; margin: 0 auto; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
             <!-- Header with Brand & Invoice Title -->
@@ -664,7 +668,7 @@ async function applyPaymentStatusSideEffects(
                 </tr>
                 <tr>
                   <td style="padding: 6px 0; color: #64748b;">Asal Institusi / Sekolah</td>
-                  <td style="padding: 6px 0; font-weight: 600; color: #0f172a;">${current.institution || '-'}</td>
+                  <td style="padding: 6px 0; font-weight: 600; color: #0f172a;">${current.institution || "-"}</td>
                 </tr>
               </table>
 
@@ -680,7 +684,7 @@ async function applyPaymentStatusSideEffects(
                   <tbody>
                     <tr>
                       <td style="padding: 12px 14px; border-bottom: 1px solid #f1f5f9; vertical-align: top;">
-                        <strong style="color: #0f172a; font-size: 14px; display: block;">${comp?.title || 'Kompetisi ASTRO 2026'}</strong>
+                        <strong style="color: #0f172a; font-size: 14px; display: block;">${comp?.title || "Kompetisi ASTRO 2026"}</strong>
                         <span style="color: #64748b; font-size: 12px;">Gelombang: ${batchText} • Kategori: ${regType}</span>
                       </td>
                       <td style="padding: 12px 14px; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: 700; color: #0f172a; vertical-align: top;">
@@ -710,12 +714,16 @@ async function applyPaymentStatusSideEffects(
               </div>
 
               <!-- Contact Person -->
-              ${comp?.contactWhatsapp ? `
+              ${
+                comp?.contactWhatsapp
+                  ? `
               <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px; font-size: 12px; color: #475569; margin-top: 20px;">
-                <strong>Narahubung Lomba (${comp.contactName || 'Panitia'}):</strong> 
-                WhatsApp di <a href="https://wa.me/${comp.contactWhatsapp.replace(/\D/g, '')}" style="color: #0284c7; text-decoration: none; font-weight: 700;">${comp.contactWhatsapp}</a>
+                <strong>Narahubung Lomba (${comp.contactName || "Panitia"}):</strong> 
+                WhatsApp di <a href="https://wa.me/${comp.contactWhatsapp.replace(/\D/g, "")}" style="color: #0284c7; text-decoration: none; font-weight: 700;">${comp.contactWhatsapp}</a>
               </div>
-              ` : ''}
+              `
+                  : ""
+              }
             </div>
 
             <!-- Footer -->
@@ -726,7 +734,7 @@ async function applyPaymentStatusSideEffects(
         `,
       });
     } catch (emailErr) {
-      console.error('Failed to send confirmation email:', emailErr);
+      console.error("Failed to send confirmation email:", emailErr);
     }
   } else if (wasPaid && !nowPaid) {
     await db
@@ -748,8 +756,8 @@ export async function setPaymentStatusByReference(orderId: string, newStatus: st
     .from(registrations)
     .where(eq(registrations.paymentReference, orderId));
 
-  if (!current) return { kind: 'notfound' } as const;
-  if (current.paymentStatus === newStatus) return { kind: 'ok', reg: current } as const;
+  if (!current) return { kind: "notfound" } as const;
+  if (current.paymentStatus === newStatus) return { kind: "ok", reg: current } as const;
 
   const [updated] = await db
     .update(registrations)
@@ -759,7 +767,7 @@ export async function setPaymentStatusByReference(orderId: string, newStatus: st
 
   await applyPaymentStatusSideEffects(current, newStatus);
 
-  return { kind: 'ok', reg: updated } as const;
+  return { kind: "ok", reg: updated } as const;
 }
 
 /* ─── Stats (admin) ─── */
@@ -784,17 +792,17 @@ export async function getStats() {
     .groupBy(registrations.paymentStatus);
 
   const STATUS_COLORS: Record<string, string> = {
-    pending: '#f59e0b',
-    detecting: '#3b82f6',
-    paid: '#10b981',
-    failed: '#ef4444',
-    expired: '#94a3b8',
+    pending: "#f59e0b",
+    detecting: "#3b82f6",
+    paid: "#10b981",
+    failed: "#ef4444",
+    expired: "#94a3b8",
   };
 
   const statusDistribution = statusRows.map((r) => ({
     name: r.status,
     value: Number(r.count),
-    color: STATUS_COLORS[r.status] || '#94a3b8',
+    color: STATUS_COLORS[r.status] || "#94a3b8",
   }));
 
   return { perCompetition, statusDistribution };
@@ -825,7 +833,7 @@ export async function getWinners(competitionId: string) {
     .where(
       and(
         eq(registrations.competitionId, competitionId),
-        eq(registrations.paymentStatus, 'paid'),
+        eq(registrations.paymentStatus, "paid"),
         sql`(${registrations.isWinner} = '1' OR ${sql`jsonb_array_length(${registrations.certificates})`} > 0)`,
       ),
     )
@@ -868,53 +876,67 @@ export async function getExportRows() {
     .orderBy(desc(registrations.createdAt));
 
   const headers = [
-    'Referensi', 'Tipe', 'Nama Lengkap', 'No Identitas',
-    'Nama Tim', 'Nama Ketua', 'Identitas Ketua', 'ID Akun Ketua', 'Foto Ketua',
-    'Anggota', 'ID Akun Anggota', 'Foto Anggota',
-    'Instansi', 'Email', 'WhatsApp', 'Lomba', 'Kategori',
-    'Status Bayar', 'Metode Bayar', 'Jumlah', 'Tanggal Daftar',
+    "Referensi",
+    "Tipe",
+    "Nama Lengkap",
+    "No Identitas",
+    "Nama Tim",
+    "Nama Ketua",
+    "Identitas Ketua",
+    "ID Akun Ketua",
+    "Foto Ketua",
+    "Anggota",
+    "ID Akun Anggota",
+    "Foto Anggota",
+    "Instansi",
+    "Email",
+    "WhatsApp",
+    "Lomba",
+    "Kategori",
+    "Status Bayar",
+    "Metode Bayar",
+    "Jumlah",
+    "Tanggal Daftar",
   ];
 
   /** One cell per roster row, in roster order, so the columns line up. */
   const joinRoster = (
     roster: MemberDetail[],
     pick: (m: MemberDetail) => string | null | undefined,
-  ) => roster.map((m) => pick(m) || '-').join('; ');
+  ) => roster.map((m) => pick(m) || "-").join("; ");
 
   const rows = data.map((r) => {
     const roster = (r.memberDetails as MemberDetail[] | null) ?? [];
-    const isTeam = r.type === 'team';
+    const isTeam = r.type === "team";
     return [
-      r.reference || '',
-      r.type || '',
-      isTeam ? '' : r.fullName || '',
-      isTeam ? '' : r.identityNumber || '',
-      isTeam ? r.teamName || '' : '',
-      isTeam ? r.leaderName || '' : '',
-      isTeam ? r.leaderIdentity || '' : '',
-      r.leaderGameId || '',
-      r.leaderPhotoUrl || '',
-      isTeam ? (r.members || '').replace(/\n/g, '; ') : '',
-      isTeam ? joinRoster(roster, (m) => m.gameId) : '',
-      isTeam ? joinRoster(roster, (m) => m.photoUrl) : '',
-      r.institution || '',
-      r.email || '',
-      r.whatsapp || '',
-      r.competitionName || '',
-      r.competitionCategory || '',
-      r.paymentStatus || '',
-      r.paymentMethod || '',
-      r.paymentAmount?.toString() || '0',
-      r.createdAt ? new Date(r.createdAt).toISOString() : '',
+      r.reference || "",
+      r.type || "",
+      isTeam ? "" : r.fullName || "",
+      isTeam ? "" : r.identityNumber || "",
+      isTeam ? r.teamName || "" : "",
+      isTeam ? r.leaderName || "" : "",
+      isTeam ? r.leaderIdentity || "" : "",
+      r.leaderGameId || "",
+      r.leaderPhotoUrl || "",
+      isTeam ? (r.members || "").replace(/\n/g, "; ") : "",
+      isTeam ? joinRoster(roster, (m) => m.gameId) : "",
+      isTeam ? joinRoster(roster, (m) => m.photoUrl) : "",
+      r.institution || "",
+      r.email || "",
+      r.whatsapp || "",
+      r.competitionName || "",
+      r.competitionCategory || "",
+      r.paymentStatus || "",
+      r.paymentMethod || "",
+      r.paymentAmount?.toString() || "0",
+      r.createdAt ? new Date(r.createdAt).toISOString() : "",
     ];
   });
 
   const csvContent = [
-    headers.join(','),
-    ...rows.map((row) =>
-      row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(','),
-    ),
-  ].join('\n');
+    headers.join(","),
+    ...rows.map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(",")),
+  ].join("\n");
 
   return csvContent;
 }
@@ -925,7 +947,7 @@ export async function checkRegistrationStatus(rawQuery: string) {
   if (!q) return [];
 
   const lowerQ = q.toLowerCase();
-  const digitsOnly = q.replace(/\D/g, '');
+  const digitsOnly = q.replace(/\D/g, "");
 
   const conditions = [
     sql`lower(${registrations.paymentReference}) = ${lowerQ}`,
@@ -940,7 +962,7 @@ export async function checkRegistrationStatus(rawQuery: string) {
   // '%...%'` let anyone walk other people's registrations out of this public
   // endpoint. Leading `0`/`62` is stripped from both sides so `0812…` and
   // `62812…` still resolve to the same person.
-  const nationalDigits = digitsOnly.replace(/^(?:62|0)/, '');
+  const nationalDigits = digitsOnly.replace(/^(?:62|0)/, "");
   if (nationalDigits.length >= 8) {
     conditions.push(
       sql`regexp_replace(regexp_replace(${registrations.whatsapp}, '\\D', '', 'g'), '^(62|0)', '') = ${nationalDigits}`,
@@ -998,42 +1020,61 @@ export async function checkRegistrationStatus(rawQuery: string) {
 
   // Sync any pending registrations with SumoPod checkout
   for (const item of data) {
-    if (item.paymentStatus === 'pending' && (item.paymentLinkId || item.paymentLinkUrl)) {
+    if (item.paymentStatus === "pending" && (item.paymentLinkId || item.paymentLinkUrl)) {
       try {
         const checkout = await fetchPublicPaymentCheckout(
-          item.paymentLinkUrl || item.paymentLinkId || '',
+          item.paymentLinkUrl || item.paymentLinkId || "",
           item.paymentLinkUrl,
         );
         if (checkout) {
-          if (checkout.status === 'completed') {
-            item.paymentStatus = 'paid';
-            await db.update(registrations).set({ paymentStatus: 'paid' }).where(eq(registrations.id, item.id));
-            await applyPaymentStatusSideEffects(item as any, 'paid');
+          if (checkout.status === "completed") {
+            item.paymentStatus = "paid";
+            await db
+              .update(registrations)
+              .set({ paymentStatus: "paid" })
+              .where(eq(registrations.id, item.id));
+            await applyPaymentStatusSideEffects(item as any, "paid");
           } else if (
-            checkout.status === 'canceled' ||
-            checkout.status === 'cancelled' ||
-            checkout.status === 'failed'
+            checkout.status === "canceled" ||
+            checkout.status === "cancelled" ||
+            checkout.status === "failed"
           ) {
-            item.paymentStatus = 'failed';
-            await db.update(registrations).set({ paymentStatus: 'failed' }).where(eq(registrations.id, item.id));
-          } else if (checkout.status === 'expired') {
-            item.paymentStatus = 'expired';
-            await db.update(registrations).set({ paymentStatus: 'expired' }).where(eq(registrations.id, item.id));
+            item.paymentStatus = "failed";
+            await db
+              .update(registrations)
+              .set({ paymentStatus: "failed" })
+              .where(eq(registrations.id, item.id));
+          } else if (checkout.status === "expired") {
+            item.paymentStatus = "expired";
+            await db
+              .update(registrations)
+              .set({ paymentStatus: "expired" })
+              .where(eq(registrations.id, item.id));
           }
           if (!item.paymentCode && checkout.payment_code) {
             item.paymentCode = checkout.payment_code;
             await db
               .update(registrations)
-              .set({ paymentCode: checkout.payment_code, paymentCodeType: checkout.payment_code_type ?? 'QR_TEXT' })
+              .set({
+                paymentCode: checkout.payment_code,
+                paymentCodeType: checkout.payment_code_type ?? "QR_TEXT",
+              })
               .where(eq(registrations.id, item.id));
           }
-          if (checkout.amount && Number(checkout.amount) > 0 && checkout.amount !== item.paymentAmount) {
+          if (
+            checkout.amount &&
+            Number(checkout.amount) > 0 &&
+            checkout.amount !== item.paymentAmount
+          ) {
             item.paymentAmount = checkout.amount;
-            await db.update(registrations).set({ paymentAmount: checkout.amount }).where(eq(registrations.id, item.id));
+            await db
+              .update(registrations)
+              .set({ paymentAmount: checkout.amount })
+              .where(eq(registrations.id, item.id));
           }
         }
       } catch (err) {
-        console.warn('Check sync error:', err);
+        console.warn("Check sync error:", err);
       }
     }
   }

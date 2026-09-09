@@ -34,27 +34,88 @@
   "tokens": {
     "colors": {
       "primary": {
-        "electricBlue": { "value": "#3B82F6", "cssVar": "--color-astro-blue", "tailwind": "astro-blue", "role": "Primary action, button gradient start, icon fill" },
-        "lightCyan": { "value": "#93C5FD", "cssVar": "--color-astro-cyan-2", "tailwind": "astro-cyan-2", "role": "Button gradient end, card borders, sky mid-tone" },
-        "darkBlue": { "value": "#1E3A8A", "cssVar": "--color-astro-navy", "tailwind": "astro-navy", "role": "Card strokes, hard-offset shadow, footer ground, body text on light" }
+        "electricBlue": {
+          "value": "#3B82F6",
+          "cssVar": "--color-astro-blue",
+          "tailwind": "astro-blue",
+          "role": "Primary action, button gradient start, icon fill"
+        },
+        "lightCyan": {
+          "value": "#93C5FD",
+          "cssVar": "--color-astro-cyan-2",
+          "tailwind": "astro-cyan-2",
+          "role": "Button gradient end, card borders, sky mid-tone"
+        },
+        "darkBlue": {
+          "value": "#1E3A8A",
+          "cssVar": "--color-astro-navy",
+          "tailwind": "astro-navy",
+          "role": "Card strokes, hard-offset shadow, footer ground, body text on light"
+        }
       },
       "accent": {
-        "pastelOrange": { "value": "#FF9E64", "cssVar": "--color-pastel-orange", "tailwind": "pastel-orange", "role": "talent_icon_button fill; sourced from the AGT poster 'Jenis penampilan' pills" },
-        "gold": { "value": "#FACC15", "cssVar": "--color-astro-gold", "tailwind": "astro-gold", "role": "schedule_card top banner, headline text on sky" },
-        "pinkBenefit": { "value": "#EC4899", "cssVar": "--color-astro-pink", "tailwind": "astro-pink", "role": "Benefit chips, mascot accents" }
+        "pastelOrange": {
+          "value": "#FF9E64",
+          "cssVar": "--color-pastel-orange",
+          "tailwind": "pastel-orange",
+          "role": "talent_icon_button fill; sourced from the AGT poster 'Jenis penampilan' pills"
+        },
+        "gold": {
+          "value": "#FACC15",
+          "cssVar": "--color-astro-gold",
+          "tailwind": "astro-gold",
+          "role": "schedule_card top banner, headline text on sky"
+        },
+        "pinkBenefit": {
+          "value": "#EC4899",
+          "cssVar": "--color-astro-pink",
+          "tailwind": "astro-pink",
+          "role": "Benefit chips, mascot accents"
+        }
       },
       "neutral": {
-        "white": { "value": "#FFFFFF", "cssVar": "--color-white", "tailwind": "white", "role": "Card body, 3px button border, chrome text stroke" },
-        "background": { "value": "#F3F4F6", "cssVar": "--color-surface", "tailwind": "surface", "role": "Page ground beneath the sky gradient, input rails" },
-        "textDark": { "value": "#1F2937", "cssVar": "--color-ink", "tailwind": "ink", "role": "Body copy, form labels" }
+        "white": {
+          "value": "#FFFFFF",
+          "cssVar": "--color-white",
+          "tailwind": "white",
+          "role": "Card body, 3px button border, chrome text stroke"
+        },
+        "background": {
+          "value": "#F3F4F6",
+          "cssVar": "--color-surface",
+          "tailwind": "surface",
+          "role": "Page ground beneath the sky gradient, input rails"
+        },
+        "textDark": {
+          "value": "#1F2937",
+          "cssVar": "--color-ink",
+          "tailwind": "ink",
+          "role": "Body copy, form labels"
+        }
       },
       "sky": {
-        "top": { "value": "#7EC8F5", "cssVar": "--color-sky-top", "role": "astro-sky gradient stop 0%" },
-        "mid": { "value": "#B8E4FB", "cssVar": "--color-sky-mid", "role": "astro-sky gradient stop 45%" },
-        "bottom": { "value": "#E8F6FE", "cssVar": "--color-sky-bottom", "role": "astro-sky gradient stop 100%" }
+        "top": {
+          "value": "#7EC8F5",
+          "cssVar": "--color-sky-top",
+          "role": "astro-sky gradient stop 0%"
+        },
+        "mid": {
+          "value": "#B8E4FB",
+          "cssVar": "--color-sky-mid",
+          "role": "astro-sky gradient stop 45%"
+        },
+        "bottom": {
+          "value": "#E8F6FE",
+          "cssVar": "--color-sky-bottom",
+          "role": "astro-sky gradient stop 100%"
+        }
       },
       "chevronRibbon": {
-        "lime": { "value": "#A3E635", "cssVar": "--color-astro-lime2", "role": "astro-chevron-y triangle band" },
+        "lime": {
+          "value": "#A3E635",
+          "cssVar": "--color-astro-lime2",
+          "role": "astro-chevron-y triangle band"
+        },
         "blue": { "value": "#3B82F6", "role": "astro-chevron-y ground band" },
         "gold": { "value": "#FACC15", "role": "astro-chevron-y inner keyline" }
       },
@@ -91,27 +152,83 @@
     },
 
     "borderRadius": {
-      "full": { "value": "9999px", "tailwind": "rounded-full", "role": "Buttons, pills, badges, talent icons" },
-      "lg": { "value": "12px", "cssVar": "--radius-lg", "tailwind": "rounded-lg", "role": "Cards, panels, monitor bezel" },
-      "md": { "value": "8px", "cssVar": "--radius-md", "tailwind": "rounded-md", "role": "Inputs, stat cards, chips" },
+      "full": {
+        "value": "9999px",
+        "tailwind": "rounded-full",
+        "role": "Buttons, pills, badges, talent icons"
+      },
+      "lg": {
+        "value": "12px",
+        "cssVar": "--radius-lg",
+        "tailwind": "rounded-lg",
+        "role": "Cards, panels, monitor bezel"
+      },
+      "md": {
+        "value": "8px",
+        "cssVar": "--radius-md",
+        "tailwind": "rounded-md",
+        "role": "Inputs, stat cards, chips"
+      },
       "conflictResolution": "Tailwind v4 default is rounded-lg=8px / rounded-md=6px, and this project's --radius:1rem derivation gave lg=16px / md=12.8px. --radius-lg and --radius-md are now overridden in @theme inline to 12px/8px so the class names and these token values agree. The full sm/md/lg/xl/2xl/3xl/4xl ramp is restated as literal px rather than calc() multiples of --radius.",
-      "scale": { "sm": "6px", "md": "8px", "lg": "12px", "xl": "16px", "2xl": "20px", "3xl": "24px", "4xl": "32px" },
+      "scale": {
+        "sm": "6px",
+        "md": "8px",
+        "lg": "12px",
+        "xl": "16px",
+        "2xl": "20px",
+        "3xl": "24px",
+        "4xl": "32px"
+      },
       "normalizeFrom": "Four coexisting channels: token classes, hardcoded px (rounded-[16px] x9, rounded-[14px] x9, rounded-[22px], rounded-[12px]), min()/calc() clamps, and the vestigial .clip-angled/-sm/-lg classes. Plus ~40 inline clipPath:polygon() styles and ~80 clip-angled* applications in app/dashboard/**. .clip-angled* is redefined onto the new ramp (lg/md/xl) so the dashboard normalizes without edits; the inline polygons still need a manual sweep."
     },
 
     "shadows": {
-      "sticker-sm": { "value": "0 2px 0 var(--color-astro-navy)", "cssVar": "--shadow-sticker-sm", "tailwind": "shadow-sticker-sm", "role": "Chips, talent icons, badges" },
-      "sticker": { "value": "0 4px 0 var(--color-astro-navy)", "cssVar": "--shadow-sticker", "tailwind": "shadow-sticker", "role": "Cards, stat cards, inputs" },
-      "sticker-lg": { "value": "0 6px 0 var(--color-astro-navy)", "cssVar": "--shadow-sticker-lg", "tailwind": "shadow-sticker-lg", "role": "Primary buttons, hero panels, monitor" },
-      "gloss": { "value": "inset 0 2px 0 rgba(255,255,255,0.65)", "cssVar": "--shadow-gloss", "tailwind": "shadow-gloss", "role": "Top specular highlight; pair with every gradient button" },
+      "sticker-sm": {
+        "value": "0 2px 0 var(--color-astro-navy)",
+        "cssVar": "--shadow-sticker-sm",
+        "tailwind": "shadow-sticker-sm",
+        "role": "Chips, talent icons, badges"
+      },
+      "sticker": {
+        "value": "0 4px 0 var(--color-astro-navy)",
+        "cssVar": "--shadow-sticker",
+        "tailwind": "shadow-sticker",
+        "role": "Cards, stat cards, inputs"
+      },
+      "sticker-lg": {
+        "value": "0 6px 0 var(--color-astro-navy)",
+        "cssVar": "--shadow-sticker-lg",
+        "tailwind": "shadow-sticker-lg",
+        "role": "Primary buttons, hero panels, monitor"
+      },
+      "gloss": {
+        "value": "inset 0 2px 0 rgba(255,255,255,0.65)",
+        "cssVar": "--shadow-gloss",
+        "tailwind": "shadow-gloss",
+        "role": "Top specular highlight; pair with every gradient button"
+      },
       "conflictResolution": "The spec's soft-diffuse shadow-sm/md/lg slots are NOT globally overridden. Overriding Tailwind's --shadow-sm/md/lg would give every dropdown, popover, tooltip and dialog a hard navy offset, which reads as broken chrome on floating overlays. Instead the sticker shadows are named tokens and brand components opt in via shadow-sticker*. Where this JSON's component definitions say shadow-md / shadow-lg / shadow-sm, author shadow-sticker / shadow-sticker-lg / shadow-sticker-sm.",
       "retire": ["--shadow-glow-cyan", "--shadow-glow-cyan-lg", "--shadow-glow-cyan-btn"]
     },
 
     "typography": {
-      "display": { "cssVar": "--font-masterpiece", "tailwind": "font-masterpiece", "source": "next/font/local → public/fonts/Masterpiece.ttf", "role": "Hero wordmarks, section H2, chrome headlines", "usages": 20 },
-      "body": { "cssVar": "--font-sans", "tailwind": "font-sans", "source": "next/font/google Geist" },
-      "alt": { "cssVar": "--font-display", "tailwind": "font-display", "source": "Space Grotesk → Plus Jakarta Sans → system" },
+      "display": {
+        "cssVar": "--font-masterpiece",
+        "tailwind": "font-masterpiece",
+        "source": "next/font/local → public/fonts/Masterpiece.ttf",
+        "role": "Hero wordmarks, section H2, chrome headlines",
+        "usages": 20
+      },
+      "body": {
+        "cssVar": "--font-sans",
+        "tailwind": "font-sans",
+        "source": "next/font/google Geist"
+      },
+      "alt": {
+        "cssVar": "--font-display",
+        "tailwind": "font-display",
+        "source": "Space Grotesk → Plus Jakarta Sans → system"
+      },
       "scale": {
         "chrome": "clamp(3rem, 12vw, 9rem) / weight 900 / lh .85 / uppercase",
         "sectionH2": "text-5xl md:text-6xl lg:text-7xl font-masterpiece",
@@ -149,15 +266,37 @@
         "recipe": "blue ground band on section top+bottom edges with a lime triangle zigzag (two 135deg/225deg linear-gradients at 22px tiles) and a gold inner keyline",
         "seenIn": "Media Partner card frame edges"
       },
-      "astro-sky": { "keep": true, "retuned": "#7EC8F5 0% → #B8E4FB 45% → #E8F6FE 100%, raised saturation from #35b7ff/#73d4ff/#bdeeff/#fff" },
+      "astro-sky": {
+        "keep": true,
+        "retuned": "#7EC8F5 0% → #B8E4FB 45% → #E8F6FE 100%, raised saturation from #35b7ff/#73d4ff/#bdeeff/#fff"
+      },
       "astro-sky-soft": { "keep": true, "retuned": "pale variant of the same ramp" },
-      "astro-bubble-field": { "keep": true, "retuned": "translucent circles with a top-left specular highlight dot, per the artwork" },
-      "astro-pill": { "keep": true, "retuned": "backdrop-filter dropped; solid white fill + 3px astro-navy border + sticker-sm shadow" },
-      "astro-panel": { "keep": true, "retuned": "inverted blue gradient panel, 3px white border, sticker-lg offset. Retained rather than deleted because app/dashboard/page.tsx applies it." },
-      "clip-angled": { "redefined": "border-radius:var(--radius-lg)", "note": "~80 dashboard call sites normalize onto the new ramp without edits" },
+      "astro-bubble-field": {
+        "keep": true,
+        "retuned": "translucent circles with a top-left specular highlight dot, per the artwork"
+      },
+      "astro-pill": {
+        "keep": true,
+        "retuned": "backdrop-filter dropped; solid white fill + 3px astro-navy border + sticker-sm shadow"
+      },
+      "astro-panel": {
+        "keep": true,
+        "retuned": "inverted blue gradient panel, 3px white border, sticker-lg offset. Retained rather than deleted because app/dashboard/page.tsx applies it."
+      },
+      "clip-angled": {
+        "redefined": "border-radius:var(--radius-lg)",
+        "note": "~80 dashboard call sites normalize onto the new ramp without edits"
+      },
       "clip-angled-sm": { "redefined": "border-radius:var(--radius-md)" },
       "clip-angled-lg": { "redefined": "border-radius:var(--radius-xl)" },
-      "delete": ["@keyframes glow-pulse", "--animate-glow-pulse", "--shadow-glow-cyan", "--shadow-glow-cyan-lg", "--shadow-glow-cyan-btn", ":root.dark token block"]
+      "delete": [
+        "@keyframes glow-pulse",
+        "--animate-glow-pulse",
+        "--shadow-glow-cyan",
+        "--shadow-glow-cyan-lg",
+        "--shadow-glow-cyan-btn",
+        ":root.dark token block"
+      ]
     }
   },
 
@@ -172,9 +311,28 @@
       "authoredClasses": "inline-flex items-center justify-center gap-2 rounded-full border-[3px] border-white bg-gradient-to-b from-astro-blue to-astro-navy px-6 py-4 font-bold text-white shadow-sticker-lg [box-shadow:var(--shadow-sticker-lg),var(--shadow-gloss)] transition hover:-translate-y-0.5 active:translate-y-0.5 active:shadow-sticker-sm",
       "props": {
         "label": { "type": "string", "default": "DAFTAR SEGERA >" },
-        "variant": { "type": "enum", "values": ["default", "outline", "secondary", "ghost", "destructive", "link", "talent", "gold"] },
-        "size": { "type": "enum", "values": ["default", "xs", "sm", "lg", "icon", "icon-xs", "icon-sm", "icon-lg"] },
-        "asChild": { "type": "boolean", "default": false, "note": "renders Slot.Root from the unified radix-ui package" },
+        "variant": {
+          "type": "enum",
+          "values": [
+            "default",
+            "outline",
+            "secondary",
+            "ghost",
+            "destructive",
+            "link",
+            "talent",
+            "gold"
+          ]
+        },
+        "size": {
+          "type": "enum",
+          "values": ["default", "xs", "sm", "lg", "icon", "icon-xs", "icon-sm", "icon-lg"]
+        },
+        "asChild": {
+          "type": "boolean",
+          "default": false,
+          "note": "renders Slot.Root from the unified radix-ui package"
+        },
         "disabled": { "type": "boolean", "default": false }
       },
       "structure": ["span.label", "icon?[data-icon=inline-end]"],
@@ -196,11 +354,18 @@
         "phase": { "type": "string", "example": "Pendaftaran Peserta Batch 1" },
         "dateLabel": { "type": "string", "example": "15 - 30 September 2026" },
         "badge": { "type": "string", "optional": true, "example": "Batch 1" },
-        "status": { "type": "enum", "values": ["upcoming", "active", "done"], "default": "upcoming" }
+        "status": {
+          "type": "enum",
+          "values": ["upcoming", "active", "done"],
+          "default": "upcoming"
+        }
       },
       "structure": [
         { "slot": "banner", "tailwindClasses": "border-t-[6px] border-t-astro-gold rounded-t-lg" },
-        { "slot": "dateBadge", "tailwindClasses": "inline-flex items-center rounded-full bg-astro-blue px-3 py-1 text-xs font-bold uppercase tracking-wide text-white shadow-sticker-sm" },
+        {
+          "slot": "dateBadge",
+          "tailwindClasses": "inline-flex items-center rounded-full bg-astro-blue px-3 py-1 text-xs font-bold uppercase tracking-wide text-white shadow-sticker-sm"
+        },
         { "slot": "title", "tailwindClasses": "mt-3 font-masterpiece text-lg font-bold text-ink" }
       ],
       "sourceData": {
@@ -227,15 +392,26 @@
       "tailwindClasses": "bg-pastel-orange rounded-lg p-3 text-white shadow-sm text-center flex flex-col items-center gap-2",
       "authoredClasses": "flex flex-col items-center gap-2 rounded-lg border-[3px] border-astro-navy bg-pastel-orange p-3 text-center text-white shadow-sticker-sm",
       "props": {
-        "icon": { "type": "enum", "values": ["dance", "singer", "magic", "standup", "martial_arts", "band", "other"] },
+        "icon": {
+          "type": "enum",
+          "values": ["dance", "singer", "magic", "standup", "martial_arts", "band", "other"]
+        },
         "label": { "type": "string" },
         "selected": { "type": "boolean", "default": false },
-        "size": { "type": "enum", "values": ["default", "mini"], "default": "default", "note": "mini is the inline variant used inside registration_form_page" },
+        "size": {
+          "type": "enum",
+          "values": ["default", "mini"],
+          "default": "default",
+          "note": "mini is the inline variant used inside registration_form_page"
+        },
         "onSelect": { "type": "function", "signature": "(id: string) => void" }
       },
       "structure": [
         { "slot": "icon", "tailwindClasses": "size-8 shrink-0", "iconLibrary": "lucide-react" },
-        { "slot": "label", "tailwindClasses": "text-xs font-bold uppercase tracking-wide leading-tight" }
+        {
+          "slot": "label",
+          "tailwindClasses": "text-xs font-bold uppercase tracking-wide leading-tight"
+        }
       ],
       "states": {
         "default": "bg-pastel-orange shadow-sticker-sm",
@@ -269,20 +445,51 @@
         "onSelect": { "type": "function", "signature": "(tier: string) => void" }
       },
       "structure": [
-        { "slot": "bezel", "tailwindClasses": "rounded-lg border-4 border-gray-300 bg-gradient-to-b from-gray-100 to-gray-300 p-6 shadow-sticker-lg" },
-        { "slot": "screen", "tailwindClasses": "relative aspect-[4/3] rounded-md border-4 border-gray-500 bg-gradient-to-b from-astro-blue to-astro-cyan-2 p-4 shadow-[inset_0_4px_12px_rgba(0,0,0,0.35)] overflow-hidden" },
-        { "slot": "scanlines", "tailwindClasses": "pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(0deg,rgba(255,255,255,0.06)_0px,transparent_2px,transparent_4px)]" },
-        { "slot": "bubbleField", "tailwindClasses": "relative grid h-full place-content-center gap-3" },
-        { "slot": "stand", "tailwindClasses": "mx-auto h-6 w-28 rounded-b-lg bg-gray-300 shadow-sticker" }
+        {
+          "slot": "bezel",
+          "tailwindClasses": "rounded-lg border-4 border-gray-300 bg-gradient-to-b from-gray-100 to-gray-300 p-6 shadow-sticker-lg"
+        },
+        {
+          "slot": "screen",
+          "tailwindClasses": "relative aspect-[4/3] rounded-md border-4 border-gray-500 bg-gradient-to-b from-astro-blue to-astro-cyan-2 p-4 shadow-[inset_0_4px_12px_rgba(0,0,0,0.35)] overflow-hidden"
+        },
+        {
+          "slot": "scanlines",
+          "tailwindClasses": "pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(0deg,rgba(255,255,255,0.06)_0px,transparent_2px,transparent_4px)]"
+        },
+        {
+          "slot": "bubbleField",
+          "tailwindClasses": "relative grid h-full place-content-center gap-3"
+        },
+        {
+          "slot": "stand",
+          "tailwindClasses": "mx-auto h-6 w-28 rounded-b-lg bg-gray-300 shadow-sticker"
+        }
       ],
       "packages": [
-        { "tier": "Platinum", "tailwindClasses": "rounded-full bg-gradient-to-b from-gray-50 to-gray-300 text-ink shadow-sticker" },
-        { "tier": "Gold", "tailwindClasses": "rounded-full bg-gradient-to-b from-yellow-200 to-astro-gold text-ink shadow-sticker" },
-        { "tier": "Silver", "tailwindClasses": "rounded-full bg-gradient-to-b from-slate-100 to-slate-300 text-ink shadow-sticker" },
-        { "tier": "Bronze", "tailwindClasses": "rounded-full bg-gradient-to-b from-orange-200 to-pastel-orange text-ink shadow-sticker" }
+        {
+          "tier": "Platinum",
+          "tailwindClasses": "rounded-full bg-gradient-to-b from-gray-50 to-gray-300 text-ink shadow-sticker"
+        },
+        {
+          "tier": "Gold",
+          "tailwindClasses": "rounded-full bg-gradient-to-b from-yellow-200 to-astro-gold text-ink shadow-sticker"
+        },
+        {
+          "tier": "Silver",
+          "tailwindClasses": "rounded-full bg-gradient-to-b from-slate-100 to-slate-300 text-ink shadow-sticker"
+        },
+        {
+          "tier": "Bronze",
+          "tailwindClasses": "rounded-full bg-gradient-to-b from-orange-200 to-pastel-orange text-ink shadow-sticker"
+        }
       ],
       "assets": {
-        "reuse": ["/assets/computer.png", "/assets/fish-in-computer.png", "/assets/retro-pda-phone.png"],
+        "reuse": [
+          "/assets/computer.png",
+          "/assets/fish-in-computer.png",
+          "/assets/retro-pda-phone.png"
+        ],
         "note": "All three already exist in public/assets/ and are currently unreferenced. /assets/computer.png + /assets/fish-in-computer.png are exactly the CRT monitor in sponsorship slide 3 — use them instead of hand-drawing a bezel."
       }
     },
@@ -297,13 +504,29 @@
         "icon": { "type": "string", "note": "lucide-react icon name" },
         "metric": { "type": "string", "optional": true, "example": "1.500+" },
         "label": { "type": "string", "example": "Instagram Feed" },
-        "checked": { "type": "boolean", "default": false, "note": "channel variant renders a green check, per sponsorship slide 2" }
+        "checked": {
+          "type": "boolean",
+          "default": false,
+          "note": "channel variant renders a green check, per sponsorship slide 2"
+        }
       },
       "structure": [
-        { "slot": "icon", "tailwindClasses": "mx-auto mb-3 grid size-11 place-items-center rounded-full bg-astro-cyan-2/30 text-astro-blue [&_svg]:size-5" },
-        { "slot": "metric", "tailwindClasses": "font-masterpiece text-3xl font-bold leading-none text-astro-navy" },
-        { "slot": "label", "tailwindClasses": "mt-1 text-xs font-semibold uppercase tracking-wide text-ink" },
-        { "slot": "check", "tailwindClasses": "absolute right-2 top-2 grid size-5 place-items-center rounded-full bg-astro-lime2 text-white [&_svg]:size-3" }
+        {
+          "slot": "icon",
+          "tailwindClasses": "mx-auto mb-3 grid size-11 place-items-center rounded-full bg-astro-cyan-2/30 text-astro-blue [&_svg]:size-5"
+        },
+        {
+          "slot": "metric",
+          "tailwindClasses": "font-masterpiece text-3xl font-bold leading-none text-astro-navy"
+        },
+        {
+          "slot": "label",
+          "tailwindClasses": "mt-1 text-xs font-semibold uppercase tracking-wide text-ink"
+        },
+        {
+          "slot": "check",
+          "tailwindClasses": "absolute right-2 top-2 grid size-5 place-items-center rounded-full bg-astro-lime2 text-white [&_svg]:size-3"
+        }
       ],
       "datasets": {
         "audienceMetrics": {
@@ -349,15 +572,24 @@
       "props": {
         "name": { "type": "string" },
         "label": { "type": "string" },
-        "type": { "type": "enum", "values": ["text", "email", "tel", "number", "password", "file", "select", "textarea"] },
+        "type": {
+          "type": "enum",
+          "values": ["text", "email", "tel", "number", "password", "file", "select", "textarea"]
+        },
         "placeholder": { "type": "string", "optional": true },
         "required": { "type": "boolean", "default": false },
         "sanitize": { "type": "function", "optional": true, "signature": "(v: string) => string" },
         "error": { "type": "string", "optional": true }
       },
       "structure": [
-        { "slot": "label", "tailwindClasses": "mb-1.5 block text-[11px] font-black uppercase tracking-[0.14em] text-ink" },
-        { "slot": "control", "tailwindClasses": "w-full rounded-md border-2 border-astro-cyan-2 bg-white p-3 text-ink shadow-sticker-sm outline-none focus-visible:ring-2 focus-visible:ring-astro-blue/50" },
+        {
+          "slot": "label",
+          "tailwindClasses": "mb-1.5 block text-[11px] font-black uppercase tracking-[0.14em] text-ink"
+        },
+        {
+          "slot": "control",
+          "tailwindClasses": "w-full rounded-md border-2 border-astro-cyan-2 bg-white p-3 text-ink shadow-sticker-sm outline-none focus-visible:ring-2 focus-visible:ring-astro-blue/50"
+        },
         { "slot": "error", "tailwindClasses": "mt-1 text-xs font-semibold text-red-600" }
       ],
       "integrationNotes": [
@@ -380,12 +612,22 @@
       },
       "structure": [
         { "slot": "brand", "tailwindClasses": "flex items-center gap-3 font-masterpiece text-xl" },
-        { "slot": "handles", "tailwindClasses": "flex flex-wrap items-center gap-4 text-sm font-semibold" },
-        { "slot": "socialIcons", "tailwindClasses": "flex items-center gap-2 [&_a]:grid [&_a]:size-9 [&_a]:place-items-center [&_a]:rounded-full [&_a]:bg-white/10 [&_a]:transition [&_a]:hover:bg-white/20" }
+        {
+          "slot": "handles",
+          "tailwindClasses": "flex flex-wrap items-center gap-4 text-sm font-semibold"
+        },
+        {
+          "slot": "socialIcons",
+          "tailwindClasses": "flex items-center gap-2 [&_a]:grid [&_a]:size-9 [&_a]:place-items-center [&_a]:rounded-full [&_a]:bg-white/10 [&_a]:transition [&_a]:hover:bg-white/20"
+        }
       ],
       "content": {
         "socials": [
-          { "platform": "instagram", "handle": "astrosttnf", "url": "https://instagram.com/astrosttnf" },
+          {
+            "platform": "instagram",
+            "handle": "astrosttnf",
+            "url": "https://instagram.com/astrosttnf"
+          },
           { "platform": "tiktok", "handle": "astro2026", "url": "https://tiktok.com/@astro2026" }
         ],
         "email": "astro@nurulfikri.ac.id",
@@ -407,7 +649,12 @@
       { "name": "Audy", "whatsapp": "+62 882-9337-9555" }
     ],
     "sponsorship": [
-      { "name": null, "whatsapp": null, "email": null, "note": "Illegible in the source image — request the values from the team." }
+      {
+        "name": null,
+        "whatsapp": null,
+        "email": null,
+        "note": "Illegible in the source image — request the values from the team."
+      }
     ]
   },
 
@@ -427,29 +674,78 @@
           "subheader": "Ruang Tanpa Sekat, Tumpukan Bakat — Pencarian Bakat Mahasiswa STT-NF 2026",
           "classes": "relative flex min-h-[88vh] flex-col items-center justify-center gap-6 px-4 text-center",
           "children": [
-            { "slot": "eyebrow", "component": "astro-pill", "text": "Ruang Tanpa Sekat, Tumpukan Bakat" },
-            { "slot": "title", "classes": "astro-chrome font-masterpiece text-[clamp(3rem,12vw,9rem)] uppercase leading-[0.85]" },
-            { "slot": "mascot", "asset": "/assets/fish1.png", "classes": "pointer-events-none absolute -right-4 bottom-8 w-40 md:w-64" },
-            { "slot": "ground", "asset": "/assets/green-grash.png", "classes": "pointer-events-none absolute inset-x-0 bottom-0 h-32 object-cover object-top", "note": "3.59 MB and currently unreferenced — matches the AGT cover exactly. Convert to WebP before wiring in." },
+            {
+              "slot": "eyebrow",
+              "component": "astro-pill",
+              "text": "Ruang Tanpa Sekat, Tumpukan Bakat"
+            },
+            {
+              "slot": "title",
+              "classes": "astro-chrome font-masterpiece text-[clamp(3rem,12vw,9rem)] uppercase leading-[0.85]"
+            },
+            {
+              "slot": "mascot",
+              "asset": "/assets/fish1.png",
+              "classes": "pointer-events-none absolute -right-4 bottom-8 w-40 md:w-64"
+            },
+            {
+              "slot": "ground",
+              "asset": "/assets/green-grash.png",
+              "classes": "pointer-events-none absolute inset-x-0 bottom-0 h-32 object-cover object-top",
+              "note": "3.59 MB and currently unreferenced — matches the AGT cover exactly. Convert to WebP before wiring in."
+            },
             { "slot": "decor", "component": "AstroDecor", "props": { "variant": "hero" } },
             { "slot": "countdown", "existingFile": "components/CountdownTimer.tsx" },
             { "slot": "cta", "componentRef": "button_primary" }
           ]
         },
-        { "id": "stats", "existingFile": "components/StatsBar.tsx", "componentRef": "stat_card", "gridClasses": "grid grid-cols-2 gap-4 md:grid-cols-4" },
-        { "id": "schedule", "existingFile": "components/TimelineSection.tsx", "componentRef": "schedule_card", "heading": "Timeline", "gridClasses": "grid gap-5 md:grid-cols-2 lg:grid-cols-3" },
-        { "id": "talent_categories", "heading": "Jenis Penampilan", "componentRef": "talent_icon_button", "gridClasses": "grid grid-cols-3 gap-3 sm:grid-cols-4 lg:grid-cols-7" },
+        {
+          "id": "stats",
+          "existingFile": "components/StatsBar.tsx",
+          "componentRef": "stat_card",
+          "gridClasses": "grid grid-cols-2 gap-4 md:grid-cols-4"
+        },
+        {
+          "id": "schedule",
+          "existingFile": "components/TimelineSection.tsx",
+          "componentRef": "schedule_card",
+          "heading": "Timeline",
+          "gridClasses": "grid gap-5 md:grid-cols-2 lg:grid-cols-3"
+        },
+        {
+          "id": "talent_categories",
+          "heading": "Jenis Penampilan",
+          "componentRef": "talent_icon_button",
+          "gridClasses": "grid grid-cols-3 gap-3 sm:grid-cols-4 lg:grid-cols-7"
+        },
         {
           "id": "price_registration",
           "heading": "Daftar Sekarang",
           "children": [
-            { "slot": "priceBadge", "text": "Rp 20.000/Orang", "classes": "inline-flex items-center rounded-full border-[3px] border-astro-navy bg-astro-gold px-6 py-3 font-masterpiece text-2xl text-astro-navy shadow-sticker-lg" },
-            { "slot": "eligibility", "text": "Umum: Mahasiswa STT-NF · Individu atau Kelompok (maks. 10 orang)", "classes": "text-sm font-semibold text-ink", "dataNeedsVerification": true },
-            { "slot": "qrBox", "classes": "grid size-40 place-items-center rounded-lg border-[3px] border-astro-navy bg-white p-3 shadow-sticker", "library": "qrcode.react" },
+            {
+              "slot": "priceBadge",
+              "text": "Rp 20.000/Orang",
+              "classes": "inline-flex items-center rounded-full border-[3px] border-astro-navy bg-astro-gold px-6 py-3 font-masterpiece text-2xl text-astro-navy shadow-sticker-lg"
+            },
+            {
+              "slot": "eligibility",
+              "text": "Umum: Mahasiswa STT-NF · Individu atau Kelompok (maks. 10 orang)",
+              "classes": "text-sm font-semibold text-ink",
+              "dataNeedsVerification": true
+            },
+            {
+              "slot": "qrBox",
+              "classes": "grid size-40 place-items-center rounded-lg border-[3px] border-astro-navy bg-white p-3 shadow-sticker",
+              "library": "qrcode.react"
+            },
             { "slot": "cta", "componentRef": "button_primary", "label": "DAFTAR SEGERA >" }
           ]
         },
-        { "id": "competitions", "existingFile": "components/AboutSection.tsx", "note": "Keeps its 3 filters and 5 useMemo derivations; only the card leaf markup and CompetitionCard change." },
+        {
+          "id": "competitions",
+          "existingFile": "components/AboutSection.tsx",
+          "note": "Keeps its 3 filters and 5 useMemo derivations; only the card leaf markup and CompetitionCard change."
+        },
         { "id": "faq", "existingFile": "components/FAQSection.tsx" },
         { "id": "sponsors", "existingFile": "components/SponsorSection.tsx" },
         { "id": "footer", "componentRef": "site_footer" }
@@ -469,11 +765,24 @@
           "subheader": "Hadirkan brand Anda langsung di hadapan generasi muda aktif dan potensial se-Jabodetabek",
           "classes": "relative px-4 pt-36 pb-16 text-center",
           "children": [
-            { "slot": "title", "classes": "astro-chrome font-masterpiece text-[clamp(2.5rem,8vw,6rem)] uppercase" },
-            { "slot": "metrics", "componentRef": "stat_card", "dataset": "audienceMetrics", "gridClasses": "mx-auto mt-10 grid max-w-3xl grid-cols-2 gap-4 md:grid-cols-4" }
+            {
+              "slot": "title",
+              "classes": "astro-chrome font-masterpiece text-[clamp(2.5rem,8vw,6rem)] uppercase"
+            },
+            {
+              "slot": "metrics",
+              "componentRef": "stat_card",
+              "dataset": "audienceMetrics",
+              "gridClasses": "mx-auto mt-10 grid max-w-3xl grid-cols-2 gap-4 md:grid-cols-4"
+            }
           ]
         },
-        { "id": "package_widget", "heading": "Pilih Paket Kemitraan Terbaik Anda", "componentRef": "retro_monitor_widget", "classes": "px-4 py-20" },
+        {
+          "id": "package_widget",
+          "heading": "Pilih Paket Kemitraan Terbaik Anda",
+          "componentRef": "retro_monitor_widget",
+          "classes": "px-4 py-20"
+        },
         {
           "id": "visibility_grid",
           "heading": "Brand Exposure & Visibility",
@@ -488,9 +797,20 @@
           "heading": "Let's Collaborate!",
           "classes": "px-4 py-20",
           "children": [
-            { "slot": "panel", "classes": "astro-sticker mx-auto flex max-w-3xl flex-col gap-6 p-8 md:flex-row md:items-center md:justify-between" },
-            { "slot": "contactList", "dataRef": "contacts.sponsorship", "dataNeedsVerification": true },
-            { "slot": "qrBox", "classes": "grid size-40 shrink-0 place-items-center rounded-lg border-[3px] border-astro-navy bg-white p-3 shadow-sticker", "library": "qrcode.react" },
+            {
+              "slot": "panel",
+              "classes": "astro-sticker mx-auto flex max-w-3xl flex-col gap-6 p-8 md:flex-row md:items-center md:justify-between"
+            },
+            {
+              "slot": "contactList",
+              "dataRef": "contacts.sponsorship",
+              "dataNeedsVerification": true
+            },
+            {
+              "slot": "qrBox",
+              "classes": "grid size-40 shrink-0 place-items-center rounded-lg border-[3px] border-astro-navy bg-white p-3 shadow-sticker",
+              "library": "qrcode.react"
+            },
             { "slot": "cta", "componentRef": "button_primary", "label": "HUBUNGI KAMI >" }
           ]
         },
@@ -513,9 +833,20 @@
           "id": "header",
           "classes": "astro-sky astro-chevron-y astro-bubble-field px-4 pt-36 pb-14 text-center",
           "children": [
-            { "slot": "title", "classes": "astro-chrome font-masterpiece text-[clamp(2rem,7vw,4.5rem)] uppercase" },
-            { "slot": "feePill", "text": "Rp 20.000/Orang", "classes": "inline-flex items-center rounded-full border-[3px] border-astro-navy bg-astro-gold px-5 py-2 font-bold text-astro-navy shadow-sticker" },
-            { "slot": "stepIndicator", "classes": "flex items-center justify-center gap-3", "note": "Currently diamond-clipped via clipPath: polygon(50% 0,100% 50%,50% 100%,0 50%). Replace with rounded-full numbered pills — the artwork has no angular clipping." }
+            {
+              "slot": "title",
+              "classes": "astro-chrome font-masterpiece text-[clamp(2rem,7vw,4.5rem)] uppercase"
+            },
+            {
+              "slot": "feePill",
+              "text": "Rp 20.000/Orang",
+              "classes": "inline-flex items-center rounded-full border-[3px] border-astro-navy bg-astro-gold px-5 py-2 font-bold text-astro-navy shadow-sticker"
+            },
+            {
+              "slot": "stepIndicator",
+              "classes": "flex items-center justify-center gap-3",
+              "note": "Currently diamond-clipped via clipPath: polygon(50% 0,100% 50%,50% 100%,0 50%). Replace with rounded-full numbered pills — the artwork has no angular clipping."
+            }
           ]
         },
         {
@@ -523,9 +854,23 @@
           "existingFile": "app/register/[id]/FormStep.tsx",
           "classes": "astro-sticker mx-auto max-w-3xl p-6 sm:p-10",
           "children": [
-            { "slot": "fields", "componentRef": "input_field", "gridClasses": "grid gap-5 sm:grid-cols-2", "items": ["Nama Depan", "Nama Belakang", "Email", "No. WhatsApp", "Program Studi"] },
-            { "slot": "categorySelection", "componentRef": "talent_icon_button", "props": { "size": "mini" }, "classes": "flex flex-wrap gap-2" },
-            { "slot": "roster", "classes": "rounded-md border-2 border-astro-cyan-2 bg-white p-3 shadow-sticker-sm", "note": "Rendered only when photoRequired; row count driven by memberSlots" },
+            {
+              "slot": "fields",
+              "componentRef": "input_field",
+              "gridClasses": "grid gap-5 sm:grid-cols-2",
+              "items": ["Nama Depan", "Nama Belakang", "Email", "No. WhatsApp", "Program Studi"]
+            },
+            {
+              "slot": "categorySelection",
+              "componentRef": "talent_icon_button",
+              "props": { "size": "mini" },
+              "classes": "flex flex-wrap gap-2"
+            },
+            {
+              "slot": "roster",
+              "classes": "rounded-md border-2 border-astro-cyan-2 bg-white p-3 shadow-sticker-sm",
+              "note": "Rendered only when photoRequired; row count driven by memberSlots"
+            },
             { "slot": "photoUpload", "existingFile": "app/register/[id]/PlayerPhotoField.tsx" }
           ]
         },
@@ -533,11 +878,18 @@
           "id": "action_area",
           "classes": "mx-auto mt-8 flex max-w-3xl items-center justify-between gap-4",
           "children": [
-            { "slot": "priceBadge", "classes": "inline-flex items-center rounded-full border-[3px] border-astro-navy bg-astro-gold px-5 py-2 font-masterpiece text-xl text-astro-navy shadow-sticker" },
+            {
+              "slot": "priceBadge",
+              "classes": "inline-flex items-center rounded-full border-[3px] border-astro-navy bg-astro-gold px-5 py-2 font-masterpiece text-xl text-astro-navy shadow-sticker"
+            },
             { "slot": "submit", "componentRef": "button_primary", "label": "DAFTAR SEGERA >" }
           ]
         },
-        { "id": "payment", "existingFile": "app/register/[id]/PaymentStep.tsx", "classes": "astro-sticker mx-auto max-w-2xl p-6 sm:p-10" }
+        {
+          "id": "payment",
+          "existingFile": "app/register/[id]/PaymentStep.tsx",
+          "classes": "astro-sticker mx-auto max-w-2xl p-6 sm:p-10"
+        }
       ],
       "doNotTouch": [
         "FormStep's defaultValues useMemo(..., []) with intentionally empty deps — a deliberate TanStack Form workaround.",

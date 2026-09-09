@@ -115,9 +115,7 @@ export default function MyRegistrationsPage() {
                     </Badge>
                   </TableCell>
                   <TableCell className="px-5 py-3.5 text-right text-xs text-muted-foreground">
-                    {reg.createdAt
-                      ? new Date(reg.createdAt).toLocaleDateString("id-ID")
-                      : "—"}
+                    {reg.createdAt ? new Date(reg.createdAt).toLocaleDateString("id-ID") : "—"}
                   </TableCell>
                 </TableRow>
               ))}

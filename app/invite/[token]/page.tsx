@@ -8,11 +8,7 @@ import { toast } from "sonner";
 import { AuthFrame } from "@/components/auth/AuthFrame";
 import { CenteredShell, CtaButton, Pill } from "@/components/brand";
 import { Button } from "@/components/ui/button";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "@/components/ui/input-group";
+import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Spinner } from "@/components/ui/spinner";
 import { signIn } from "@/src/lib/auth-client";
@@ -31,11 +27,7 @@ type VerifyResult = {
   error?: string;
 };
 
-export default function InviteAcceptPage({
-  params,
-}: {
-  params: Promise<{ token: string }>;
-}) {
+export default function InviteAcceptPage({ params }: { params: Promise<{ token: string }> }) {
   const resolvedParams = use(params);
   const token = resolvedParams.token;
   const router = useRouter();

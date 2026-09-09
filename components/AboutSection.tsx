@@ -126,9 +126,7 @@ export default function AboutSection({ competitions }: Props) {
           ]}
           onChange={(value) => setSelectedOrigin(value as "all" | "internal" | "external")}
         />
-        <p className="text-xs font-bold text-ink/60 sm:ml-auto">
-          {filtered.length} lomba
-        </p>
+        <p className="text-xs font-bold text-ink/60 sm:ml-auto">{filtered.length} lomba</p>
       </Surface>
 
       <AnimatePresence mode="wait">
@@ -182,9 +180,7 @@ function FilterGroup({
 }) {
   return (
     <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
-      <p className="text-xs font-bold text-ink/60">
-        {label}
-      </p>
+      <p className="text-xs font-bold text-ink/60">{label}</p>
       <ToggleGroup
         type="single"
         value={value}

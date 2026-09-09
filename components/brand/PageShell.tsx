@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 
-import { cn } from "@/lib/utils"
-import Navbar from "@/components/Navbar"
-import { Bubbles } from "./Bubbles"
-import { Pattern } from "./Pattern"
-import { SiteFooter } from "./SiteFooter"
-import { SkyBackdrop } from "./SkyBackdrop"
+import { cn } from "@/lib/utils";
+import Navbar from "@/components/Navbar";
+import { Bubbles } from "./Bubbles";
+import { Pattern } from "./Pattern";
+import { SiteFooter } from "./SiteFooter";
+import { SkyBackdrop } from "./SkyBackdrop";
 
 /**
  * Standard page frame: sky ground, navbar, content, footer.
@@ -22,17 +22,14 @@ export function PageShell({
   className,
   mainClassName,
 }: {
-  children: React.ReactNode
-  footer?: boolean
-  navbar?: boolean
-  className?: string
-  mainClassName?: string
+  children: React.ReactNode;
+  footer?: boolean;
+  navbar?: boolean;
+  className?: string;
+  mainClassName?: string;
 }) {
   return (
-    <div
-      data-slot="page-shell"
-      className={cn("relative flex min-h-svh flex-col", className)}
-    >
+    <div data-slot="page-shell" className={cn("relative flex min-h-svh flex-col", className)}>
       <SkyBackdrop tone="bright" clouds bubbles="sparse" />
       <Pattern className="opacity-35" />
       <Bubbles preset="corners" />
@@ -49,7 +46,7 @@ export function PageShell({
       </main>
       {footer && <SiteFooter />}
     </div>
-  )
+  );
 }
 
 /**
@@ -61,10 +58,10 @@ export function CenteredShell({
   navbar = false,
   className,
 }: {
-  children: React.ReactNode
-  footer?: boolean
-  navbar?: boolean
-  className?: string
+  children: React.ReactNode;
+  footer?: boolean;
+  navbar?: boolean;
+  className?: string;
 }) {
   return (
     <PageShell footer={footer} navbar={navbar} className={className}>
@@ -72,5 +69,5 @@ export function CenteredShell({
         <div className="w-full max-w-md">{children}</div>
       </div>
     </PageShell>
-  )
+  );
 }

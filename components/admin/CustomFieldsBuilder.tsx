@@ -140,9 +140,11 @@ export default function CustomFieldsBuilder({ fields, onChange }: Props) {
         id: "stage_property",
         label: "Kebutuhan Properti & Alat Panggung",
         type: "textarea",
-        placeholder: "Tuliskan alat yang dibawa sendiri (contoh: 1 gitar akustik, stand kanvas, dll)",
+        placeholder:
+          "Tuliskan alat yang dibawa sendiri (contoh: 1 gitar akustik, stand kanvas, dll)",
         required: false,
-        description: "Panitia menyediakan sound system, laptop operator, dan 2 mic wireless. Properti lain dibawa sendiri.",
+        description:
+          "Panitia menyediakan sound system, laptop operator, dan 2 mic wireless. Properti lain dibawa sendiri.",
       },
       {
         id: "ktm_url",
@@ -169,9 +171,7 @@ export default function CustomFieldsBuilder({ fields, onChange }: Props) {
         </div>
 
         <div className="flex flex-wrap items-center gap-1.5">
-          <span className="text-10 font-bold text-ink uppercase tracking-wider">
-            Preset Cepat:
-          </span>
+          <span className="text-10 font-bold text-ink uppercase tracking-wider">Preset Cepat:</span>
           <Button
             type="button"
             variant="outline"

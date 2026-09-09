@@ -1,1 +1,12 @@
-{"nodes": [{"id": "$graphify-root$_src_db_migrations_0013_drop_otp_codes_sql", "label": "0013_drop_otp_codes.sql", "file_type": "code", "source_file": "src/db/migrations/0013_drop_otp_codes.sql", "source_location": null}], "edges": []}
+{
+  "nodes": [
+    {
+      "id": "$graphify-root$_src_db_migrations_0013_drop_otp_codes_sql",
+      "label": "0013_drop_otp_codes.sql",
+      "file_type": "code",
+      "source_file": "src/db/migrations/0013_drop_otp_codes.sql",
+      "source_location": null
+    }
+  ],
+  "edges": []
+}

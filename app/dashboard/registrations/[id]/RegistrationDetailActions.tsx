@@ -1,17 +1,17 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { Printer, Trash2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { ResponsiveAlertDialog } from '@/components/responsive-alert-dialog';
-import { apiHelpers } from '@/src/lib/api';
-import { toast } from 'sonner';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Printer, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ResponsiveAlertDialog } from "@/components/responsive-alert-dialog";
+import { apiHelpers } from "@/src/lib/api";
+import { toast } from "sonner";
 import PrintableInvoice, {
   PrintPortal,
   usePrintInvoice,
   type PrintableInvoiceData,
-} from '@/components/PrintableInvoice';
+} from "@/components/PrintableInvoice";
 
 interface Props {
   registration: PrintableInvoiceData;
@@ -27,12 +27,12 @@ export default function RegistrationDetailActions({ registration }: Props) {
     setDeleteLoading(true);
     try {
       await apiHelpers.registrations.delete(registration.id);
-      toast.success('Pendaftaran berhasil dihapus');
-      router.push('/dashboard/registrations');
+      toast.success("Pendaftaran berhasil dihapus");
+      router.push("/dashboard/registrations");
       router.refresh();
     } catch (err) {
       console.error(err);
-      toast.error(err instanceof Error ? err.message : 'Gagal menghapus pendaftaran');
+      toast.error(err instanceof Error ? err.message : "Gagal menghapus pendaftaran");
     } finally {
       setDeleteLoading(false);
     }
@@ -66,11 +66,12 @@ export default function RegistrationDetailActions({ registration }: Props) {
         title="Hapus Pendaftaran Ini?"
         description={
           <span>
-            Apakah Anda yakin ingin menghapus pendaftaran untuk{' '}
+            Apakah Anda yakin ingin menghapus pendaftaran untuk{" "}
             <strong>
-              {registration.type === 'team' ? registration.teamName : registration.fullName}
-            </strong>{' '}
-            (Ref: <code className="font-mono">{registration.paymentReference}</code>)? Seluruh data peserta dan berkas terkait akan dihapus secara permanen.
+              {registration.type === "team" ? registration.teamName : registration.fullName}
+            </strong>{" "}
+            (Ref: <code className="font-mono">{registration.paymentReference}</code>)? Seluruh data
+            peserta dan berkas terkait akan dihapus secara permanen.
           </span>
         }
         confirmText="Ya, Hapus Pendaftaran"

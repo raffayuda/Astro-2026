@@ -1,6 +1,6 @@
-import * as React from "react"
+import * as React from "react";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 /**
  * Zigzag chevron ribbon — the lime/blue/gold banded frame that runs along the top
@@ -14,8 +14,8 @@ export function ChevronRibbon({
   edge = "top",
   className,
 }: {
-  edge?: "top" | "bottom"
-  className?: string
+  edge?: "top" | "bottom";
+  className?: string;
 }) {
   return (
     <div
@@ -24,15 +24,14 @@ export function ChevronRibbon({
       className={cn(
         "pointer-events-none absolute inset-x-0 z-20 h-3.5 bg-astro-blue",
         edge === "top" ? "top-0" : "bottom-0",
-        className
+        className,
       )}
       style={{
         backgroundImage:
           "linear-gradient(135deg, #a3e635 25%, transparent 25%), linear-gradient(225deg, #a3e635 25%, transparent 25%)",
         backgroundSize: "22px 22px",
-        boxShadow:
-          edge === "top" ? "inset 0 -3px 0 #facc15" : "inset 0 3px 0 #facc15",
+        boxShadow: edge === "top" ? "inset 0 -3px 0 #facc15" : "inset 0 3px 0 #facc15",
       }}
     />
-  )
+  );
 }

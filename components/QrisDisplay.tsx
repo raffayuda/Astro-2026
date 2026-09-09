@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { Clock, Download, ExternalLink } from 'lucide-react';
-import { QRCodeSVG } from 'qrcode.react';
-import React, { useEffect, useId, useState } from 'react';
-import { toast } from 'sonner';
-import { Pill } from '@/components/brand/Pill';
-import { Surface } from '@/components/brand/Surface';
-import { Button } from '@/components/ui/button';
+import { Clock, Download, ExternalLink } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
+import React, { useEffect, useId, useState } from "react";
+import { toast } from "sonner";
+import { Pill } from "@/components/brand/Pill";
+import { Surface } from "@/components/brand/Surface";
+import { Button } from "@/components/ui/button";
 
 interface Props {
   paymentCode: string;
@@ -28,16 +28,16 @@ const QR_SIZE = 208;
 
 /** Brand tokens, duplicated as literals for the canvas export below. */
 const EXPORT_COLORS = {
-  navy: '#1E3A8A',
-  blue: '#3B82F6',
-  ink: '#1F2937',
-  white: '#FFFFFF',
+  navy: "#1E3A8A",
+  blue: "#3B82F6",
+  ink: "#1F2937",
+  white: "#FFFFFF",
 } as const;
 
 function formatCurrency(n: number) {
-  return new Intl.NumberFormat('id-ID', {
-    style: 'currency',
-    currency: 'IDR',
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   }).format(n);
@@ -67,12 +67,12 @@ export default function QrisDisplay({
 }: Props) {
   // `QR_TEXT` is the only type the gateway has returned so far; anything else
   // is surfaced verbatim rather than mislabelled as QRIS.
-  const schemeLabel = !paymentCodeType || paymentCodeType === 'QR_TEXT' ? 'QRIS' : paymentCodeType;
+  const schemeLabel = !paymentCodeType || paymentCodeType === "QR_TEXT" ? "QRIS" : paymentCodeType;
 
   const serviceFee = baseAmount && baseAmount > 0 ? amount - baseAmount : 0;
 
   const qrContainerId = useId();
-  const [timeLeft, setTimeLeft] = useState('');
+  const [timeLeft, setTimeLeft] = useState("");
   const [isExpired, setIsExpired] = useState(false);
 
   useEffect(() => {
@@ -83,7 +83,7 @@ export default function QrisDisplay({
     const tick = () => {
       const diff = target - Date.now();
       if (diff <= 0) {
-        setTimeLeft('Kadaluarsa');
+        setTimeLeft("Kadaluarsa");
         setIsExpired(true);
         return;
       }
@@ -101,14 +101,14 @@ export default function QrisDisplay({
    * the DOM so the export carries its own header and stays legible.
    */
   const handleDownloadQr = () => {
-    const svg = document.getElementById(qrContainerId)?.querySelector('svg');
+    const svg = document.getElementById(qrContainerId)?.querySelector("svg");
     if (!svg) {
-      toast.error('Gagal mengunduh gambar QR');
+      toast.error("Gagal mengunduh gambar QR");
       return;
     }
 
     const blob = new Blob([new XMLSerializer().serializeToString(svg)], {
-      type: 'image/svg+xml;charset=utf-8',
+      type: "image/svg+xml;charset=utf-8",
     });
     const url = URL.createObjectURL(blob);
     const qrImg = new Image();
@@ -118,12 +118,12 @@ export default function QrisDisplay({
       const pad = 40;
       const header = 104;
       const footer = 52;
-      const canvas = document.createElement('canvas');
+      const canvas = document.createElement("canvas");
       canvas.width = qrImg.width + pad * 2;
       canvas.height = qrImg.height + header + footer;
-      const ctx = canvas.getContext('2d');
+      const ctx = canvas.getContext("2d");
       if (!ctx) {
-        toast.error('Gagal mengunduh gambar QR');
+        toast.error("Gagal mengunduh gambar QR");
         return;
       }
 
@@ -133,35 +133,35 @@ export default function QrisDisplay({
       ctx.fillStyle = EXPORT_COLORS.navy;
       ctx.fillRect(0, 0, canvas.width, 8);
 
-      ctx.textAlign = 'center';
+      ctx.textAlign = "center";
       ctx.fillStyle = EXPORT_COLORS.navy;
-      ctx.font = 'bold 17px sans-serif';
+      ctx.font = "bold 17px sans-serif";
       ctx.fillText(`ASTRO 2026 · ${schemeLabel}`, canvas.width / 2, 44);
 
       ctx.fillStyle = EXPORT_COLORS.blue;
-      ctx.font = 'bold 26px sans-serif';
+      ctx.font = "bold 26px sans-serif";
       ctx.fillText(formatCurrency(amount), canvas.width / 2, 78);
 
       ctx.fillStyle = EXPORT_COLORS.ink;
-      ctx.font = '11px monospace';
+      ctx.font = "11px monospace";
       ctx.fillText(paymentReference, canvas.width / 2, 96);
 
       ctx.drawImage(qrImg, pad, header);
 
       const save = () => {
         ctx.fillStyle = EXPORT_COLORS.ink;
-        ctx.font = '11px sans-serif';
+        ctx.font = "11px sans-serif";
         ctx.fillText(
-          'Scan pakai m-Banking atau e-Wallet apa saja',
+          "Scan pakai m-Banking atau e-Wallet apa saja",
           canvas.width / 2,
           canvas.height - 22,
         );
 
-        const link = document.createElement('a');
+        const link = document.createElement("a");
         link.download = `QRIS-ASTRO-${paymentReference}.png`;
-        link.href = canvas.toDataURL('image/png');
+        link.href = canvas.toDataURL("image/png");
         link.click();
-        toast.success('Gambar QR tersimpan');
+        toast.success("Gambar QR tersimpan");
       };
 
       // The SVG's embedded logo does not always survive serialisation, so the
@@ -180,12 +180,12 @@ export default function QrisDisplay({
         save();
       };
       logo.onerror = save;
-      logo.src = '/assets/logo-astro.png';
+      logo.src = "/assets/logo-astro.png";
     };
 
     qrImg.onerror = () => {
       URL.revokeObjectURL(url);
-      toast.error('Gagal mengunduh gambar QR');
+      toast.error("Gagal mengunduh gambar QR");
     };
     qrImg.src = url;
   };
@@ -199,9 +199,7 @@ export default function QrisDisplay({
         className="flex w-full max-w-sm flex-col items-center gap-4 text-center"
       >
         <div>
-          <p className="text-11 font-bold uppercase tracking-wider text-ink/60">
-            Total pembayaran
-          </p>
+          <p className="text-11 font-bold uppercase tracking-wider text-ink/60">Total pembayaran</p>
           <p className="font-heading text-3xl font-black tracking-tight text-astro-navy">
             {formatCurrency(amount)}
           </p>
@@ -221,7 +219,7 @@ export default function QrisDisplay({
             marginSize={4}
             title={`${schemeLabel} pembayaran ${formatCurrency(amount)}`}
             imageSettings={{
-              src: '/assets/logo-astro.png',
+              src: "/assets/logo-astro.png",
               height: 35,
               width: 48,
               excavate: true,
@@ -230,9 +228,13 @@ export default function QrisDisplay({
         </div>
 
         {expiresAt && timeLeft && (
-          <Pill tone={isExpired ? 'pink' : 'gold'} size="sm" className="normal-case tracking-normal">
+          <Pill
+            tone={isExpired ? "pink" : "gold"}
+            size="sm"
+            className="normal-case tracking-normal"
+          >
             <Clock aria-hidden />
-            {isExpired ? 'Kadaluarsa' : `Berlaku ${timeLeft} lagi`}
+            {isExpired ? "Kadaluarsa" : `Berlaku ${timeLeft} lagi`}
           </Pill>
         )}
 

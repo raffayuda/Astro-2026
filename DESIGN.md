@@ -17,18 +17,18 @@ Dials: variance 8, motion 6, density 4. Light theme only.
 
 ## Tokens
 
-| Role | Token | Hex |
-|---|---|---|
-| Primary | `astro-blue` | `#3B82F6` |
-| Ink / stroke | `astro-navy` | `#1E3A8A` |
-| Sky wash | `sky-top` / `sky-mid` / `sky-bottom` | `#7EC8F5` / `#B8E4FB` / `#E8F6FE` |
-| Gold CTA | `astro-gold` | `#FACC15` |
-| Pink tag | `astro-pink` / `agt-pink` | `#EC4899` / `#FF1CA8` |
-| Orange tag | `pastel-orange` / `agt-orange` | `#FF9E64` / `#F67334` |
-| Cream (poster only) | `agt-cream` | `#FFF2D0` |
-| Close dot | `#FF4D4D` | window chrome |
-| Grass | `#7CF0C1` → `#3ED08F` | hero ground |
-| Body | `ink` on sky | `#1F2937` |
+| Role                | Token                                | Hex                               |
+| ------------------- | ------------------------------------ | --------------------------------- |
+| Primary             | `astro-blue`                         | `#3B82F6`                         |
+| Ink / stroke        | `astro-navy`                         | `#1E3A8A`                         |
+| Sky wash            | `sky-top` / `sky-mid` / `sky-bottom` | `#7EC8F5` / `#B8E4FB` / `#E8F6FE` |
+| Gold CTA            | `astro-gold`                         | `#FACC15`                         |
+| Pink tag            | `astro-pink` / `agt-pink`            | `#EC4899` / `#FF1CA8`             |
+| Orange tag          | `pastel-orange` / `agt-orange`       | `#FF9E64` / `#F67334`             |
+| Cream (poster only) | `agt-cream`                          | `#FFF2D0`                         |
+| Close dot           | `#FF4D4D`                            | window chrome                     |
+| Grass               | `#7CF0C1` → `#3ED08F`                | hero ground                       |
+| Body                | `ink` on sky                         | `#1F2937`                         |
 
 Type: Geist (`font-sans`) body, Plus Jakarta (`font-heading`) titles, Alexandria (`font-title`) wordmarks and outlined chrome titles, Lexend Exa (`font-subtitle`) poster chips.
 
@@ -60,26 +60,26 @@ Container: `max-w-6xl` default, `px-5 sm:px-8`. Nav is a floating glass pill (`h
 
 Use these. Do not fork them at the call site.
 
-| Component | Job |
-|---|---|
-| `PageShell` / `CenteredShell` | Sky canvas + chrome |
-| `SectionShell` | Section band (`none` on landing so the sky shows). Opt-in `sky`, `pattern`, `bubbles`, `ribbon` |
-| `SectionHeading` | Pill eyebrow (`pillTone`) + title + lead |
-| `WindowCard` | Kit window: blue gradient bar, red close, white body |
-| `Surface` | Plate (`plain`, `blue`, `pink`, `orange`, `gold`, `tint`, `sticker`). `cream` is poster-only |
-| `StatCard` | Ink-on-tint metric inside a window. `checked` = exposure grid |
-| `CompetitionCard` | Listing window: title in the header, pills + meta + Detail / Daftar in the body |
-| `ScheduleCard` | Timeline step |
-| `Pill` | Glossy chip. Pink/orange/blue tags match poster headers |
-| `CtaButton` | Glossy 3D `Daftar segera` pill |
-| `BrandLock` | BEM + ASTRO lock-up |
-| `GrassStrip` | Hero grass hill |
-| `GlassBar` | Frosted IG / email / TikTok strip |
-| `RetroMonitorWidget` | Sponsor tier CRT |
-| `BenefitCard` / `PricePill` | Poster benefit + fee |
-| `ChromeTitle` | Outlined display title (poster wordmarks) |
-| `SkyBackdrop` / `Bubbles` / `Pattern` | Page and hero atmosphere |
-| `SiteFooter` | GlassBar + navy legal |
+| Component                             | Job                                                                                             |
+| ------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| `PageShell` / `CenteredShell`         | Sky canvas + chrome                                                                             |
+| `SectionShell`                        | Section band (`none` on landing so the sky shows). Opt-in `sky`, `pattern`, `bubbles`, `ribbon` |
+| `SectionHeading`                      | Pill eyebrow (`pillTone`) + title + lead                                                        |
+| `WindowCard`                          | Kit window: blue gradient bar, red close, white body                                            |
+| `Surface`                             | Plate (`plain`, `blue`, `pink`, `orange`, `gold`, `tint`, `sticker`). `cream` is poster-only    |
+| `StatCard`                            | Ink-on-tint metric inside a window. `checked` = exposure grid                                   |
+| `CompetitionCard`                     | Listing window: title in the header, pills + meta + Detail / Daftar in the body                 |
+| `ScheduleCard`                        | Timeline step                                                                                   |
+| `Pill`                                | Glossy chip. Pink/orange/blue tags match poster headers                                         |
+| `CtaButton`                           | Glossy 3D `Daftar segera` pill                                                                  |
+| `BrandLock`                           | BEM + ASTRO lock-up                                                                             |
+| `GrassStrip`                          | Hero grass hill                                                                                 |
+| `GlassBar`                            | Frosted IG / email / TikTok strip                                                               |
+| `RetroMonitorWidget`                  | Sponsor tier CRT                                                                                |
+| `BenefitCard` / `PricePill`           | Poster benefit + fee                                                                            |
+| `ChromeTitle`                         | Outlined display title (poster wordmarks)                                                       |
+| `SkyBackdrop` / `Bubbles` / `Pattern` | Page and hero atmosphere                                                                        |
+| `SiteFooter`                          | GlassBar + navy legal                                                                           |
 
 ## How a public page is built
 

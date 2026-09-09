@@ -1,8 +1,8 @@
-import type * as React from "react"
-import { cva, type VariantProps } from "class-variance-authority"
+import type * as React from "react";
+import { cva, type VariantProps } from "class-variance-authority";
 
-import { Card, CardContent } from "@/components/ui/card"
-import { cn } from "@/lib/utils"
+import { Card, CardContent } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 
 const statToneVariants = cva("rounded-lg border p-3", {
   variants: {
@@ -16,7 +16,7 @@ const statToneVariants = cva("rounded-lg border p-3", {
     },
   },
   defaultVariants: { tone: "blue" },
-})
+});
 
 /**
  * Metric tile for admin overviews. Marketing pages use `StatCard` from
@@ -30,31 +30,27 @@ function StatTile({
   tone,
   className,
 }: {
-  label: React.ReactNode
-  value: React.ReactNode
-  icon?: React.ReactNode
-  tone?: VariantProps<typeof statToneVariants>["tone"]
-  className?: string
+  label: React.ReactNode;
+  value: React.ReactNode;
+  icon?: React.ReactNode;
+  tone?: VariantProps<typeof statToneVariants>["tone"];
+  className?: string;
 }) {
   return (
     <Card className={cn("bg-white", className)}>
       <CardContent className="flex items-start gap-4">
         {icon ? (
-          <div className={cn(statToneVariants({ tone }), "[&_svg]:size-5")}>
-            {icon}
-          </div>
+          <div className={cn(statToneVariants({ tone }), "[&_svg]:size-5")}>{icon}</div>
         ) : null}
         <div className="min-w-0">
           <p className="text-10 font-black uppercase tracking-[0.15em] text-astro-blue/70">
             {label}
           </p>
-          <p className="mt-1 truncate text-2xl font-black text-astro-navy">
-            {value}
-          </p>
+          <p className="mt-1 truncate text-2xl font-black text-astro-navy">{value}</p>
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }
 
-export { StatTile, statToneVariants }
+export { StatTile, statToneVariants };

@@ -1,18 +1,18 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { motion, useReducedMotion } from "motion/react"
+import * as React from "react";
+import { motion, useReducedMotion } from "motion/react";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 type Bubble = {
   /** Tailwind size utility, e.g. "size-32". */
-  size: string
+  size: string;
   /** Tailwind position utilities, e.g. "-left-8 top-1/4". */
-  position: string
-  delay: number
-  duration: number
-}
+  position: string;
+  delay: number;
+  duration: number;
+};
 
 const PRESETS: Record<"sparse" | "dense" | "corners", Bubble[]> = {
   sparse: [
@@ -29,7 +29,7 @@ const PRESETS: Record<"sparse" | "dense" | "corners", Bubble[]> = {
     { size: "size-24", position: "-left-6 -top-6", delay: 0, duration: 10 },
     { size: "size-20", position: "-right-5 -bottom-5", delay: -5, duration: 12 },
   ],
-}
+};
 
 /**
  * Floating glass bubbles with a specular highlight — the recurring decorative
@@ -42,19 +42,16 @@ export function Bubbles({
   preset = "sparse",
   className,
 }: {
-  preset?: keyof typeof PRESETS
-  className?: string
+  preset?: keyof typeof PRESETS;
+  className?: string;
 }) {
-  const reduce = useReducedMotion()
+  const reduce = useReducedMotion();
 
   return (
     <div
       aria-hidden
       data-slot="bubbles"
-      className={cn(
-        "pointer-events-none absolute inset-0 overflow-hidden",
-        className
-      )}
+      className={cn("pointer-events-none absolute inset-0 overflow-hidden", className)}
     >
       {PRESETS[preset].map((b) => (
         <motion.span
@@ -62,7 +59,7 @@ export function Bubbles({
           className={cn(
             "absolute rounded-full bg-white/40 shadow-soft ring-1 ring-inset ring-white/70",
             b.size,
-            b.position
+            b.position,
           )}
           animate={reduce ? undefined : { y: [0, -18, 0], scale: [1, 1.04, 1] }}
           transition={{
@@ -76,5 +73,5 @@ export function Bubbles({
         </motion.span>
       ))}
     </div>
-  )
+  );
 }

@@ -69,19 +69,17 @@ type ExistingReg = {
   email?: string | null;
   whatsapp?: string | null;
   members?: string | null;
-  memberDetails?: {
-    name?: string;
-    gameId?: string | null;
-    photoUrl?: string | null;
-  }[] | null;
+  memberDetails?:
+    | {
+        name?: string;
+        gameId?: string | null;
+        photoUrl?: string | null;
+      }[]
+    | null;
   customFields?: Record<string, unknown> | null;
 };
 
-export default function RegistrationPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export default function RegistrationPage({ params }: { params: Promise<{ id: string }> }) {
   const reduce = useReducedMotion();
   const [resolvedId, setResolvedId] = useState<string | null>(null);
   const [regIdFromQuery, setRegIdFromQuery] = useState<string | null>(null);
@@ -256,7 +254,12 @@ export default function RegistrationPage({
               <Button asChild variant="outline" className="flex-1 rounded-full">
                 <Link href={`/competitions/${competition.id}`}>Detail lomba</Link>
               </Button>
-              <CtaButton href="/#competitions" size="default" className="flex-1" showChevron={false}>
+              <CtaButton
+                href="/#competitions"
+                size="default"
+                className="flex-1"
+                showChevron={false}
+              >
                 Lomba lain
               </CtaButton>
             </div>
@@ -359,12 +362,22 @@ export default function RegistrationPage({
           <aside className="min-w-0 lg:sticky lg:top-24" aria-label="Ringkasan pendaftaran">
             <WindowCard title="Lomba pilihanmu" bodyClassName="gap-4 lg:gap-5">
               <div className="flex flex-wrap gap-2">
-                <Pill tone={category.tone} size="sm">{category.label}</Pill>
-                <Pill tone="glass" size="sm">{isTeam ? "Tim" : "Individu"}</Pill>
+                <Pill tone={category.tone} size="sm">
+                  {category.label}
+                </Pill>
+                <Pill tone="glass" size="sm">
+                  {isTeam ? "Tim" : "Individu"}
+                </Pill>
               </div>
-              <SectionHeading title={competition.title} align="start" className="[&_h2]:text-xl [&_h2]:leading-snug" />
+              <SectionHeading
+                title={competition.title}
+                align="start"
+                className="[&_h2]:text-xl [&_h2]:leading-snug"
+              />
               {competition.tagline && (
-                <p className="hidden text-sm leading-relaxed text-ink/70 lg:block">{competition.tagline}</p>
+                <p className="hidden text-sm leading-relaxed text-ink/70 lg:block">
+                  {competition.tagline}
+                </p>
               )}
               <Surface tone="tint" radius="xl" pad="sm">
                 <dl className="flex flex-col gap-1">
@@ -379,7 +392,8 @@ export default function RegistrationPage({
                 </dl>
               </Surface>
               <p className="hidden text-xs leading-relaxed text-ink/65 lg:block">
-                Pastikan data sesuai identitas peserta. Kuota terkunci setelah pembayaran terverifikasi.
+                Pastikan data sesuai identitas peserta. Kuota terkunci setelah pembayaran
+                terverifikasi.
               </p>
             </WindowCard>
           </aside>
@@ -387,17 +401,43 @@ export default function RegistrationPage({
           <div className="flex min-w-0 flex-col gap-5">
             <Surface tone="plain" radius="2xl" pad="sm">
               <ol aria-label="Tahapan pendaftaran" className="grid grid-cols-2 gap-3">
-                {([
-                  { number: 1, label: "Formulir", detail: "Data peserta", icon: FileText },
-                  { number: 2, label: "Pembayaran", detail: "Konfirmasi pendaftaran", icon: CreditCard },
-                ] as const).map(({ number, label, detail, icon: Icon }) => (
-                  <li key={number} aria-current={step === number ? "step" : undefined}
-                    className={cn("flex min-w-0 items-center gap-3 rounded-xl p-2 sm:p-3", step === number && "bg-sky-bottom")}>
-                    <span className={cn("flex size-9 shrink-0 items-center justify-center rounded-full", step >= number ? "bg-astro-navy text-white" : "bg-sky-bottom text-astro-navy/60")}>
-                      {step > number ? <Check className="size-4" aria-hidden /> : <Icon className="size-4" aria-hidden />}
+                {(
+                  [
+                    { number: 1, label: "Formulir", detail: "Data peserta", icon: FileText },
+                    {
+                      number: 2,
+                      label: "Pembayaran",
+                      detail: "Konfirmasi pendaftaran",
+                      icon: CreditCard,
+                    },
+                  ] as const
+                ).map(({ number, label, detail, icon: Icon }) => (
+                  <li
+                    key={number}
+                    aria-current={step === number ? "step" : undefined}
+                    className={cn(
+                      "flex min-w-0 items-center gap-3 rounded-xl p-2 sm:p-3",
+                      step === number && "bg-sky-bottom",
+                    )}
+                  >
+                    <span
+                      className={cn(
+                        "flex size-9 shrink-0 items-center justify-center rounded-full",
+                        step >= number
+                          ? "bg-astro-navy text-white"
+                          : "bg-sky-bottom text-astro-navy/60",
+                      )}
+                    >
+                      {step > number ? (
+                        <Check className="size-4" aria-hidden />
+                      ) : (
+                        <Icon className="size-4" aria-hidden />
+                      )}
                     </span>
                     <div className="min-w-0">
-                      <p className="text-xs font-bold text-astro-navy sm:text-sm">{number}. {label}</p>
+                      <p className="text-xs font-bold text-astro-navy sm:text-sm">
+                        {number}. {label}
+                      </p>
                       <p className="mt-0.5 hidden text-xs text-ink/65 sm:block">{detail}</p>
                     </div>
                   </li>
@@ -406,24 +446,51 @@ export default function RegistrationPage({
             </Surface>
 
             {canChooseType && step === 1 && (
-              <Surface tone="plain" radius="2xl" pad="md" className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <Surface
+                tone="plain"
+                radius="2xl"
+                pad="md"
+                className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
+              >
                 <div>
-                  <p id="registration-format" className="text-sm font-bold text-astro-navy">Format pendaftaran</p>
+                  <p id="registration-format" className="text-sm font-bold text-astro-navy">
+                    Format pendaftaran
+                  </p>
                   <p className="mt-1 text-xs text-ink/65">Pilih sesuai penampilanmu.</p>
                 </div>
-                <ToggleGroup type="single" value={regType} variant="outline" size="lg" aria-labelledby="registration-format"
+                <ToggleGroup
+                  type="single"
+                  value={regType}
+                  variant="outline"
+                  size="lg"
+                  aria-labelledby="registration-format"
                   onValueChange={(option) => {
-                    if ((option !== "team" && option !== "individual") || option === regType) return;
+                    if ((option !== "team" && option !== "individual") || option === regType)
+                      return;
                     setRegType(option);
                     setFormData((prev) => ({
-                      ...prev, fullName: "", identityNumber: "", teamName: "", leaderName: "",
-                      leaderIdentity: "", leaderGameId: "", leaderPhotoUrl: "",
-                      members: "", memberDetails: [],
+                      ...prev,
+                      fullName: "",
+                      identityNumber: "",
+                      teamName: "",
+                      leaderName: "",
+                      leaderIdentity: "",
+                      leaderGameId: "",
+                      leaderPhotoUrl: "",
+                      members: "",
+                      memberDetails: [],
                     }));
                   }}
-                  className="w-full sm:w-auto">
-                  <ToggleGroupItem value="individual" className="flex-1"><UserRound />Individu</ToggleGroupItem>
-                  <ToggleGroupItem value="team" className="flex-1"><UsersRound />Tim</ToggleGroupItem>
+                  className="w-full sm:w-auto"
+                >
+                  <ToggleGroupItem value="individual" className="flex-1">
+                    <UserRound />
+                    Individu
+                  </ToggleGroupItem>
+                  <ToggleGroupItem value="team" className="flex-1">
+                    <UsersRound />
+                    Tim
+                  </ToggleGroupItem>
                 </ToggleGroup>
               </Surface>
             )}

@@ -1,22 +1,22 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 export type SponsorTier = {
-  tier: string
-  price?: string
+  tier: string;
+  price?: string;
   /** Tailwind gradient utilities for the bubble face. */
-  face: string
-}
+  face: string;
+};
 
 export const SPONSOR_TIERS: SponsorTier[] = [
   { tier: "Platinum", face: "from-surface to-astro-cyan-2" },
   { tier: "Gold", face: "from-amber-200 to-astro-gold" },
   { tier: "Silver", face: "from-casing to-casing-deep" },
   { tier: "Bronze", face: "from-orange-200 to-pastel-orange" },
-]
+];
 
 /**
  * Skeuomorphic 90s CRT monitor housing the sponsorship package selector, per
@@ -29,16 +29,13 @@ export function RetroMonitorWidget({
   onSelect,
   className,
 }: {
-  tiers?: SponsorTier[]
-  selected?: string
-  onSelect?: (tier: string) => void
-  className?: string
+  tiers?: SponsorTier[];
+  selected?: string;
+  onSelect?: (tier: string) => void;
+  className?: string;
 }) {
   return (
-    <div
-      data-slot="retro-monitor"
-      className={cn("mx-auto w-full max-w-2xl", className)}
-    >
+    <div data-slot="retro-monitor" className={cn("mx-auto w-full max-w-2xl", className)}>
       <div className="rounded-2xl bg-linear-to-b from-casing to-casing-deep p-5 shadow-soft-lg ring-1 ring-inset ring-white/70">
         <div
           className="relative overflow-hidden rounded-xl bg-linear-to-b from-astro-blue to-astro-cyan-2 p-5"
@@ -55,9 +52,9 @@ export function RetroMonitorWidget({
 
           <div className="relative grid grid-cols-2 gap-3">
             {tiers.map((t) => {
-              const isSelected = selected === t.tier
-              const isButton = typeof onSelect === "function"
-              const Comp = isButton ? "button" : "div"
+              const isSelected = selected === t.tier;
+              const isButton = typeof onSelect === "function";
+              const Comp = isButton ? "button" : "div";
 
               return (
                 <Comp
@@ -69,19 +66,17 @@ export function RetroMonitorWidget({
                     "flex flex-col items-center gap-0.5 rounded-full bg-linear-to-b px-4 py-3 text-astro-navy shadow-soft transition-all duration-200",
                     t.face,
                     isButton && "cursor-pointer hover:-translate-y-0.5 hover:shadow-soft-lg",
-                    isSelected && "ring-3 ring-white"
+                    isSelected && "ring-3 ring-white",
                   )}
                 >
-                  <span className="font-title text-base uppercase leading-none">
-                    {t.tier}
-                  </span>
+                  <span className="font-title text-base uppercase leading-none">{t.tier}</span>
                   {t.price && (
                     <span className="text-10 font-bold uppercase tracking-wide opacity-80">
                       {t.price}
                     </span>
                   )}
                 </Comp>
-              )
+              );
             })}
           </div>
         </div>
@@ -90,5 +85,5 @@ export function RetroMonitorWidget({
       <div className="mx-auto h-5 w-28 rounded-b-xl bg-casing shadow-soft" />
       <div className="mx-auto h-2 w-44 rounded-full bg-casing-deep/70" />
     </div>
-  )
+  );
 }

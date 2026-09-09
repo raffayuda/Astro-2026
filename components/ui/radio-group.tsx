@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { RadioGroup as RadioGroupPrimitive } from "radix-ui"
+import * as React from "react";
+import { RadioGroup as RadioGroupPrimitive } from "radix-ui";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 function RadioGroup({
   className,
@@ -15,7 +15,7 @@ function RadioGroup({
       className={cn("grid w-full gap-2", className)}
       {...props}
     />
-  )
+  );
 }
 
 function RadioGroupItem({
@@ -27,7 +27,7 @@ function RadioGroupItem({
       data-slot="radio-group-item"
       className={cn(
         "group/radio-group-item peer relative flex aspect-square size-5 shrink-0 rounded-full border-2 border-astro-cyan-2 bg-white shadow-soft-sm transition-colors outline-none after:absolute after:-inset-x-3 after:-inset-y-2 focus-visible:border-astro-blue focus-visible:ring-3 focus-visible:ring-astro-blue/40 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 data-checked:border-astro-blue data-checked:bg-linear-to-br data-checked:from-astro-blue data-checked:to-astro-navy",
-        className
+        className,
       )}
       {...props}
     >
@@ -38,7 +38,7 @@ function RadioGroupItem({
         <span className="absolute top-1/2 left-1/2 size-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white" />
       </RadioGroupPrimitive.Indicator>
     </RadioGroupPrimitive.Item>
-  )
+  );
 }
 
-export { RadioGroup, RadioGroupItem }
+export { RadioGroup, RadioGroupItem };

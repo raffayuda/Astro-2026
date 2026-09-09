@@ -17,7 +17,7 @@ export interface ImageCompressionOptions {
   /** Compression quality (0.0 to 1.0). Defaults to 0.85. */
   quality?: number;
   /** Target MIME type for raster output. Defaults to 'image/webp'. */
-  mimeType?: 'image/webp' | 'image/jpeg';
+  mimeType?: "image/webp" | "image/jpeg";
   /** Files already smaller than this byte count will skip re-compression. Defaults to 300KB. */
   skipIfSmallerThan?: number;
 }
@@ -28,10 +28,7 @@ export interface ImageCompressionOptions {
 function isCompressibleImage(file: File): boolean {
   const type = file.type.toLowerCase();
   return (
-    type === 'image/jpeg' ||
-    type === 'image/jpg' ||
-    type === 'image/png' ||
-    type === 'image/webp'
+    type === "image/jpeg" || type === "image/jpg" || type === "image/png" || type === "image/webp"
   );
 }
 
@@ -44,7 +41,7 @@ export async function compressImage(
   options: ImageCompressionOptions = {},
 ): Promise<File> {
   // Guard against server-side rendering
-  if (typeof window === 'undefined') return file;
+  if (typeof window === "undefined") return file;
 
   // Only compress standard photo raster formats
   if (!isCompressibleImage(file)) {
@@ -54,7 +51,7 @@ export async function compressImage(
   const {
     maxDimension = 1600,
     quality = 0.85,
-    mimeType = 'image/webp',
+    mimeType = "image/webp",
     skipIfSmallerThan = 300 * 1024, // 300 KB
   } = options;
 
@@ -89,11 +86,11 @@ export async function compressImage(
         }
       }
 
-      const canvas = document.createElement('canvas');
+      const canvas = document.createElement("canvas");
       canvas.width = width;
       canvas.height = height;
 
-      const ctx = canvas.getContext('2d');
+      const ctx = canvas.getContext("2d");
       if (!ctx) {
         resolve(file);
         return;
@@ -101,7 +98,7 @@ export async function compressImage(
 
       // High quality image smoothing
       ctx.imageSmoothingEnabled = true;
-      ctx.imageSmoothingQuality = 'high';
+      ctx.imageSmoothingQuality = "high";
       ctx.drawImage(img, 0, 0, width, height);
 
       canvas.toBlob(
@@ -117,8 +114,8 @@ export async function compressImage(
             return;
           }
 
-          const baseName = file.name.replace(/\.[^/.]+$/, '');
-          const ext = mimeType === 'image/webp' ? 'webp' : 'jpg';
+          const baseName = file.name.replace(/\.[^/.]+$/, "");
+          const ext = mimeType === "image/webp" ? "webp" : "jpg";
           const newFileName = `${baseName}.${ext}`;
 
           const compressedFile = new File([blob], newFileName, {

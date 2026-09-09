@@ -1,10 +1,5 @@
 import type { Metadata } from "next";
-import {
-  Alexandria,
-  Lexend_Exa,
-  Plus_Jakarta_Sans,
-  Geist,
-} from "next/font/google";
+import { Alexandria, Lexend_Exa, Plus_Jakarta_Sans, Geist } from "next/font/google";
 import { Toaster } from "sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Providers } from "@/src/lib/providers";
@@ -137,10 +132,7 @@ const jsonLd = [
     name: "ASTRO 2026",
     url: "https://astro.nurulfikri.ac.id",
     logo: "https://astro.nurulfikri.ac.id/assets/logo-astro.png",
-    sameAs: [
-      "https://www.instagram.com/astro.sttnf",
-      "https://nurulfikri.ac.id",
-    ],
+    sameAs: ["https://www.instagram.com/astro.sttnf", "https://nurulfikri.ac.id"],
     parentOrganization: {
       "@type": "CollegeOrUniversity",
       name: "Sekolah Tinggi Teknologi Terpadu Nurul Fikri",
@@ -155,24 +147,21 @@ const jsonLd = [
         "@type": "SiteNavigationElement",
         position: 1,
         name: "Beranda & Kompetisi",
-        description:
-          "Katalog cabang lomba Akademik, Olahraga, dan Esports ASTRO 2026.",
+        description: "Katalog cabang lomba Akademik, Olahraga, dan Esports ASTRO 2026.",
         url: "https://astro.nurulfikri.ac.id",
       },
       {
         "@type": "SiteNavigationElement",
         position: 2,
         name: "Profil & Sejarah Event",
-        description:
-          "Visi, misi, sejarah, serta struktur panitia pelaksana ASTRO 2026.",
+        description: "Visi, misi, sejarah, serta struktur panitia pelaksana ASTRO 2026.",
         url: "https://astro.nurulfikri.ac.id/profile",
       },
       {
         "@type": "SiteNavigationElement",
         position: 3,
         name: "Cek Status Pendaftaran",
-        description:
-          "Cek status verifikasi formulir dan tiket pendaftaran peserta lomba.",
+        description: "Cek status verifikasi formulir dan tiket pendaftaran peserta lomba.",
         url: "https://astro.nurulfikri.ac.id/check-registration",
       },
       {
@@ -186,8 +175,7 @@ const jsonLd = [
         "@type": "SiteNavigationElement",
         position: 5,
         name: "Media Center & Dokumentasi",
-        description:
-          "Dokumentasi visual, kanal media sosial, dan press kit ASTRO 2026.",
+        description: "Dokumentasi visual, kanal media sosial, dan press kit ASTRO 2026.",
         url: "https://astro.nurulfikri.ac.id/media",
       },
     ],

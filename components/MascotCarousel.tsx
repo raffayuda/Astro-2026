@@ -74,7 +74,12 @@ export function MascotCarousel({ className }: { className?: string }) {
   const swiping = cursor === "swipe" && !reduce;
 
   return (
-    <div className={cn("relative mx-auto flex w-full flex-col items-center overflow-visible", className)}>
+    <div
+      className={cn(
+        "relative mx-auto flex w-full flex-col items-center overflow-visible",
+        className,
+      )}
+    >
       <div className="relative mx-auto w-[min(16.5rem,78vw)] overflow-visible sm:w-[min(24rem,54vw)] lg:w-[26rem]">
         <motion.div
           animate={reduce || swiping ? { y: 0 } : { y: [0, -8, 0] }}
@@ -94,7 +99,10 @@ export function MascotCarousel({ className }: { className?: string }) {
             className="relative block w-full cursor-grab overflow-visible active:cursor-grabbing focus:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
           >
             <div className="relative w-full overflow-visible">
-              <div className="relative mx-auto w-full overflow-visible" style={{ aspectRatio: "785 / 940" }}>
+              <div
+                className="relative mx-auto w-full overflow-visible"
+                style={{ aspectRatio: "785 / 940" }}
+              >
                 <AnimatePresence initial={false} mode="sync">
                   <motion.div
                     key={mascot.id}

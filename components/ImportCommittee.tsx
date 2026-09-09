@@ -1,14 +1,22 @@
-'use client';
+"use client";
 
-import { useRef, useState } from 'react';
-import Papa from 'papaparse';
-import * as XLSX from 'xlsx';
-import { FileUp, UploadCloud, Loader2, Check, X, AlertTriangle, FileSpreadsheet } from 'lucide-react';
-import { toast } from 'sonner';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { cn } from '@/lib/utils';
-import { apiHelpers } from '@/src/lib/api';
+import { useRef, useState } from "react";
+import Papa from "papaparse";
+import * as XLSX from "xlsx";
+import {
+  FileUp,
+  UploadCloud,
+  Loader2,
+  Check,
+  X,
+  AlertTriangle,
+  FileSpreadsheet,
+} from "lucide-react";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
+import { apiHelpers } from "@/src/lib/api";
 
 /** Satu baris hasil parse — dinormalisasi dari kolom Google Forms. */
 interface ParsedRow {
@@ -47,21 +55,21 @@ export function extractDriveId(value: string): string | null {
 /** Ubah link Google Drive menjadi URL gambar yang bisa ditampilkan (lh3, tanpa redirect). */
 export function toDriveImageUrl(value: string): string {
   const id = extractDriveId(value);
-  if (!id) return '';
+  if (!id) return "";
   return `https://lh3.googleusercontent.com/d/${id}=w1000`;
 }
 
 /** Normalisasi URL gambar: link Drive → URL gambar; legacy /uploads/ → storage; selain itu dibiarkan. */
 export function normalizeImageUrl(url: string): string {
-  if (!url) return '';
+  if (!url) return "";
   // Idempotent: URL lh3 yang sudah dikonversi sebelumnya tidak dikonversi ulang.
-  if (url.startsWith('https://lh3.googleusercontent.com/d/')) return url;
+  if (url.startsWith("https://lh3.googleusercontent.com/d/")) return url;
   const drive = toDriveImageUrl(url);
   if (drive) return drive;
   // Legacy local-fs paths (pre-Supabase) now live in the public uploads bucket.
-  if (url.startsWith('/uploads/')) {
-    const base = process.env.NEXT_PUBLIC_SUPABASE_URL ?? 'https://abhshprulipnmetfumrt.supabase.co';
-    return `${base}/storage/v1/object/public/uploads/${url.slice('/uploads/'.length)}`;
+  if (url.startsWith("/uploads/")) {
+    const base = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "https://abhshprulipnmetfumrt.supabase.co";
+    return `${base}/storage/v1/object/public/uploads/${url.slice("/uploads/".length)}`;
   }
   return url;
 }
@@ -69,7 +77,7 @@ export function normalizeImageUrl(url: string): string {
 export default function ImportCommittee({ onImported }: { onImported?: () => void }) {
   const fileRef = useRef<HTMLInputElement>(null);
   const [rows, setRows] = useState<ParsedRow[] | null>(null);
-  const [fileName, setFileName] = useState('');
+  const [fileName, setFileName] = useState("");
   const [importing, setImporting] = useState(false);
   const [importedCount, setImportedCount] = useState<number | null>(null);
   const [skipped, setSkipped] = useState(0);
@@ -77,7 +85,7 @@ export default function ImportCommittee({ onImported }: { onImported?: () => voi
   /** Deteksi & baca file: .csv lewat Papa, .xlsx/.xls lewat SheetJS. */
   const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    e.target.value = '';
+    e.target.value = "";
     if (!file) return;
     setFileName(file.name);
     setImportedCount(null);
@@ -88,19 +96,19 @@ export default function ImportCommittee({ onImported }: { onImported?: () => voi
     try {
       if (isXlsx) {
         const buf = await file.arrayBuffer();
-        const wb = XLSX.read(buf, { type: 'array' });
+        const wb = XLSX.read(buf, { type: "array" });
         const sheet = wb.Sheets[wb.SheetNames[0]];
-        raw = XLSX.utils.sheet_to_json<Record<string, unknown>>(sheet, { defval: '' });
+        raw = XLSX.utils.sheet_to_json<Record<string, unknown>>(sheet, { defval: "" });
       } else {
         const text = await file.text();
         const parsed = Papa.parse<Record<string, unknown>>(text, {
           header: true,
-          skipEmptyLines: 'greedy',
+          skipEmptyLines: "greedy",
         });
         raw = parsed.data;
       }
     } catch {
-      toast.error('Gagal membaca file. Pastikan format CSV atau Excel.');
+      toast.error("Gagal membaca file. Pastikan format CSV atau Excel.");
       return;
     }
 
@@ -108,7 +116,7 @@ export default function ImportCommittee({ onImported }: { onImported?: () => voi
     setSkipped(raw.length - normalized.length);
     setRows(normalized);
     if (normalized.length === 0) {
-      toast.error('Tidak ada baris valid di file ini.');
+      toast.error("Tidak ada baris valid di file ini.");
     }
   };
 
@@ -119,19 +127,25 @@ export default function ImportCommittee({ onImported }: { onImported?: () => voi
     for (const r of raw) {
       const get = (keys: string[]) => {
         for (const k of keys) {
-          if (r[k] !== undefined && String(r[k]).trim() !== '') {
+          if (r[k] !== undefined && String(r[k]).trim() !== "") {
             return String(r[k]).trim();
           }
         }
-        return '';
+        return "";
       };
 
-      const name = get(['name', 'Nama lengkap :', 'Nama lengkap', 'name lengkap', 'Nama']);
-      const role = get(['role', 'Jabatan :', 'Jabatan', 'Tipe']);
-      const division = get(['division', 'Divisi :', 'Divisi']);
-      const imageRaw = get(['image', 'upload foto terbaik mu', 'upload foto terbaik', 'Foto', 'image url']);
-      const studyProgram = get(['studyProgram', 'PRODI :', 'PRODI', 'Prodi', 'prodi']) || null;
-      const batch = get(['batch', 'Angkatan']) || null;
+      const name = get(["name", "Nama lengkap :", "Nama lengkap", "name lengkap", "Nama"]);
+      const role = get(["role", "Jabatan :", "Jabatan", "Tipe"]);
+      const division = get(["division", "Divisi :", "Divisi"]);
+      const imageRaw = get([
+        "image",
+        "upload foto terbaik mu",
+        "upload foto terbaik",
+        "Foto",
+        "image url",
+      ]);
+      const studyProgram = get(["studyProgram", "PRODI :", "PRODI", "Prodi", "prodi"]) || null;
+      const batch = get(["batch", "Angkatan"]) || null;
 
       if (!name || !role || !division) continue;
       if (seen.has(name)) continue; // hapus baris ganda dari file
@@ -158,10 +172,10 @@ export default function ImportCommittee({ onImported }: { onImported?: () => voi
       setImportedCount(res.count);
       toast.success(`${res.count} anggota berhasil diimport`);
       setRows(null);
-      setFileName('');
+      setFileName("");
       onImported?.();
     } catch {
-      toast.error('Gagal import. Cek kembali isi file.');
+      toast.error("Gagal import. Cek kembali isi file.");
     } finally {
       setImporting(false);
     }
@@ -181,10 +195,11 @@ export default function ImportCommittee({ onImported }: { onImported?: () => voi
       <label className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-border bg-muted/40 px-6 py-8 text-center transition-colors hover:border-primary/50 hover:bg-muted/60">
         <FileUp className="size-8 text-muted-foreground" />
         <span className="text-sm font-bold text-foreground">
-          {fileName || 'Pilih file CSV / Excel panitia'}
+          {fileName || "Pilih file CSV / Excel panitia"}
         </span>
         <span className="text-11 text-muted-foreground">
-          Format Google Forms (kolom: Nama lengkap, PRODI, Angkatan, Jabatan, Divisi, upload foto). NIM &amp; TTD dilewati otomatis.
+          Format Google Forms (kolom: Nama lengkap, PRODI, Angkatan, Jabatan, Divisi, upload foto).
+          NIM &amp; TTD dilewati otomatis.
         </span>
         <input
           ref={fileRef}
@@ -209,12 +224,19 @@ export default function ImportCommittee({ onImported }: { onImported?: () => voi
                 disabled={importing}
                 className="rounded-md gap-1 text-xs font-bold uppercase tracking-wider"
               >
-                {importing ? <Loader2 className="size-3 animate-spin" /> : <UploadCloud className="size-3" />}
-                {importing ? 'Mengimport...' : 'Import Sekarang'}
+                {importing ? (
+                  <Loader2 className="size-3 animate-spin" />
+                ) : (
+                  <UploadCloud className="size-3" />
+                )}
+                {importing ? "Mengimport..." : "Import Sekarang"}
               </Button>
               <Button
                 variant="outline"
-                onClick={() => { setRows(null); setFileName(''); }}
+                onClick={() => {
+                  setRows(null);
+                  setFileName("");
+                }}
                 className="rounded-md gap-1 text-xs font-bold uppercase tracking-wider"
               >
                 <X className="size-3" /> Batal
@@ -232,7 +254,11 @@ export default function ImportCommittee({ onImported }: { onImported?: () => voi
           {/* Ringkasan divisi */}
           <div className="flex flex-wrap gap-1.5">
             {Object.entries(groupByDivision).map(([div, count]) => (
-              <Badge key={div} variant="secondary" className="rounded-md gap-1 px-2.5 py-1 text-10 font-bold">
+              <Badge
+                key={div}
+                variant="secondary"
+                className="rounded-md gap-1 px-2.5 py-1 text-10 font-bold"
+              >
                 {div} · {count}
               </Badge>
             ))}
@@ -254,15 +280,23 @@ export default function ImportCommittee({ onImported }: { onImported?: () => voi
                   <tr key={i}>
                     <td className="px-3 py-2 font-semibold text-foreground">{r.name}</td>
                     <td className="px-3 py-2">
-                      <Badge className={cn(
-                        'rounded-md text-9 font-bold uppercase',
-                        r.role.toUpperCase() === 'SC' || r.role.toUpperCase() === 'PO' || r.role.toUpperCase() === 'PI'
-                          ? 'bg-sky-mid text-astro-navy'
-                          : 'bg-muted text-muted-foreground'
-                      )}>{r.role}</Badge>
+                      <Badge
+                        className={cn(
+                          "rounded-md text-9 font-bold uppercase",
+                          r.role.toUpperCase() === "SC" ||
+                            r.role.toUpperCase() === "PO" ||
+                            r.role.toUpperCase() === "PI"
+                            ? "bg-sky-mid text-astro-navy"
+                            : "bg-muted text-muted-foreground",
+                        )}
+                      >
+                        {r.role}
+                      </Badge>
                     </td>
                     <td className="px-3 py-2 text-muted-foreground">{r.division}</td>
-                    <td className="px-3 py-2 text-muted-foreground">{[r.studyProgram, r.batch].filter(Boolean).join(' ')}</td>
+                    <td className="px-3 py-2 text-muted-foreground">
+                      {[r.studyProgram, r.batch].filter(Boolean).join(" ")}
+                    </td>
                   </tr>
                 ))}
               </tbody>

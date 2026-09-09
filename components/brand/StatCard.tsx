@@ -1,8 +1,8 @@
-import * as React from "react"
-import { Check, type LucideIcon } from "lucide-react"
+import * as React from "react";
+import { Check, type LucideIcon } from "lucide-react";
 
-import { cn } from "@/lib/utils"
-import { Surface } from "./Surface"
+import { cn } from "@/lib/utils";
+import { Surface } from "./Surface";
 
 /**
  * Metric / channel tile.
@@ -18,12 +18,12 @@ export function StatCard({
   checked = false,
   className,
 }: {
-  icon?: LucideIcon
-  metric?: string
-  label: string
-  hint?: string
-  checked?: boolean
-  className?: string
+  icon?: LucideIcon;
+  metric?: string;
+  label: string;
+  hint?: string;
+  checked?: boolean;
+  className?: string;
 }) {
   if (checked) {
     return (
@@ -46,14 +46,10 @@ export function StatCard({
             <Icon aria-hidden className="size-5" />
           </span>
         )}
-        <p className="text-10 font-bold uppercase tracking-wide text-ink sm:text-xs">
-          {label}
-        </p>
-        {hint && (
-          <p className="text-11 font-medium leading-relaxed text-ink/70">{hint}</p>
-        )}
+        <p className="text-10 font-bold uppercase tracking-wide text-ink sm:text-xs">{label}</p>
+        {hint && <p className="text-11 font-medium leading-relaxed text-ink/70">{hint}</p>}
       </Surface>
-    )
+    );
   }
 
   return (
@@ -72,12 +68,8 @@ export function StatCard({
       {metric && (
         <p className="font-title text-2xl leading-none text-astro-navy sm:text-3xl">{metric}</p>
       )}
-      <p className="text-10 font-bold uppercase tracking-wide text-ink sm:text-xs">
-        {label}
-      </p>
-      {hint && (
-        <p className="text-11 font-medium leading-relaxed text-ink/70">{hint}</p>
-      )}
+      <p className="text-10 font-bold uppercase tracking-wide text-ink sm:text-xs">{label}</p>
+      {hint && <p className="text-11 font-medium leading-relaxed text-ink/70">{hint}</p>}
     </Surface>
-  )
+  );
 }
