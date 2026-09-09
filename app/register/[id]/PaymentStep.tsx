@@ -36,15 +36,6 @@ interface Props {
   onBack: () => void;
 }
 
-function formatCurrency(n: number) {
-  return new Intl.NumberFormat('id-ID', {
-    style: 'currency',
-    currency: 'IDR',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(n);
-}
-
 // Poll while the outcome is still undecided — active sync checks SumoPod live status
 const POLL_INTERVAL_MS = 3000;
 
@@ -226,8 +217,7 @@ export default function PaymentStep({
                 Selesaikan pembayaran
               </h2>
               <p className="text-sm leading-relaxed text-ink/75">
-                Bayar {formatCurrency(paymentAmount)} untuk mengamankan kuota di{' '}
-                <strong>{competition.title}</strong>.
+                Amankan kuotamu di <strong>{competition.title}</strong>.
               </p>
 
               {paymentCode ? (
@@ -235,6 +225,7 @@ export default function PaymentStep({
                   paymentCode={paymentCode}
                   paymentCodeType={paymentCodeType}
                   amount={paymentAmount}
+                  baseAmount={competition.fee}
                   paymentReference={paymentReference}
                   expiresAt={resolvedExpiresAt}
                   paymentLinkUrl={resolvedLinkUrl}
@@ -263,14 +254,12 @@ export default function PaymentStep({
                 </Surface>
               )}
 
-              <Surface tone="tint" radius="xl" pad="md">
-                <p className="flex items-center gap-2 text-xs font-medium text-astro-navy">
-                  <Spinner className="size-3.5 shrink-0" />
-                  Halaman ini berganti sendiri setelah pembayaran terverifikasi.
-                </p>
-              </Surface>
+              <p className="flex items-center justify-center gap-2 text-xs text-ink/60">
+                <Spinner className="size-3.5 shrink-0" />
+                Menunggu pembayaran, halaman berganti otomatis.
+              </p>
 
-              <Button variant="outline" size="lg" onClick={onBack} className="w-full rounded-full">
+              <Button variant="ghost" size="sm" onClick={onBack} className="w-full">
                 <ArrowLeft data-icon="inline-start" />
                 Kembali ke formulir
               </Button>
