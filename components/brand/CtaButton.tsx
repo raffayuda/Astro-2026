@@ -39,7 +39,7 @@ export function CtaButton({
       {showChevron && (
         <span
           aria-hidden
-          className="grid size-7 place-items-center rounded-full bg-white/25 ring-1 ring-inset ring-white/60"
+          className="grid size-5 place-items-center rounded-full bg-white/25 ring-1 ring-inset ring-white/60"
         >
           <ChevronRight className="size-4" />
         </span>
