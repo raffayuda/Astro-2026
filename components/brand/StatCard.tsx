@@ -49,6 +49,9 @@ export function StatCard({
         <p className="text-10 font-bold uppercase tracking-wide text-ink sm:text-xs">
           {label}
         </p>
+        {hint && (
+          <p className="text-11 font-medium leading-relaxed text-ink/70">{hint}</p>
+        )}
       </Surface>
     )
   }

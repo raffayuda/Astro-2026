@@ -45,14 +45,20 @@ export function WindowCard({
         <h2 className="min-w-0 truncate font-heading text-sm font-black tracking-tight text-white sm:text-base">
           {title}
         </h2>
-        {close && onClose && (
-          <button
-            type="button"
-            aria-label="Tutup"
-            onClick={onClose}
-            className="size-5 shrink-0 rounded-full bg-[#ff4d4d] shadow-[inset_0_1px_0_rgba(255,255,255,0.55)] ring-2 ring-white/70"
-          />
-        )}
+        {close &&
+          (onClose ? (
+            <button
+              type="button"
+              aria-label="Tutup"
+              onClick={onClose}
+              className="size-5 shrink-0 rounded-full bg-[#ff4d4d] shadow-[inset_0_1px_0_rgba(255,255,255,0.55)] ring-2 ring-white/70"
+            />
+          ) : (
+            <span
+              aria-hidden
+              className="size-5 shrink-0 rounded-full bg-[#ff4d4d] shadow-[inset_0_1px_0_rgba(255,255,255,0.55)] ring-2 ring-white/70"
+            />
+          ))}
       </div>
       <div className={cn("flex min-h-0 flex-1 flex-col", PAD[pad], bodyClassName)}>{children}</div>
     </div>

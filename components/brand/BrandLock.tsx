@@ -47,8 +47,8 @@ export function BrandLock({
         width={s.astro}
         height={Math.round(s.astro * 0.73)}
         className={cn(
-          "w-auto object-contain",
-          tone === "plain" ? "h-6" : "h-2/3",
+          "w-auto object-contain mt-2",
+          tone === "plain" ? "h-full" : "h-2/3",
         )}
       />
     </span>

@@ -16,25 +16,29 @@ import { cn } from "@/lib/utils"
  */
 export function FloatingCta({
   href = "#competitions",
-  label = "Daftar Segera",
-  showAfter = 600,
+  label = "Daftar segera",
   className,
 }: {
   href?: string
   label?: string
-  /** Scroll offset in px before the button appears. */
-  showAfter?: number
   className?: string
 }) {
   const reduce = useReducedMotion()
   const [visible, setVisible] = React.useState(false)
 
   React.useEffect(() => {
-    const onScroll = () => setVisible(window.scrollY > showAfter)
-    onScroll()
-    window.addEventListener("scroll", onScroll, { passive: true })
-    return () => window.removeEventListener("scroll", onScroll)
-  }, [showAfter])
+    const hero = document.getElementById("home")
+    if (!hero) {
+      setVisible(true)
+      return
+    }
+    const io = new IntersectionObserver(
+      ([entry]) => setVisible(!entry.isIntersecting),
+      { threshold: 0.12 },
+    )
+    io.observe(hero)
+    return () => io.disconnect()
+  }, [])
 
   return (
     <AnimatePresence>

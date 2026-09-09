@@ -11,7 +11,6 @@ export { Bubbles } from "./Bubbles"
 export { ChevronRibbon } from "./ChevronRibbon"
 export { ChromeText, type ChromeTextProps } from "./ChromeText"
 export { ChromeTitle } from "./ChromeTitle"
-export { ConfettiField } from "./ConfettiField"
 export { CtaButton } from "./CtaButton"
 export { FloatingCta } from "./FloatingCta"
 export { CenteredShell, PageShell } from "./PageShell"
@@ -35,5 +34,6 @@ export {
   TALENT_CATEGORIES,
   TALENT_ICONS,
   TalentCategoryCard,
+  talentMeta,
   type TalentId,
 } from "./TalentCategoryCard"

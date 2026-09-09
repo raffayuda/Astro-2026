@@ -37,6 +37,32 @@ export const TALENT_CATEGORIES: { id: TalentId; label: string }[] = [
   { id: "other", label: "Lainnya" },
 ]
 
+export function talentMeta(option: string): { id: TalentId; label: string } {
+  const lower = option.toLowerCase()
+  if (lower.includes("nyanyi") || lower.includes("vokal")) {
+    return { id: "singer", label: "Nyanyi" }
+  }
+  if (lower.includes("dance") || lower.includes("tari")) {
+    return { id: "dance", label: "Tari" }
+  }
+  if (lower.includes("teater") || lower.includes("monolog") || lower.includes("puisi")) {
+    return { id: "standup", label: "Teater" }
+  }
+  if (lower.includes("sulap") || lower.includes("magic")) {
+    return { id: "magic", label: "Sulap" }
+  }
+  if (lower.includes("akustik") || lower.includes("musik") || lower.includes("band")) {
+    return { id: "band", label: "Musik" }
+  }
+  if (lower.includes("bela")) {
+    return { id: "martial_arts", label: "Bela diri" }
+  }
+  if (lower.includes("lukis")) {
+    return { id: "other", label: "Lukis" }
+  }
+  return { id: "other", label: option.split(/[/(]/)[0]?.trim() || "Lainnya" }
+}
+
 /**
  * Talent category selection card — pastel orange tile with icon and uppercase
  * label, per the component style guide. `mini` is the inline variant used in the

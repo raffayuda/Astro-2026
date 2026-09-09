@@ -19,7 +19,27 @@ interface StatusData {
   color: string;
 }
 
-const COLORS = ['#06b6d4', '#10b981', '#f59e0b', '#ef4444'];
+/** Just the slice of recharts' tooltip payload this card renders. */
+interface TooltipContentProps {
+  active?: boolean;
+  label?: string | number;
+  payload?: { name?: string; value?: number | string; color?: string }[];
+}
+
+/**
+ * Chart marks read the brand tokens straight out of `app/globals.css` — SVG
+ * presentation attributes accept `var()`, so recolouring stays a token change
+ * instead of a second palette living here.
+ */
+const SERIES_COLORS = [
+  'var(--color-astro-blue)',
+  'var(--color-astro-sky)',
+  'var(--color-astro-navy)',
+  'var(--color-astro-cyan-2)',
+];
+const AXIS_LABEL = 'var(--color-ink)';
+const AXIS_LINE = 'var(--color-astro-cyan-2)';
+const CURSOR_FILL = 'var(--color-surface)';
 
 const STATUS_LABELS: Record<string, string> = {
   pending: 'Pending',
@@ -35,13 +55,13 @@ export default function OverviewCharts() {
 
   if (loading) return null;
 
-  const CustomTooltip = ({ active, payload, label }: any) => {
+  const CustomTooltip = ({ active, payload, label }: TooltipContentProps) => {
     if (active && payload && payload.length) {
       return (
         <div className="bg-white border border-astro-cyan-2 shadow-md px-4 py-3 text-xs">
           <p className="font-bold text-astro-navy mb-1">{label}</p>
-          {payload.map((p: any, i: number) => (
-            <p key={i} style={{ color: p.color }} className="font-medium">
+          {payload.map((p) => (
+            <p key={p.name} style={{ color: p.color }} className="font-medium">
               {p.name}: {p.value}
             </p>
           ))}
@@ -68,19 +88,19 @@ export default function OverviewCharts() {
               <BarChart data={perCompetition} margin={{ top: 10, right: 10, left: -10, bottom: 5 }}>
                 <XAxis
                   dataKey="name"
-                  tick={{ fontSize: 10, fill: '#64748b' }}
+                  tick={{ fontSize: 10, fill: AXIS_LABEL }}
                   tickLine={false}
-                  axisLine={{ stroke: '#e2e8f0' }}
+                  axisLine={{ stroke: AXIS_LINE }}
                   interval={0}
                   angle={-20}
                   textAnchor="end"
                   height={60}
                 />
-                <YAxis tick={{ fontSize: 10, fill: '#64748b' }} tickLine={false} axisLine={false} allowDecimals={false} />
-                <Tooltip content={<CustomTooltip />} cursor={{ fill: '#f1f5f9' }} />
+                <YAxis tick={{ fontSize: 10, fill: AXIS_LABEL }} tickLine={false} axisLine={false} allowDecimals={false} />
+                <Tooltip content={<CustomTooltip />} cursor={{ fill: CURSOR_FILL }} />
                 <Bar dataKey="count" name="Pendaftar" radius={[4, 4, 0, 0]} barSize={32}>
                   {perCompetition.map((_, idx) => (
-                    <Cell key={`cell-${idx}`} fill={COLORS[idx % COLORS.length]} fillOpacity={0.85} />
+                    <Cell key={`cell-${idx}`} fill={SERIES_COLORS[idx % SERIES_COLORS.length]} fillOpacity={0.85} />
                   ))}
                 </Bar>
               </BarChart>
