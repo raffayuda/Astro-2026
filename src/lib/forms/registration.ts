@@ -1,9 +1,14 @@
 import { z } from 'zod';
 import type { CompetitionCustomField } from '@/types/astro';
 
-/** One player on a team roster — name plus photo (formal or casual, both fine). */
+/**
+ * One player on a team roster: name, in-game account ID, and photo (formal or
+ * casual, both fine). `gameId` and `photoUrl` only matter for competitions that
+ * set `playerPhotoRequired` — esports, e.g. Mobile Legends.
+ */
 export const memberDetailSchema = z.object({
   name: z.string(),
+  gameId: z.string(),
   photoUrl: z.string(),
 });
 
@@ -16,6 +21,7 @@ export const registrationFormSchema = z.object({
   teamName: z.string().optional(),
   leaderName: z.string().optional(),
   leaderIdentity: z.string().optional(),
+  leaderGameId: z.string().optional(),
   leaderPhotoUrl: z.string().optional(),
   members: z.string().optional(),
   memberDetails: z.array(memberDetailSchema).optional(),
@@ -31,8 +37,8 @@ export type RegistrationFormValues = z.infer<typeof registrationFormSchema>;
 
 /**
  * Schema for one competition. When the competition requires a player photo
- * (esports, e.g. Mobile Legends) every listed player needs both a name and an
- * uploaded photo — a name alone is not enough.
+ * (esports, e.g. Mobile Legends) every listed player needs a name, an in-game
+ * account ID, and an uploaded photo — a name alone is not enough.
  * Also validates any competition-specific custom fields.
  */
 export function buildRegistrationSchema(opts: {
@@ -45,7 +51,7 @@ export function buildRegistrationSchema(opts: {
   const minMembers = Math.max(opts.requiredMembers ?? 0, 0);
 
   return registrationFormSchema.superRefine((values, ctx) => {
-    // 1. Photo requirement check for esports
+    // 1. Photo + in-game ID requirement check for esports
     if (opts.photoRequired) {
       if (!values.leaderPhotoUrl) {
         ctx.addIssue({
@@ -54,6 +60,16 @@ export function buildRegistrationSchema(opts: {
           message: opts.isTeam
             ? 'Foto ketua tim wajib diunggah'
             : 'Foto pemain wajib diunggah',
+        });
+      }
+
+      if (!values.leaderGameId?.trim()) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['leaderGameId'],
+          message: opts.isTeam
+            ? 'ID akun ketua tim wajib diisi'
+            : 'ID akun pemain wajib diisi',
         });
       }
 
@@ -74,7 +90,14 @@ export function buildRegistrationSchema(opts: {
               message: 'Foto pemain wajib diunggah',
             });
           }
-          if (!m.name.trim() && m.photoUrl) {
+          if (m.name.trim() && !m.gameId.trim()) {
+            ctx.addIssue({
+              code: 'custom',
+              path: ['memberDetails', i, 'gameId'],
+              message: 'ID akun pemain wajib diisi',
+            });
+          }
+          if (!m.name.trim() && (m.photoUrl || m.gameId.trim())) {
             ctx.addIssue({
               code: 'custom',
               path: ['memberDetails', i, 'name'],
@@ -120,7 +143,11 @@ export function toRegistrationBody(
 ) {
   const roster = (values.memberDetails ?? [])
     .filter((m) => m.name.trim())
-    .map((m) => ({ name: m.name.trim(), photoUrl: m.photoUrl || null }));
+    .map((m) => ({
+      name: m.name.trim(),
+      gameId: m.gameId?.trim() || null,
+      photoUrl: m.photoUrl || null,
+    }));
 
   return {
     competitionId,
@@ -130,6 +157,7 @@ export function toRegistrationBody(
     teamName: values.teamName || null,
     leaderName: values.leaderName || null,
     leaderIdentity: values.leaderIdentity || null,
+    leaderGameId: values.leaderGameId?.trim() || null,
     leaderPhotoUrl: values.leaderPhotoUrl || null,
     members: roster.length > 0 ? roster.map((m) => m.name).join('\n') : values.members || null,
     memberDetails: roster,
