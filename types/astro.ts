@@ -148,9 +148,12 @@ export interface PublicRegistration {
   teamName: string | null;
   leaderName: string | null;
   leaderIdentity: string | null;
+  leaderGameId: string | null;
   leaderPhotoUrl: string | null;
   members: string | null;
-  memberDetails: { name: string; photoUrl: string | null }[] | null;
+  memberDetails:
+    | { name: string; gameId: string | null; photoUrl: string | null }[]
+    | null;
   institution: string;
   email: string;
   whatsapp: string;
