@@ -8,47 +8,44 @@ import {
   XCircle,
   Clock,
   AlertCircle,
-  LogIn,
   Building2,
   Phone,
   Mail,
-  User,
-  Coins,
-  FileText,
-  CreditCard,
   Search,
   ExternalLink,
   MessageCircle,
   Printer,
-  Sparkles,
-  HelpCircle,
-  Layers,
-  ArrowRight,
-  RotateCcw,
+  CreditCard,
+  FileText,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+
 import { authClient } from "@/src/lib/auth-client";
 import { useRegistrations } from "@/src/lib/hooks/use-queries";
 import { apiHelpers } from "@/src/lib/api";
-import PrintableInvoice, { PrintPortal } from "@/components/PrintableInvoice";
-import { PageShell } from "@/components/brand";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Badge } from "@/components/ui/badge";
+import PrintableInvoice, {
+  PrintPortal,
+  usePrintInvoice,
+} from "@/components/PrintableInvoice";
+import {
+  CtaButton,
+  PageShell,
+  Pill,
+  ScheduleCard,
+  SectionHeading,
+  SectionShell,
+  Surface,
+  WindowCard,
+  type PillProps,
+} from "@/components/brand";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ResponsiveModal } from "@/components/responsive-modal";
-import {
-  Empty,
-  EmptyContent,
-  EmptyDescription,
-  EmptyHeader,
-  EmptyMedia,
-  EmptyTitle,
-} from "@/components/ui/empty";
 import { Spinner } from "@/components/ui/spinner";
-import { cn } from "@/lib/utils";
+import { asStringRecord } from "@/lib/flags";
+import { isSafeUrl, safeHref } from "@/lib/urls";
+import { unwrapList } from "@/lib/lists";
 import type { CompetitionCustomField } from "@/types/astro";
 
 interface RegistrationItem {
@@ -59,28 +56,22 @@ interface RegistrationItem {
   teamName: string | null;
   leaderName: string | null;
   leaderIdentity: string | null;
+  leaderGameId: string | null;
   leaderPhotoUrl: string | null;
   members: string | null;
-  memberDetails: { name: string; photoUrl: string | null }[] | null;
+  memberDetails:
+    | { name: string; gameId: string | null; photoUrl: string | null }[]
+    | null;
   institution: string;
   email: string;
   whatsapp: string;
-  customFields: Record<string, any> | null;
+  customFields: Record<string, unknown> | null;
   paymentStatus: string;
   paymentMethod: string | null;
   paymentAmount: number;
   batchName?: string | null;
   paymentReference: string | null;
-  paymentLinkId?: string | null;
-  paymentLinkUrl?: string | null;
-  paymentExpiresAt?: string | null;
-  isWinner?: string | null;
-  winnerRank?: string | null;
-  certificateSent?: string | null;
-  certificates?: any[];
-  userId?: string | null;
   createdAt: string;
-  updatedAt: string;
   competitionName: string;
   competitionId: string;
   competitionCategory?: string;
@@ -89,57 +80,58 @@ interface RegistrationItem {
   competitionCustomFields?: CompetitionCustomField[] | null;
 }
 
-const statusConfig: Record<
+const STATUS: Record<
   string,
-  { label: string; color: string; icon: any; desc: string }
+  { label: string; tone: NonNullable<PillProps["tone"]>; icon: typeof Clock; desc: string }
 > = {
   pending: {
-    label: "Menunggu Pembayaran",
-    color: "border-amber-300 bg-amber-50 text-amber-800",
+    label: "Menunggu pembayaran",
+    tone: "gold",
     icon: Clock,
-    desc: "Menunggu penyelesaian pembayaran tiket pendaftaran",
+    desc: "Selesaikan pembayaran untuk mengamankan kuota.",
   },
   detecting: {
     label: "Diverifikasi",
-    color: "border-astro-cyan-2 bg-sky-bottom text-astro-navy",
+    tone: "blue",
     icon: AlertCircle,
-    desc: "Pembayaran sedang diverifikasi oleh sistem gateway",
+    desc: "Pembayaran sedang dicek oleh sistem.",
   },
   paid: {
-    label: "Disetujui / Lunas ✓",
-    color: "border-emerald-300 bg-emerald-50 text-emerald-800",
+    label: "Lunas",
+    tone: "blue",
     icon: CheckCircle2,
-    desc: "Pendaftaran telah disetujui & tiket resmi aktif",
+    desc: "Pendaftaran aktif.",
   },
   failed: {
-    label: "Gagal / Dibatalkan",
-    color: "border-red-300 bg-red-50 text-red-800",
+    label: "Gagal",
+    tone: "pink",
     icon: XCircle,
-    desc: "Pembayaran gagal atau dibatalkan oleh sistem",
+    desc: "Pembayaran gagal atau dibatalkan.",
   },
   expired: {
     label: "Kadaluarsa",
-    color: "border-rose-300 bg-rose-50 text-rose-800",
+    tone: "pink",
     icon: Clock,
-    desc: "Batas waktu pembayaran telah berakhir",
+    desc: "Batas waktu pembayaran sudah habis.",
   },
 };
+
+function statusOf(key: string) {
+  return STATUS[key] ?? STATUS.pending;
+}
 
 function CheckRegistrationContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // Search input state
   const [query, setQuery] = useState("");
   const [submittedQuery, setSubmittedQuery] = useState("");
   const [searchResults, setSearchResults] = useState<RegistrationItem[] | null>(null);
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
-
-  // Modal detail
   const [selectedReg, setSelectedReg] = useState<RegistrationItem | null>(null);
+  const { target: printTarget, print } = usePrintInvoice<RegistrationItem>();
 
-  // Logged-in session
   const { data: session, isLoading: sessionLoading } = useQuery({
     queryKey: ["session"],
     queryFn: () => authClient.getSession(),
@@ -147,7 +139,6 @@ function CheckRegistrationContent() {
   const user = session?.data?.user;
   const isLoggedIn = !!user?.email;
 
-  // Account registrations (for logged-in user)
   const { data: byEmailRaw, isLoading: byEmailLoading } = useRegistrations(
     user?.email ? { search: user.email, pageSize: 100 } : {},
     { enabled: !!user?.email },
@@ -159,12 +150,10 @@ function CheckRegistrationContent() {
 
   const accountRegistrations: RegistrationItem[] = useMemo(() => {
     if (!isLoggedIn) return [];
-    const emailList = Array.isArray(byEmailRaw) ? byEmailRaw : ((byEmailRaw as any)?.data ?? []);
-    const combined = [...emailList];
+    const combined = unwrapList<RegistrationItem>(byEmailRaw);
+    const ids = new Set(combined.map((reg) => reg.id));
     if (user?.id) {
-      const userList = Array.isArray(byUserRaw) ? byUserRaw : ((byUserRaw as any)?.data ?? []);
-      const ids = new Set(combined.map((r: any) => r.id));
-      for (const reg of userList) {
+      for (const reg of unwrapList<RegistrationItem>(byUserRaw)) {
         if (!ids.has(reg.id)) {
           combined.push(reg);
           ids.add(reg.id);
@@ -177,7 +166,6 @@ function CheckRegistrationContent() {
   const accountLoading =
     sessionLoading || (isLoggedIn && (byEmailLoading || (!!user?.id && byUserLoading)));
 
-  // Search Handler
   const executeSearch = async (searchTerm: string) => {
     const term = searchTerm.trim();
     if (!term) return;
@@ -188,8 +176,7 @@ function CheckRegistrationContent() {
 
     try {
       const res = await apiHelpers.registrations.check(term);
-      const list = Array.isArray(res) ? (res as unknown as RegistrationItem[]) : [];
-      setSearchResults(list);
+      setSearchResults(unwrapList<RegistrationItem>(res));
     } catch (err) {
       setSearchError(err instanceof Error ? err.message : "Gagal mencari data pendaftaran");
       setSearchResults([]);
@@ -198,7 +185,6 @@ function CheckRegistrationContent() {
     }
   };
 
-  // Auto-search if ?regId=... or ?ref=... or ?q=... in URL
   useEffect(() => {
     const ref =
       searchParams.get("regId") ||
@@ -207,13 +193,14 @@ function CheckRegistrationContent() {
       searchParams.get("query");
     if (ref && ref.trim()) {
       setQuery(ref.trim());
-      executeSearch(ref.trim());
+      void executeSearch(ref.trim());
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    executeSearch(query);
+    void executeSearch(query);
   };
 
   const handleClearSearch = () => {
@@ -223,147 +210,92 @@ function CheckRegistrationContent() {
     setSearchError(null);
   };
 
-  const [printTarget, setPrintTarget] = useState<RegistrationItem | null>(null);
-
-  const handlePrint = (reg: RegistrationItem) => {
-    setPrintTarget(reg);
-    setTimeout(() => {
-      window.print();
-    }, 150);
-  };
-
-  const handleLogout = async () => {
-    await authClient.signOut();
-    router.push("/");
-  };
-
   return (
     <PageShell>
-      <div className="mx-auto max-w-3xl px-4 pt-28 pb-20 md:pt-32">
-        <div className="mb-8 text-center">
-          <h1 className="font-heading text-4xl font-black tracking-tight text-astro-navy md:text-5xl">
-            Cek pendaftaran
-          </h1>
-          <p className="mx-auto max-w-md text-xs md:text-sm font-normal text-ink">
-            Periksa status verifikasi, invoice, dan berkas partisipasi lomba ASTRO 2026 Anda secara instan.
+      <SectionShell band="none" space="lg" className="pt-24">
+        <SectionHeading
+          eyebrow="Status"
+          pillTone="blue"
+          title="Cek pendaftaran"
+          lead="Cari dengan nomor invoice atau email. Masuk akun untuk melihat semua lomba yang kamu daftarkan."
+          align="start"
+        />
+
+        <WindowCard title="Cari" className="mt-8">
+          <form onSubmit={handleSearchSubmit} className="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <div className="relative flex-1">
+              <Search
+                className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-ink/45"
+                aria-hidden
+              />
+              <Input
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="INV-ASTRO-... atau email"
+                className="h-12 rounded-full border-sky-mid bg-white pl-10"
+              />
+            </div>
+            <CtaButton
+              type="submit"
+              disabled={searchLoading || !query.trim()}
+              size="default"
+              showChevron={false}
+              className="h-12 sm:w-auto"
+            >
+              {searchLoading ? "Mencari" : "Cek status"}
+            </CtaButton>
+          </form>
+          <p className="mt-3 text-xs font-medium text-ink/60">
+            Tanpa login. Contoh invoice: INV-ASTRO-2026-96885985
           </p>
-        </div>
+        </WindowCard>
 
-        {/* ─── QUICK SEARCH BOX (BISA UNTUK UMUM / TANPA LOGIN) ─── */}
-        <div className="mb-8">
-          <Card className="rounded-xl border-2 border-white/60 bg-white/90 p-2 shadow-xl backdrop-blur-md">
-            <form onSubmit={handleSearchSubmit} className="flex flex-col gap-2 sm:flex-row">
-              <div className="relative flex-1">
-                <Search className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-ink" />
-                <Input
-                  type="text"
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Masukkan Nomor Invoice (INV-ASTRO-...) atau Email Pendaftar"
-                  className="h-12 border-astro-cyan-2 bg-white pl-10 pr-3 text-xs md:text-sm font-medium text-astro-navy placeholder:text-ink focus-visible:ring-2 focus-visible:ring-astro-blue"
-                />
-              </div>
-              <div className="flex gap-2">
-                <Button
-                  type="submit"
-                  disabled={searchLoading || !query.trim()}
-                  className="rounded-lg h-12 gap-2 bg-astro-blue px-6 text-xs font-black uppercase tracking-wider text-white hover:bg-astro-blue shadow-md"
-                >
-                  {searchLoading ? (
-                    <Spinner className="size-4 text-white" />
-                  ) : (
-                    <Search className="size-4" />
-                  )}
-                  Cek Status
-                </Button>
-                {submittedQuery && (
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={handleClearSearch}
-                    className="rounded-lg h-12 border-astro-cyan-2 px-3 text-ink hover:text-astro-navy"
-                    title="Reset Pencarian"
-                  >
-                    <RotateCcw className="size-4" />
-                  </Button>
-                )}
-              </div>
-            </form>
-          </Card>
-          <div className="mt-2 flex items-center justify-between px-2 text-11 text-ink">
-            <span className="flex items-center gap-1">
-              <Sparkles className="size-3 text-astro-blue" /> Bebas akses tanpa perlu login
-            </span>
-            <span className="font-mono text-10 text-ink">
-              Contoh: INV-ASTRO-2026-96885985
-            </span>
-          </div>
-        </div>
-
-        {/* ─── SEARCH ERROR ALERT ─── */}
         {searchError && (
-          <Alert variant="destructive" className="rounded-lg mb-6 border-red-200 bg-red-50 text-red-800">
-            <AlertCircle className="size-4" />
-            <AlertDescription className="text-xs font-medium">
-              {searchError}
-            </AlertDescription>
-          </Alert>
+          <Surface tone="pink" radius="xl" pad="md" className="mt-4">
+            <p className="text-sm font-medium">{searchError}</p>
+          </Surface>
         )}
 
-        {/* ─── HASIL PENCARIAN ─── */}
         {searchResults !== null && (
-          <div className="mb-10 space-y-4">
-            <div className="flex items-center justify-between border-b border-astro-cyan-2/60 pb-2">
-              <h2 className="text-xs font-black uppercase tracking-wider text-astro-navy flex items-center gap-2">
-                <Search className="size-3.5 text-astro-blue" />
-                Hasil Pencarian ({searchResults.length})
+          <div className="mt-8">
+            <div className="mb-4 flex items-end justify-between gap-3">
+              <h2 className="font-heading text-lg font-bold text-astro-navy">
+                Hasil ({searchResults.length})
               </h2>
-              <span className="text-10 font-mono text-ink truncate max-w-[200px]">
-                "{submittedQuery}"
-              </span>
+              <button
+                type="button"
+                onClick={handleClearSearch}
+                className="text-sm font-semibold text-astro-navy/70 hover:text-astro-navy"
+              >
+                Reset
+              </button>
             </div>
 
             {searchResults.length === 0 ? (
-              <Empty className="rounded-xl border border-astro-cyan-2 bg-white/95 p-8 text-center shadow-md">
-                <EmptyHeader>
-                  <EmptyMedia variant="icon">
-                    <HelpCircle className="size-8 text-amber-500" />
-                  </EmptyMedia>
-                  <EmptyTitle className="text-sm font-bold text-astro-navy">
-                    Pendaftaran Tidak Ditemukan
-                  </EmptyTitle>
-                  <EmptyDescription className="text-xs text-ink max-w-sm mx-auto">
-                    Tidak ditemukan pendaftaran dengan kata kunci <strong>"{submittedQuery}"</strong>. Pastikan Nomor Referensi Invoice atau Email sudah persis sesuai saat mengisi form pendaftaran.
-                  </EmptyDescription>
-                  <EmptyContent className="mt-4 flex flex-wrap justify-center gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={handleClearSearch}
-                      className="rounded-lg text-xs font-bold uppercase"
-                    >
-                      Coba Kata Kunci Lain
-                    </Button>
-                    <Button
-                      asChild
-                      size="sm"
-                      className="rounded-lg text-xs font-bold uppercase bg-astro-blue hover:bg-astro-blue"
-                    >
-                      <Link href="/#competitions">
-                        Daftar Lomba Baru <ArrowRight className="size-3 ml-1" />
-                      </Link>
-                    </Button>
-                  </EmptyContent>
-                </EmptyHeader>
-              </Empty>
+              <Surface tone="plain" radius="2xl" pad="lg" className="text-center">
+                <p className="font-heading text-lg font-bold text-astro-navy">Tidak ditemukan</p>
+                <p className="mx-auto mt-2 max-w-md text-sm text-ink/70">
+                  Tidak ada pendaftaran untuk “{submittedQuery}”. Pastikan invoice atau email sama
+                  dengan saat mengisi formulir.
+                </p>
+                <div className="mt-5 flex flex-wrap justify-center gap-2">
+                  <Button variant="outline" className="rounded-full" onClick={handleClearSearch}>
+                    Coba kata lain
+                  </Button>
+                  <CtaButton href="/#competitions" size="default" showChevron={false}>
+                    Daftar lomba
+                  </CtaButton>
+                </div>
+              </Surface>
             ) : (
-              <div className="space-y-3">
+              <div className="grid gap-3">
                 {searchResults.map((reg) => (
                   <RegistrationCard
                     key={reg.id}
                     reg={reg}
                     onOpenDetail={() => setSelectedReg(reg)}
-                    onPrint={() => handlePrint(reg)}
+                    onPrint={() => print(reg)}
                   />
                 ))}
               </div>
@@ -371,423 +303,107 @@ function CheckRegistrationContent() {
           </div>
         )}
 
-        {/* ─── BAGIAN PENDAFTARAN AKUN (JIKA USER LOGIN) ─── */}
         {isLoggedIn && (
-          <div className="mt-8 space-y-4">
-            <div className="flex items-center justify-between border-b border-astro-cyan-2/60 pb-2">
-              <div>
-                <h2 className="text-xs font-black uppercase tracking-wider text-astro-navy flex items-center gap-1.5">
-                  <User className="size-3.5 text-astro-blue" />
-                  Pendaftaran Akun Saya
-                </h2>
-                <p className="text-11 text-ink">
-                  Terdaftar dengan email <strong>{user.email}</strong>
-                </p>
-              </div>
-              <Badge variant="outline" className="text-10 font-bold border-astro-cyan-2 text-astro-navy bg-sky-bottom">
-                {accountRegistrations.length} Lomba
-              </Badge>
-            </div>
-
+          <WindowCard title="Pendaftaran akun" className="mt-10">
+            <p className="text-sm text-ink/70">
+              Terdaftar dengan {user.email}. {accountRegistrations.length} lomba.
+            </p>
             {accountLoading ? (
               <div className="flex justify-center py-10">
                 <Spinner className="size-6 text-astro-navy" />
               </div>
             ) : accountRegistrations.length === 0 ? (
-              <Empty className="rounded-xl border border-astro-cyan-2 bg-white/90 p-6 text-center shadow-sm">
-                <EmptyHeader>
-                  <EmptyTitle className="text-xs font-bold text-astro-navy">
-                    Belum Ada Pendaftaran Terhubung
-                  </EmptyTitle>
-                  <EmptyDescription className="text-xs text-ink">
-                    Akun ini belum memiliki riwayat pendaftaran lomba aktif.
-                  </EmptyDescription>
-                  <EmptyContent className="mt-3">
-                    <Button asChild size="sm" className="rounded-lg text-xs font-bold uppercase bg-astro-blue hover:bg-astro-blue">
-                      <Link href="/#competitions">Pilih & Daftar Lomba</Link>
-                    </Button>
-                  </EmptyContent>
-                </EmptyHeader>
-              </Empty>
+              <Surface tone="tint" radius="xl" pad="lg" className="text-center">
+                <p className="font-heading font-bold text-astro-navy">Belum ada pendaftaran</p>
+                <p className="mt-1 text-sm text-ink/70">Akun ini belum punya riwayat lomba.</p>
+                <CtaButton href="/#competitions" size="default" className="mt-4" showChevron={false}>
+                  Pilih lomba
+                </CtaButton>
+              </Surface>
             ) : (
-              <div className="space-y-3">
+              <div className="mt-4 grid gap-3">
                 {accountRegistrations.map((reg) => (
                   <RegistrationCard
                     key={reg.id}
                     reg={reg}
                     onOpenDetail={() => setSelectedReg(reg)}
-                    onPrint={() => handlePrint(reg)}
+                    onPrint={() => print(reg)}
                   />
                 ))}
               </div>
             )}
-          </div>
+          </WindowCard>
         )}
 
-        {/* ─── PANDUAN CEPAT BAGI YANG BELUM LOGIN & BELUM CARI ─── */}
         {!isLoggedIn && searchResults === null && (
-          <div className="mt-6 rounded-xl border border-white/60 bg-white/80 p-5 shadow-sm backdrop-blur-sm">
-            <h3 className="mb-3 text-xs font-black uppercase tracking-wider text-astro-navy flex items-center gap-1.5">
-              <HelpCircle className="size-3.5 text-astro-blue" /> Panduan Cek Status Pendaftaran:
-            </h3>
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 text-xs text-ink">
-              <div className="rounded-lg bg-sky-bottom/70 p-3 border border-sky-mid">
-                <span className="flex size-5 items-center justify-center rounded-full bg-astro-blue text-10 font-bold text-white mb-1.5">1</span>
-                <p className="font-bold text-astro-navy">Simpan Nomor Invoice</p>
-                <p className="text-11 text-ink mt-0.5">Dapatkan kode referensi (contoh: <code>INV-ASTRO-...</code>) saat selesai submit pendaftaran.</p>
-              </div>
-              <div className="rounded-lg bg-sky-bottom/70 p-3 border border-sky-mid">
-                <span className="flex size-5 items-center justify-center rounded-full bg-astro-blue text-10 font-bold text-white mb-1.5">2</span>
-                <p className="font-bold text-astro-navy">Cek Kapan Saja</p>
-                <p className="text-11 text-ink mt-0.5">Ketik invoice atau email pada kotak pencarian di atas untuk cek bukti & bayar langsung.</p>
-              </div>
-              <div className="rounded-lg bg-sky-bottom/70 p-3 border border-sky-mid">
-                <span className="flex size-5 items-center justify-center rounded-full bg-astro-blue text-10 font-bold text-white mb-1.5">3</span>
-                <p className="font-bold text-astro-navy">Punya Akun?</p>
-                <p className="text-11 text-ink mt-0.5">Masuk ke akun Anda untuk melihat seluruh riwayat lomba tanpa perlu mengetik nomor invoice.</p>
-              </div>
-            </div>
-            <div className="mt-4 pt-3 border-t border-astro-cyan-2/80 flex items-center justify-between">
-              <span className="text-11 text-ink">Sudah memiliki akun ASTRO?</span>
-              <Button asChild size="sm" variant="outline" className="rounded-lg text-xs font-bold uppercase gap-1.5">
-                <Link href="/login">
-                  <LogIn className="size-3" /> Masuk Akun
-                </Link>
+          <WindowCard title="Cara cek" className="mt-10" bodyClassName="gap-0">
+            <ol>
+              <ScheduleCard
+                phase="Simpan invoice"
+                dateLabel="Langkah 1"
+                detail="Kode referensi muncul setelah kamu mengirim formulir."
+                status="done"
+                isLast={false}
+              />
+              <ScheduleCard
+                phase="Cek kapan saja"
+                dateLabel="Langkah 2"
+                detail="Ketik invoice atau email di kotak pencarian."
+                status="active"
+                isLast={false}
+              />
+              <ScheduleCard
+                phase="Masuk akun"
+                dateLabel="Langkah 3"
+                detail="Riwayat semua lomba muncul tanpa mengetik invoice."
+                status="upcoming"
+                isLast
+              />
+            </ol>
+            <div className="mt-4 border-t border-sky-mid/60 pt-4">
+              <Button asChild variant="outline" className="rounded-full">
+                <Link href="/auth/login">Masuk akun</Link>
               </Button>
             </div>
-          </div>
+          </WindowCard>
         )}
+      </SectionShell>
 
-        {/* Footer Navigation */}
-        <div className="mt-12 flex items-center justify-center gap-6">
-          <Link
-            href="/"
-            className="text-xs font-bold uppercase tracking-wider text-ink transition-colors hover:text-astro-navy"
-          >
-            ← Kembali ke Beranda
-          </Link>
-          {isLoggedIn && (
-            <Button
-              variant="link"
-              size="sm"
-              onClick={handleLogout}
-              className="text-xs font-bold uppercase tracking-wider text-red-600 hover:text-red-500"
-            >
-              Keluar (Logout)
-            </Button>
-          )}
-        </div>
-      </div>
-
-      {/* ─── MODAL DETAIL LENGKAP & BERKAS ─── */}
       <ResponsiveModal
         open={!!selectedReg}
         onOpenChange={(next) => !next && setSelectedReg(null)}
-        title="Detail Pendaftaran"
-        description="Detail data pendaftar lomba ASTRO 2026"
-        titleClassName="text-sm font-black uppercase tracking-tight"
-        descriptionClassName="sr-only"
+        title="Detail pendaftaran"
+        description="Data pendaftar lomba ASTRO 2026"
         contentClassName="md:max-w-xl max-h-[90vh] overflow-y-auto"
       >
         {selectedReg && (
-          <div className="space-y-5 py-1">
-            {/* Header Lomba & Status */}
-            <div className="rounded-lg border border-astro-cyan-2 bg-surface/80 p-4">
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <span className="text-10 font-bold uppercase tracking-wider text-muted-foreground">
-                    Kompetisi Lomba
-                  </span>
-                  <h3 className="text-base font-black text-astro-navy">
-                    {selectedReg.competitionName}
-                  </h3>
-                  {selectedReg.batchName && (
-                    <Badge variant="secondary" className="mt-1 text-10 font-bold">
-                      {selectedReg.batchName}
-                    </Badge>
-                  )}
-                </div>
-                {(() => {
-                  const cfg = statusConfig[selectedReg.paymentStatus] || statusConfig.pending;
-                  const Icon = cfg.icon;
-                  return (
-                    <Badge variant="outline" className={cn("rounded-md gap-1 border px-2.5 py-1 text-10 font-bold uppercase", cfg.color)}>
-                      <Icon className="size-3" />
-                      {cfg.label}
-                    </Badge>
-                  );
-                })()}
-              </div>
-            </div>
+          <RegistrationDetail
+            reg={selectedReg}
+            onPrint={() => print(selectedReg)}
+            onClose={() => setSelectedReg(null)}
+            onPay={() =>
+              router.push(`/register/${selectedReg.competitionId}?regId=${selectedReg.id}`)
+            }
+          />
+        )}
+      </ResponsiveModal>
 
-            {/* Informasi Pembayaran */}
-            <div className="space-y-2.5 rounded-lg border border-astro-cyan-2 p-4">
-              <h4 className="flex items-center gap-1.5 text-10 font-bold uppercase tracking-[0.15em] text-muted-foreground">
-                <Coins className="size-3.5 text-astro-blue" /> Status & Pembayaran
-              </h4>
-              <div className="grid grid-cols-2 gap-3 text-xs">
-                <div>
-                  <span className="text-10 text-muted-foreground">Nomor Referensi</span>
-                  <p className="font-mono font-bold text-astro-navy select-all">
-                    {selectedReg.paymentReference || "—"}
-                  </p>
-                </div>
-                <div>
-                  <span className="text-10 text-muted-foreground">Total Biaya</span>
-                  <p className="font-black text-astro-navy text-sm">
-                    {selectedReg.paymentAmount === 0 ? "Gratis" : `Rp ${selectedReg.paymentAmount.toLocaleString("id-ID")}`}
-                  </p>
-                </div>
-                <div>
-                  <span className="text-10 text-muted-foreground">Waktu Pendaftaran</span>
-                  <p className="text-ink">
-                    {selectedReg.createdAt ? new Date(selectedReg.createdAt).toLocaleDateString("id-ID", {
-                      day: "numeric",
-                      month: "short",
-                      year: "numeric",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    }) : "—"}
-                  </p>
-                </div>
-                <div>
-                  <span className="text-10 text-muted-foreground">Metode Bayar</span>
-                  <p className="capitalize text-ink">
-                    {selectedReg.paymentMethod || "Payment Gateway (Online)"}
-                  </p>
-                </div>
-              </div>
-
-              {/* Action Banner for Pending */}
-              {selectedReg.paymentStatus === "pending" && (
-                <div className="mt-3 rounded-md bg-amber-50 border border-amber-200 p-3 text-xs text-amber-900">
-                  <p className="font-bold flex items-center gap-1.5">
-                    <Clock className="size-3.5 text-amber-600" /> Menunggu Pembayaran
-                  </p>
-                  <p className="text-11 text-amber-800 mt-0.5">
-                    Selesaikan pembayaran Anda untuk mengamankan slot kuota pendaftaran.
-                  </p>
-                  <Button
-                    onClick={() => router.push(`/register/${selectedReg.competitionId}?regId=${selectedReg.id}`)}
-                    size="sm"
-                    className="rounded-lg mt-2 w-full bg-emerald-600 text-xs font-black uppercase text-white hover:bg-emerald-500"
-                  >
-                    <CreditCard className="size-3.5 mr-1" /> Lanjutkan Pembayaran Sekarang
-                  </Button>
-                </div>
-              )}
-
-              {/* Action Banner for Paid */}
-              {selectedReg.paymentStatus === "paid" && (
-                <div className="mt-3 rounded-md bg-emerald-50 border border-emerald-200 p-3 text-xs text-emerald-900">
-                  <p className="font-bold flex items-center gap-1.5">
-                    <CheckCircle2 className="size-3.5 text-emerald-600" /> Pembayaran Telah Disetujui
-                  </p>
-                  <p className="text-11 text-emerald-800 mt-0.5">
-                    Selamat! Tiket pendaftaran Anda resmi aktif. Silakan hubungi narahubung lomba untuk bergabung ke grup koordinasi peserta.
-                  </p>
-                </div>
-              )}
-            </div>
-
-            {/* Identitas Peserta / Tim */}
-            <div className="space-y-3 rounded-lg border border-astro-cyan-2 p-4">
-              <h4 className="flex items-center gap-1.5 text-10 font-bold uppercase tracking-[0.15em] text-muted-foreground">
-                <User className="size-3.5 text-astro-blue" /> {selectedReg.type === "team" ? "Data Tim & Pemain" : "Data Peserta"}
-              </h4>
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 text-xs">
-                {selectedReg.type === "team" ? (
-                  <>
-                    <div>
-                      <span className="text-10 text-muted-foreground">Nama Tim</span>
-                      <p className="font-bold text-astro-navy">{selectedReg.teamName}</p>
-                    </div>
-                    <div>
-                      <span className="text-10 text-muted-foreground">Ketua Tim</span>
-                      <p className="font-bold text-astro-navy">{selectedReg.leaderName} ({selectedReg.leaderIdentity || "No ID"})</p>
-                    </div>
-                    {selectedReg.leaderPhotoUrl && (
-                      <div className="sm:col-span-2">
-                        <span className="text-10 text-muted-foreground">Foto Ketua</span>
-                        <div className="mt-1 flex items-center gap-3">
-                          <Image
-                            src={selectedReg.leaderPhotoUrl}
-                            alt="Foto Ketua"
-                            width={54}
-                            height={54}
-                            className="size-14 rounded-md border border-astro-cyan-2 object-cover"
-                          />
-                          <a href={selectedReg.leaderPhotoUrl} target="_blank" rel="noreferrer" className="text-xs text-astro-blue hover:underline flex items-center gap-1 font-semibold">
-                            Lihat Foto Penuh <ExternalLink className="size-3" />
-                          </a>
-                        </div>
-                      </div>
-                    )}
-                    {selectedReg.memberDetails && selectedReg.memberDetails.length > 0 && (
-                      <div className="sm:col-span-2">
-                        <span className="text-10 text-muted-foreground">Roster Pemain ({selectedReg.memberDetails.length})</span>
-                        <div className="mt-1.5 grid grid-cols-2 gap-2">
-                          {selectedReg.memberDetails.map((m, i) => (
-                            <div key={i} className="flex items-center gap-2 rounded border border-surface bg-surface/60 p-1.5">
-                              {m.photoUrl ? (
-                                <Image src={m.photoUrl} alt={m.name} width={36} height={36} className="size-9 rounded object-cover border border-astro-cyan-2" />
-                              ) : (
-                                <div className="flex size-9 items-center justify-center rounded bg-astro-cyan-2 text-9 text-ink">Foto</div>
-                              )}
-                              <span className="truncate text-xs font-medium text-astro-navy">{m.name}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <>
-                    <div>
-                      <span className="text-10 text-muted-foreground">Nama Lengkap</span>
-                      <p className="font-bold text-astro-navy">{selectedReg.fullName}</p>
-                    </div>
-                    <div>
-                      <span className="text-10 text-muted-foreground">Nomor Identitas (NIM/NIK)</span>
-                      <p className="font-medium text-astro-navy">{selectedReg.identityNumber || "—"}</p>
-                    </div>
-                  </>
-                )}
-                <div>
-                  <span className="text-10 text-muted-foreground">Asal Sekolah / Instansi</span>
-                  <p className="font-medium text-astro-navy flex items-center gap-1">
-                    <Building2 className="size-3 text-ink" /> {selectedReg.institution}
-                  </p>
-                </div>
-                <div>
-                  <span className="text-10 text-muted-foreground">Kontak WhatsApp</span>
-                  <p className="font-medium text-astro-navy flex items-center gap-1">
-                    <Phone className="size-3 text-ink" /> {selectedReg.whatsapp}
-                  </p>
-                </div>
-                <div className="sm:col-span-2">
-                  <span className="text-10 text-muted-foreground">Email Terdaftar</span>
-                  <p className="font-medium text-astro-navy flex items-center gap-1">
-                    <Mail className="size-3 text-ink" /> {selectedReg.email}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Informasi & Berkas Khusus Lomba (Custom Fields) */}
-            {selectedReg.customFields && Object.keys(selectedReg.customFields).length > 0 && (
-              <div className="space-y-3 rounded-lg border border-astro-cyan-2 p-4">
-                <h4 className="flex items-center gap-1.5 text-10 font-bold uppercase tracking-[0.15em] text-muted-foreground">
-                  <Layers className="size-3.5 text-astro-blue" /> Berkas & Informasi Khusus Lomba
-                </h4>
-                <div className="space-y-2.5">
-                  {Object.entries(selectedReg.customFields).map(([key, val]) => {
-                    // Cari label field dari competitionCustomFields jika tersedia
-                    const fieldDef = selectedReg.competitionCustomFields?.find((f) => f.id === key);
-                    const label = fieldDef?.label ?? key;
-                    const isImage = typeof val === "string" && (val.startsWith("http") || val.startsWith("/"));
-
-                    if (!val) return null;
-
-                    return (
-                      <div key={key} className="rounded-md border border-surface bg-surface/50 p-2.5 text-xs">
-                        <span className="text-10 font-bold text-ink uppercase tracking-wider block">
-                          {label}
-                        </span>
-                        {isImage ? (
-                          <div className="mt-1.5 flex items-center gap-3">
-                            <Image
-                              src={val}
-                              alt={label}
-                              width={56}
-                              height={56}
-                              className="size-14 rounded border border-astro-cyan-2 object-cover bg-white"
-                            />
-                            <a
-                              href={val}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-xs font-semibold text-astro-blue hover:underline flex items-center gap-1"
-                            >
-                              Lihat Berkas Penuh <ExternalLink className="size-3" />
-                            </a>
-                          </div>
-                        ) : (
-                          <p className="mt-0.5 text-xs font-medium text-astro-navy whitespace-pre-line">
-                            {String(val)}
-                          </p>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-
-            {/* Kontak Panitia & Narahubung */}
-            {selectedReg.competitionContactWhatsapp && (
-              <div className="rounded-lg border border-astro-cyan-2 bg-surface p-4 text-xs">
-                <span className="text-10 font-bold uppercase tracking-wider text-ink block mb-1">
-                  Narahubung Resmi Lomba (Contact Person)
-                </span>
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                  <div>
-                    <p className="font-bold text-astro-navy">{selectedReg.competitionContactName || "Panitia Lomba"}</p>
-                    <p className="text-11 text-ink">Hubungi panitia jika ada kendala atau pertanyaan teknis.</p>
-                  </div>
-                  <Button
-                    asChild
-                    size="sm"
-                    className="rounded-lg gap-1.5 bg-emerald-600 text-xs font-bold text-white hover:bg-emerald-500 self-start sm:self-auto"
-                  >
-                    <a
-                      href={`https://wa.me/${selectedReg.competitionContactWhatsapp.replace(/\D/g, "")}?text=${encodeURIComponent(
-                        `Halo Panitia ${selectedReg.competitionName}, saya ${selectedReg.type === "team" ? selectedReg.teamName : selectedReg.fullName} (Ref: ${selectedReg.paymentReference}) ingin menanyakan terkait pendaftaran lomba.`
-                      )}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <MessageCircle className="size-3.5" /> Chat WhatsApp Panitia
-                    </a>
-                  </Button>
-                </div>
-              </div>
-            )}
-
-        {/* Modal Bottom Actions */}
-        <div className="flex items-center justify-between pt-3 border-t border-surface">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => handlePrint(selectedReg)}
-            className="rounded-lg gap-1.5 text-xs font-bold text-astro-navy hover:text-astro-navy hover:border-astro-sky bg-white shadow-xs"
-          >
-            <Printer className="size-3.5 text-astro-blue" /> Cetak Bukti Invoice
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setSelectedReg(null)}
-            className="rounded-lg text-xs font-bold uppercase"
-          >
-            Tutup
-          </Button>
-        </div>
-      </div>
-    )}
-  </ResponsiveModal>
-
-      {/* Printable Invoice rendered directly to body via PrintPortal */}
       {printTarget && (
         <PrintPortal>
-          <PrintableInvoice data={printTarget} />
+          <PrintableInvoice
+            data={{
+              ...printTarget,
+              customFields: printTarget.customFields
+                ? asStringRecord(printTarget.customFields)
+                : null,
+            }}
+          />
         </PrintPortal>
       )}
     </PageShell>
   );
 }
 
-// Komponen Kartu Pendaftaran Reusable
 function RegistrationCard({
   reg,
   onOpenDetail,
@@ -798,108 +414,354 @@ function RegistrationCard({
   onPrint?: () => void;
 }) {
   const router = useRouter();
-  const cfg = statusConfig[reg.paymentStatus] || statusConfig.pending;
-  const Icon = cfg.icon;
+  const cfg = statusOf(reg.paymentStatus);
 
   return (
-    <Card className="rounded-lg relative border-astro-cyan-2 bg-white shadow-sm hover:shadow-md transition-shadow">
-      <div
-        className="absolute -top-px -left-px size-8 bg-astro-blue"
-        style={{ clipPath: "polygon(0 0, 100% 0, 0 100%)" }}
-      />
-      <CardContent className="p-4 md:p-5">
-        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-          <div className="min-w-0 flex-1">
-            <div className="flex flex-wrap items-center gap-2 mb-1">
-              <h3 className="text-base font-black uppercase tracking-tight text-astro-navy truncate">
-                {reg.competitionName}
-              </h3>
-              {reg.batchName && (
-                <span className="text-10 font-bold px-1.5 py-0.5 rounded bg-surface text-ink border border-astro-cyan-2">
-                  {reg.batchName}
-                </span>
-              )}
-              {reg.type === "team" && (
-                <span className="text-10 font-bold px-1.5 py-0.5 rounded bg-sky-bottom text-astro-navy border border-astro-cyan-2 uppercase">
-                  Tim
-                </span>
-              )}
-            </div>
-
-            <p className="text-xs text-ink font-medium">
-              {reg.type === "team" ? (
-                <span>
-                  Tim: <strong className="text-astro-navy">{reg.teamName}</strong>
-                  {reg.leaderName && ` • Ketua: ${reg.leaderName}`}
-                </span>
-              ) : (
-                <span>
-                  Peserta: <strong className="text-astro-navy">{reg.fullName || "—"}</strong>
-                </span>
-              )}
-            </p>
-
-            <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-ink">
-              <span className="flex items-center gap-1">
-                <Building2 className="size-3 text-ink" /> {reg.institution}
-              </span>
-              <span className="flex items-center gap-1 font-mono text-11 text-ink">
-                Ref: <strong className="text-astro-navy font-semibold">{reg.paymentReference || "—"}</strong>
-              </span>
-              <span className="font-bold text-astro-navy">
-                {reg.paymentAmount === 0 ? "Gratis" : `Rp ${reg.paymentAmount.toLocaleString("id-ID")}`}
-              </span>
-            </div>
+    <Surface tone="plain" radius="2xl" pad="md">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-2">
+            <h3 className="font-heading text-base font-bold text-astro-navy">
+              {reg.competitionName}
+            </h3>
+            {reg.batchName && (
+              <Pill tone="glass" size="sm">
+                {reg.batchName}
+              </Pill>
+            )}
+            {reg.type === "team" && (
+              <Pill tone="white" size="sm">
+                Tim
+              </Pill>
+            )}
           </div>
+          <p className="mt-1 text-sm text-ink/75">
+            {reg.type === "team" ? (
+              <>
+                Tim {reg.teamName}
+                {reg.leaderName ? `. Ketua ${reg.leaderName}` : ""}
+              </>
+            ) : (
+              <>Peserta {reg.fullName || "—"}</>
+            )}
+          </p>
+          <p className="mt-2 text-xs font-medium text-ink/60">
+            {reg.institution}
+            {" · "}
+            {reg.paymentReference || "Tanpa referensi"}
+            {" · "}
+            {reg.paymentAmount === 0
+              ? "Gratis"
+              : `Rp ${reg.paymentAmount.toLocaleString("id-ID")}`}
+          </p>
+        </div>
 
-          <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-start gap-2 pt-2 sm:pt-0 border-t sm:border-t-0 border-surface">
-            <Badge
-              variant="outline"
-              className={cn(
-                "rounded-md gap-1 border px-2.5 py-1 text-10 font-bold uppercase tracking-wider",
-                cfg.color,
-              )}
-            >
-              <Icon className="size-3" />
-              {cfg.label}
-            </Badge>
-
-            <div className="flex items-center gap-1.5">
-              {reg.paymentStatus === "pending" && (
-                <Button
-                  size="sm"
-                  className="rounded-lg h-8 gap-1 text-10 font-black uppercase bg-emerald-600 text-white hover:bg-emerald-500 shadow-sm"
-                  onClick={() => router.push(`/register/${reg.competitionId}?regId=${reg.id}`)}
-                >
-                  <CreditCard className="size-3" /> Bayar
-                </Button>
-              )}
-
-              {onPrint && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="rounded-lg h-8 gap-1 text-10 font-bold uppercase text-ink hover:text-astro-navy hover:border-astro-cyan-2"
-                  onClick={onPrint}
-                  title="Cetak Bukti Pendaftaran / Invoice"
-                >
-                  <Printer className="size-3" /> Cetak
-                </Button>
-              )}
-
+        <div className="flex flex-wrap items-center gap-2 sm:flex-col sm:items-end">
+          <Pill tone={cfg.tone} size="sm">
+            {cfg.label}
+          </Pill>
+          <div className="flex items-center gap-1.5">
+            {reg.paymentStatus === "pending" && (
               <Button
-                variant="outline"
                 size="sm"
-                className="rounded-lg h-8 gap-1 text-10 font-bold uppercase text-ink hover:text-astro-navy hover:border-astro-cyan-2"
-                onClick={onOpenDetail}
+                className="h-8 rounded-full"
+                onClick={() => router.push(`/register/${reg.competitionId}?regId=${reg.id}`)}
               >
-                <FileText className="size-3" /> Detail
+                <CreditCard data-icon="inline-start" />
+                Bayar
               </Button>
-            </div>
+            )}
+            {onPrint && (
+              <Button variant="outline" size="sm" className="h-8 rounded-full" onClick={onPrint}>
+                <Printer data-icon="inline-start" />
+                Cetak
+              </Button>
+            )}
+            <Button variant="outline" size="sm" className="h-8 rounded-full" onClick={onOpenDetail}>
+              <FileText data-icon="inline-start" />
+              Detail
+            </Button>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </Surface>
+  );
+}
+
+function RegistrationDetail({
+  reg,
+  onPrint,
+  onClose,
+  onPay,
+}: {
+  reg: RegistrationItem;
+  onPrint: () => void;
+  onClose: () => void;
+  onPay: () => void;
+}) {
+  const cfg = statusOf(reg.paymentStatus);
+  const Icon = cfg.icon;
+  const wa = reg.competitionContactWhatsapp?.replace(/\D/g, "") ?? "";
+
+  return (
+    <div className="space-y-4 py-1">
+      <Surface tone="tint" radius="xl" pad="md">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <p className="text-xs font-semibold text-ink/60">Lomba</p>
+            <h3 className="font-heading text-base font-bold text-astro-navy">
+              {reg.competitionName}
+            </h3>
+            {reg.batchName && (
+              <p className="mt-1 text-xs font-medium text-ink/70">{reg.batchName}</p>
+            )}
+          </div>
+          <Pill tone={cfg.tone} size="sm">
+            <Icon className="size-3" aria-hidden />
+            {cfg.label}
+          </Pill>
+        </div>
+      </Surface>
+
+      <Surface tone="plain" radius="xl" pad="md">
+        <p className="text-xs font-bold text-astro-navy">Pembayaran</p>
+        <dl className="mt-3 grid grid-cols-2 gap-3 text-sm">
+          <div>
+            <dt className="text-xs text-ink/55">Referensi</dt>
+            <dd className="font-mono font-semibold text-astro-navy select-all">
+              {reg.paymentReference || "—"}
+            </dd>
+          </div>
+          <div>
+            <dt className="text-xs text-ink/55">Biaya</dt>
+            <dd className="font-semibold text-astro-navy">
+              {reg.paymentAmount === 0
+                ? "Gratis"
+                : `Rp ${reg.paymentAmount.toLocaleString("id-ID")}`}
+            </dd>
+          </div>
+          <div>
+            <dt className="text-xs text-ink/55">Waktu daftar</dt>
+            <dd className="text-ink">
+              {reg.createdAt
+                ? new Date(reg.createdAt).toLocaleDateString("id-ID", {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })
+                : "—"}
+            </dd>
+          </div>
+          <div>
+            <dt className="text-xs text-ink/55">Metode</dt>
+            <dd className="capitalize text-ink">{reg.paymentMethod || "Gateway"}</dd>
+          </div>
+        </dl>
+
+        {reg.paymentStatus === "pending" && (
+          <Surface tone="gold" radius="xl" pad="md" className="mt-3">
+            <p className="text-sm font-semibold">Selesaikan pembayaran untuk mengamankan kuota.</p>
+            <Button onClick={onPay} size="sm" className="mt-2 w-full rounded-full">
+              <CreditCard data-icon="inline-start" />
+              Lanjut bayar
+            </Button>
+          </Surface>
+        )}
+        {reg.paymentStatus === "paid" && (
+          <p className="mt-3 text-sm text-ink/75">{cfg.desc} Hubungi panitia untuk grup peserta.</p>
+        )}
+      </Surface>
+
+      <Surface tone="plain" radius="xl" pad="md">
+        <p className="text-xs font-bold text-astro-navy">
+          {reg.type === "team" ? "Tim" : "Peserta"}
+        </p>
+        <dl className="mt-3 grid gap-3 text-sm sm:grid-cols-2">
+          {reg.type === "team" ? (
+            <>
+              <div>
+                <dt className="text-xs text-ink/55">Nama tim</dt>
+                <dd className="font-semibold text-astro-navy">{reg.teamName}</dd>
+              </div>
+              <div>
+                <dt className="text-xs text-ink/55">Ketua</dt>
+                <dd className="font-semibold text-astro-navy">
+                  {reg.leaderName} ({reg.leaderIdentity || "—"})
+                </dd>
+              </div>
+              {reg.leaderGameId && (
+                <div>
+                  <dt className="text-xs text-ink/55">ID akun ketua</dt>
+                  <dd className="font-mono font-semibold text-astro-navy">
+                    {reg.leaderGameId}
+                  </dd>
+                </div>
+              )}
+              {isSafeUrl(reg.leaderPhotoUrl) && (
+                <div className="sm:col-span-2">
+                  <dt className="text-xs text-ink/55">Foto ketua</dt>
+                  <div className="mt-1 flex items-center gap-3">
+                    <Image
+                      src={reg.leaderPhotoUrl}
+                      alt="Foto ketua"
+                      width={54}
+                      height={54}
+                      className="size-14 rounded-lg object-cover"
+                    />
+                    <a
+                      href={safeHref(reg.leaderPhotoUrl)}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-1 text-sm font-semibold text-astro-blue"
+                    >
+                      Lihat foto <ExternalLink className="size-3" />
+                    </a>
+                  </div>
+                </div>
+              )}
+              {reg.memberDetails && reg.memberDetails.length > 0 && (
+                <div className="sm:col-span-2">
+                  <dt className="text-xs text-ink/55">Roster ({reg.memberDetails.length})</dt>
+                  <div className="mt-1.5 grid grid-cols-2 gap-2">
+                    {reg.memberDetails.map((member, index) => (
+                      <div key={`${member.name}-${index}`} className="flex items-center gap-2">
+                        {member.photoUrl ? (
+                          <Image
+                            src={member.photoUrl}
+                            alt={member.name}
+                            width={36}
+                            height={36}
+                            className="size-9 rounded-md object-cover"
+                          />
+                        ) : (
+                          <span className="grid size-9 place-items-center rounded-md bg-sky-bottom text-10 font-bold text-ink">
+                            Foto
+                          </span>
+                        )}
+                        <span className="min-w-0">
+                          <span className="block truncate text-sm font-medium text-astro-navy">
+                            {member.name}
+                          </span>
+                          {member.gameId && (
+                            <span className="block truncate font-mono text-11 text-ink/60">
+                              {member.gameId}
+                            </span>
+                          )}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </>
+          ) : (
+            <>
+              <div>
+                <dt className="text-xs text-ink/55">Nama</dt>
+                <dd className="font-semibold text-astro-navy">{reg.fullName}</dd>
+              </div>
+              <div>
+                <dt className="text-xs text-ink/55">Identitas</dt>
+                <dd className="font-medium text-astro-navy">{reg.identityNumber || "—"}</dd>
+              </div>
+            </>
+          )}
+          <div>
+            <dt className="text-xs text-ink/55">Instansi</dt>
+            <dd className="flex items-center gap-1 font-medium text-astro-navy">
+              <Building2 className="size-3" aria-hidden /> {reg.institution}
+            </dd>
+          </div>
+          <div>
+            <dt className="text-xs text-ink/55">WhatsApp</dt>
+            <dd className="flex items-center gap-1 font-medium text-astro-navy">
+              <Phone className="size-3" aria-hidden /> {reg.whatsapp}
+            </dd>
+          </div>
+          <div className="sm:col-span-2">
+            <dt className="text-xs text-ink/55">Email</dt>
+            <dd className="flex items-center gap-1 font-medium text-astro-navy">
+              <Mail className="size-3" aria-hidden /> {reg.email}
+            </dd>
+          </div>
+        </dl>
+      </Surface>
+
+      {reg.customFields && Object.keys(reg.customFields).length > 0 && (
+        <Surface tone="plain" radius="xl" pad="md">
+          <p className="text-xs font-bold text-astro-navy">Berkas khusus</p>
+          <div className="mt-3 space-y-2">
+            {Object.entries(reg.customFields).map(([key, val]) => {
+              const fieldDef = reg.competitionCustomFields?.find((field) => field.id === key);
+              const label = fieldDef?.label ?? key;
+              const isImage = typeof val === "string" && (val.startsWith("http") || val.startsWith("/"));
+              if (!val) return null;
+              return (
+                <div key={key} className="text-sm">
+                  <p className="text-xs text-ink/55">{label}</p>
+                  {isImage ? (
+                    <div className="mt-1 flex items-center gap-3">
+                      <Image
+                        src={String(val)}
+                        alt={label}
+                        width={56}
+                        height={56}
+                        className="size-14 rounded-lg bg-white object-cover"
+                      />
+                      <a
+                        href={String(val)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 font-semibold text-astro-blue"
+                      >
+                        Lihat berkas <ExternalLink className="size-3" />
+                      </a>
+                    </div>
+                  ) : (
+                    <p className="whitespace-pre-line font-medium text-astro-navy">{String(val)}</p>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </Surface>
+      )}
+
+      {wa && (
+        <Surface tone="tint" radius="xl" pad="md">
+          <p className="text-xs font-bold text-astro-navy">Narahubung</p>
+          <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-sm font-semibold text-astro-navy">
+              {reg.competitionContactName || "Panitia lomba"}
+            </p>
+            <Button asChild size="sm" variant="outline" className="rounded-full">
+              <a
+                href={`https://wa.me/${wa}?text=${encodeURIComponent(
+                  `Halo Panitia ${reg.competitionName}, saya ${reg.type === "team" ? reg.teamName : reg.fullName} (Ref: ${reg.paymentReference}) ingin menanyakan pendaftaran.`,
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <MessageCircle data-icon="inline-start" />
+                WhatsApp
+              </a>
+            </Button>
+          </div>
+        </Surface>
+      )}
+
+      <div className="flex items-center justify-between gap-2 pt-1">
+        <Button variant="outline" size="sm" className="rounded-full" onClick={onPrint}>
+          <Printer data-icon="inline-start" />
+          Cetak invoice
+        </Button>
+        <Button variant="ghost" size="sm" onClick={onClose}>
+          Tutup
+        </Button>
+      </div>
+    </div>
   );
 }
 
@@ -907,9 +769,11 @@ export default function CekPendaftaranPage() {
   return (
     <Suspense
       fallback={
-        <div className="flex min-h-screen items-center justify-center bg-astro-cyan-2">
-          <Spinner className="size-8 text-astro-navy" />
-        </div>
+        <PageShell>
+          <div className="flex min-h-[60svh] items-center justify-center">
+            <Spinner className="size-6 text-astro-navy" />
+          </div>
+        </PageShell>
       }
     >
       <CheckRegistrationContent />
