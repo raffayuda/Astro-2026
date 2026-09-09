@@ -6,7 +6,6 @@ import {
   Plus,
   Pencil,
   Trash2,
-  Search,
   Eye,
   Trophy,
   Calendar,
@@ -20,6 +19,7 @@ import {
   Users,
 } from "lucide-react";
 import { toast } from "sonner";
+import { EmptyState, PageHeader, SearchField } from "@/components/dashboard";
 import Pagination from "@/components/Pagination";
 import { ResponsiveAlertDialog } from "@/components/responsive-alert-dialog";
 import { ResponsiveModal } from "@/components/responsive-modal";
@@ -27,12 +27,12 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
 } from "@/components/ui/input-group";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -81,21 +81,13 @@ interface Invitation {
   inviteUrl: string;
 }
 
-function UserDetailModal({
-  user,
-  onClose,
-}: {
-  user: User | null;
-  onClose: () => void;
-}) {
+function UserDetailModal({ user, onClose }: { user: User | null; onClose: () => void }) {
   const { data: regData, isLoading: loadingReg } = useRegistrations(
     user ? { userId: user.id, search: user.email } : {},
     { enabled: !!user },
   );
 
-  const registrations = Array.isArray(regData)
-    ? regData
-    : (regData as any)?.data ?? [];
+  const registrations = Array.isArray(regData) ? regData : ((regData as any)?.data ?? []);
 
   if (!user) return null;
 
@@ -111,19 +103,13 @@ function UserDetailModal({
       <div className="space-y-5">
         {/* User Card Info */}
         <div className="rounded-lg group relative overflow-hidden border border-border bg-card p-4 shadow-sm transition-all hover:border-primary/50">
-          <div
-            className="absolute -top-px -left-px size-7 bg-primary"
-            style={{ clipPath: "polygon(0 0, 100% 0, 0 100%)" }}
-          />
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-3">
               <div className="flex size-12 items-center justify-center rounded-full bg-primary/10 font-mono text-base font-bold text-primary">
                 {(user.name || user.email).charAt(0).toUpperCase()}
               </div>
               <div>
-                <h3 className="text-base font-bold text-foreground">
-                  {user.name || "—"}
-                </h3>
+                <h3 className="text-base font-bold text-foreground">{user.name || "—"}</h3>
                 <div className="flex items-center gap-2 text-xs text-muted-foreground">
                   <Mail className="size-3.5" />
                   <span>{user.email}</span>
@@ -202,20 +188,8 @@ function UserDetailModal({
               return (
                 <div
                   key={reg.id}
-                  className="rounded-lg group relative overflow-hidden border border-border bg-card p-4 transition-all hover:border-primary/50 hover:shadow-md"
+                  className="border border-border transition-colors hover:border-primary/50"
                 >
-                  <div
-                    className={cn(
-                      "absolute -top-px -left-px size-6 transition-colors",
-                      isPaid
-                        ? "bg-emerald-500"
-                        : isPending
-                          ? "bg-amber-500"
-                          : "bg-destructive",
-                    )}
-                    style={{ clipPath: "polygon(0 0, 100% 0, 0 100%)" }}
-                  />
-
                   <div className="space-y-2">
                     <div className="flex items-start justify-between gap-2">
                       <div>
@@ -223,9 +197,7 @@ function UserDetailModal({
                           ID: #{reg.id}
                         </span>
                         <h5 className="text-sm font-bold text-foreground">
-                          {reg.competitionTitle ||
-                            reg.competitionId ||
-                            "Lomba ASTRO 2026"}
+                          {reg.competitionTitle || reg.competitionId || "Lomba ASTRO 2026"}
                         </h5>
                       </div>
 
@@ -233,10 +205,8 @@ function UserDetailModal({
                         variant="outline"
                         className={cn(
                           "rounded-md border text-9 font-bold uppercase tracking-wider",
-                          isPaid &&
-                            "border-emerald-200 bg-emerald-50 text-emerald-700",
-                          isPending &&
-                            "border-amber-200 bg-amber-50 text-amber-700",
+                          isPaid && "border-emerald-200 bg-emerald-50 text-emerald-700",
+                          isPending && "border-amber-200 bg-amber-50 text-amber-700",
                           isFailed && "border-red-200 bg-red-50 text-red-700",
                         )}
                       >
@@ -260,9 +230,7 @@ function UserDetailModal({
                         <span className="block text-10 font-bold uppercase text-muted-foreground">
                           Institusi / Sekolah
                         </span>
-                        <span className="text-foreground">
-                          {reg.institution || "—"}
-                        </span>
+                        <span className="text-foreground">{reg.institution || "—"}</span>
                       </div>
 
                       <div>
@@ -273,9 +241,7 @@ function UserDetailModal({
                           {reg.paymentAmount
                             ? `Rp ${Number(reg.paymentAmount).toLocaleString("id-ID")}`
                             : "Free"}
-                          {reg.paymentReference
-                            ? ` (${reg.paymentReference})`
-                            : ""}
+                          {reg.paymentReference ? ` (${reg.paymentReference})` : ""}
                         </span>
                       </div>
 
@@ -285,16 +251,13 @@ function UserDetailModal({
                         </span>
                         <span className="text-muted-foreground">
                           {reg.createdAt
-                            ? new Date(reg.createdAt).toLocaleDateString(
-                                "id-ID",
-                                {
-                                  day: "numeric",
-                                  month: "short",
-                                  year: "numeric",
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                },
-                              )
+                            ? new Date(reg.createdAt).toLocaleDateString("id-ID", {
+                                day: "numeric",
+                                month: "short",
+                                year: "numeric",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })
                             : "—"}
                         </span>
                       </div>
@@ -356,19 +319,13 @@ export default function UsersPage() {
     sendEmail: false,
   });
 
-  const invalidateUsers = () =>
-    qc.invalidateQueries({ queryKey: queryKeys.users.all });
+  const invalidateUsers = () => qc.invalidateQueries({ queryKey: queryKeys.users.all });
 
-  const invalidateInvitations = () =>
-    qc.invalidateQueries({ queryKey: queryKeys.invitations.all });
+  const invalidateInvitations = () => qc.invalidateQueries({ queryKey: queryKeys.invitations.all });
 
   const createMutation = useMutation({
-    mutationFn: (body: {
-      email: string;
-      password: string;
-      name: string;
-      role: string;
-    }) => apiHelpers.users.create(body),
+    mutationFn: (body: { email: string; password: string; name: string; role: string }) =>
+      apiHelpers.users.create(body),
     onSuccess: () => {
       toast.success("User berhasil dibuat");
       setModal(null);
@@ -378,13 +335,8 @@ export default function UsersPage() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({
-      id,
-      body,
-    }: {
-      id: string;
-      body: { name: string; role: string };
-    }) => apiHelpers.users.update(id, body),
+    mutationFn: ({ id, body }: { id: string; body: { name: string; role: string } }) =>
+      apiHelpers.users.update(id, body),
     onSuccess: () => {
       toast.success("User berhasil diupdate");
       setModal(null);
@@ -408,18 +360,14 @@ export default function UsersPage() {
       u.email.toLowerCase().includes(search.toLowerCase()) ||
       u.name?.toLowerCase().includes(search.toLowerCase()),
   );
-  const paginatedUsers = filteredUsers.slice(
-    (page - 1) * PAGE_SIZE,
-    page * PAGE_SIZE,
-  );
+  const paginatedUsers = filteredUsers.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   const filteredInvitations = invitations.filter(
     (inv: Invitation) =>
       (inv.email && inv.email.toLowerCase().includes(inviteSearch.toLowerCase())) ||
       inv.token.toLowerCase().includes(inviteSearch.toLowerCase()) ||
       inv.role.toLowerCase().includes(inviteSearch.toLowerCase()) ||
-      (inv.invitedByName &&
-        inv.invitedByName.toLowerCase().includes(inviteSearch.toLowerCase())),
+      (inv.invitedByName && inv.invitedByName.toLowerCase().includes(inviteSearch.toLowerCase())),
   );
   const paginatedInvitations = filteredInvitations.slice(
     (invitePage - 1) * PAGE_SIZE,
@@ -455,9 +403,7 @@ export default function UsersPage() {
         body: {
           name: String(form.get("name")),
           role: String(form.get("role")),
-          ...(verifiedValue !== null
-            ? { emailVerified: verifiedValue === "true" }
-            : {}),
+          ...(verifiedValue !== null ? { emailVerified: verifiedValue === "true" } : {}),
         },
       });
     } catch {
@@ -541,43 +487,37 @@ export default function UsersPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-black uppercase tracking-tight text-foreground">
-            User & Akses
-          </h1>
-          <p className="mt-1 text-sm font-light text-muted-foreground">
-            Kelola akun terdaftar dan buat tautan undangan untuk admin / panitia baru.
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            onClick={() => {
-              setCreatedInviteLink(null);
-              setInvForm({
-                email: "",
-                role: "admin",
-                expiresInHours: 168,
-                sendEmail: false,
-              });
-              setInviteModalOpen(true);
-            }}
-            className="rounded-lg text-xs font-bold uppercase tracking-wider border-astro-cyan-2 text-astro-navy bg-sky-bottom hover:bg-sky-mid hover:text-astro-navy"
-          >
-            <UserPlus className="size-3.5 mr-1.5" /> Undang User
-          </Button>
-          <Button
-            onClick={() => setModal({ mode: "create" })}
-            className="rounded-lg text-xs font-bold uppercase tracking-wider"
-          >
-            <Plus data-icon="inline-start" /> Tambah Manual
-          </Button>
-        </div>
-      </div>
+      <PageHeader
+        title="User & Akses"
+        description="Kelola akun terdaftar dan buat tautan undangan untuk admin / panitia baru."
+        actions={
+          <>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setCreatedInviteLink(null);
+                setInvForm({
+                  email: "",
+                  role: "admin",
+                  expiresInHours: 168,
+                  sendEmail: false,
+                });
+                setInviteModalOpen(true);
+              }}
+              className="rounded-lg text-xs font-bold uppercase tracking-wider"
+            >
+              <UserPlus data-icon="inline-start" /> Undang User
+            </Button>
+            <Button
+              onClick={() => setModal({ mode: "create" })}
+              className="rounded-lg text-xs font-bold uppercase tracking-wider"
+            >
+              <Plus data-icon="inline-start" /> Tambah Manual
+            </Button>
+          </>
+        }
+      />
 
-      {/* Tabs */}
       <Tabs
         value={tab}
         onValueChange={(v) => {
@@ -599,50 +539,38 @@ export default function UsersPage() {
       {/* ─── TAB 1: USERS ─── */}
       {tab === "users" && (
         <div className="space-y-4">
-          {/* Search */}
-          <div className="max-w-xs">
-            <InputGroup className="rounded-lg h-10 border-border bg-background">
-              <InputGroupAddon align="inline-start">
-                <Search className="size-3.5 text-muted-foreground" />
-              </InputGroupAddon>
-              <InputGroupInput
-                value={search}
-                onChange={(e) => {
-                  setSearch(e.target.value);
-                  setPage(1);
-                }}
-                placeholder="Cari nama atau email..."
-                className="text-xs font-medium"
-              />
-            </InputGroup>
-          </div>
+          <SearchField
+            className="max-w-xs"
+            value={search}
+            onValueChange={(value) => {
+              setSearch(value);
+              setPage(1);
+            }}
+            placeholder="Cari nama atau email..."
+          />
 
           {/* User Items List */}
           <div className="grid grid-cols-1 gap-3">
             {paginatedUsers.length === 0 ? (
-              <div className="rounded-lg border border-border bg-card p-8 text-center text-sm text-muted-foreground">
-                {search ? "Tidak ditemukan user yang cocok." : "Belum ada user."}
-              </div>
+              <EmptyState
+                icon={<Users />}
+                title={search ? "Tidak ditemukan user yang cocok." : "Belum ada user."}
+                description="Undang admin atau panitia lewat tautan undangan."
+              />
             ) : (
               paginatedUsers.map((u: User) => (
                 <Card
                   key={u.id}
-                  className="rounded-lg group relative overflow-hidden border border-border bg-card p-4 transition-all hover:border-primary/50 hover:shadow-md"
+                  className="border border-border transition-colors hover:border-primary/50"
                 >
-                  <div
-                    className="absolute -top-px -left-px size-6 bg-primary/20 transition-colors group-hover:bg-primary"
-                    style={{ clipPath: "polygon(0 0, 100% 0, 0 100%)" }}
-                  />
-                  <CardContent className="flex flex-col gap-3 p-0 sm:flex-row sm:items-center sm:justify-between">
+                  <CardContent className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <div className="flex items-center gap-3">
                       <div className="flex size-10 items-center justify-center rounded-full bg-primary/10 font-mono text-xs font-bold text-primary">
                         {(u.name || u.email).charAt(0).toUpperCase()}
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="text-sm font-bold text-foreground">
-                            {u.name || "—"}
-                          </span>
+                          <span className="text-sm font-bold text-foreground">{u.name || "—"}</span>
                           <Badge
                             variant="outline"
                             className={cn(
@@ -666,13 +594,11 @@ export default function UsersPage() {
                             {u.emailVerified ? "Verified" : "Unverified"}
                           </Badge>
                         </div>
-                        <p className="mt-0.5 text-xs text-muted-foreground">
-                          {u.email}
-                        </p>
+                        <p className="mt-0.5 text-xs text-muted-foreground">{u.email}</p>
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between justify-end gap-3 pt-2 sm:pt-0 border-t border-border/50 sm:border-t-0">
+                    <div className="flex items-center justify-between gap-3 border-t border-border/50 pt-2 sm:justify-end sm:border-t-0 sm:pt-0">
                       <span className="text-xs text-muted-foreground">
                         {u.createdAt
                           ? new Date(u.createdAt).toLocaleDateString("id-ID", {
@@ -732,32 +658,28 @@ export default function UsersPage() {
       {/* ─── TAB 2: INVITATIONS ─── */}
       {tab === "invitations" && (
         <div className="space-y-4">
-          {/* Search */}
-          <div className="max-w-xs">
-            <InputGroup className="rounded-lg h-10 border-border bg-background">
-              <InputGroupAddon align="inline-start">
-                <Search className="size-3.5 text-muted-foreground" />
-              </InputGroupAddon>
-              <InputGroupInput
-                value={inviteSearch}
-                onChange={(e) => {
-                  setInviteSearch(e.target.value);
-                  setInvitePage(1);
-                }}
-                placeholder="Cari email atau token..."
-                className="text-xs font-medium"
-              />
-            </InputGroup>
-          </div>
+          <SearchField
+            className="max-w-xs"
+            value={inviteSearch}
+            onValueChange={(value) => {
+              setInviteSearch(value);
+              setInvitePage(1);
+            }}
+            placeholder="Cari email atau token..."
+          />
 
           {/* Invitation Items List */}
           <div className="grid grid-cols-1 gap-3">
             {paginatedInvitations.length === 0 ? (
-              <div className="rounded-lg border border-border bg-card p-8 text-center text-sm text-muted-foreground">
-                {inviteSearch
-                  ? "Tidak ditemukan tautan undangan yang cocok."
-                  : "Belum ada tautan undangan yang dibuat."}
-              </div>
+              <EmptyState
+                icon={<LinkIcon />}
+                title={
+                  inviteSearch
+                    ? "Tidak ditemukan tautan undangan yang cocok."
+                    : "Belum ada tautan undangan yang dibuat."
+                }
+                description="Buat tautan undangan untuk memberi akses admin atau panitia."
+              />
             ) : (
               paginatedInvitations.map((inv: Invitation) => {
                 const isPending = inv.status === "pending";
@@ -768,22 +690,9 @@ export default function UsersPage() {
                 return (
                   <Card
                     key={inv.id}
-                    className="rounded-lg group relative overflow-hidden border border-border bg-card p-4 transition-all hover:border-primary/50 hover:shadow-md"
+                    className="border border-border transition-colors hover:border-primary/50"
                   >
-                    <div
-                      className={cn(
-                        "absolute -top-px -left-px size-6 transition-colors",
-                        isPending
-                          ? "bg-amber-400"
-                          : isAccepted
-                            ? "bg-emerald-500"
-                            : isRevoked
-                              ? "bg-rose-500"
-                              : "bg-astro-cyan-2",
-                      )}
-                      style={{ clipPath: "polygon(0 0, 100% 0, 0 100%)" }}
-                    />
-                    <CardContent className="flex flex-col gap-3 p-0 sm:flex-row sm:items-center sm:justify-between">
+                    <CardContent className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                       <div className="flex items-start gap-3">
                         <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary/10 font-mono text-xs font-bold text-primary">
                           <LinkIcon className="size-4" />
@@ -808,14 +717,10 @@ export default function UsersPage() {
                               variant="outline"
                               className={cn(
                                 "rounded-md border text-9 font-bold uppercase tracking-wider",
-                                isPending &&
-                                  "border-amber-200 bg-amber-50 text-amber-700",
-                                isAccepted &&
-                                  "border-emerald-200 bg-emerald-50 text-emerald-700",
-                                isExpired &&
-                                  "border-astro-cyan-2 bg-surface text-ink",
-                                isRevoked &&
-                                  "border-rose-200 bg-rose-50 text-rose-700",
+                                isPending && "border-amber-200 bg-amber-50 text-amber-700",
+                                isAccepted && "border-emerald-200 bg-emerald-50 text-emerald-700",
+                                isExpired && "border-astro-cyan-2 bg-surface text-ink",
+                                isRevoked && "border-rose-200 bg-rose-50 text-rose-700",
                               )}
                             >
                               {isPending && "Menunggu Digunakan"}
@@ -844,9 +749,7 @@ export default function UsersPage() {
                                 })}
                               </strong>
                             </span>
-                            {inv.invitedByName && (
-                              <span>Dibuat oleh: {inv.invitedByName}</span>
-                            )}
+                            {inv.invitedByName && <span>Dibuat oleh: {inv.invitedByName}</span>}
                           </div>
                         </div>
                       </div>
@@ -901,10 +804,7 @@ export default function UsersPage() {
       )}
 
       {/* ─── User Detail Modal ─── */}
-      <UserDetailModal
-        user={detailUser}
-        onClose={() => setDetailUser(null)}
-      />
+      <UserDetailModal user={detailUser} onClose={() => setDetailUser(null)} />
 
       {/* ─── Modal Create / Edit User Manual ─── */}
       <ResponsiveModal
@@ -969,10 +869,7 @@ export default function UsersPage() {
 
             <Field>
               <FieldLabel htmlFor="user-role">Role</FieldLabel>
-              <Select
-                name="role"
-                defaultValue={modal?.user?.role || "participant"}
-              >
+              <Select name="role" defaultValue={modal?.user?.role || "participant"}>
                 <SelectTrigger id="user-role" className="w-full">
                   <SelectValue />
                 </SelectTrigger>
@@ -998,9 +895,7 @@ export default function UsersPage() {
                   <SelectContent>
                     <SelectGroup>
                       <SelectItem value="true">Terverifikasi (Aktif)</SelectItem>
-                      <SelectItem value="false">
-                        Belum Verifikasi (Perlu OTP)
-                      </SelectItem>
+                      <SelectItem value="false">Belum Verifikasi (Perlu OTP)</SelectItem>
                     </SelectGroup>
                   </SelectContent>
                 </Select>
@@ -1009,11 +904,7 @@ export default function UsersPage() {
           </FieldGroup>
 
           <div className="flex justify-end gap-2 pt-2">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => setModal(null)}
-            >
+            <Button type="button" variant="outline" onClick={() => setModal(null)}>
               Batal
             </Button>
             <Button type="submit" disabled={saving} className="rounded-md">
@@ -1139,9 +1030,7 @@ export default function UsersPage() {
                   id="inv-email"
                   type="email"
                   value={invForm.email}
-                  onChange={(e) =>
-                    setInvForm({ ...invForm, email: e.target.value })
-                  }
+                  onChange={(e) => setInvForm({ ...invForm, email: e.target.value })}
                   placeholder="Contoh: panitia@gmail.com"
                 />
                 <p className="text-11 text-muted-foreground mt-1">
@@ -1153,9 +1042,7 @@ export default function UsersPage() {
                 <FieldLabel htmlFor="inv-expiry">Masa Berlaku Tautan</FieldLabel>
                 <Select
                   value={String(invForm.expiresInHours)}
-                  onValueChange={(v) =>
-                    setInvForm({ ...invForm, expiresInHours: Number(v) })
-                  }
+                  onValueChange={(v) => setInvForm({ ...invForm, expiresInHours: Number(v) })}
                 >
                   <SelectTrigger id="inv-expiry" className="w-full">
                     <SelectValue />
@@ -1177,9 +1064,7 @@ export default function UsersPage() {
                     <input
                       type="checkbox"
                       checked={invForm.sendEmail}
-                      onChange={(e) =>
-                        setInvForm({ ...invForm, sendEmail: e.target.checked })
-                      }
+                      onChange={(e) => setInvForm({ ...invForm, sendEmail: e.target.checked })}
                       className="size-4 rounded border-border text-primary focus:ring-primary"
                     />
                     <span>Kirim email undangan otomatis ke alamat di atas via Resend</span>
@@ -1189,11 +1074,7 @@ export default function UsersPage() {
             </FieldGroup>
 
             <div className="flex justify-end gap-2 pt-2">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setInviteModalOpen(false)}
-              >
+              <Button type="button" variant="outline" onClick={() => setInviteModalOpen(false)}>
                 Batal
               </Button>
               <Button
@@ -1216,9 +1097,8 @@ export default function UsersPage() {
         title="Hapus User"
         description={
           <>
-            Yakin ingin menghapus{" "}
-            <strong>{deleteTarget?.name || deleteTarget?.email}</strong>? Tindakan
-            ini tidak bisa dibatalkan.
+            Yakin ingin menghapus <strong>{deleteTarget?.name || deleteTarget?.email}</strong>?
+            Tindakan ini tidak bisa dibatalkan.
           </>
         }
         cancelText="Batal"
@@ -1236,8 +1116,8 @@ export default function UsersPage() {
         description={
           <>
             Yakin ingin membatalkan tautan undangan untuk{" "}
-            <strong>{revokeTarget?.email || "Tautan Terbuka"}</strong>? Tautan ini
-            tidak akan bisa digunakan lagi setelah dibatalkan.
+            <strong>{revokeTarget?.email || "Tautan Terbuka"}</strong>? Tautan ini tidak akan bisa
+            digunakan lagi setelah dibatalkan.
           </>
         }
         cancelText="Kembali"
@@ -1249,4 +1129,3 @@ export default function UsersPage() {
     </div>
   );
 }
-

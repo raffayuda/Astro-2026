@@ -3,7 +3,7 @@
 import { useState, useRef } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
-import { Reorder } from "framer-motion";
+import { Reorder } from "motion/react";
 import {
   Plus,
   Pencil,
@@ -12,11 +12,12 @@ import {
   Trash2,
   Building2,
   UploadCloud,
-  Search,
   GripVertical,
   ArrowUpDown,
+  Users,
 } from "lucide-react";
 import { toast } from "sonner";
+import { EmptyState, PageHeader, SearchField, SectionCard } from "@/components/dashboard";
 import DeleteModal from "@/components/DeleteModal";
 import ImportCommittee, { normalizeImageUrl } from "@/components/ImportCommittee";
 import Pagination from "@/components/Pagination";
@@ -25,15 +26,25 @@ import { Button } from "@/components/ui/button";
 import ImagePreviewModal from "@/components/ImagePreviewModal";
 import { cn } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Spinner } from "@/components/ui/spinner";
 import {
-  useCommitteeMembers,
-  useCommitteeDivisions,
-  queryKeys,
-} from "@/src/lib/hooks/use-queries";
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Spinner } from "@/components/ui/spinner";
+import { useCommitteeMembers, useCommitteeDivisions, queryKeys } from "@/src/lib/hooks/use-queries";
 import { apiHelpers } from "@/src/lib/api";
 
 interface CommitteeMember {
@@ -64,7 +75,7 @@ interface Division {
 const PAGE_SIZE = 10;
 
 /** Jabatan yang tersedia — diambil dari data panitia (Google Forms). */
-const JABATAN_OPTIONS = ['SC', 'PO', 'PI', 'Staff'];
+const JABATAN_OPTIONS = ["SC", "PO", "PI", "Staff"];
 
 export default function CommitteePage() {
   const qc = useQueryClient();
@@ -89,7 +100,11 @@ export default function CommitteePage() {
   const [showDivManager, setShowDivManager] = useState(false);
   const [showReorderModal, setShowReorderModal] = useState(false);
   const [reorderList, setReorderList] = useState<Division[]>([]);
-  const [divForm, setDivForm] = useState<{ name: string; shortName: string; slug: string }>({ name: "", shortName: "", slug: "" });
+  const [divForm, setDivForm] = useState<{ name: string; shortName: string; slug: string }>({
+    name: "",
+    shortName: "",
+    slug: "",
+  });
   const [divEditingId, setDivEditingId] = useState<number | null>(null);
   const [divSaving, setDivSaving] = useState(false);
 
@@ -126,8 +141,7 @@ export default function CommitteePage() {
         toast.success("Foto panitia berhasil diunggah (maks. 30MB)");
       }
     } catch (err: unknown) {
-      const errorMsg =
-        err instanceof Error ? err.message : "Gagal mengunggah file";
+      const errorMsg = err instanceof Error ? err.message : "Gagal mengunggah file";
       toast.error(errorMsg);
       console.error("Upload failed", err);
     } finally {
@@ -193,8 +207,7 @@ export default function CommitteePage() {
   });
 
   const divDeleteMutation = useMutation({
-    mutationFn: (id: number) =>
-      apiHelpers.committeeDivisions.remove(String(id)),
+    mutationFn: (id: number) => apiHelpers.committeeDivisions.remove(String(id)),
     onSuccess: () => {
       toast.success("Divisi dihapus");
       setDivEditingId(null);
@@ -311,11 +324,17 @@ export default function CommitteePage() {
 
   const filtered = items.filter((item) => {
     const q = search.trim().toLowerCase();
-    if (q && !`${item.name} ${item.role} ${item.divisionName} ${item.studyProgram || ''} ${item.batch || ''}`.toLowerCase().includes(q)) {
+    if (
+      q &&
+      !`${item.name} ${item.role} ${item.divisionName} ${item.studyProgram || ""} ${item.batch || ""}`
+        .toLowerCase()
+        .includes(q)
+    ) {
       return false;
     }
     if (filterRole && filterRole !== "all" && item.role !== filterRole) return false;
-    if (filterDivision && filterDivision !== "all" && item.division !== filterDivision) return false;
+    if (filterDivision && filterDivision !== "all" && item.division !== filterDivision)
+      return false;
     return true;
   });
 
@@ -347,7 +366,7 @@ export default function CommitteePage() {
       message:
         "Yakin ingin menghapus " +
         ids.length +
-        ' anggota terpilih sekaligus? Tindakan ini tidak bisa dibatalkan.',
+        " anggota terpilih sekaligus? Tindakan ini tidak bisa dibatalkan.",
       onConfirm: async () => {
         await Promise.all(ids.map((id) => deleteMutation.mutateAsync(id)));
         setSelected(new Set());
@@ -364,74 +383,100 @@ export default function CommitteePage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
-        <div>
-          <h1 className="text-3xl font-black uppercase tracking-tight text-foreground">
-            Committee
-          </h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Kelola anggota panitia dan divisi Astro 2026
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" onClick={() => setShowImport(true)} className="rounded-md gap-2 font-bold uppercase tracking-wider">
-            <UploadCloud className="size-4" /> Import CSV
-          </Button>
-          <Button variant="outline" onClick={() => {
-            setReorderList([...divisions]);
-            setShowReorderModal(true);
-          }} className="rounded-md gap-2 font-bold uppercase tracking-wider border-amber-200 text-amber-700 bg-amber-50 hover:bg-amber-100 hover:text-amber-800">
-            <ArrowUpDown className="size-4" /> Atur Urutan
-          </Button>
-          <Button variant="outline" onClick={() => setShowDivManager(true)} className="rounded-md gap-2 font-bold uppercase tracking-wider">
-            <Building2 className="size-4" /> Kelola Divisi
-          </Button>
-          <Button onClick={() => {
-            setEditingId(null);
-            setForm({
-              name: "",
-              role: "",
-              division: divisions[0]?.slug || "",
-              divisionName: divisions[0]?.name || "",
-              image: "",
-              isLeader: "0",
-              studyProgram: "",
-              batch: "",
-              quote: "",
-              instagram: "",
-              linkedin: "",
-            });
-            setShowAdd(true);
-          }} className="rounded-md gap-2 font-bold uppercase tracking-wider">
-            <Plus className="size-4" /> Tambah
-          </Button>
-        </div>
-      </div>
+      <PageHeader
+        title="Committee"
+        description="Kelola anggota panitia dan divisi ASTRO 2026"
+        actions={
+          <>
+            <Button
+              variant="outline"
+              onClick={() => setShowImport(true)}
+              className="rounded-lg gap-2 text-xs font-bold uppercase tracking-wider"
+            >
+              <UploadCloud data-icon="inline-start" /> Import CSV
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setReorderList([...divisions]);
+                setShowReorderModal(true);
+              }}
+              className="rounded-lg gap-2 text-xs font-bold uppercase tracking-wider"
+            >
+              <ArrowUpDown data-icon="inline-start" /> Atur Urutan
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => setShowDivManager(true)}
+              className="rounded-lg gap-2 text-xs font-bold uppercase tracking-wider"
+            >
+              <Building2 data-icon="inline-start" /> Kelola Divisi
+            </Button>
+            <Button
+              onClick={() => {
+                setEditingId(null);
+                setForm({
+                  name: "",
+                  role: "",
+                  division: divisions[0]?.slug || "",
+                  divisionName: divisions[0]?.name || "",
+                  image: "",
+                  isLeader: "0",
+                  studyProgram: "",
+                  batch: "",
+                  quote: "",
+                  instagram: "",
+                  linkedin: "",
+                });
+                setShowAdd(true);
+              }}
+              className="rounded-lg gap-2 text-xs font-bold uppercase tracking-wider"
+            >
+              <Plus data-icon="inline-start" /> Tambah
+            </Button>
+          </>
+        }
+      />
 
-      {/* Search + Filter */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-        <div className="relative flex-1">
-          <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            value={search}
-            onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-            placeholder="Cari nama, jabatan, divisi, prodi..."
-            className="pl-9"
-          />
-        </div>
+        <SearchField
+          className="flex-1"
+          value={search}
+          onValueChange={(value) => {
+            setSearch(value);
+            setPage(1);
+          }}
+          placeholder="Cari nama, jabatan, divisi, prodi..."
+        />
         <div className="flex flex-wrap gap-2">
-          <Select value={filterRole} onValueChange={(v) => { setFilterRole(v); setPage(1); }}>
+          <Select
+            value={filterRole}
+            onValueChange={(v) => {
+              setFilterRole(v);
+              setPage(1);
+            }}
+          >
             <SelectTrigger className="w-full sm:w-36">
               <SelectValue placeholder="Jabatan" />
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
                 <SelectItem value="all">Semua Jabatan</SelectItem>
-                {roles.map((r) => <SelectItem key={r} value={r}>{r}</SelectItem>)}
+                {roles.map((r) => (
+                  <SelectItem key={r} value={r}>
+                    {r}
+                  </SelectItem>
+                ))}
               </SelectGroup>
             </SelectContent>
           </Select>
-          <Select value={filterDivision} onValueChange={(v) => { setFilterDivision(v); setPage(1); }}>
+          <Select
+            value={filterDivision}
+            onValueChange={(v) => {
+              setFilterDivision(v);
+              setPage(1);
+            }}
+          >
             <SelectTrigger className="w-full sm:w-44">
               <SelectValue placeholder="Divisi" />
             </SelectTrigger>
@@ -440,7 +485,11 @@ export default function CommitteePage() {
                 <SelectItem value="all">Semua Divisi</SelectItem>
                 {divSlugs.map((s) => {
                   const div = divisions.find((d) => d.slug === s);
-                  return <SelectItem key={s} value={s}>{div?.name || s}</SelectItem>;
+                  return (
+                    <SelectItem key={s} value={s}>
+                      {div?.name || s}
+                    </SelectItem>
+                  );
                 })}
               </SelectGroup>
             </SelectContent>
@@ -449,7 +498,12 @@ export default function CommitteePage() {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => { setSearch(""); setFilterRole(""); setFilterDivision(""); setPage(1); }}
+              onClick={() => {
+                setSearch("");
+                setFilterRole("");
+                setFilterDivision("");
+                setPage(1);
+              }}
               className="rounded-md gap-1 text-10 font-bold uppercase tracking-wider text-muted-foreground"
             >
               <X className="size-3" /> Reset
@@ -488,350 +542,439 @@ export default function CommitteePage() {
         </div>
       )}
 
-      {/* Import CSV/Excel */}
       {showImport && (
-        <Card className="rounded-lg relative border-border">
-          <div className="absolute -top-px -left-px size-8 bg-primary" style={{ clipPath: "polygon(0 0, 100% 0, 0 100%)" }} />
-          <CardContent className="space-y-4 p-5">
-            <div className="flex items-center justify-between">
-              <h2 className="text-sm font-black uppercase tracking-tight text-foreground">Import Anggota</h2>
-              <Button variant="ghost" size="icon-sm" onClick={() => setShowImport(false)} aria-label="Tutup"><X /></Button>
-            </div>
-            <ImportCommittee onImported={invalidate} />
-          </CardContent>
-        </Card>
+        <SectionCard
+          title="Import Anggota"
+          actions={
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              onClick={() => setShowImport(false)}
+              aria-label="Tutup"
+            >
+              <X />
+            </Button>
+          }
+        >
+          <ImportCommittee onImported={invalidate} />
+        </SectionCard>
       )}
 
-      {/* Division Manager */}
       {showDivManager && (
-        <Card className="rounded-lg relative border-border">
-          <div className="absolute -top-px -left-px size-8 bg-primary" style={{ clipPath: "polygon(0 0, 100% 0, 0 100%)" }} />
-          <CardContent className="space-y-4 p-5">
-            <div className="flex items-center justify-between">
-              <h2 className="text-sm font-black uppercase tracking-tight text-foreground">
-                Kelola Divisi
-              </h2>
-              <Button variant="ghost" size="icon-sm" onClick={() => setShowDivManager(false)} aria-label="Tutup"><X /></Button>
-            </div>
-            <FieldGroup className="flex items-end gap-3">
-              <Field className="flex-1">
-                <FieldLabel required>Nama Divisi</FieldLabel>
-                <Input
-                  value={divForm.name}
-                  onChange={(e) => {
-                    const nameVal = e.target.value;
-                    setDivForm({
-                      ...divForm,
-                      name: nameVal,
-                      slug: nameVal
-                        .toLowerCase()
-                        .replace(/\s+/g, "-")
-                        .replace(/[^a-z0-9-]/g, ""),
-                    });
-                  }}
-                  placeholder="Badan Pengurus Harian"
-                />
-              </Field>
-              <Field className="flex-1">
-                <FieldLabel>Singkatan <span className="font-normal normal-case text-muted-foreground">(opsional)</span></FieldLabel>
-                <Input
-                  value={divForm.shortName}
-                  onChange={(e) => setDivForm({ ...divForm, shortName: e.target.value })}
-                  placeholder="BPH"
-                />
-              </Field>
-              <Field className="flex-1">
-                <FieldLabel required>Slug</FieldLabel>
-                <Input
-                  value={divForm.slug}
-                  onChange={(e) => setDivForm({ ...divForm, slug: e.target.value })}
-                  placeholder="bph"
-                />
-              </Field>
-              <Button onClick={handleDivSave} disabled={divSaving} size="icon" aria-label="Simpan divisi">
-                {divSaving ? <Spinner className="size-4" /> : divEditingId ? <Check className="size-4" /> : <Plus className="size-4" />}
-              </Button>
-              {divEditingId && (
-                <Button variant="outline" onClick={() => { setDivEditingId(null); setDivForm({ name: "", shortName: "", slug: "" }); }} className="text-xs font-bold uppercase tracking-wider">
-                  Batal
-                </Button>
+        <SectionCard
+          title="Kelola Divisi"
+          bodyClassName="space-y-4"
+          actions={
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              onClick={() => setShowDivManager(false)}
+              aria-label="Tutup"
+            >
+              <X />
+            </Button>
+          }
+        >
+          <FieldGroup className="flex items-end gap-3">
+            <Field className="flex-1">
+              <FieldLabel required>Nama Divisi</FieldLabel>
+              <Input
+                value={divForm.name}
+                onChange={(e) => {
+                  const nameVal = e.target.value;
+                  setDivForm({
+                    ...divForm,
+                    name: nameVal,
+                    slug: nameVal
+                      .toLowerCase()
+                      .replace(/\s+/g, "-")
+                      .replace(/[^a-z0-9-]/g, ""),
+                  });
+                }}
+                placeholder="Badan Pengurus Harian"
+              />
+            </Field>
+            <Field className="flex-1">
+              <FieldLabel>
+                Singkatan{" "}
+                <span className="font-normal normal-case text-muted-foreground">(opsional)</span>
+              </FieldLabel>
+              <Input
+                value={divForm.shortName}
+                onChange={(e) => setDivForm({ ...divForm, shortName: e.target.value })}
+                placeholder="BPH"
+              />
+            </Field>
+            <Field className="flex-1">
+              <FieldLabel required>Slug</FieldLabel>
+              <Input
+                value={divForm.slug}
+                onChange={(e) => setDivForm({ ...divForm, slug: e.target.value })}
+                placeholder="bph"
+              />
+            </Field>
+            <Button
+              onClick={handleDivSave}
+              disabled={divSaving}
+              size="icon"
+              aria-label="Simpan divisi"
+            >
+              {divSaving ? (
+                <Spinner className="size-4" />
+              ) : divEditingId ? (
+                <Check className="size-4" />
+              ) : (
+                <Plus className="size-4" />
               )}
-            </FieldGroup>
-            <div className="flex flex-wrap gap-2">
-              {divisions.map((d) => {
-                const displayLabel = d.shortName
-                  ? `${d.name} (${d.shortName})`
-                  : d.name;
-                return (
-                  <Badge key={d.id} variant="secondary" className="gap-2 border border-border px-3 py-1.5 text-xs font-bold">
-                    <span>{displayLabel}</span>
-                    <Button variant="ghost" size="icon-xs" onClick={() => handleDivEdit(d)} aria-label="Edit" className="ml-1 text-muted-foreground hover:text-primary"><Pencil /></Button>
-                    <Button variant="ghost" size="icon-xs" onClick={() => handleDivDelete(d.id)} aria-label="Hapus" className="text-muted-foreground hover:text-destructive"><X /></Button>
-                  </Badge>
-                );
-              })}
-            </div>
-          </CardContent>
-        </Card>
+            </Button>
+            {divEditingId && (
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setDivEditingId(null);
+                  setDivForm({ name: "", shortName: "", slug: "" });
+                }}
+                className="text-xs font-bold uppercase tracking-wider"
+              >
+                Batal
+              </Button>
+            )}
+          </FieldGroup>
+          <div className="flex flex-wrap gap-2">
+            {divisions.map((d) => {
+              const displayLabel = d.shortName ? `${d.name} (${d.shortName})` : d.name;
+              return (
+                <Badge
+                  key={d.id}
+                  variant="secondary"
+                  className="gap-2 border border-border px-3 py-1.5 text-xs font-bold"
+                >
+                  <span>{displayLabel}</span>
+                  <Button
+                    variant="ghost"
+                    size="icon-xs"
+                    onClick={() => handleDivEdit(d)}
+                    aria-label="Edit"
+                    className="ml-1 text-muted-foreground hover:text-primary"
+                  >
+                    <Pencil />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon-xs"
+                    onClick={() => handleDivDelete(d.id)}
+                    aria-label="Hapus"
+                    className="text-muted-foreground hover:text-destructive"
+                  >
+                    <X />
+                  </Button>
+                </Badge>
+              );
+            })}
+          </div>
+        </SectionCard>
       )}
 
       {showAdd && (
-        <Card className="rounded-lg relative border-border">
-          <div className="absolute -top-px -left-px size-8 bg-primary" style={{ clipPath: "polygon(0 0, 100% 0, 0 100%)" }} />
-          <CardContent className="space-y-4 p-5">
-            <h2 className="text-sm font-black uppercase tracking-tight text-foreground">
-              {editingId ? "Edit" : "Tambah"} Anggota
-            </h2>
-            <FieldGroup className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-              <Field>
-                <FieldLabel required>Nama</FieldLabel>
-                <Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Nama" />
-              </Field>
-              <Field>
-                <FieldLabel required>Jabatan</FieldLabel>
-                <Select value={form.role} onValueChange={(v) => setForm({ ...form, role: v })}>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Pilih jabatan" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      {JABATAN_OPTIONS.map((j) => (
-                        <SelectItem key={j} value={j}>{j}</SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </Field>
-              <Field>
-                <FieldLabel required>Divisi</FieldLabel>
-                <Select value={form.division} onValueChange={handleDivisionChange}>
-                  <SelectTrigger className="w-full">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      {divisions.map((d) => {
-                        const label = d.shortName
-                          ? `${d.name} (${d.shortName})`
-                          : d.name;
-                        return (
-                          <SelectItem key={d.slug} value={d.slug}>{label}</SelectItem>
-                        );
-                      })}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-                <input type="hidden" value={form.divisionName} />
-              </Field>
-              <Field>
-                <FieldLabel>Quote</FieldLabel>
-                <Input value={form.quote} onChange={(e) => setForm({ ...form, quote: e.target.value })} placeholder="Quote" />
-              </Field>
-              <Field>
-                <FieldLabel>Instagram</FieldLabel>
-                <Input value={form.instagram} onChange={(e) => setForm({ ...form, instagram: e.target.value })} placeholder="@username" />
-              </Field>
-            </FieldGroup>
-            <FieldGroup className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              <Field>
-                <FieldLabel>Prodi</FieldLabel>
-                <Input value={form.studyProgram} onChange={(e) => setForm({ ...form, studyProgram: e.target.value })} placeholder="Teknik Informatika" />
-              </Field>
-              <Field>
-                <FieldLabel>Angkatan</FieldLabel>
-                <Input value={form.batch} onChange={(e) => setForm({ ...form, batch: e.target.value })} placeholder="2024" />
-              </Field>
-              <Field>
-                <FieldLabel>LinkedIn</FieldLabel>
-                <Input value={form.linkedin} onChange={(e) => setForm({ ...form, linkedin: e.target.value })} placeholder="URL LinkedIn" />
-              </Field>
-              <Field>
-                <FieldLabel required>Foto Panitia</FieldLabel>
-                <div className="space-y-2.5">
-                  {/* Drag and Drop Zone */}
-                  <div
-                    onDragOver={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      if (!uploading) setIsDragging(true);
-                    }}
-                    onDragEnter={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      if (!uploading) setIsDragging(true);
-                    }}
-                    onDragLeave={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      setIsDragging(false);
-                    }}
-                    onDrop={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      setIsDragging(false);
-                      if (uploading) return;
-                      const file = e.dataTransfer.files?.[0];
+        <SectionCard title={`${editingId ? "Edit" : "Tambah"} Anggota`} bodyClassName="space-y-4">
+          <FieldGroup className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <Field>
+              <FieldLabel required>Nama</FieldLabel>
+              <Input
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                placeholder="Nama"
+              />
+            </Field>
+            <Field>
+              <FieldLabel required>Jabatan</FieldLabel>
+              <Select value={form.role} onValueChange={(v) => setForm({ ...form, role: v })}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Pilih jabatan" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    {JABATAN_OPTIONS.map((j) => (
+                      <SelectItem key={j} value={j}>
+                        {j}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </Field>
+            <Field>
+              <FieldLabel required>Divisi</FieldLabel>
+              <Select value={form.division} onValueChange={handleDivisionChange}>
+                <SelectTrigger className="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    {divisions.map((d) => {
+                      const label = d.shortName ? `${d.name} (${d.shortName})` : d.name;
+                      return (
+                        <SelectItem key={d.slug} value={d.slug}>
+                          {label}
+                        </SelectItem>
+                      );
+                    })}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              <input type="hidden" value={form.divisionName} />
+            </Field>
+            <Field>
+              <FieldLabel>Quote</FieldLabel>
+              <Input
+                value={form.quote}
+                onChange={(e) => setForm({ ...form, quote: e.target.value })}
+                placeholder="Quote"
+              />
+            </Field>
+            <Field>
+              <FieldLabel>Instagram</FieldLabel>
+              <Input
+                value={form.instagram}
+                onChange={(e) => setForm({ ...form, instagram: e.target.value })}
+                placeholder="@username"
+              />
+            </Field>
+          </FieldGroup>
+          <FieldGroup className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <Field>
+              <FieldLabel>Prodi</FieldLabel>
+              <Input
+                value={form.studyProgram}
+                onChange={(e) => setForm({ ...form, studyProgram: e.target.value })}
+                placeholder="Teknik Informatika"
+              />
+            </Field>
+            <Field>
+              <FieldLabel>Angkatan</FieldLabel>
+              <Input
+                value={form.batch}
+                onChange={(e) => setForm({ ...form, batch: e.target.value })}
+                placeholder="2024"
+              />
+            </Field>
+            <Field>
+              <FieldLabel>LinkedIn</FieldLabel>
+              <Input
+                value={form.linkedin}
+                onChange={(e) => setForm({ ...form, linkedin: e.target.value })}
+                placeholder="URL LinkedIn"
+              />
+            </Field>
+            <Field>
+              <FieldLabel required>Foto Panitia</FieldLabel>
+              <div className="space-y-2.5">
+                {/* Drag and Drop Zone */}
+                <div
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (!uploading) setIsDragging(true);
+                  }}
+                  onDragEnter={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (!uploading) setIsDragging(true);
+                  }}
+                  onDragLeave={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setIsDragging(false);
+                  }}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setIsDragging(false);
+                    if (uploading) return;
+                    const file = e.dataTransfer.files?.[0];
+                    if (file) handleFileUpload(file);
+                  }}
+                  onClick={() => fileInputRef.current?.click()}
+                  className={cn(
+                    "group relative flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed p-4 text-center transition-all cursor-pointer",
+                    isDragging
+                      ? "border-primary bg-primary/10 scale-[1.01] shadow-inner"
+                      : form.image
+                        ? "border-border/80 bg-muted/20 hover:border-primary/50 hover:bg-muted/40"
+                        : "border-border hover:border-primary/60 hover:bg-muted/30 bg-muted/10",
+                    uploading && "opacity-60 pointer-events-none",
+                  )}
+                >
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    disabled={uploading}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
                       if (file) handleFileUpload(file);
                     }}
-                    onClick={() => fileInputRef.current?.click()}
-                    className={cn(
-                      "group relative flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed p-4 text-center transition-all cursor-pointer",
-                      isDragging
-                        ? "border-primary bg-primary/10 scale-[1.01] shadow-inner"
-                        : form.image
-                          ? "border-border/80 bg-muted/20 hover:border-primary/50 hover:bg-muted/40"
-                          : "border-border hover:border-primary/60 hover:bg-muted/30 bg-muted/10",
-                      uploading && "opacity-60 pointer-events-none"
-                    )}
-                  >
-                    <input
-                      ref={fileInputRef}
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      disabled={uploading}
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) handleFileUpload(file);
-                      }}
-                    />
+                  />
 
-                    {form.image ? (
-                      <div className="flex items-center gap-3 w-full" onClick={(e) => e.stopPropagation()}>
-                        <button
+                  {form.image ? (
+                    <div
+                      className="flex items-center gap-3 w-full"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <button
+                        type="button"
+                        onClick={() => setPreviewImage(form.image)}
+                        className="overflow-hidden rounded-md border border-border transition-opacity hover:opacity-80 shrink-0"
+                      >
+                        <Image
+                          src={prepareImage(form.image)}
+                          alt="Preview"
+                          width={56}
+                          height={56}
+                          unoptimized
+                          className="size-14 object-cover"
+                        />
+                      </button>
+                      <div className="flex-1 text-left min-w-0">
+                        <p className="text-xs font-bold text-foreground truncate">Foto Terpasang</p>
+                        <p className="text-11 text-muted-foreground truncate">
+                          Tarik & lepas foto baru di sini untuk mengganti
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-1.5 shrink-0">
+                        <Button
                           type="button"
-                          onClick={() => setPreviewImage(form.image)}
-                          className="overflow-hidden rounded-md border border-border transition-opacity hover:opacity-80 shrink-0"
+                          variant="outline"
+                          size="sm"
+                          disabled={uploading}
+                          onClick={() => fileInputRef.current?.click()}
+                          className="text-10 font-bold uppercase tracking-wider"
                         >
-                          <Image
-                            src={prepareImage(form.image)}
-                            alt="Preview"
-                            width={56}
-                            height={56}
-                            unoptimized
-                            className="size-14 object-cover"
-                          />
-                        </button>
-                        <div className="flex-1 text-left min-w-0">
-                          <p className="text-xs font-bold text-foreground truncate">Foto Terpasang</p>
-                          <p className="text-11 text-muted-foreground truncate">
-                            Tarik & lepas foto baru di sini untuk mengganti
-                          </p>
-                        </div>
-                        <div className="flex items-center gap-1.5 shrink-0">
+                          {uploading ? (
+                            <>
+                              <Spinner data-icon="inline-start" /> Mengunggah...
+                            </>
+                          ) : (
+                            "Ganti Foto"
+                          )}
+                        </Button>
+                        {!uploading && (
                           <Button
                             type="button"
-                            variant="outline"
-                            size="sm"
-                            disabled={uploading}
-                            onClick={() => fileInputRef.current?.click()}
-                            className="text-10 font-bold uppercase tracking-wider"
+                            variant="ghost"
+                            size="icon-xs"
+                            onClick={() => setForm({ ...form, image: "" })}
+                            className="text-muted-foreground hover:text-destructive"
+                            aria-label="Hapus foto"
                           >
-                            {uploading ? (
-                              <>
-                                <Spinner data-icon="inline-start" /> Mengunggah...
-                              </>
-                            ) : (
-                              "Ganti Foto"
-                            )}
+                            <Trash2 className="size-3.5" />
                           </Button>
-                          {!uploading && (
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="icon-xs"
-                              onClick={() => setForm({ ...form, image: "" })}
-                              className="text-muted-foreground hover:text-destructive"
-                              aria-label="Hapus foto"
-                            >
-                              <Trash2 className="size-3.5" />
-                            </Button>
-                          )}
-                        </div>
+                        )}
                       </div>
-                    ) : (
-                      <>
-                        <div className={cn(
+                    </div>
+                  ) : (
+                    <>
+                      <div
+                        className={cn(
                           "flex size-10 items-center justify-center rounded-full transition-colors",
                           isDragging
                             ? "bg-primary text-primary-foreground animate-bounce"
-                            : "bg-muted text-muted-foreground group-hover:text-primary group-hover:bg-primary/10"
-                        )}>
-                          {uploading ? <Spinner className="size-5" /> : <UploadCloud className="size-5" />}
-                        </div>
-                        <div>
-                          <p className="text-xs font-semibold text-foreground">
-                            {uploading
-                              ? "Sedang mengunggah foto..."
-                              : isDragging
-                                ? "Lepaskan file di sini..."
-                                : "Tarik & lepas foto panitia di sini, atau klik untuk memilih"}
-                          </p>
-                          <p className="text-10 text-muted-foreground mt-0.5">
-                            PNG, JPG, WEBP (maksimal 30 MB)
-                          </p>
-                        </div>
-                      </>
-                    )}
-                  </div>
-
-                  {/* Direct URL input fallback / Google Drive */}
-                  <div className="space-y-1">
-                    <Input
-                      value={form.image}
-                      onChange={(e) => setForm({ ...form, image: e.target.value })}
-                      placeholder="Atau tempel URL Google Drive / link gambar langsung..."
-                      className="text-xs h-8"
-                    />
-                    {form.image && (
-                      <p className={cn(
-                        "text-10 font-medium",
-                        normalizeImageUrl(form.image) !== form.image || form.image.startsWith('https://lh3.googleusercontent.com/d/')
-                          ? "text-emerald-600"
-                          : "text-muted-foreground"
-                      )}>
-                        {form.image.startsWith('https://drive.google.com/') || form.image.startsWith('https://docs.google.com/')
-                          ? "✓ Link Google Drive terdeteksi — otomatis dikonversi ke gambar."
-                          : "Link langsung tersimpan."}
-                      </p>
-                    )}
-                  </div>
+                            : "bg-muted text-muted-foreground group-hover:text-primary group-hover:bg-primary/10",
+                        )}
+                      >
+                        {uploading ? (
+                          <Spinner className="size-5" />
+                        ) : (
+                          <UploadCloud className="size-5" />
+                        )}
+                      </div>
+                      <div>
+                        <p className="text-xs font-semibold text-foreground">
+                          {uploading
+                            ? "Sedang mengunggah foto..."
+                            : isDragging
+                              ? "Lepaskan file di sini..."
+                              : "Tarik & lepas foto panitia di sini, atau klik untuk memilih"}
+                        </p>
+                        <p className="text-10 text-muted-foreground mt-0.5">
+                          PNG, JPG, WEBP (maksimal 30 MB)
+                        </p>
+                      </div>
+                    </>
+                  )}
                 </div>
-              </Field>
-            </FieldGroup>
-            <div className="flex gap-2 pt-2">
-              <Button onClick={handleSave} disabled={saving} className="rounded-md gap-1 text-xs font-bold uppercase tracking-wider">
-                {saving ? <Spinner data-icon="inline-start" /> : <Check data-icon="inline-start" />} Simpan
-              </Button>
-              <Button variant="outline" className="rounded-md gap-1 text-xs font-bold uppercase tracking-wider"
-                onClick={() => {
-                  setShowAdd(false);
-                  setEditingId(null);
-                  setForm({
-                    name: "",
-                    role: "",
-                    division: divisions[0]?.slug || "",
-                    divisionName: divisions[0]?.name || "",
-                    image: "",
-                    isLeader: "0",
-                    studyProgram: "",
-                    batch: "",
-                    quote: "",
-                    instagram: "",
-                    linkedin: "",
-                  });
-                }}>
-                <X data-icon="inline-start" /> Batal
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+
+                {/* Direct URL input fallback / Google Drive */}
+                <div className="space-y-1">
+                  <Input
+                    value={form.image}
+                    onChange={(e) => setForm({ ...form, image: e.target.value })}
+                    placeholder="Atau tempel URL Google Drive / link gambar langsung..."
+                    className="text-xs h-8"
+                  />
+                  {form.image && (
+                    <p
+                      className={cn(
+                        "text-10 font-medium",
+                        normalizeImageUrl(form.image) !== form.image ||
+                          form.image.startsWith("https://lh3.googleusercontent.com/d/")
+                          ? "text-emerald-600"
+                          : "text-muted-foreground",
+                      )}
+                    >
+                      {form.image.startsWith("https://drive.google.com/") ||
+                      form.image.startsWith("https://docs.google.com/")
+                        ? "✓ Link Google Drive terdeteksi — otomatis dikonversi ke gambar."
+                        : "Link langsung tersimpan."}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </Field>
+          </FieldGroup>
+          <div className="flex gap-2 pt-2">
+            <Button
+              onClick={handleSave}
+              disabled={saving}
+              className="rounded-md gap-1 text-xs font-bold uppercase tracking-wider"
+            >
+              {saving ? <Spinner data-icon="inline-start" /> : <Check data-icon="inline-start" />}{" "}
+              Simpan
+            </Button>
+            <Button
+              variant="outline"
+              className="rounded-md gap-1 text-xs font-bold uppercase tracking-wider"
+              onClick={() => {
+                setShowAdd(false);
+                setEditingId(null);
+                setForm({
+                  name: "",
+                  role: "",
+                  division: divisions[0]?.slug || "",
+                  divisionName: divisions[0]?.name || "",
+                  image: "",
+                  isLeader: "0",
+                  studyProgram: "",
+                  batch: "",
+                  quote: "",
+                  instagram: "",
+                  linkedin: "",
+                });
+              }}
+            >
+              <X data-icon="inline-start" /> Batal
+            </Button>
+          </div>
+        </SectionCard>
       )}
 
       <div className="grid grid-cols-1 gap-3">
         {paginated.map((item) => (
-          <Card key={item.id} className="rounded-lg group relative overflow-hidden border border-border bg-card p-4 transition-all hover:border-primary/50 hover:shadow-md">
-            <div className="absolute -top-px -left-px size-6 bg-primary/20 transition-colors group-hover:bg-primary" style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }} />
+          <Card
+            key={item.id}
+            className="border border-border transition-colors hover:border-primary/50"
+          >
             <CardContent className="flex items-center justify-between gap-4 p-0">
               <div className="flex items-center gap-3">
                 <input
@@ -847,7 +990,14 @@ export default function CommitteePage() {
                     onClick={() => setPreviewImage(item.image)}
                     className="overflow-hidden rounded-full transition-opacity hover:opacity-80"
                   >
-                    <Image src={normalizeImageUrl(item.image)} alt="" width={40} height={40} unoptimized className="size-10 object-cover" />
+                    <Image
+                      src={normalizeImageUrl(item.image)}
+                      alt=""
+                      width={40}
+                      height={40}
+                      unoptimized
+                      className="size-10 object-cover"
+                    />
                   </button>
                 ) : (
                   <div className="flex size-10 items-center justify-center rounded-full bg-muted text-10 font-bold uppercase text-muted-foreground">
@@ -859,36 +1009,62 @@ export default function CommitteePage() {
                   <div className="mt-0.5 flex gap-2">
                     <span className="text-10 font-semibold text-muted-foreground">{item.role}</span>
                     {item.isLeader === "1" && (
-                      <Badge variant="outline" className="rounded-md border-amber-200 bg-amber-50 text-9 font-bold uppercase text-amber-700">
+                      <Badge
+                        variant="outline"
+                        className="rounded-md border-amber-200 bg-amber-50 text-9 font-bold uppercase text-amber-700"
+                      >
                         Koordinator
                       </Badge>
                     )}
                     <span className="text-10 text-muted-foreground/60">|</span>
-                    <span className="text-10 text-muted-foreground">{item.divisionName || item.division}</span>
+                    <span className="text-10 text-muted-foreground">
+                      {item.divisionName || item.division}
+                    </span>
                     {(item.studyProgram || item.batch) && (
                       <span className="text-10 text-muted-foreground/60">
-                        · {[item.studyProgram, item.batch].filter(Boolean).join(' ')}
+                        · {[item.studyProgram, item.batch].filter(Boolean).join(" ")}
                       </span>
                     )}
                   </div>
                 </div>
               </div>
-              <div className="flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
-                <Button variant="ghost" size="icon-sm" onClick={() => handleEdit(item)} aria-label="Edit"><Pencil /></Button>
-                <Button variant="ghost" size="icon-sm" onClick={() => handleDelete(item.id, item.name)} aria-label="Hapus" className="text-muted-foreground hover:text-destructive"><Trash2 /></Button>
+              <div className="flex gap-1">
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  onClick={() => handleEdit(item)}
+                  aria-label="Edit"
+                >
+                  <Pencil />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  onClick={() => handleDelete(item.id, item.name)}
+                  aria-label="Hapus"
+                  className="text-muted-foreground hover:text-destructive"
+                >
+                  <Trash2 />
+                </Button>
               </div>
             </CardContent>
           </Card>
         ))}
         {paginated.length === 0 && (
-          <p className="py-4 text-center text-sm italic text-muted-foreground">
-            {items.length === 0 ? "Belum ada anggota committee." : "Tidak ada anggota yang cocok dengan pencarian/filter."}
-          </p>
+          <EmptyState
+            icon={<Users />}
+            title={
+              items.length === 0
+                ? "Belum ada anggota committee."
+                : "Tidak ada anggota yang cocok dengan pencarian atau filter."
+            }
+            description="Tambah anggota manual atau import lewat CSV."
+          />
         )}
       </div>
       <Pagination
         currentPage={page}
-        totalItems={items.length}
+        totalItems={filtered.length}
         pageSize={PAGE_SIZE}
         onPageChange={setPage}
       />
@@ -903,55 +1079,71 @@ export default function CommitteePage() {
       />
       <ImagePreviewModal url={previewImage} onClose={() => setPreviewImage(null)} />
 
-      {/* Modal Reorder Divisi */}
-      {showReorderModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <Card className="w-full max-w-md rounded-lg relative border-border shadow-2xl">
-            <div className="absolute -top-px -left-px size-8 bg-amber-500" style={{ clipPath: "polygon(0 0, 100% 0, 0 100%)" }} />
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-black uppercase tracking-tight text-foreground">
-                  Urutkan Divisi
-                </h2>
-                <Button variant="ghost" size="icon-sm" onClick={() => setShowReorderModal(false)}><X className="size-4" /></Button>
-              </div>
-              <p className="text-xs text-muted-foreground mb-6">
-                Geser (drag & drop) item di bawah ini untuk mengatur urutan divisi. Divisi paling atas akan muncul pertama di halaman utama.
-              </p>
+      <Dialog
+        open={showReorderModal}
+        onOpenChange={(open) => {
+          if (!open) setShowReorderModal(false);
+        }}
+      >
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-lg font-black uppercase tracking-tight">
+              Urutkan Divisi
+            </DialogTitle>
+            <DialogDescription className="text-xs">
+              Geser item di bawah ini untuk mengatur urutan divisi. Divisi paling atas muncul
+              pertama di halaman utama.
+            </DialogDescription>
+          </DialogHeader>
 
-              <div className="max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
-                <Reorder.Group axis="y" values={reorderList} onReorder={setReorderList} className="flex flex-col gap-2">
-                  {reorderList.map((div) => (
-                    <Reorder.Item
-                      key={div.id}
-                      value={div}
-                      className="flex items-center gap-3 rounded-md border border-border bg-card p-3 shadow-sm cursor-grab active:cursor-grabbing hover:border-primary/50"
-                    >
-                      <GripVertical className="size-4 text-muted-foreground" />
-                      <span className="text-sm font-bold">{div.name}</span>
-                      {div.shortName && (
-                        <Badge variant="secondary" className="ml-auto text-10 uppercase">
-                          {div.shortName}
-                        </Badge>
-                      )}
-                    </Reorder.Item>
-                  ))}
-                </Reorder.Group>
-              </div>
+          <div className="max-h-[60vh] overflow-y-auto pr-2">
+            <Reorder.Group
+              axis="y"
+              values={reorderList}
+              onReorder={setReorderList}
+              className="flex flex-col gap-2"
+            >
+              {reorderList.map((div) => (
+                <Reorder.Item
+                  key={div.id}
+                  value={div}
+                  className="flex cursor-grab items-center gap-3 rounded-md border border-border bg-card p-3 shadow-soft-sm hover:border-primary/50 active:cursor-grabbing"
+                >
+                  <GripVertical className="size-4 text-muted-foreground" />
+                  <span className="text-sm font-bold">{div.name}</span>
+                  {div.shortName && (
+                    <Badge variant="secondary" className="ml-auto text-10 uppercase">
+                      {div.shortName}
+                    </Badge>
+                  )}
+                </Reorder.Item>
+              ))}
+            </Reorder.Group>
+          </div>
 
-              <div className="flex justify-end gap-2 mt-6">
-                <Button variant="outline" onClick={() => setShowReorderModal(false)} className="text-xs font-bold uppercase">
-                  Batal
-                </Button>
-                <Button onClick={handleReorderSave} disabled={divReorderMutation.isPending} className="bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold uppercase gap-2">
-                  {divReorderMutation.isPending ? <Spinner className="size-4 text-white" /> : <Check className="size-4" />}
-                  Simpan Urutan
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      )}
+          <div className="flex justify-end gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setShowReorderModal(false)}
+              className="text-xs font-bold uppercase tracking-wider"
+            >
+              Batal
+            </Button>
+            <Button
+              onClick={handleReorderSave}
+              disabled={divReorderMutation.isPending}
+              className="gap-2 text-xs font-bold uppercase tracking-wider"
+            >
+              {divReorderMutation.isPending ? (
+                <Spinner data-icon="inline-start" />
+              ) : (
+                <Check data-icon="inline-start" />
+              )}
+              Simpan Urutan
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

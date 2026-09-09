@@ -13,7 +13,7 @@ export default async function DashboardLayout({
   });
 
   if (!session) {
-    redirect('/login');
+    redirect('/auth/login');
   }
 
   const role = session.user.role || 'participant';

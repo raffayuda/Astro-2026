@@ -52,7 +52,7 @@ export default function DashboardShell({ children, role, userName }: Props) {
 
   const handleLogout = async () => {
     await signOut();
-    router.replace('/login');
+    router.replace('/auth/login');
   };
 
   const navItems = [
@@ -153,7 +153,7 @@ export default function DashboardShell({ children, role, userName }: Props) {
       </Sidebar>
 
       <SidebarInset>
-        <header className="flex h-16 items-center gap-4 border-b border-astro-cyan-2/55 bg-white/70 px-4 shadow-sticker backdrop-blur-xl lg:px-6">
+        <header className="flex h-16 items-center gap-4 border-b border-astro-cyan-2/55 bg-white/80 px-4 shadow-soft-sm backdrop-blur-xl lg:px-6">
           <SidebarTrigger className="md:hidden" />
           <div className="flex-1" />
           <Link

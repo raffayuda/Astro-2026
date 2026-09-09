@@ -7,7 +7,11 @@ import { Button } from '@/components/ui/button';
 import { ResponsiveAlertDialog } from '@/components/responsive-alert-dialog';
 import { apiHelpers } from '@/src/lib/api';
 import { toast } from 'sonner';
-import PrintableInvoice, { PrintPortal, type PrintableInvoiceData } from '@/components/PrintableInvoice';
+import PrintableInvoice, {
+  PrintPortal,
+  usePrintInvoice,
+  type PrintableInvoiceData,
+} from '@/components/PrintableInvoice';
 
 interface Props {
   registration: PrintableInvoiceData;
@@ -17,14 +21,7 @@ export default function RegistrationDetailActions({ registration }: Props) {
   const router = useRouter();
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
-  const [printing, setPrinting] = useState(false);
-
-  const handlePrint = () => {
-    setPrinting(true);
-    setTimeout(() => {
-      window.print();
-    }, 150);
-  };
+  const { target: printTarget, print } = usePrintInvoice<PrintableInvoiceData>();
 
   const handleDelete = async () => {
     setDeleteLoading(true);
@@ -47,7 +44,7 @@ export default function RegistrationDetailActions({ registration }: Props) {
         <Button
           variant="outline"
           size="sm"
-          onClick={handlePrint}
+          onClick={() => print(registration)}
           className="rounded-lg text-xs font-bold uppercase gap-1.5 bg-white text-astro-navy hover:text-astro-navy hover:border-astro-sky"
         >
           <Printer className="size-3.5 text-astro-blue" /> Cetak Invoice
@@ -83,9 +80,9 @@ export default function RegistrationDetailActions({ registration }: Props) {
         onConfirm={handleDelete}
       />
 
-      {printing && (
+      {printTarget && (
         <PrintPortal>
-          <PrintableInvoice data={registration} />
+          <PrintableInvoice data={printTarget} />
         </PrintPortal>
       )}
     </>
