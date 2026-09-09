@@ -1,34 +1,18 @@
 "use client";
 
-import { CenteredShell } from "@/components/brand";
-import { Suspense, useState, useEffect } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
-import { motion } from "motion/react";
-import {
-  ArrowLeft,
-  Mail,
-  KeyRound,
-  CheckCircle2,
-  Clock,
-  RefreshCw,
-} from "lucide-react";
+import { ArrowLeft, Mail, RefreshCw } from "lucide-react";
 import { authClient } from "@/src/lib/auth-client";
+import { OtpField } from "@/components/auth/OtpField";
+import { useOtpCooldown } from "@/components/auth/useOtpCooldown";
+import { AuthFrame } from "@/components/auth/AuthFrame";
+import { CtaButton, Surface } from "@/components/brand";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "@/components/ui/input-group";
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-} from "@/components/ui/input-otp";
+import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 import { Spinner } from "@/components/ui/spinner";
 
 function VerifyOtpContent() {
@@ -42,27 +26,12 @@ function VerifyOtpContent() {
   const [resending, setResending] = useState(false);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
-  const [cooldown, setCooldown] = useState(0);
+  const { cooldown, startCooldown } = useOtpCooldown();
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
-    if (initialEmail) {
-      setEmail(initialEmail);
-    }
+    if (initialEmail) setEmail(initialEmail);
   }, [initialEmail]);
-
-  const startCooldown = () => {
-    setCooldown(60);
-    const timer = setInterval(() => {
-      setCooldown((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-  };
 
   const handleResendOTP = async () => {
     if (cooldown > 0) return;
@@ -76,14 +45,13 @@ function VerifyOtpContent() {
     setMessage("");
 
     try {
-      const { error: resendError } =
-        await authClient.emailOtp.sendVerificationOtp({
-          email: email.trim().toLowerCase(),
-          type: "email-verification",
-        });
+      const { error: resendError } = await authClient.emailOtp.sendVerificationOtp({
+        email: email.trim().toLowerCase(),
+        type: "email-verification",
+      });
 
       if (resendError) {
-        setError(resendError.message || "Gagal mengirim ulang OTP");
+        setError(resendError.message || "Gagal mengirim ulang OTP.");
       } else {
         setMessage("Kode OTP baru telah dikirim ke email Anda.");
         startCooldown();
@@ -101,7 +69,6 @@ function VerifyOtpContent() {
       setError("Masukkan email akun yang valid.");
       return;
     }
-
     if (otp.length !== 6) {
       setError("Masukkan 6 digit kode OTP lengkap.");
       return;
@@ -118,16 +85,14 @@ function VerifyOtpContent() {
       });
 
       if (verifyError) {
-        setError(
-          verifyError.message || "Kode OTP tidak valid atau sudah kadaluarsa.",
-        );
+        setError(verifyError.message || "Kode OTP tidak valid atau sudah kadaluarsa.");
         setLoading(false);
         return;
       }
 
       setSuccess(true);
       setTimeout(() => {
-        router.push("/login?verified=true");
+        router.push("/auth/login?verified=true");
       }, 2000);
     } catch {
       setError("Terjadi kesalahan saat memverifikasi kode OTP.");
@@ -138,201 +103,116 @@ function VerifyOtpContent() {
 
   if (success) {
     return (
-      <Card className="rounded-xl border border-white/40 bg-background/80 p-8 text-center backdrop-blur-xl md:p-10">
-        <CardContent className="flex flex-col items-center p-0">
-          <div className="mb-4 flex size-16 items-center justify-center rounded-full border border-emerald-300 bg-emerald-100">
-            <CheckCircle2 className="size-8 text-emerald-600" />
-          </div>
-          <h2 className="mb-2 text-xl font-black uppercase tracking-tight text-foreground">
-            Verifikasi Berhasil!
-          </h2>
-          <p className="mb-6 text-sm text-muted-foreground">
-            Email Anda telah berhasil diverifikasi. Mengalihkan ke halaman
-            login...
-          </p>
-          <Button
-            asChild
-            className="rounded-lg text-xs font-black uppercase tracking-wider"
-          >
-            <Link href="/login">Login Sekarang</Link>
-          </Button>
-        </CardContent>
-      </Card>
+      <AuthFrame title="Berhasil">
+        <p className="text-sm leading-relaxed text-ink/75">
+          Email berhasil diverifikasi. Mengalihkan ke halaman masuk...
+        </p>
+        <CtaButton href="/auth/login" className="mt-6 w-full" showChevron={false}>
+          Masuk sekarang
+        </CtaButton>
+      </AuthFrame>
     );
   }
 
   return (
-    <Card className="rounded-xl border border-white/40 bg-background/80 p-8 backdrop-blur-xl md:p-10">
-      <CardContent className="p-0">
-        <Button
-          asChild
-          variant="link"
-          className="mb-6 gap-1 text-xs font-bold uppercase tracking-wider text-muted-foreground hover:text-primary p-0"
+    <AuthFrame
+      title="Verifikasi email"
+      description="Aktifkan akunmu dengan kode yang dikirim melalui email."
+    >
+      <Button
+        asChild
+        variant="link"
+        className="mb-4 h-auto gap-1 p-0 text-xs font-bold text-ink/70"
+      >
+        <Link href="/auth/login">
+          <ArrowLeft data-icon="inline-start" className="size-3.5" /> Kembali ke masuk
+        </Link>
+      </Button>
+
+      {error ? (
+        <Alert variant="destructive" className="mb-5">
+          <AlertDescription className="text-xs font-medium">{error}</AlertDescription>
+        </Alert>
+      ) : null}
+
+      {message ? (
+        <Surface tone="tint" radius="lg" pad="sm" className="mb-5">
+          <p className="text-xs font-medium text-astro-navy">{message}</p>
+        </Surface>
+      ) : null}
+
+      <form onSubmit={handleVerifyOTP} className="flex flex-col gap-5">
+        <FieldGroup>
+          <Field>
+            <FieldLabel htmlFor="verify-email" required>
+              Email akun
+            </FieldLabel>
+            <InputGroup className="h-11">
+              <InputGroupAddon align="inline-start">
+                <Mail className="size-4 text-ink/50" />
+              </InputGroupAddon>
+              <InputGroupInput
+                id="verify-email"
+                type="email"
+                autoComplete="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="nama@email.com"
+                required
+              />
+            </InputGroup>
+          </Field>
+
+          <OtpField id="otp-input" value={otp} onChange={setOtp} disabled={loading} />
+        </FieldGroup>
+
+        <CtaButton
+          type="submit"
+          disabled={loading || otp.length !== 6}
+          className="w-full"
+          showChevron={!loading}
         >
-          <Link href="/login">
-            <ArrowLeft data-icon="inline-start" className="size-3.5" /> Kembali
-            ke Login
-          </Link>
-        </Button>
+          {loading ? "Memverifikasi..." : "Verifikasi akun"}
+        </CtaButton>
 
-        {/* Logo */}
-        <div className="mb-4 flex justify-center">
-          <Image
-            src="https://i.ibb.co.com/yvSvfLK/logo-astro.png"
-            alt="ASTRO"
-            width={64}
-            height={64}
-            priority
-            className="size-12 object-contain md:size-14"
-          />
-        </div>
-
-        <h1 className="mb-1 text-center text-xl font-black uppercase tracking-tight text-foreground md:text-2xl">
-          Verifikasi Kode OTP
-        </h1>
-        <p className="mb-6 text-center text-sm font-light text-muted-foreground">
-          Masukkan 6 digit kode yang dikirimkan ke email akun Anda
-        </p>
-
-        {error && (
-          <Alert
-            variant="destructive"
-            className="rounded-lg mb-5 border-border"
-          >
-            <AlertDescription className="text-xs font-medium">
-              {error}
-            </AlertDescription>
-          </Alert>
-        )}
-
-        {message && (
-          <Alert className="rounded-lg mb-5 border-emerald-300 bg-emerald-50 text-emerald-800">
-            <AlertDescription className="text-xs font-medium">
-              {message}
-            </AlertDescription>
-          </Alert>
-        )}
-
-        <form onSubmit={handleVerifyOTP} className="flex flex-col gap-5">
-          <FieldGroup>
-            {/* Email Field */}
-            <Field>
-              <FieldLabel htmlFor="verify-email" required>
-                Email Akun
-              </FieldLabel>
-              <InputGroup className="h-10 bg-background border-border">
-                <InputGroupAddon align="inline-start">
-                  <Mail className="size-4 text-muted-foreground" />
-                </InputGroupAddon>
-                <InputGroupInput
-                  id="verify-email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="nama@email.com"
-                  required
-                  className="text-xs font-medium"
-                />
-              </InputGroup>
-            </Field>
-
-            {/* OTP Code Field */}
-            <Field>
-              <div className="flex items-center justify-between">
-                <FieldLabel htmlFor="otp-input" required>
-                  Kode OTP (6 Digit)
-                </FieldLabel>
-                <span className="text-11 text-muted-foreground flex items-center gap-1">
-                  <Clock className="size-3" /> Berlaku 10 menit
-                </span>
-              </div>
-              <div className="flex justify-center py-2">
-                <InputOTP
-                  maxLength={6}
-                  value={otp}
-                  onChange={setOtp}
-                  id="otp-input"
-                >
-                  <InputOTPGroup>
-                    <InputOTPSlot index={0} />
-                    <InputOTPSlot index={1} />
-                    <InputOTPSlot index={2} />
-                    <InputOTPSlot index={3} />
-                    <InputOTPSlot index={4} />
-                    <InputOTPSlot index={5} />
-                  </InputOTPGroup>
-                </InputOTP>
-              </div>
-            </Field>
-          </FieldGroup>
-
-          {/* Verify Button */}
+        <div className="flex flex-col items-center gap-1 pt-1 text-center">
+          <span className="text-xs text-ink/60">Tidak menerima kode atau sudah kadaluarsa?</span>
           <Button
-            type="submit"
-            disabled={loading || otp.length !== 6}
-            className="rounded-lg text-xs font-black uppercase tracking-wider"
+            type="button"
+            variant="ghost"
+            size="sm"
+            disabled={cooldown > 0 || resending}
+            onClick={handleResendOTP}
+            className="text-xs font-bold text-astro-blue"
           >
-            {loading ? (
+            {resending ? (
               <>
-                <Spinner data-icon="inline-start" /> Memverifikasi...
+                <Spinner className="mr-1 size-3" /> Mengirim...
               </>
+            ) : cooldown > 0 ? (
+              `Kirim ulang (${cooldown}s)`
             ) : (
               <>
-                <KeyRound data-icon="inline-start" /> Verifikasi Akun
+                <RefreshCw className="mr-1 size-3" /> Kirim ulang kode OTP
               </>
             )}
           </Button>
-
-          {/* Resend OTP button */}
-          <div className="flex flex-col items-center gap-1 text-center pt-2">
-            <span className="text-xs text-muted-foreground">
-              Tidak menerima kode atau kode kadaluarsa?
-            </span>
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              disabled={cooldown > 0 || resending}
-              onClick={handleResendOTP}
-              className="text-xs font-bold text-primary hover:bg-primary/10"
-            >
-              {resending ? (
-                <>
-                  <Spinner className="size-3 mr-1" /> Mengirim...
-                </>
-              ) : cooldown > 0 ? (
-                `Kirim Ulang (${cooldown}s)`
-              ) : (
-                <>
-                  <RefreshCw className="size-3 mr-1" /> Kirim Ulang Kode OTP
-                </>
-              )}
-            </Button>
-          </div>
-        </form>
-      </CardContent>
-    </Card>
+        </div>
+      </form>
+    </AuthFrame>
   );
 }
 
 export default function VerifyOtpPage() {
   return (
-    <CenteredShell>
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-      >
-        <Suspense
-          fallback={
-            <Card className="p-8 text-center">
-              <Spinner className="mx-auto size-6 text-astro-blue" />
-            </Card>
-          }
-        >
-          <VerifyOtpContent />
-        </Suspense>
-      </motion.div>
-    </CenteredShell>
+    <Suspense
+      fallback={
+        <AuthFrame title="Verifikasi">
+          <Spinner className="mx-auto size-6 text-astro-blue" />
+        </AuthFrame>
+      }
+    >
+      <VerifyOtpContent />
+    </Suspense>
   );
 }

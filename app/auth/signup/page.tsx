@@ -1,88 +1,79 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { authClient } from '@/src/lib/auth-client';
-import { apiHelpers } from '@/src/lib/api';
-import { motion } from 'motion/react';
-import { ArrowLeft, Mail, KeyRound, CheckCircle2, Clock } from 'lucide-react';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
-import { Input } from '@/components/ui/input';
-import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
-import { Spinner } from '@/components/ui/spinner';
-import { CenteredShell } from "@/components/brand";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { ArrowLeft, Clock } from "lucide-react";
+import { authClient } from "@/src/lib/auth-client";
+import { apiHelpers } from "@/src/lib/api";
+import { PasswordField } from "@/components/auth/PasswordField";
+import { OtpField } from "@/components/auth/OtpField";
+import { useOtpCooldown } from "@/components/auth/useOtpCooldown";
+import { AuthFrame } from "@/components/auth/AuthFrame";
+import { CtaButton, Surface } from "@/components/brand";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 
-type Step = 'form' | 'otp' | 'success';
+type Step = "form" | "otp" | "success";
 
-const EMAIL_ALREADY_EXISTS_CODES = [
-  'USER_ALREADY_EXISTS',
-  'USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL',
-];
+const EMAIL_ALREADY_EXISTS_CODES = ["USER_ALREADY_EXISTS", "USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL"];
+
+type EmailCheck = {
+  available?: boolean;
+  emailVerified?: boolean;
+  hasActiveOtp?: boolean;
+};
 
 function isEmailAlreadyRegistered(error?: { code?: string; message?: string } | null): boolean {
   if (!error) return false;
   if (error.code && EMAIL_ALREADY_EXISTS_CODES.includes(error.code)) return true;
-  if (error.message?.toLowerCase().includes('already exists')) return true;
+  if (error.message?.toLowerCase().includes("already exists")) return true;
   return false;
 }
 
 export default function SignupPage() {
-  const [step, setStep] = useState<Step>('form');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
-  const [otp, setOtp] = useState('');
+  const [step, setStep] = useState<Step>("form");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState('');
-  const [error, setError] = useState('');
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
   const [unverifiedEmail, setUnverifiedEmail] = useState(false);
-  const [cooldown, setCooldown] = useState(0);
+  const { cooldown, startCooldown } = useOtpCooldown();
   const router = useRouter();
 
   const handleSendOTP = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
+    setError("");
     setUnverifiedEmail(false);
 
     try {
-      // Pre-check: Better Auth returns a synthetic success response for an
-      // existing email when requireEmailVerification is on (anti-enumeration),
-      // so we detect the duplicate here before calling signUp.email.
       try {
-        const res = await apiHelpers.auth.checkEmail(email);
+        const res = (await apiHelpers.auth.checkEmail(email)) as EmailCheck;
         if (!res.available) {
-          if ((res as any)?.emailVerified === false) {
-            setStep('otp');
-            setError('');
-            if ((res as any)?.hasActiveOtp) {
-              setMessage(
-                'Email ini sudah pernah didaftarkan dan kode OTP Anda masih aktif! Silakan masukkan kode OTP yang telah dikirim ke email Anda sebelum kadaluarsa, atau kirim ulang kode baru.',
-              );
-            } else {
-              setMessage(
-                'Email ini sudah pernah didaftarkan tetapi belum diverifikasi. Silakan masukkan kode OTP terakhir Anda atau klik kirim ulang kode baru di bawah.',
-              );
-            }
+          if (res.emailVerified === false) {
+            setStep("otp");
+            setError("");
+            setMessage(
+              res.hasActiveOtp
+                ? "Email ini sudah didaftarkan dan kode OTP masih aktif. Masukkan kode dari email, atau kirim ulang."
+                : "Email ini sudah didaftarkan tetapi belum diverifikasi. Masukkan kode OTP terakhir atau kirim ulang.",
+            );
             setLoading(false);
             return;
           }
-          setError(
-            'Email sudah terdaftar. Silakan masuk dengan akun tersebut, atau gunakan email lain.',
-          );
+          setError("Email sudah terdaftar. Silakan masuk, atau gunakan email lain.");
           setLoading(false);
           return;
         }
       } catch {
-        // If the pre-check endpoint fails, fall through to Better Auth below
-        // so signup is never blocked by an availability probe outage.
+        // Availability probe outage should not block signup.
       }
 
-      // Better Auth: signUp.email with sendVerificationOnSignUp sends the OTP email
       const { error: signUpError } = await authClient.signUp.email({
         email,
         password,
@@ -92,67 +83,54 @@ export default function SignupPage() {
       if (signUpError) {
         setError(
           isEmailAlreadyRegistered(signUpError)
-            ? 'Email sudah terdaftar. Silakan masuk dengan akun tersebut, atau gunakan email lain.'
-            : signUpError.message || 'Gagal mengirim OTP',
+            ? "Email sudah terdaftar. Silakan masuk, atau gunakan email lain."
+            : signUpError.message || "Gagal mengirim OTP.",
         );
         setLoading(false);
         return;
       }
 
-      setStep('otp');
-      setMessage('Kode OTP telah dikirim ke email Anda.');
+      setStep("otp");
+      setMessage("Kode OTP telah dikirim ke email Anda.");
       startCooldown();
     } catch {
-      setError('Terjadi kesalahan. Silakan coba lagi.');
+      setError("Terjadi kesalahan. Silakan coba lagi.");
     }
     setLoading(false);
-  };
-
-  const startCooldown = () => {
-    setCooldown(60);
-    const timer = setInterval(() => {
-      setCooldown((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
   };
 
   const handleResendOTP = async () => {
     if (cooldown > 0) return;
     setLoading(true);
-    setError('');
-    setMessage('');
+    setError("");
+    setMessage("");
 
     try {
       const { error: resendError } = await authClient.emailOtp.sendVerificationOtp({
         email,
-        type: 'email-verification',
+        type: "email-verification",
       });
 
       if (resendError) {
-        setError(resendError.message || 'Gagal mengirim ulang OTP');
+        setError(resendError.message || "Gagal mengirim ulang OTP.");
       } else {
-        setMessage('Kode OTP baru telah dikirim.');
+        setMessage("Kode OTP baru telah dikirim.");
         startCooldown();
       }
     } catch {
-      setError('Terjadi kesalahan.');
+      setError("Terjadi kesalahan.");
     }
     setLoading(false);
   };
 
   const handleVerifyOTP = async () => {
     if (otp.length !== 6) {
-      setError('Masukkan 6 digit kode OTP');
+      setError("Masukkan 6 digit kode OTP.");
       return;
     }
 
     setLoading(true);
-    setError('');
+    setError("");
 
     try {
       const { error: verifyError } = await authClient.emailOtp.verifyEmail({
@@ -161,237 +139,187 @@ export default function SignupPage() {
       });
 
       if (verifyError) {
-        setError(verifyError.message || 'Kode OTP tidak valid');
+        setError(verifyError.message || "Kode OTP tidak valid.");
         setLoading(false);
         return;
       }
 
-      setStep('success');
-      setTimeout(() => router.push('/login'), 2000);
+      setStep("success");
+      setTimeout(() => router.push("/auth/login"), 2000);
     } catch {
-      setError('Terjadi kesalahan.');
+      setError("Terjadi kesalahan.");
     }
     setLoading(false);
   };
 
-  // ─── SUCCESS ───
-  if (step === 'success') {
+  if (step === "success") {
     return (
-      <CenteredShell>
-        <div>
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-          >
-            <Card className="rounded-xl bg-white shadow-soft p-8 text-center md:p-10">
-              <CardContent className="flex flex-col items-center p-0">
-                <div className="mb-4 flex size-16 items-center justify-center rounded-full border border-emerald-300 bg-emerald-100">
-                  <CheckCircle2 className="size-8 text-emerald-600" />
-                </div>
-                <h2 className="mb-2 text-xl font-black uppercase tracking-tight text-foreground">Pendaftaran Berhasil!</h2>
-                <p className="mb-6 text-sm text-muted-foreground">Silakan login dengan akun baru Anda.</p>
-                <Button asChild className="rounded-lg text-xs font-black uppercase tracking-wider">
-                  <Link href="/login">Login Sekarang</Link>
-                </Button>
-              </CardContent>
-            </Card>
-          </motion.div>
-        </div>
-      </CenteredShell>
+      <AuthFrame title="Berhasil">
+        <p className="text-sm leading-relaxed text-ink/75">
+          Akun siap. Silakan masuk dengan email dan kata sandi baru.
+        </p>
+        <CtaButton href="/auth/login" className="mt-6 w-full" showChevron={false}>
+          Masuk sekarang
+        </CtaButton>
+      </AuthFrame>
     );
   }
 
   return (
-    <CenteredShell>
-      <div className="relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="w-full max-w-md"
+    <AuthFrame
+      title={step === "otp" ? "Periksa emailmu" : "Buat akun ASTRO"}
+      description={
+        step === "otp"
+          ? "Verifikasi email untuk menyelesaikan pembuatan akun."
+          : "Simpan dan pantau pendaftaran lombamu dalam satu akun."
+      }
+      activeTab={step === "form" ? "signup" : undefined}
+    >
+      {step === "otp" && (
+        <Button
+          type="button"
+          variant="link"
+          onClick={() => {
+            setStep("form");
+            setError("");
+            setMessage("");
+            setOtp("");
+          }}
+          className="mb-4 h-auto gap-1 p-0 text-xs font-bold text-ink/70"
         >
-          <Card className="rounded-xl bg-white shadow-soft p-8 md:p-10">
-            <CardContent className="p-0">
-              <Button asChild variant="link" className="mb-6 gap-1 text-xs font-bold uppercase tracking-wider text-muted-foreground hover:text-primary">
-                <Link href="/login">
-                  <ArrowLeft data-icon="inline-start" className="size-3.5" /> Kembali
-                </Link>
-              </Button>
+          <ArrowLeft data-icon="inline-start" className="size-3.5" /> Ganti email
+        </Button>
+      )}
 
-              {/* ─── Step Form ─── */}
-              {step === 'form' && (
-                <>
-                  <h1 className="mb-1 text-center text-xl font-black uppercase tracking-tight text-foreground md:text-2xl">
-                    Daftar Akun
-                  </h1>
-                  <p className="mb-8 text-center text-sm font-light text-muted-foreground">
-                    Buat akun untuk melacak pendaftaran
-                  </p>
-
-                  {error && (
-                    <Alert variant="destructive" className="rounded-lg mb-5 border-border">
-                      <AlertDescription className="text-xs font-medium leading-relaxed">
-                        {error}
-                      </AlertDescription>
-                      {unverifiedEmail && (
-                        <div className="mt-3 flex flex-wrap gap-2">
-                          <Button
-                            type="button"
-                            size="sm"
-                            onClick={() => {
-                              setStep('otp');
-                              setError('');
-                              setMessage('Silakan masukkan kode OTP Anda atau kirim ulang kode baru di bawah.');
-                              handleResendOTP();
-                            }}
-                            className="rounded-md text-xs font-bold uppercase bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                          >
-                            <KeyRound className="size-3.5 mr-1" /> Masukkan Kode OTP Sekarang
-                          </Button>
-                        </div>
-                      )}
-                    </Alert>
-                  )}
-
-                  <form onSubmit={handleSendOTP} className="flex flex-col gap-5">
-                    <FieldGroup className="gap-5">
-                      <Field>
-                        <FieldLabel htmlFor="name" required>Nama Lengkap</FieldLabel>
-                        <Input id="name" type="text" value={name} onChange={(e) => setName(e.target.value)} required />
-                      </Field>
-                      <Field>
-                        <FieldLabel htmlFor="email" required>Email</FieldLabel>
-                        <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-                      </Field>
-                      <Field>
-                        <FieldLabel htmlFor="password" required>Password</FieldLabel>
-                        <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} />
-                      </Field>
-                    </FieldGroup>
-
-                    <Button type="submit" disabled={loading} size="lg" className="rounded-lg text-sm font-black uppercase tracking-wider">
-                      {loading ? (
-                        <>
-                          <Spinner data-icon="inline-start" />
-                          Mengirim...
-                        </>
-                      ) : (
-                        <>
-                          <Mail data-icon="inline-start" />
-                          Kirim Kode OTP
-                        </>
-                      )}
-                    </Button>
-                  </form>
-                </>
-              )}
-
-              {/* ─── Step OTP ─── */}
-              {step === 'otp' && (
-                <>
+      {step === "form" ? (
+        <>
+          {error ? (
+            <Alert variant="destructive" className="mb-5">
+              <AlertDescription className="text-xs font-medium leading-relaxed">
+                {error}
+              </AlertDescription>
+              {unverifiedEmail ? (
+                <div className="mt-3">
                   <Button
                     type="button"
-                    variant="link"
+                    size="sm"
                     onClick={() => {
-                      setStep('form');
-                      setError('');
-                      setMessage('');
-                      setOtp('');
+                      setStep("otp");
+                      setError("");
+                      setMessage("Masukkan kode OTP atau kirim ulang kode baru.");
+                      void handleResendOTP();
                     }}
-                    className="mb-4 gap-1 text-xs font-bold uppercase tracking-wider text-muted-foreground hover:text-primary p-0"
                   >
-                    <ArrowLeft data-icon="inline-start" className="size-3.5" /> Ganti Email / Kembali
+                    Masukkan kode OTP
                   </Button>
+                </div>
+              ) : null}
+            </Alert>
+          ) : null}
 
-                  <div className="mb-4 flex justify-center">
-                    <div className="flex size-14 items-center justify-center rounded-full border border-astro-cyan-2 bg-primary/10">
-                      <KeyRound className="size-7 text-primary" />
-                    </div>
-                  </div>
+          <form onSubmit={handleSendOTP} className="flex flex-col gap-5">
+            <FieldGroup className="gap-5">
+              <Field>
+                <FieldLabel htmlFor="name" required>
+                  Nama lengkap
+                </FieldLabel>
+                <Input
+                  className="h-11"
+                  id="name"
+                  autoComplete="name"
+                  placeholder="Nama sesuai identitas"
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                />
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="email" required>
+                  Email
+                </FieldLabel>
+                <Input
+                  className="h-11"
+                  id="email"
+                  placeholder="nama@email.com"
+                  type="email"
+                  autoComplete="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </Field>
+              <PasswordField
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                autoComplete="new-password"
+                placeholder="Buat kata sandi"
+                minLength={6}
+                required
+                description="Gunakan minimal 6 karakter."
+              />
+            </FieldGroup>
 
-                  <h1 className="mb-1 text-center text-xl font-black uppercase tracking-tight text-foreground md:text-2xl">
-                    Verifikasi OTP
-                  </h1>
-                  <p className="mb-2 text-center text-sm font-light text-muted-foreground">
-                    Masukkan kode yang dikirim ke
-                  </p>
-                  <p className="mb-6 text-center text-sm font-bold text-foreground">{email}</p>
+            <CtaButton type="submit" disabled={loading} className="w-full" showChevron={!loading}>
+              {loading ? "Mengirim..." : "Kirim kode OTP"}
+            </CtaButton>
+          </form>
+        </>
+      ) : (
+        <>
+          <p className="mb-2 text-sm text-ink/70">Masukkan kode yang dikirim ke</p>
+          <p className="mb-5 break-all text-sm font-bold text-astro-navy">{email}</p>
 
-                  {message && (
-                    <Alert className="rounded-lg mb-5 border-border bg-primary/5 text-primary">
-                      <AlertDescription className="text-xs font-medium">{message}</AlertDescription>
-                    </Alert>
-                  )}
+          {message ? (
+            <Surface tone="tint" radius="lg" pad="sm" className="mb-5">
+              <p className="text-xs font-medium text-astro-navy">{message}</p>
+            </Surface>
+          ) : null}
 
-                  {error && (
-                    <Alert variant="destructive" className="rounded-lg mb-5 border-border">
-                      <AlertDescription className="text-xs font-medium">{error}</AlertDescription>
-                    </Alert>
-                  )}
+          {error ? (
+            <Alert variant="destructive" className="mb-5">
+              <AlertDescription className="text-xs font-medium">{error}</AlertDescription>
+            </Alert>
+          ) : null}
 
-                  <div className="mb-6 flex justify-center">
-                    <InputOTP maxLength={6} value={otp} onChange={setOtp} pattern="\d" autoFocus>
-                      <InputOTPGroup>
-                        {[0, 1, 2, 3, 4, 5].map((i) => (
-                          <InputOTPSlot key={i} index={i} className="size-10 border-border text-lg font-black md:size-12" />
-                        ))}
-                      </InputOTPGroup>
-                    </InputOTP>
-                  </div>
+          <form
+            onSubmit={(event) => {
+              event.preventDefault();
+              void handleVerifyOTP();
+            }}
+            className="flex flex-col gap-5"
+          >
+            <OtpField id="signup-otp" value={otp} onChange={setOtp} disabled={loading} />
 
-                  <Button
-                    onClick={handleVerifyOTP}
-                    disabled={loading || otp.length !== 6}
-                    size="lg"
-                    className="rounded-lg w-full text-sm font-black uppercase tracking-wider"
-                  >
-                    {loading ? (
-                      <>
-                        <Spinner data-icon="inline-start" />
-                        Memverifikasi...
-                      </>
-                    ) : (
-                      <>Verifikasi & Daftar</>
-                    )}
-                  </Button>
+            <CtaButton
+              type="submit"
+              disabled={loading || otp.length !== 6}
+              className="w-full"
+              showChevron={!loading}
+            >
+              {loading ? "Memverifikasi..." : "Verifikasi dan daftar"}
+            </CtaButton>
+          </form>
 
-                  <div className="mt-5 text-center">
-                    <Button
-                      variant="link"
-                      onClick={handleResendOTP}
-                      disabled={loading || cooldown > 0}
-                      className="text-xs font-bold uppercase tracking-wider text-muted-foreground hover:text-primary"
-                    >
-                      {cooldown > 0 ? (
-                        <span className="flex items-center justify-center gap-1">
-                          <Clock className="size-3" /> Kirim ulang ({cooldown}s)
-                        </span>
-                      ) : (
-                        'Kirim ulang OTP'
-                      )}
-                    </Button>
-                  </div>
-                </>
+          <div className="mt-4 text-center">
+            <Button
+              variant="ghost"
+              onClick={handleResendOTP}
+              disabled={loading || cooldown > 0}
+              className="text-xs font-bold text-astro-blue"
+            >
+              {cooldown > 0 ? (
+                <span className="flex items-center justify-center gap-1">
+                  <Clock className="size-3" /> Kirim ulang ({cooldown}s)
+                </span>
+              ) : (
+                "Kirim ulang OTP"
               )}
-
-              <div className="mt-5 flex flex-col items-center gap-2 text-center text-xs text-muted-foreground">
-                <p>
-                  Sudah punya akun?{' '}
-                  <Link href="/login" className="font-bold text-primary hover:underline">
-                    Masuk
-                  </Link>
-                </p>
-                <Link
-                  href={`/auth/verify-otp${email ? `?email=${encodeURIComponent(email)}` : ''}`}
-                  className="text-11 font-medium text-ink hover:text-primary hover:underline"
-                >
-                  Sudah daftar tapi belum verifikasi OTP? Verifikasi di sini
-                </Link>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-      </div>
-    </CenteredShell>
+            </Button>
+          </div>
+        </>
+      )}
+    </AuthFrame>
   );
 }
