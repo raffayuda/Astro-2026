@@ -76,14 +76,6 @@ export const metadata: Metadata = {
       "Ajang kompetisi dan kreativitas terbesar tahun ini persembahan BEM STT-NF. Bergabunglah dalam ASTRO 2026 — pengalaman kompetisi multi-kategori (Akademik, Olahraga, Esports) untuk mahasiswa STT-NF dan pelajar SMA/SMK sederajat.",
     url: "https://astro.nurulfikri.ac.id",
     siteName: "ASTRO 2026",
-    images: [
-      {
-        url: "https://i.ibb.co.com/QjnnBLmr/og-image-astro.png",
-        width: 1200,
-        height: 630,
-        alt: "ASTRO 2026 - Where Innovation Meets the Stars",
-      },
-    ],
     locale: "id_ID",
     type: "website",
   },
@@ -92,7 +84,6 @@ export const metadata: Metadata = {
     title: "ASTRO 2026 | Where Innovation Meets the Stars",
     description:
       "Ajang kompetisi persembahan BEM STT-NF untuk mahasiswa STT-NF dan pelajar SMA/SMK sederajat. Ikuti kategori Akademik, Olahraga, dan Esports di ASTRO 2026!",
-    images: ["https://i.ibb.co.com/QjnnBLmr/og-image-astro.png"],
     creator: "@Astro2026",
   },
   robots: {
@@ -137,7 +128,7 @@ const jsonLd = [
       "@type": "Organization",
       name: "BEM STT-NF",
       url: "https://nurulfikri.ac.id",
-      logo: "https://i.ibb.co.com/QjnnBLmr/og-image-astro.png",
+      logo: "https://astro.nurulfikri.ac.id/assets/logo-astro.png",
     },
   },
   {
@@ -145,7 +136,7 @@ const jsonLd = [
     "@type": "Organization",
     name: "ASTRO 2026",
     url: "https://astro.nurulfikri.ac.id",
-    logo: "https://i.ibb.co.com/QjnnBLmr/og-image-astro.png",
+    logo: "https://astro.nurulfikri.ac.id/assets/logo-astro.png",
     sameAs: [
       "https://www.instagram.com/astro.sttnf",
       "https://nurulfikri.ac.id",

@@ -13,14 +13,6 @@ export const metadata: Metadata = {
       'Mengenal ASTRO 2026, ajang tahunan terbesar persembahan BEM STT-NF. Temukan visi, misi, perjalanan sejarah, dan jajaran panitia pelaksana.',
     url: 'https://astro.nurulfikri.ac.id/profile',
     siteName: 'ASTRO 2026',
-    images: [
-      {
-        url: 'https://i.ibb.co.com/QjnnBLmr/og-image-astro.png',
-        width: 1200,
-        height: 630,
-        alt: 'Profil ASTRO 2026 - BEM STT-NF',
-      },
-    ],
   },
 };
 

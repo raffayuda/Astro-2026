@@ -13,14 +13,6 @@ export const metadata: Metadata = {
       'Layanan pengecekan status pendaftaran peserta dan tim lomba ASTRO 2026. Masukkan ID registrasi untuk melihat progres verifikasi.',
     url: 'https://astro.nurulfikri.ac.id/check-registration',
     siteName: 'ASTRO 2026',
-    images: [
-      {
-        url: 'https://i.ibb.co.com/QjnnBLmr/og-image-astro.png',
-        width: 1200,
-        height: 630,
-        alt: 'Cek Status Pendaftaran ASTRO 2026',
-      },
-    ],
   },
 };
 

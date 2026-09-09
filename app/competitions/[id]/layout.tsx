@@ -41,14 +41,6 @@ export async function generateMetadata({
         description,
         url: `https://astro.nurulfikri.ac.id/competitions/${id}`,
         siteName: 'ASTRO 2026',
-        images: [
-          {
-            url: 'https://i.ibb.co.com/QjnnBLmr/og-image-astro.png',
-            width: 1200,
-            height: 630,
-            alt: `${comp.title} - ASTRO 2026`,
-          },
-        ],
       },
     };
   } catch {
