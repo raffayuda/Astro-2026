@@ -7,20 +7,23 @@ import {
   CheckCircle2,
   ArrowLeft,
   Receipt,
-  ExternalLink,
   AlertCircle,
   XCircle,
   MessageCircle,
-  Printer,
-  RotateCcw,
 } from 'lucide-react';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { CtaButton } from '@/components/brand/CtaButton';
+import { Surface } from '@/components/brand/Surface';
+import { WindowCard } from '@/components/brand/WindowCard';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
 import type { Competition } from '@/types/astro';
 import { useRegistration } from '@/src/lib/hooks/use-queries';
 import QrisDisplay from '@/components/QrisDisplay';
-import PrintableInvoice, { PrintPortal, type PrintableInvoiceData } from '@/components/PrintableInvoice';
+import PrintableInvoice, {
+  PrintPortal,
+  usePrintInvoice,
+  type PrintableInvoiceData,
+} from '@/components/PrintableInvoice';
 
 interface Props {
   competition: Competition;
@@ -56,7 +59,7 @@ export default function PaymentStep({
   onBack,
 }: Props) {
   const router = useRouter();
-  const [printing, setPrinting] = useState(false);
+  const { target: printTarget, print } = usePrintInvoice<PrintableInvoiceData>();
 
   const [isFinalStatus, setIsFinalStatus] = useState(false);
   const [clientPaymentCode, setClientPaymentCode] = useState<string | null>(initialPaymentCode ?? null);
@@ -119,12 +122,6 @@ export default function PaymentStep({
       )}`
     : undefined;
 
-  const handlePrint = () => {
-    setPrinting(true);
-    setTimeout(() => {
-      window.print();
-    }, 200);
-  };
 
   const invoiceData: PrintableInvoiceData = {
     id: (reg as any)?.id || registrationId,
@@ -137,6 +134,7 @@ export default function PaymentStep({
     fullName: (reg as any)?.fullName,
     teamName: (reg as any)?.teamName,
     leaderName: (reg as any)?.leaderName,
+    leaderGameId: (reg as any)?.leaderGameId,
     institution: (reg as any)?.institution || '',
     email: (reg as any)?.email || '',
     whatsapp: (reg as any)?.whatsapp || '',
@@ -150,234 +148,140 @@ export default function PaymentStep({
   };
 
   return (
-    <div className="space-y-8">
+    <div className="w-full min-w-0">
       <AnimatePresence mode="wait">
         {paymentStatus === 'paid' ? (
-          /* ─── PAID / LUNAS STATE ─── */
           <motion.div
             key="paid"
-            initial={{ opacity: 0, scale: 0.96 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            className="space-y-6"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
           >
-            <div className="text-center space-y-3">
-              <motion.div
-                className="flex justify-center"
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ type: 'spring', damping: 15, stiffness: 200, delay: 0.15 }}
-              >
-                <div
-                  className="p-4 bg-emerald-50 border border-emerald-200"
-                  style={{ clipPath: 'polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%)' }}
-                >
-                  <CheckCircle2 className="w-12 h-12 text-emerald-500" />
-                </div>
-              </motion.div>
-              <h2 className="text-xl md:text-2xl font-black text-astro-navy uppercase tracking-tight">
-                Pembayaran Berhasil Diverifikasi!
+            <WindowCard title="Pembayaran" bodyClassName="gap-4">
+              <CheckCircle2 className="size-10 text-astro-blue" aria-hidden />
+              <h2 className="font-heading text-2xl font-black text-astro-navy">
+                Pembayaran terverifikasi
               </h2>
-              <p className="text-sm text-ink max-w-md mx-auto font-light">
-                Pendaftaran dan pembayaran kamu telah diterima dan kuota slot lomba telah resmi terkunci.
+              <p className="text-sm leading-relaxed text-ink/75">
+                Pendaftaran diterima. Kuota lomba sudah terkunci.
               </p>
-              <div className="flex justify-center">
-                <div className="block h-1.5 w-18 rounded-full bg-linear-to-r from-astro-gold via-astro-lime2 to-astro-blue" />
-              </div>
-            </div>
-
-            <div className="max-w-md mx-auto space-y-3">
-              <Button
-                onClick={handlePrint}
-                size="lg"
-                className="rounded-lg w-full text-sm font-black uppercase tracking-wider bg-astro-navy text-white hover:bg-astro-navy gap-2 shadow-md active:scale-95"
-              >
-                <Printer className="size-4 text-astro-sky" />
-                Cetak Bukti Pendaftaran / Invoice
-              </Button>
-
+              <CtaButton onClick={() => print(invoiceData)} size="lg" className="w-full" showChevron={false}>
+                Cetak invoice
+              </CtaButton>
               <Button
                 onClick={() => router.push(`/check-registration?regId=${registrationId}`)}
                 variant="outline"
                 size="lg"
-                className="rounded-lg w-full text-xs font-bold uppercase tracking-wider gap-2"
+                className="w-full rounded-full"
               >
-                <CheckCircle2 className="size-4 text-emerald-600" />
-                Lihat di Menu Cek Pendaftaran
+                Cek pendaftaran
               </Button>
-
-              <Button
-                onClick={onBack}
-                variant="ghost"
-                size="sm"
-                className="w-full text-xs text-ink hover:text-astro-navy gap-1.5 pt-2"
-              >
-                <RotateCcw className="size-3.5" />
-                Daftarkan Peserta / Tim Lainnya
+              <Button onClick={onBack} variant="ghost" size="sm" className="w-full">
+                Daftar peserta lain
               </Button>
-            </div>
+            </WindowCard>
           </motion.div>
         ) : paymentStatus === 'failed' || paymentStatus === 'expired' ? (
-          /* ─── FAILED / CANCELED / EXPIRED STATE ─── */
           <motion.div
             key="failed"
-            initial={{ opacity: 0, scale: 0.96 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="space-y-6 text-center"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
           >
-            <div className="flex justify-center">
-              <div
-                className="p-4 bg-red-50 border border-red-200"
-                style={{ clipPath: 'polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%)' }}
-              >
-                <XCircle className="w-12 h-12 text-red-500" />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <h2 className="text-xl md:text-2xl font-black text-astro-navy uppercase tracking-tight">
+            <WindowCard title="Pembayaran" bodyClassName="gap-4">
+              <XCircle className="size-10 text-astro-pink" aria-hidden />
+              <h2 className="font-heading text-2xl font-black text-astro-navy">
                 {paymentStatus === 'expired'
-                  ? 'Batas Waktu Pembayaran Telah Habis'
-                  : 'Pembayaran Dibatalkan / Gagal'}
+                  ? 'Batas waktu habis'
+                  : 'Pembayaran gagal'}
               </h2>
-              <p className="text-sm text-ink max-w-md mx-auto font-light leading-relaxed">
+              <p className="text-sm leading-relaxed text-ink/75">
                 {paymentStatus === 'expired'
-                  ? 'Link atau kode QRIS pembayaran telah kadaluarsa. Silakan buat ulang pendaftaran atau hubungi panitia.'
-                  : 'Transaksi ini telah dibatalkan di Payment Gateway. Jangan khawatir, Anda dapat mengulangi proses pembayaran atau kembali ke formulir pendaftaran.'}
+                  ? 'Kode QRIS sudah kadaluarsa. Ulangi pendaftaran atau hubungi panitia.'
+                  : 'Transaksi dibatalkan di gateway. Kamu bisa mengulang pembayaran dari formulir.'}
               </p>
-            </div>
-
-            <div className="max-w-md mx-auto space-y-3 pt-2">
-              <Button
-                onClick={onBack}
-                size="lg"
-                className="rounded-lg w-full text-xs font-black uppercase tracking-wider gap-2 bg-astro-blue text-white hover:bg-astro-blue active:scale-95"
-              >
-                <RotateCcw className="size-4" />
-                Ulangi Pendaftaran & Dapatkan QRIS Baru
-              </Button>
-
+              <CtaButton onClick={onBack} size="lg" className="w-full" showChevron={false}>
+                Ulangi pendaftaran
+              </CtaButton>
               {waHref && (
-                <Button
-                  asChild
-                  variant="outline"
-                  size="lg"
-                  className="rounded-lg w-full text-xs font-bold uppercase tracking-wider gap-2 border-astro-cyan-2"
-                >
+                <Button asChild variant="outline" size="lg" className="w-full rounded-full">
                   <a href={waHref} target="_blank" rel="noopener noreferrer">
-                    <MessageCircle className="size-4 text-emerald-600" />
-                    Hubungi Panitia via WhatsApp
+                    <MessageCircle data-icon="inline-start" />
+                    Hubungi panitia
                   </a>
                 </Button>
               )}
-            </div>
+            </WindowCard>
           </motion.div>
         ) : (
-          /* ─── PENDING STATE (IN-APP QRIS EMBEDDED) ─── */
           <motion.div
             key="payment-flow"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="space-y-6"
+            className="flex flex-col gap-4"
           >
-            <div className="text-center space-y-3">
-              <div className="flex justify-center">
-                <div
-                  className="p-4 bg-white border border-astro-cyan-2"
-                  style={{ clipPath: 'polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%)' }}
-                >
-                  <Receipt className="w-12 h-12 text-astro-cyan" />
-                </div>
-              </div>
-              <h2 className="text-xl md:text-2xl font-black text-astro-navy uppercase tracking-tight">
-                Selesaikan Pembayaran
+            <WindowCard title="Pembayaran" bodyClassName="gap-4">
+              <Receipt className="size-8 text-astro-blue" aria-hidden />
+              <h2 className="font-heading text-2xl font-black text-astro-navy">
+                Selesaikan pembayaran
               </h2>
-              <p className="text-sm text-ink max-w-lg mx-auto font-light">
-                Lakukan pembayaran sebesar{' '}
-                <strong className="text-astro-navy font-bold">{formatCurrency(paymentAmount)}</strong>{' '}
-                untuk mengamankan kuota slot pendaftaran di <strong>{competition.title}</strong>.
+              <p className="text-sm leading-relaxed text-ink/75">
+                Bayar {formatCurrency(paymentAmount)} untuk mengamankan kuota di{' '}
+                <strong>{competition.title}</strong>.
               </p>
-              <div className="flex justify-center">
-                <div className="block h-1.5 w-18 rounded-full bg-linear-to-r from-astro-gold via-astro-lime2 to-astro-blue" />
-              </div>
-            </div>
 
-            {/* In-App QRIS Card Display */}
-            {paymentCode ? (
-              <QrisDisplay
-                paymentCode={paymentCode}
-                paymentCodeType={paymentCodeType}
-                amount={paymentAmount}
-                paymentReference={paymentReference}
-                expiresAt={resolvedExpiresAt}
-                paymentLinkUrl={resolvedLinkUrl}
-              />
-            ) : resolvedLinkUrl ? (
-              <div
-                className="bg-white border border-astro-cyan-2 relative max-w-lg mx-auto"
-                style={{ clipPath: 'polygon(14px 0, 100% 0, calc(100% - 14px) 100%, 0 100%)' }}
-              >
-                <div
-                  className="absolute -top-[1px] -left-[1px] w-8 h-8 bg-astro-cyan"
-                  style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }}
+              {paymentCode ? (
+                <QrisDisplay
+                  paymentCode={paymentCode}
+                  paymentCodeType={paymentCodeType}
+                  amount={paymentAmount}
+                  paymentReference={paymentReference}
+                  expiresAt={resolvedExpiresAt}
+                  paymentLinkUrl={resolvedLinkUrl}
                 />
-                <div className="p-6 md:p-8 space-y-6 text-center">
-                  <div>
-                    <span className="text-10 font-bold text-ink uppercase tracking-wider">
-                      Referensi
-                    </span>
-                    <p className="text-xs font-mono font-bold text-ink mt-0.5 tracking-wide">
-                      {paymentReference}
-                    </p>
-                  </div>
-                  <Button
-                    asChild
-                    size="lg"
-                    className="rounded-lg w-full text-sm font-black uppercase tracking-wider active:scale-95"
+              ) : resolvedLinkUrl ? (
+                <Surface tone="tint" radius="xl" pad="md" className="text-center">
+                  <p className="text-xs text-ink/55">Referensi</p>
+                  <p className="mt-0.5 break-all font-mono text-sm font-semibold text-astro-navy">
+                    {paymentReference}
+                  </p>
+                  <CtaButton
+                    href={resolvedLinkUrl}
+                    size="default"
+                    className="mt-4 w-full"
+                    showChevron={false}
                   >
-                    <a href={resolvedLinkUrl} target="_blank" rel="noopener noreferrer">
-                      Bayar Sekarang Melalui SumoPod
-                      <ExternalLink data-icon="inline-end" />
-                    </a>
-                  </Button>
-                </div>
-              </div>
-            ) : (
-              <Alert className="rounded-lg max-w-lg mx-auto border-amber-200 bg-amber-50/50 text-amber-800">
-                <AlertDescription className="flex items-center gap-2 text-xs font-medium">
-                  <AlertCircle className="size-4 shrink-0" />
-                  Pendaftaran tercatat, menunggu konfirmasi gateway pembayaran...
-                </AlertDescription>
-              </Alert>
-            )}
+                    Bayar sekarang
+                  </CtaButton>
+                </Surface>
+              ) : (
+                <Surface tone="gold" radius="xl" pad="md">
+                  <p className="flex items-center gap-2 text-sm">
+                    <AlertCircle className="size-4 shrink-0" aria-hidden />
+                    Pendaftaran tercatat. Menunggu konfirmasi gateway.
+                  </p>
+                </Surface>
+              )}
 
-            {/* Live Auto-detection status alert */}
-            <div className="max-w-md mx-auto space-y-3">
-              <Alert className="rounded-lg border-astro-cyan-2 bg-sky-bottom/50 text-astro-navy">
-                <AlertDescription className="flex items-center gap-2 text-11 font-medium">
+              <Surface tone="tint" radius="xl" pad="md">
+                <p className="flex items-center gap-2 text-xs font-medium text-astro-navy">
                   <Spinner className="size-3.5 shrink-0" />
-                  <span>Sistem memantau pembayaran secara otomatis. Halaman ini akan berganti seketika setelah pembayaran Anda terverifikasi.</span>
-                </AlertDescription>
-              </Alert>
+                  Halaman ini berganti sendiri setelah pembayaran terverifikasi.
+                </p>
+              </Surface>
 
-              <Button
-                variant="outline"
-                size="lg"
-                onClick={onBack}
-                className="rounded-lg w-full text-xs font-bold uppercase tracking-wider"
-              >
+              <Button variant="outline" size="lg" onClick={onBack} className="w-full rounded-full">
                 <ArrowLeft data-icon="inline-start" />
-                Kembali ke Form Pendaftaran
+                Kembali ke formulir
               </Button>
-            </div>
+            </WindowCard>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Printable Invoice Container */}
-      {printing && (
+      {printTarget && (
         <PrintPortal>
-          <PrintableInvoice data={invoiceData} />
+          <PrintableInvoice data={printTarget} />
         </PrintPortal>
       )}
     </div>

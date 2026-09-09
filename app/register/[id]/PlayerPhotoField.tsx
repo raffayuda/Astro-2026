@@ -139,7 +139,8 @@ export default function PlayerPhotoField({
 
   if (compact) {
     return (
-      <div className="space-y-1">
+      <Field data-invalid={!!error}>
+        <FieldLabel required={required}>{label}</FieldLabel>
         <div
           onDragOver={handleDragOver}
           onDragEnter={handleDragOver}
@@ -152,10 +153,8 @@ export default function PlayerPhotoField({
         >
           {picker}
         </div>
-        {error ? (
-          <p className="text-xs font-medium text-destructive">{error}</p>
-        ) : null}
-      </div>
+        {error ? <FieldError>{error}</FieldError> : null}
+      </Field>
     );
   }
 

@@ -2,18 +2,20 @@
 
 import { useMemo, useEffect } from "react";
 import { useForm } from "@tanstack/react-form";
-import { ChevronRight, FileText } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { FileText } from "lucide-react";
+import { CtaButton } from "@/components/brand/CtaButton";
+import { TalentCategoryCard, talentMeta } from "@/components/brand/TalentCategoryCard";
+import { WindowCard } from "@/components/brand/WindowCard";
 import {
   Field,
   FieldError,
   FieldGroup,
   FieldLabel,
+  FieldLegend,
+  FieldSet,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Spinner } from "@/components/ui/spinner";
 import { toast } from "sonner";
 import type { Competition, CompetitionCustomField } from "@/types/astro";
 import { useRegistrationApi } from "@/src/lib/hooks/use-registration";
@@ -29,7 +31,7 @@ interface Props {
   isTeam: boolean;
   regType: 'team' | 'individual';
   formData: RegistrationFormValues;
-  setFormData: (data: any) => void;
+  setFormData: (data: RegistrationFormValues) => void;
   onContinue: (
     registrationId: string,
     reference: string,
@@ -85,6 +87,7 @@ export default function FormStep({
       customFields: formData.customFields ?? {},
       memberDetails: Array.from({ length: memberSlots }, (_, i) => ({
         name: formData.memberDetails?.[i]?.name ?? "",
+        gameId: formData.memberDetails?.[i]?.gameId ?? "",
         photoUrl: formData.memberDetails?.[i]?.photoUrl ?? "",
       })),
     }),
@@ -139,6 +142,7 @@ export default function FormStep({
   useEffect(() => {
     const sub = form.store.subscribe(() => {
       const current = form.state.values;
+      setFormData(current);
       if (current && competition?.id && typeof window !== "undefined") {
         try {
           localStorage.setItem(
@@ -155,7 +159,7 @@ export default function FormStep({
         (sub as any).unsubscribe();
       }
     };
-  }, [form, competition?.id, regType]);
+  }, [form, competition?.id, regType, setFormData]);
 
   const renderField = (
     name: Exclude<keyof RegistrationFormValues, "memberDetails" | "customFields">,
@@ -172,7 +176,7 @@ export default function FormStep({
           | undefined;
         const fieldId = `field-${String(name)}`;
         return (
-          <Field data-invalid={!!err}>
+          <Field data-invalid={!!err} className={opts?.className}>
             <FieldLabel htmlFor={fieldId} required={opts?.required}>
               {label}
             </FieldLabel>
@@ -227,84 +231,87 @@ export default function FormStep({
         e.stopPropagation();
         form.handleSubmit();
       }}
-      className="flex flex-col gap-8"
+      className="flex flex-col gap-6"
     >
-      {/* Section title */}
-      <div>
-        <h2 className="text-lg font-black uppercase tracking-tight text-astro-navy">
-          Data Pendaftaran
-        </h2>
-        <p className="mt-1 text-xs font-semibold text-astro-blue/75">
-          Isi data dengan benar untuk pendaftaran lomba{" "}
-          <strong>{competition.title}</strong>.
-        </p>
-      </div>
-
-      <Card className="rounded-xl bg-white shadow-soft relative">
-        <div
-          className="absolute -top-px -left-px size-8 bg-primary"
-          style={{ clipPath: "polygon(0 0, 100% 0, 0 100%)" }}
-        />
-
-        <CardContent className="space-y-5 p-6 md:p-8">
-          <FieldGroup className="gap-5">
+      <WindowCard title="Data pendaftaran" bodyClassName="gap-6">
+          <p className="text-sm text-ink/70">
+            Isi data dengan benar untuk lomba <strong>{competition.title}</strong>.
+          </p>
+          <FieldGroup className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             {isTeam ? (
               <>
                 {renderField(
                   "teamName",
-                  "Nama Tim",
+                  "Nama tim",
                   "text",
-                  "Masukkan nama tim Anda",
-                  { required: true },
+                  "Masukkan nama tim",
+                  { required: true, className: "sm:col-span-2" },
                 )}
                 {renderField(
                   "leaderName",
-                  "Nama Ketua Tim",
+                  "Nama ketua",
                   "text",
                   "Nama lengkap ketua tim",
                   { required: true },
                 )}
                 {renderField(
                   "leaderIdentity",
-                  "Nomor Identitas Ketua (NIM / Kartu Pelajar)",
+                  "NIM / nomor pelajar ketua",
                   "text",
                   "Nomor identitas ketua",
                   { sanitize: (v) => v.replace(/\D/g, "") },
                 )}
                 {photoRequired &&
-                  renderPhotoField("leaderPhotoUrl", "Foto Ketua Tim")}
+                  renderField(
+                    "leaderGameId",
+                    "ID akun ketua",
+                    "text",
+                    "Contoh: 123456789 (1234)",
+                    { required: true },
+                  )}
+                {photoRequired &&
+                  renderPhotoField("leaderPhotoUrl", "Foto ketua tim")}
               </>
             ) : (
               <>
                 {renderField(
                   "fullName",
-                  "Nama Lengkap",
+                  "Nama lengkap",
                   "text",
                   "Nama lengkap pendaftar",
+                  { required: true },
                 )}
                 {renderField(
                   "identityNumber",
-                  "Nomor Identitas (NIM / Kartu Pelajar)",
+                  "NIM / nomor pelajar",
                   "text",
                   "Nomor identitas pendaftar",
                   { sanitize: (v) => v.replace(/\D/g, "") },
                 )}
                 {photoRequired &&
-                  renderPhotoField("leaderPhotoUrl", "Foto Pemain")}
+                  renderField(
+                    "leaderGameId",
+                    "ID akun pemain",
+                    "text",
+                    "Contoh: 123456789 (1234)",
+                    { required: true },
+                  )}
+                {photoRequired &&
+                  renderPhotoField("leaderPhotoUrl", "Foto peserta")}
               </>
             )}
 
             {renderField(
               "institution",
-              "Sekolah / Instansi",
+              "Sekolah / instansi",
               "text",
               "Asal sekolah atau instansi",
-              { required: true },
+              { required: true, className: "sm:col-span-2" },
             )}
 
             {renderField(
               "email",
-              `Alamat Email${isTeam ? " Ketua" : ""}`,
+              `Alamat email${isTeam ? " ketua" : ""}`,
               "email",
               "contoh@email.com",
               { required: true },
@@ -312,7 +319,7 @@ export default function FormStep({
 
             {renderField(
               "whatsapp",
-              `Nomor WhatsApp${isTeam ? " Ketua" : ""}`,
+              `Nomor WhatsApp${isTeam ? " ketua" : ""}`,
               "tel",
               "62812XXXXXXXX",
               { sanitize: (v) => v.replace(/\D/g, ""), required: true },
@@ -321,73 +328,121 @@ export default function FormStep({
 
           {/* Anggota Tim (team only) */}
           {isTeam && (
-            <Field>
-              <FieldLabel required>
-                Anggota Tim (Min. {requiredMembers} selain ketua)
-              </FieldLabel>
+            <FieldSet>
+              <FieldLegend variant="label">
+                Anggota tim (min. {requiredMembers} selain ketua)
+              </FieldLegend>
               {photoRequired && (
                 <p className="text-11 font-light text-muted-foreground">
-                  Setiap pemain wajib melampirkan foto — formal atau non-formal
-                  keduanya diterima.
+                  Setiap pemain wajib mengisi ID akun dan melampirkan foto. Foto
+                  formal atau non-formal keduanya diterima.
                 </p>
               )}
-              {Array.from({ length: memberSlots }, (_, i) => (
-                <div
-                  key={i}
-                  className={
-                    photoRequired
-                      ? "flex flex-col gap-2 rounded-xl border border-astro-cyan-2/60 bg-white/60 p-3"
-                      : undefined
-                  }
-                >
-                  <form.Field
-                    name={`memberDetails[${i}].name` as never}
-                    children={(field) => {
-                      const err = field.state.meta.errors?.[0] as
-                        | { message?: string }
-                        | undefined;
-                      return (
-                        <>
-                          <Input
-                            type="text"
-                            value={(field.state.value as string) ?? ""}
-                            onBlur={field.handleBlur}
-                            onChange={(e) =>
-                              field.handleChange(e.target.value as never)
-                            }
-                            placeholder={`Anggota ${i + 1}${i < requiredMembers ? " (wajib)" : " (opsional)"}`}
-                            aria-invalid={!!err}
-                          />
-                          {err ? (
-                            <p className="text-xs font-medium text-destructive">
-                              {err.message}
-                            </p>
-                          ) : null}
-                        </>
-                      );
-                    }}
-                  />
-                  {photoRequired && (
+              {Array.from({ length: memberSlots }, (_, i) => {
+                const isRequiredSlot = i < requiredMembers;
+                const nameId = `member-${i}-name`;
+                const gameIdId = `member-${i}-game-id`;
+                return (
+                  <div
+                    key={i}
+                    className={
+                      photoRequired
+                        ? "flex flex-col gap-4 rounded-xl border border-astro-cyan-2/60 bg-white/60 p-4"
+                        : undefined
+                    }
+                  >
+                    {photoRequired && (
+                      <p className="text-11 font-black uppercase tracking-wider text-astro-navy">
+                        Anggota {i + 1}
+                        <span className="ml-1.5 font-medium normal-case tracking-normal text-ink/60">
+                          {isRequiredSlot ? "(wajib)" : "(opsional)"}
+                        </span>
+                      </p>
+                    )}
+
                     <form.Field
-                      name={`memberDetails[${i}].photoUrl` as never}
+                      name={`memberDetails[${i}].name` as never}
                       children={(field) => {
                         const err = field.state.meta.errors?.[0] as
                           | { message?: string }
                           | undefined;
                         return (
-                          <PlayerPhotoField
-                            compact
-                            label={`Foto anggota ${i + 1}`}
-                            value={(field.state.value as string) ?? ""}
-                            onChange={(url) => field.handleChange(url as never)}
-                            error={err?.message}
-                          />
+                          <Field data-invalid={!!err}>
+                            <FieldLabel htmlFor={nameId} required={isRequiredSlot}>
+                              {photoRequired
+                                ? "Nama lengkap"
+                                : `Nama anggota ${i + 1}${isRequiredSlot ? "" : " (opsional)"}`}
+                            </FieldLabel>
+                            <Input
+                              id={nameId}
+                              type="text"
+                              value={(field.state.value as string) ?? ""}
+                              onBlur={field.handleBlur}
+                              onChange={(e) =>
+                                field.handleChange(e.target.value as never)
+                              }
+                              placeholder="Nama sesuai identitas"
+                              aria-invalid={!!err}
+                            />
+                            {err ? <FieldError>{err.message}</FieldError> : null}
+                          </Field>
                         );
                       }}
                     />
-                  )}
-                </div>
-              ))}
+
+                    {photoRequired && (
+                      <form.Field
+                        name={`memberDetails[${i}].gameId` as never}
+                        children={(field) => {
+                          const err = field.state.meta.errors?.[0] as
+                            | { message?: string }
+                            | undefined;
+                          return (
+                            <Field data-invalid={!!err}>
+                              <FieldLabel htmlFor={gameIdId} required>
+                                ID akun
+                              </FieldLabel>
+                              <Input
+                                id={gameIdId}
+                                type="text"
+                                value={(field.state.value as string) ?? ""}
+                                onBlur={field.handleBlur}
+                                onChange={(e) =>
+                                  field.handleChange(e.target.value as never)
+                                }
+                                placeholder="Contoh: 123456789 (1234)"
+                                aria-invalid={!!err}
+                              />
+                              {err ? <FieldError>{err.message}</FieldError> : null}
+                            </Field>
+                          );
+                        }}
+                      />
+                    )}
+
+                    {photoRequired && (
+                      <form.Field
+                        name={`memberDetails[${i}].photoUrl` as never}
+                        children={(field) => {
+                          const err = field.state.meta.errors?.[0] as
+                            | { message?: string }
+                            | undefined;
+                          return (
+                            <PlayerPhotoField
+                              compact
+                              required
+                              label="Foto pemain"
+                              value={(field.state.value as string) ?? ""}
+                              onChange={(url) => field.handleChange(url as never)}
+                              error={err?.message}
+                            />
+                          );
+                        }}
+                      />
+                    )}
+                  </div>
+                );
+              })}
               <form.Field
                 name="memberDetails"
                 children={(field) => {
@@ -397,19 +452,21 @@ export default function FormStep({
                   return err ? <FieldError>{err.message}</FieldError> : null;
                 }}
               />
-            </Field>
+            </FieldSet>
           )}
 
           {/* ─── FIELD KHUSUS KOMPETISI (DYNAMIC) ─── */}
           {customFields && customFields.length > 0 && (
-            <div className="space-y-5 pt-5 border-t border-border/70">
+            <div className="flex flex-col gap-5 border-t border-sky-mid/50 pt-6">
               <div>
-                <h3 className="text-sm font-black uppercase tracking-tight text-foreground flex items-center gap-2">
-                  <FileText className="w-4 h-4 text-primary" />
-                  Informasi & Berkas Khusus Lomba
+                <h3 className="flex items-center gap-2 font-heading text-sm font-bold text-astro-navy">
+                  <FileText className="size-4 text-astro-blue" />
+                  {customFields.some((field) => field.id === "talent_category")
+                    ? "Aksi di panggung"
+                    : "Berkas khusus lomba"}
                 </h3>
-                <p className="mt-0.5 text-xs text-muted-foreground font-light">
-                  Lengkapi data khusus di bawah ini sesuai ketentuan juknis resmi <strong>{competition.title}</strong>.
+                <p className="mt-0.5 text-xs text-ink/65">
+                  Lengkapi sesuai ketentuan guidebook <strong>{competition.title}</strong>.
                 </p>
               </div>
 
@@ -469,6 +526,45 @@ export default function FormStep({
                                 aria-invalid={!!err}
                                 rows={3}
                               />
+                              {err ? <FieldError>{err.message}</FieldError> : null}
+                            </Field>
+                          );
+                        }}
+                      />
+                    );
+                  }
+
+                  if (field.type === "select" && field.id === "talent_category") {
+                    return (
+                      <form.Field
+                        key={field.id}
+                        name={fieldName as never}
+                        children={(subField) => {
+                          const err = subField.state.meta.errors?.[0] as
+                            | { message?: string }
+                            | undefined;
+                          const value = (subField.state.value as string) ?? "";
+                          return (
+                            <Field data-invalid={!!err}>
+                              <FieldLabel required={field.required}>{field.label}</FieldLabel>
+                              {field.description && (
+                                <p className="text-xs text-ink/65">{field.description}</p>
+                              )}
+                              <div className="grid grid-cols-2 gap-3 min-[400px]:grid-cols-3 sm:grid-cols-4">
+                                {(field.options || []).map((opt) => {
+                                  const meta = talentMeta(opt);
+                                  return (
+                                    <TalentCategoryCard
+                                      key={opt}
+                                      id={meta.id}
+                                      label={meta.label}
+                                      size="mini"
+                                      selected={value === opt}
+                                      onSelect={() => subField.handleChange(opt as never)}
+                                    />
+                                  );
+                                })}
+                              </div>
                               {err ? <FieldError>{err.message}</FieldError> : null}
                             </Field>
                           );
@@ -559,31 +655,14 @@ export default function FormStep({
               </FieldGroup>
             </div>
           )}
-        </CardContent>
-      </Card>
+      </WindowCard>
 
-      {/* Submit button */}
       <form.Subscribe
         selector={(s) => ({ isSubmitting: s.isSubmitting })}
         children={({ isSubmitting }) => (
-          <Button
-            type="submit"
-            disabled={isSubmitting}
-            size="lg"
-            className="w-full rounded-xl text-sm font-black uppercase tracking-wider active:scale-95"
-          >
-            {isSubmitting ? (
-              <>
-                <Spinner data-icon="inline-start" />
-                Memproses Pendaftaran...
-              </>
-            ) : (
-              <>
-                Lanjut ke Pembayaran
-                <ChevronRight data-icon="inline-end" />
-              </>
-            )}
-          </Button>
+          <CtaButton type="submit" disabled={isSubmitting} size="lg" className="w-full sm:ml-auto sm:w-auto">
+            {isSubmitting ? "Memproses" : "Lanjut ke pembayaran"}
+          </CtaButton>
         )}
       />
     </form>
