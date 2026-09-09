@@ -31,14 +31,34 @@ import { invitationsModule } from '@/src/server/modules/invitations';
  *
  * Validation errors are flattened to `{ error: "field: message" }` so clients
  * can show exactly which field failed and why.
+ *
+ * Anything else that throws is logged server-side and answered with a generic
+ * message. Elysia's default handler replies with `error.message`, which for an
+ * unhandled driver error is the raw Postgres text (table and column names,
+ * constraint names) on a public endpoint.
  */
 export const app = new Elysia({ prefix: '/api' })
   .use(authPlugin)
-  .onError(({ code, error, set }) => {
+  .onError(({ code, error, path, request, set }) => {
     if (code === 'VALIDATION') {
       set.status = 400;
       return { error: formatZodError(error as any) };
     }
+
+    if (code === 'NOT_FOUND') {
+      set.status = 404;
+      return { error: 'Endpoint tidak ditemukan' };
+    }
+
+    if (code === 'PARSE') {
+      set.status = 400;
+      return { error: 'Format request tidak valid' };
+    }
+
+    // Keep the detail in the server log, never in the response body.
+    console.error(`[api] ${code} on ${request.method} ${path}:`, error);
+    set.status = 500;
+    return { error: 'Terjadi kesalahan pada server. Silakan coba lagi.' };
   })
   .use(authRoutes)
   .mount(auth.handler)
