@@ -5,6 +5,8 @@ import { Resend } from 'resend';
 import { deleteSupabaseFile } from '@/src/server/modules/upload';
 import { createPayment, fetchPublicPaymentCheckout, SumoPodError } from '@/src/server/modules/payments/sumopod';
 import { getEffectiveFee } from '@/src/server/modules/competitions/service';
+import { isRecord } from '@/lib/flags';
+import { isSafeUrl } from '@/lib/urls';
 import type { MemberDetail, RegistrationCreate, RegistrationListQuery } from './model';
 import { SELF_SERVICE_FIELDS, ADMIN_FIELDS } from './model';
 
@@ -13,23 +15,27 @@ const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
 
 /**
  * Competitions with `playerPhotoRequired` (esports, e.g. Mobile Legends) need a
- * photo for every player — the leader plus each listed member. Returns an error
- * message when the submitted roster is incomplete, or null when it is valid.
+ * photo and an in-game account ID for every player — the leader plus each
+ * listed member. Returns an error message when the submitted roster is
+ * incomplete, or null when it is valid.
  */
 function validatePlayerPhotos(
   comp: typeof competitions.$inferSelect,
   input: {
     type?: string;
+    leaderGameId?: string | null;
     leaderPhotoUrl?: string | null;
     memberDetails?: MemberDetail[] | null;
   },
 ): string | null {
   if (comp.playerPhotoRequired !== '1') return null;
   if (input.type === 'individual') {
-    return input.leaderPhotoUrl ? null : 'Foto pemain wajib diunggah';
+    if (!input.leaderPhotoUrl) return 'Foto pemain wajib diunggah';
+    return input.leaderGameId?.trim() ? null : 'ID akun pemain wajib diisi';
   }
 
   if (!input.leaderPhotoUrl) return 'Foto ketua tim wajib diunggah';
+  if (!input.leaderGameId?.trim()) return 'ID akun ketua tim wajib diisi';
 
   const players = (input.memberDetails ?? []).filter((m) => m.name?.trim());
   // Clamp to the roster size — some competitions have min > max configured.
@@ -41,6 +47,44 @@ function validatePlayerPhotos(
   if (players.some((m) => !m.photoUrl)) {
     return 'Setiap anggota tim wajib mengunggah foto pemain';
   }
+  if (players.some((m) => !m.gameId?.trim())) {
+    return 'Setiap anggota tim wajib mengisi ID akun pemain';
+  }
+  return null;
+}
+
+/**
+ * Rejects any uploaded-file value that is not an http(s) URL or a
+ * root-relative path. These values are rendered as `href` targets in the admin
+ * views, where a `javascript:` URI would run in an admin session.
+ */
+function validateUploadedUrls(updates: Record<string, unknown>): string | null {
+  const leaderPhoto = updates.leaderPhotoUrl;
+  if (
+    typeof leaderPhoto === 'string' &&
+    leaderPhoto !== '' &&
+    !isSafeUrl(leaderPhoto)
+  ) {
+    return 'URL foto ketua tidak valid';
+  }
+
+  if (Array.isArray(updates.memberDetails)) {
+    for (const member of updates.memberDetails as MemberDetail[]) {
+      const photo = member?.photoUrl;
+      if (typeof photo === 'string' && photo !== '' && !isSafeUrl(photo)) {
+        return 'URL foto anggota tidak valid';
+      }
+    }
+  }
+
+  if (isRecord(updates.customFields)) {
+    for (const value of Object.values(updates.customFields)) {
+      if (typeof value === 'string' && /^\s*(javascript|data|vbscript):/i.test(value)) {
+        return 'Nilai field khusus tidak valid';
+      }
+    }
+  }
+
   return null;
 }
 
@@ -125,6 +169,7 @@ export async function listRegistrations(q: RegistrationListQuery, role: string, 
       teamName: registrations.teamName,
       leaderName: registrations.leaderName,
       leaderIdentity: registrations.leaderIdentity,
+      leaderGameId: registrations.leaderGameId,
       leaderPhotoUrl: registrations.leaderPhotoUrl,
       identityNumber: registrations.identityNumber,
       members: registrations.members,
@@ -159,6 +204,32 @@ export async function listRegistrations(q: RegistrationListQuery, role: string, 
     .offset((q.page - 1) * q.pageSize);
 
   return { data, total: Number(total?.total || 0), page: q.page, pageSize: q.pageSize };
+}
+
+/**
+ * Trim a full registration row to what a caller *without* an account may
+ * legitimately see at `GET /registrations/:id` — their own submitted data,
+ * plus the checkout material needed to resume payment. That route is
+ * unauthenticated by design (a pre-payment registrant has no session yet)
+ * and keyed on the row UUID, so anything internal-only — `userId`,
+ * `paymentLinkId`, `certificates`, `isWinner`/`winnerRank`/`certificateSent`,
+ * the certificate-template bookkeeping — must not ride along in the body.
+ * `getRegistration` itself stays untrimmed: `updateRegistration` and
+ * `deleteRegistration` read exactly those fields internally.
+ */
+export function toPublicRegistration(row: typeof registrations.$inferSelect) {
+  const {
+    userId: _userId,
+    paymentLinkId: _paymentLinkId,
+    isWinner: _isWinner,
+    winnerRank: _winnerRank,
+    certificateSent: _certificateSent,
+    certificates: _certificates,
+    certificateGeneratedAt: _certificateGeneratedAt,
+    certificateTemplateVersion: _certificateTemplateVersion,
+    ...pub
+  } = row;
+  return pub;
 }
 
 export async function getRegistration(id: string) {
@@ -283,6 +354,7 @@ export async function createRegistration(input: RegistrationCreate, userId: stri
       teamName: input.teamName ?? null,
       leaderName: input.leaderName ?? null,
       leaderIdentity: input.leaderIdentity ?? null,
+      leaderGameId: input.leaderGameId ?? null,
       leaderPhotoUrl: input.leaderPhotoUrl ?? null,
       members: membersText(input.memberDetails, input.members),
       memberDetails: input.memberDetails ?? [],
@@ -353,10 +425,12 @@ export async function createRegistration(input: RegistrationCreate, userId: stri
     } catch (err) {
       await db.delete(registrations).where(eq(registrations.id, reg.id));
       console.error('SumoPod create payment failed:', err);
+      // Only SumoPodError carries a message written for participants. Any
+      // other failure (a missing API key, a driver error) stays in the log.
       const message =
         err instanceof SumoPodError
           ? err.message
-          : (err instanceof Error ? err.message : 'Gagal terhubung ke layanan pembayaran, silakan coba lagi');
+          : 'Gagal terhubung ke layanan pembayaran, silakan coba lagi';
       return { error: message, status: 502 } as const;
     }
   }
@@ -391,6 +465,12 @@ export async function updateRegistration(
     return { kind: 'locked' } as const;
   }
   if (Object.keys(updates).length === 0) return { kind: 'empty' } as const;
+
+  // The PUT route accepts a loose record, so uploaded-file values are checked
+  // here as well as in `registrationCreateSchema`. These end up as `href`
+  // targets in the admin views; a `javascript:` URI must never reach the row.
+  const urlError = validateUploadedUrls(updates);
+  if (urlError) return { kind: 'invalid', error: urlError } as const;
 
   // Keep the newline-joined `members` text in sync with the roster, and re-check
   // the photo requirement whenever the roster or the leader photo changes.
@@ -723,6 +803,10 @@ export async function getStats() {
 /* ─── Winners (public) ─── */
 
 export async function getWinners(competitionId: string) {
+  // Public endpoint keyed on a competition slug — every visitor to the
+  // announcements page gets this payload, so it must carry only what a
+  // winner leaderboard needs. `email` used to ride along unused by the
+  // client; it does not belong in a response anyone can request.
   const data = await db
     .select({
       id: registrations.id,
@@ -731,7 +815,6 @@ export async function getWinners(competitionId: string) {
       fullName: registrations.fullName,
       teamName: registrations.teamName,
       leaderName: registrations.leaderName,
-      email: registrations.email,
       winnerRank: registrations.winnerRank,
       certificates: registrations.certificates,
       competitionName: competitions.title,
@@ -766,6 +849,7 @@ export async function getExportRows() {
       teamName: registrations.teamName,
       leaderName: registrations.leaderName,
       leaderIdentity: registrations.leaderIdentity,
+      leaderGameId: registrations.leaderGameId,
       leaderPhotoUrl: registrations.leaderPhotoUrl,
       members: registrations.members,
       memberDetails: registrations.memberDetails,
@@ -785,30 +869,45 @@ export async function getExportRows() {
 
   const headers = [
     'Referensi', 'Tipe', 'Nama Lengkap', 'No Identitas',
-    'Nama Tim', 'Nama Ketua', 'Identitas Ketua', 'Foto Ketua', 'Anggota', 'Foto Anggota',
+    'Nama Tim', 'Nama Ketua', 'Identitas Ketua', 'ID Akun Ketua', 'Foto Ketua',
+    'Anggota', 'ID Akun Anggota', 'Foto Anggota',
     'Instansi', 'Email', 'WhatsApp', 'Lomba', 'Kategori',
     'Status Bayar', 'Metode Bayar', 'Jumlah', 'Tanggal Daftar',
   ];
 
-  const rows = data.map((r) => [
-    r.reference || '',
-    r.type || '',
-    r.type === 'team' ? '' : r.fullName || '',
-    r.type === 'team' ? '' : r.identityNumber || '',
-    r.type === 'team' ? r.teamName || '' : '',
-    r.type === 'team' ? r.leaderName || '' : '',
-    r.type === 'team' ? r.leaderIdentity || '' : '',
-    r.type === 'team' ? (r.members || '').replace(/\n/g, '; ') : '',
-    r.institution || '',
-    r.email || '',
-    r.whatsapp || '',
-    r.competitionName || '',
-    r.competitionCategory || '',
-    r.paymentStatus || '',
-    r.paymentMethod || '',
-    r.paymentAmount?.toString() || '0',
-    r.createdAt ? new Date(r.createdAt).toISOString() : '',
-  ]);
+  /** One cell per roster row, in roster order, so the columns line up. */
+  const joinRoster = (
+    roster: MemberDetail[],
+    pick: (m: MemberDetail) => string | null | undefined,
+  ) => roster.map((m) => pick(m) || '-').join('; ');
+
+  const rows = data.map((r) => {
+    const roster = (r.memberDetails as MemberDetail[] | null) ?? [];
+    const isTeam = r.type === 'team';
+    return [
+      r.reference || '',
+      r.type || '',
+      isTeam ? '' : r.fullName || '',
+      isTeam ? '' : r.identityNumber || '',
+      isTeam ? r.teamName || '' : '',
+      isTeam ? r.leaderName || '' : '',
+      isTeam ? r.leaderIdentity || '' : '',
+      r.leaderGameId || '',
+      r.leaderPhotoUrl || '',
+      isTeam ? (r.members || '').replace(/\n/g, '; ') : '',
+      isTeam ? joinRoster(roster, (m) => m.gameId) : '',
+      isTeam ? joinRoster(roster, (m) => m.photoUrl) : '',
+      r.institution || '',
+      r.email || '',
+      r.whatsapp || '',
+      r.competitionName || '',
+      r.competitionCategory || '',
+      r.paymentStatus || '',
+      r.paymentMethod || '',
+      r.paymentAmount?.toString() || '0',
+      r.createdAt ? new Date(r.createdAt).toISOString() : '',
+    ];
+  });
 
   const csvContent = [
     headers.join(','),
@@ -837,8 +936,15 @@ export async function checkRegistrationStatus(rawQuery: string) {
     conditions.push(sql`lower(CAST(${registrations.id} AS text)) = ${lowerQ}`);
   }
 
-  if (digitsOnly.length >= 8) {
-    conditions.push(sql`regexp_replace(${registrations.whatsapp}, '\\D', '', 'g') LIKE ${'%' + digitsOnly + '%'}`);
+  // Match the full national number, not a substring: an 8-digit `LIKE
+  // '%...%'` let anyone walk other people's registrations out of this public
+  // endpoint. Leading `0`/`62` is stripped from both sides so `0812…` and
+  // `62812…` still resolve to the same person.
+  const nationalDigits = digitsOnly.replace(/^(?:62|0)/, '');
+  if (nationalDigits.length >= 8) {
+    conditions.push(
+      sql`regexp_replace(regexp_replace(${registrations.whatsapp}, '\\D', '', 'g'), '^(62|0)', '') = ${nationalDigits}`,
+    );
   }
 
   const whereClause = sql`(${conditions.reduce((a, b) => sql`${a} OR ${b}`)})`;
@@ -852,6 +958,7 @@ export async function checkRegistrationStatus(rawQuery: string) {
       teamName: registrations.teamName,
       leaderName: registrations.leaderName,
       leaderIdentity: registrations.leaderIdentity,
+      leaderGameId: registrations.leaderGameId,
       leaderPhotoUrl: registrations.leaderPhotoUrl,
       identityNumber: registrations.identityNumber,
       members: registrations.members,
@@ -931,5 +1038,37 @@ export async function checkRegistrationStatus(rawQuery: string) {
     }
   }
 
-  return data;
+  // Public payload: only what the lookup page renders. The selected row also
+  // carries checkout material (`paymentLinkUrl`, `paymentCode`) and the
+  // internal `userId`, which must not leave the server on an unauthenticated
+  // endpoint — anyone who found a record could otherwise open its checkout.
+  return data.map((item) => ({
+    id: item.id,
+    competitionId: item.competitionId,
+    type: item.type,
+    fullName: item.fullName,
+    identityNumber: item.identityNumber,
+    teamName: item.teamName,
+    leaderName: item.leaderName,
+    leaderIdentity: item.leaderIdentity,
+    leaderGameId: item.leaderGameId,
+    leaderPhotoUrl: item.leaderPhotoUrl,
+    members: item.members,
+    memberDetails: item.memberDetails,
+    institution: item.institution,
+    email: item.email,
+    whatsapp: item.whatsapp,
+    customFields: item.customFields,
+    paymentStatus: item.paymentStatus,
+    paymentMethod: item.paymentMethod,
+    paymentAmount: item.paymentAmount,
+    batchName: item.batchName,
+    paymentReference: item.paymentReference,
+    createdAt: item.createdAt,
+    competitionName: item.competitionName,
+    competitionCategory: item.competitionCategory,
+    competitionContactName: item.competitionContactName,
+    competitionContactWhatsapp: item.competitionContactWhatsapp,
+    competitionCustomFields: item.competitionCustomFields,
+  }));
 }

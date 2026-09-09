@@ -63,7 +63,7 @@ export const certificatesModule = new Elysia({ prefix: '/certificates' })
           return `<tr><td style="padding: 6px 0; color: #64748b; font-size: 13px;">${c.name}</td>
             <td style="padding: 6px 0; text-align: right;">
               <a href="${href}"
-                 style="display: inline-block; padding: 8px 20px; background: #06b6d4; color: #0f172a; text-decoration: none; font-weight: 900; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; clip-path: polygon(5px 0, 100% 0, calc(100% - 5px) 100%, 0 100%);">
+                 style="display: inline-block; padding: 8px 20px; background: #06b6d4; color: #0f172a; text-decoration: none; font-weight: 900; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em;">
                 Download
               </a>
             </td></tr>`;
@@ -157,11 +157,11 @@ export const certificatesModule = new Elysia({ prefix: '/certificates' })
       }
       return result;
     } catch (err) {
+      // Unauthenticated route (a participant fetching their own certificate
+      // from the public winners modal) — the underlying failure (a storage
+      // error, a template fetch timeout) is logged, never echoed to the caller.
       console.error('Single certificate generate failed:', err);
-      return status(500, {
-        error: 'Gagal generate sertifikat',
-        details: err instanceof Error ? err.message : String(err),
-      });
+      return status(500, { error: 'Gagal generate sertifikat, silakan coba lagi' });
     }
   }, {
     body: generateSingleSchema,

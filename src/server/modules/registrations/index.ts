@@ -85,7 +85,9 @@ export const registrationsModule = new Elysia({ prefix: '/registrations' })
   .get('/:id', async ({ params }) => {
     const reg = await service.getRegistration(params.id);
     if (!reg) return status(404, { error: 'Not found' });
-    return reg;
+    // Unauthenticated route (pre-payment registrants have no session) — only
+    // the trimmed, participant-facing shape may leave the server here.
+    return service.toPublicRegistration(reg);
   }, {
     params: t.Object({ id: t.String() }),
   })
