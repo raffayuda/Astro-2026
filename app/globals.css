@@ -294,3 +294,52 @@ body {
     scroll-behavior: auto !important;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   Print — invoice only.
+
+   `PrintPortal` mounts the invoice as a direct child of <body> under
+   #astro-print-portal. On screen that node is hidden outright; in print
+   every other body child is hidden instead, so the sheet carries the
+   invoice alone with no navbar, footer, sky ground or toasts.
+   ═══════════════════════════════════════════════════════════════════ */
+#astro-print-portal {
+  display: none;
+}
+
+@media print {
+  @page {
+    size: A4;
+    margin: 12mm;
+  }
+
+  html,
+  body {
+    height: auto !important;
+    overflow: visible !important;
+    background: #fff !important;
+  }
+
+  body > *:not(#astro-print-portal) {
+    display: none !important;
+  }
+
+  #astro-print-portal {
+    display: block !important;
+  }
+
+  /* Keep the tinted status blocks and badges legible on paper. */
+  #astro-print-portal,
+  #astro-print-portal * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Do not split a roster cell, a summary row or a signature block. */
+  #printable-invoice-content dl,
+  #printable-invoice-content dl > div,
+  #printable-invoice-content table tr {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}
