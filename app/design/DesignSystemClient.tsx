@@ -228,7 +228,7 @@ const PAGE_LAYOUTS = [
   },
   {
     name: "Auth",
-    route: "/login, /auth/signup",
+    route: "/auth/login, /auth/signup",
     sections: [
       { band: "hero", label: "Centred Card", parts: ["CenteredShell", "Surface", "Label", "Input", "InputOTP", "Button"] },
     ],

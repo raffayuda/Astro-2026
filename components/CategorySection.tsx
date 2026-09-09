@@ -87,7 +87,7 @@ export default function CategorySection({ competitions }: Props) {
                     {cat.blurb}
                   </p>
 
-                  <span className="mt-auto flex items-center justify-between gap-2 border-t border-astro-cyan-2/35 pt-3 text-11 font-black uppercase tracking-[0.16em] text-astro-blue">
+                  <span className="mt-auto flex items-center justify-between gap-2 border-t border-astro-cyan-2/35 pt-3 text-sm font-bold text-astro-blue">
                     {total} lomba
                     <ArrowRight
                       aria-hidden

@@ -126,7 +126,7 @@ export default function AboutSection({ competitions }: Props) {
           ]}
           onChange={(value) => setSelectedOrigin(value as "all" | "internal" | "external")}
         />
-        <p className="text-11 font-black uppercase tracking-[0.18em] text-muted-foreground sm:ml-auto">
+        <p className="text-xs font-bold text-ink/60 sm:ml-auto">
           {filtered.length} lomba
         </p>
       </Surface>
@@ -182,7 +182,7 @@ function FilterGroup({
 }) {
   return (
     <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
-      <p className="text-10 font-black uppercase tracking-[0.18em] text-muted-foreground">
+      <p className="text-xs font-bold text-ink/60">
         {label}
       </p>
       <ToggleGroup
@@ -196,7 +196,7 @@ function FilterGroup({
             key={item.value}
             value={item.value}
             className={cn(
-              "min-h-9 rounded-full px-3.5 text-10 font-black uppercase tracking-[0.12em]",
+              "min-h-9 rounded-full px-3.5 text-xs font-bold",
               "data-[state=on]:bg-astro-navy data-[state=on]:text-white",
             )}
           >

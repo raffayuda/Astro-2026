@@ -21,7 +21,6 @@ interface RegistrationWinner {
   fullName: string | null;
   teamName: string | null;
   leaderName: string | null;
-  email: string;
   winnerRank: string | null;
   certificates: CertItem[];
 }

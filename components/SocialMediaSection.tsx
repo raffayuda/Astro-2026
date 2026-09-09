@@ -2,21 +2,25 @@
 
 import Image from 'next/image';
 import { motion, useReducedMotion } from 'motion/react';
-import { ArrowUpRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { CtaButton } from "@/components/brand/CtaButton";
 import { SectionHeading } from "@/components/brand/SectionHeading";
 import { SectionShell } from "@/components/brand/SectionShell";
+import { WindowCard } from "@/components/brand/WindowCard";
 
 const MotionImage = motion.create(Image);
 
-export default function SocialMediaSection({ priority = false }: { priority?: boolean }) {
+export default function SocialMediaSection({
+  priority = false,
+}: {
+  priority?: boolean;
+}) {
   const reduce = useReducedMotion();
 
-  // Pure clean neutral sky studio background matching adjacent sections
-
   return (
-    <SectionShell id="social" band="none" space="sm">
+    <SectionShell id="social" band="none" space="sm" className={priority ? "pt-24" : undefined}>
       <SectionHeading
+        eyebrow="Kanal"
+        pillTone="blue"
         title="Lebih dekat dengan ASTRO"
         lead="Kanal resmi Instagram, dokumentasi, dan press kit ASTRO 2026."
       />
@@ -76,72 +80,48 @@ export default function SocialMediaSection({ priority = false }: { priority?: bo
         </motion.div>
 
         {/* ── 3. SPEC GRID (Shares exact container alignment) ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.3 }}
-          className="rounded-xl bg-white shadow-soft z-20 grid w-full max-w-6xl gap-x-14 gap-y-10 p-6 md:grid-cols-2 md:p-9"
-        >
-          {/* Spec Item 1 */}
-          <div className="flex flex-col gap-2 border-b border-astro-cyan-2/45 pb-8 md:border-b-0 md:pb-0">
-            <h3 className="text-sm md:text-base font-black text-astro-navy tracking-tight">
-              Highlights & Dokumentasi Eksklusif
-            </h3>
-            <p className="text-xs md:text-sm text-astro-navy/70 leading-relaxed font-medium">
-              Liputan penuh seluruh cabang kompetisi, momen terbaik di panggung utama, dan galeri kegiatan ASTRO 2026.
-            </p>
+        <WindowCard title="Kenapa ikuti kanal ini" className="z-20 w-full max-w-6xl">
+          <div className="grid gap-x-10 gap-y-8 md:grid-cols-2">
+            <div className="flex flex-col gap-2">
+              <h3 className="font-heading text-sm font-bold tracking-tight text-astro-navy md:text-base">
+                Highlights dan dokumentasi
+              </h3>
+              <p className="text-sm font-medium leading-relaxed text-astro-navy/70">
+                Liputan cabang kompetisi, momen panggung utama, dan galeri kegiatan ASTRO 2026.
+              </p>
+            </div>
+            <div className="flex flex-col gap-2">
+              <h3 className="font-heading text-sm font-bold tracking-tight text-astro-navy md:text-base">
+                Update pendaftaran
+              </h3>
+              <p className="text-sm font-medium leading-relaxed text-astro-navy/70">
+                Informasi kuota, jadwal pengumuman, dan konsultasi cepat lewat DM panitia.
+              </p>
+            </div>
+            <div className="flex flex-col gap-2">
+              <h3 className="font-heading text-sm font-bold tracking-tight text-astro-navy md:text-base">
+                Komunitas pelajar
+              </h3>
+              <p className="text-sm font-medium leading-relaxed text-astro-navy/70">
+                Menghubungkan inovator muda dari sekolah dan kampus se-Indonesia.
+              </p>
+            </div>
+            <div className="flex flex-col gap-2">
+              <h3 className="font-heading text-sm font-bold tracking-tight text-astro-navy md:text-base">
+                Press kit resmi
+              </h3>
+              <p className="text-sm font-medium leading-relaxed text-astro-navy/70">
+                Logo, materi publikasi, dan aset visual untuk mitra media.
+              </p>
+            </div>
           </div>
+        </WindowCard>
 
-          {/* Spec Item 2 */}
-          <div className="flex flex-col gap-2 border-b border-astro-cyan-2/45 pb-8 md:border-b-0 md:pb-0">
-            <h3 className="text-sm md:text-base font-black text-astro-navy tracking-tight">
-              Update Real-Time Pendaftaran
-            </h3>
-            <p className="text-xs md:text-sm text-astro-navy/70 leading-relaxed font-medium">
-              Informasi kuota perlombaan, jadwal pengumuman, dan konsultasi cepat langsung melalui DM panitia.
-            </p>
-          </div>
-
-          {/* Spec Item 3 */}
-          <div className="flex flex-col gap-2 border-b border-astro-cyan-2/45 pb-8 md:border-b-0 md:pb-0">
-            <h3 className="text-sm md:text-base font-black text-astro-navy tracking-tight">
-              Jaringan Komunitas Pelajar
-            </h3>
-            <p className="text-xs md:text-sm text-astro-navy/70 leading-relaxed font-medium">
-              Menghubungkan ratusan inovator muda dari universitas dan sekolah terbaik di seluruh Indonesia.
-            </p>
-          </div>
-
-          {/* Spec Item 4 */}
-          <div className="flex flex-col gap-2">
-            <h3 className="text-sm md:text-base font-black text-astro-navy tracking-tight">
-              Rilis Pers & Aset Visual Resmi
-            </h3>
-            <p className="text-xs md:text-sm text-astro-navy/70 leading-relaxed font-medium">
-              Akses cepat ke materi publikasi, logo resmi, dan press kit terverifikasi untuk mitra media.
-            </p>
-          </div>
-        </motion.div>
-
-        {/* ── 4. BOTTOM ACTION CTA ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="mt-12 md:mt-16 text-center z-20"
-        >
-          <Button
-            asChild
-            className="group gap-2.5 rounded-xl border-2 border-white/80 px-6 py-3.5 text-xs font-black uppercase tracking-wider text-white shadow-lg transition-all duration-300 active:scale-95"
-          >
-            <a href="https://instagram.com/astrosttnf" target="_blank" rel="noopener noreferrer">
-              <span>Ikuti @astrosttnf di Instagram</span>
-              <ArrowUpRight className="size-4 text-ink transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-white" />
-            </a>
-          </Button>
-        </motion.div>
+        <div className="z-20 mt-10 text-center md:mt-12">
+          <CtaButton href="https://instagram.com/astrosttnf" size="lg" showChevron={false}>
+            Ikuti @astrosttnf
+          </CtaButton>
+        </div>
 
       </div>
     </SectionShell>

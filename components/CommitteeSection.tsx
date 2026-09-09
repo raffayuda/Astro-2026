@@ -245,6 +245,8 @@ export default function CommitteeSection() {
   return (
     <SectionShell id="committee" band="none" space="sm">
       <SectionHeading
+        eyebrow="Panitia"
+        pillTone="blue"
         title="Panitia ASTRO 2026"
         lead="Tim yang menggerakkan kompetisi, festival, dan grand final."
       />
@@ -299,11 +301,11 @@ export default function CommitteeSection() {
         {/* ── Division Header & Controls ── */}
         <div className="flex items-center justify-between gap-4 mb-6 px-2 sm:px-4">
           <div className="flex items-center gap-2">
-            <span className="rounded-full bg-white shadow-soft-sm px-4 py-1.5 text-xs font-black uppercase tracking-widest text-astro-blue">
+            <span className="rounded-full bg-white px-4 py-1.5 text-xs font-bold text-astro-navy shadow-soft-sm">
               {currentDivision?.displayName || activeDivision}
             </span>
-            <span className="hidden sm:inline-block text-11 font-medium text-ink">
-              ({filteredMembers.length} Personel)
+            <span className="hidden text-xs font-medium text-ink sm:inline-block">
+              {filteredMembers.length} personel
             </span>
           </div>
 

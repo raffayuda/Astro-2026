@@ -91,7 +91,7 @@ export default function ScheduleAndPricing({ timeline }: Props) {
 
         <WindowCard title="Pendaftaran" className="lg:h-full" bodyClassName="gap-4 sm:gap-5 lg:h-full">
           <div>
-            <p className="text-10 font-black uppercase tracking-[0.22em] text-astro-navy/60">
+            <p className="text-xs font-bold text-ink/60">
               Biaya mulai dari
             </p>
             <div className="mt-3">

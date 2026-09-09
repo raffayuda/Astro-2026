@@ -7,10 +7,12 @@ import { notFound, useParams } from "next/navigation";
 import { motion, useReducedMotion } from "motion/react";
 import { ArrowLeft, Camera, X } from "lucide-react";
 import { PageShell } from "@/components/brand";
+import { Pill } from "@/components/brand/Pill";
 import { SectionHeading } from "@/components/brand/SectionHeading";
 import { SectionShell } from "@/components/brand/SectionShell";
 import { StatCard } from "@/components/brand/StatCard";
 import { Surface } from "@/components/brand/Surface";
+import { WindowCard } from "@/components/brand/WindowCard";
 import { Button } from "@/components/ui/button";
 import { toJourneyCard } from "@/lib/mappers";
 import { useJourneyPhotos, useJourneys } from "@/src/lib/hooks/use-queries";
@@ -57,22 +59,24 @@ export default function JourneyDetailPage() {
           </Link>
         </Button>
 
-        <p className="text-11 font-black uppercase tracking-[0.22em] text-astro-blue">
+        <Pill tone="blue" size="sm" className="shadow-gloss">
           ASTRO {data.year}
-        </p>
-        <h1 className="mt-3 max-w-3xl font-heading text-4xl font-black tracking-tight text-astro-navy sm:text-5xl md:text-6xl">
+        </Pill>
+        <h1 className="mt-4 max-w-3xl font-heading text-4xl font-black tracking-tight text-astro-navy sm:text-5xl md:text-6xl">
           {data.theme}
         </h1>
 
-        <div className="mt-10 grid gap-4 sm:grid-cols-3">
-          <StatCard
-            icon={Users}
-            metric={data.participants > 0 ? `${data.participants}+` : "–"}
-            label="Peserta"
-          />
-          <StatCard icon={Calendar} metric={data.date || "–"} label="Hari pelaksanaan" />
-          <StatCard icon={Target} metric={String(data.competitions)} label="Cabang lomba" />
-        </div>
+        <WindowCard title="Sekilas" className="mt-10">
+          <div className="grid gap-3 sm:grid-cols-3">
+            <StatCard
+              icon={Users}
+              metric={data.participants > 0 ? `${data.participants}+` : "–"}
+              label="Peserta"
+            />
+            <StatCard icon={Calendar} metric={data.date || "–"} label="Hari pelaksanaan" />
+            <StatCard icon={Target} metric={String(data.competitions)} label="Cabang lomba" />
+          </div>
+        </WindowCard>
       </SectionShell>
 
       <SectionShell band="none" space="md">
@@ -97,11 +101,8 @@ export default function JourneyDetailPage() {
           </div>
 
           <div className="lg:col-span-5">
-            <Surface tone="plain" radius="xl" pad="lg" className="lg:sticky lg:top-24">
-              <h2 className="text-sm font-bold uppercase tracking-wider text-astro-navy">
-                Pencapaian
-              </h2>
-              <p className="mt-3 text-sm font-medium leading-relaxed text-ink">
+            <WindowCard title="Pencapaian" className="lg:sticky lg:top-24">
+              <p className="text-sm font-medium leading-relaxed text-ink">
                 {data.achievement || "Dokumentasi pencapaian sedang dilengkapi."}
               </p>
               <div className="mt-6 flex justify-between border-t border-sky-mid/60 pt-5 text-sm font-bold text-astro-blue">
@@ -116,13 +117,15 @@ export default function JourneyDetailPage() {
                   <span />
                 )}
               </div>
-            </Surface>
+            </WindowCard>
           </div>
         </div>
       </SectionShell>
 
       <SectionShell band="none" space="md">
         <SectionHeading
+          eyebrow="Arsip"
+          pillTone="pink"
           title="Dokumentasi"
           lead={`Momen selama perjalanan ASTRO ${data.year}.`}
         />

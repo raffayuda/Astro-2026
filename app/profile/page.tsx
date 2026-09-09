@@ -7,17 +7,18 @@ import {
   ArrowRight,
   Award,
   Calendar,
-  Eye,
   ShieldCheck,
   Sparkles,
-  Target,
   Users,
 } from "lucide-react";
 import { PageShell } from "@/components/brand";
 import { CtaButton } from "@/components/brand/CtaButton";
+import { Pill } from "@/components/brand/Pill";
 import { SectionHeading } from "@/components/brand/SectionHeading";
 import { SectionShell } from "@/components/brand/SectionShell";
+import { StatCard } from "@/components/brand/StatCard";
 import { Surface } from "@/components/brand/Surface";
+import { WindowCard } from "@/components/brand/WindowCard";
 import CommitteeSection from "@/components/CommitteeSection";
 import EventGallerySection from "@/components/EventGallerySection";
 import SocialMediaSection from "@/components/SocialMediaSection";
@@ -80,69 +81,58 @@ export default function ProfilePage() {
       <ProfileHero />
 
       <SectionShell id="about-event" band="none" space="sm">
-        <div className="grid items-start gap-12 lg:grid-cols-12 lg:gap-16">
+        <div className="grid items-start gap-8 lg:grid-cols-12 lg:gap-10">
           <div className="lg:col-span-7">
             <SectionHeading
               align="start"
+              eyebrow="Profil"
+              pillTone="blue"
               title="Tentang ASTRO 2026"
               lead="Program kerja tahunan BEM STT-NF. Dari classmeet kampus menjadi festival pendidikan, seni, dan olahraga untuk SMA/SMK dan mahasiswa."
             />
-            <div className="mt-10 grid max-w-xl gap-6 sm:grid-cols-2">
-              {FEATURES.map((feature) => {
-                const Icon = feature.icon;
-                return (
-                  <div key={feature.title} className="flex flex-col gap-3">
-                    <div className="grid size-12 place-items-center rounded-xl bg-sky-bottom text-astro-cyan">
-                      <Icon className="size-5" />
-                    </div>
-                    <div>
-                      <h3 className="text-sm font-bold text-astro-navy">{feature.title}</h3>
-                      <p className="mt-1 text-xs leading-relaxed text-ink">{feature.desc}</p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+            <WindowCard title="Yang dibawa ASTRO" className="mt-8">
+              <div className="grid gap-3 sm:grid-cols-2">
+                {FEATURES.map((feature) => (
+                  <StatCard
+                    key={feature.title}
+                    icon={feature.icon}
+                    label={feature.title}
+                    hint={feature.desc}
+                    checked
+                  />
+                ))}
+              </div>
+            </WindowCard>
           </div>
 
           <div className="flex flex-col gap-6 lg:col-span-5">
-            <Surface tone="plain" radius="xl" pad="lg">
-              <div className="mb-4 flex items-center gap-3">
-                <div className="grid size-10 place-items-center rounded-full bg-astro-cyan text-white">
-                  <Eye className="size-5" />
-                </div>
-                <h3 className="text-sm font-bold text-astro-navy">Visi</h3>
-              </div>
+            <WindowCard title="Visi">
               <p className="text-sm leading-relaxed text-ink md:text-base">
                 Menjadikan ASTRO 2026 festival mahasiswa yang mengintegrasikan olahraga,
                 pendidikan, dan kesenian dalam semangat pelestarian budaya Nusantara.
               </p>
-            </Surface>
+            </WindowCard>
 
-            <Surface tone="plain" radius="xl" pad="lg">
-              <div className="mb-5 flex items-center gap-3">
-                <div className="grid size-10 place-items-center rounded-full bg-astro-cyan text-white">
-                  <Target className="size-5" />
-                </div>
-                <h3 className="text-sm font-bold text-astro-navy">Misi</h3>
-              </div>
-              <ol className="space-y-4">
+            <WindowCard title="Misi">
+              <ol className="space-y-3">
                 {MISI.map((item, i) => (
-                  <li key={item} className="flex items-start gap-4 text-sm leading-relaxed text-ink">
-                    <span className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-astro-cyan/10 text-xs font-bold text-astro-cyan">
+                  <li key={item} className="flex items-start gap-3 text-sm leading-relaxed text-ink">
+                    <span className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-sky-bottom text-xs font-bold text-astro-navy">
                       {i + 1}
                     </span>
                     {item}
                   </li>
                 ))}
               </ol>
-            </Surface>
+            </WindowCard>
           </div>
         </div>
       </SectionShell>
 
       <SectionShell id="journey" band="none" space="sm">
         <SectionHeading
+          eyebrow="Arsip"
+          pillTone="orange"
           title="Perjalanan ASTRO"
           lead="Setiap tahun adalah babak baru. Pilih edisi untuk melihat dokumentasi dan pencapaian."
         />
@@ -163,13 +153,13 @@ export default function ProfilePage() {
               >
                 <Surface interactive tone="plain" radius="xl" pad="lg" className="h-full">
                   <div className="mb-4 flex items-center gap-2">
-                    <span className="rounded-full bg-sky-bottom px-3 py-1 text-sm font-black text-astro-navy">
+                    <Pill tone="blue" size="sm">
                       {j.year}
-                    </span>
+                    </Pill>
                     {isLatest && (
-                      <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-9 font-bold uppercase tracking-wider text-emerald-700">
+                      <Pill tone="gold" size="sm">
                         Terbaru
-                      </span>
+                      </Pill>
                     )}
                   </div>
                   <h3 className="font-heading text-xl font-bold text-astro-navy md:text-2xl">
@@ -177,13 +167,13 @@ export default function ProfilePage() {
                   </h3>
                   <p className="mt-3 text-sm leading-relaxed text-ink">{j.achievement}</p>
                   <div className="mt-6 flex items-center justify-between border-t border-sky-mid/60 pt-4">
-                    <span className="flex items-center gap-1.5 text-11 font-bold uppercase tracking-wider text-ink">
-                      <Users className="size-3.5 text-astro-cyan" />
+                    <span className="flex items-center gap-1.5 text-sm font-medium text-ink">
+                      <Users className="size-3.5 text-astro-blue" />
                       {j.participants > 0
                         ? `${j.participants.toLocaleString("id-ID")}+ peserta`
                         : "Segera"}
                     </span>
-                    <span className="inline-flex items-center gap-1.5 text-10 font-bold uppercase tracking-wider text-astro-cyan">
+                    <span className="inline-flex items-center gap-1.5 text-sm font-bold text-astro-blue">
                       Lihat detail
                       <ArrowRight className="size-3.5" />
                     </span>

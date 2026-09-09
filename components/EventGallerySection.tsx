@@ -1,15 +1,25 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { motion, useReducedMotion, AnimatePresence } from 'motion/react';
-import { Camera, ChevronLeft, ChevronRight, Heart, X, ZoomIn } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import SkeletonImage from '@/components/SkeletonImage';
-import { cn } from '@/lib/utils';
-import { normalizeImageUrl } from '@/components/ImportCommittee';
-import { useGalleryPhotos, useGalleryCategories } from '@/src/lib/hooks/use-queries';
+import { useState, useEffect } from "react";
+import { motion, useReducedMotion, AnimatePresence } from "motion/react";
+import {
+  Camera,
+  ChevronLeft,
+  ChevronRight,
+  Heart,
+  X,
+  ZoomIn,
+} from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import SkeletonImage from "@/components/SkeletonImage";
+import { cn } from "@/lib/utils";
+import { normalizeImageUrl } from "@/components/ImportCommittee";
+import {
+  useGalleryPhotos,
+  useGalleryCategories,
+} from "@/src/lib/hooks/use-queries";
 import { SectionHeading } from "@/components/brand/SectionHeading";
 import { SectionShell } from "@/components/brand/SectionShell";
 
@@ -30,35 +40,50 @@ interface GalleryCategory {
 
 export default function EventGallerySection() {
   const reduce = useReducedMotion();
-  const [activeCategory, setActiveCategory] = useState<string>('ALL');
-  const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(null);
+  const [activeCategory, setActiveCategory] = useState<string>("ALL");
+  const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(
+    null,
+  );
   const [loadedPhotoId, setLoadedPhotoId] = useState<string | null>(null);
   const [likedPhotos, setLikedPhotos] = useState<Record<string, boolean>>({});
   const [isMarqueeHovered, setIsMarqueeHovered] = useState(false);
 
   const { data: gData } = useGalleryPhotos({ page: 1, pageSize: 1000 });
-  const { data: categories = [] } = useGalleryCategories() as { data: GalleryCategory[] };
-  const photos: GalleryPhoto[] = Array.isArray(gData) ? gData : (gData as any)?.data ?? [];
+  const { data: categories = [] } = useGalleryCategories() as {
+    data: GalleryCategory[];
+  };
+  const photos: GalleryPhoto[] = Array.isArray(gData)
+    ? gData
+    : ((gData as any)?.data ?? []);
 
-  const filteredPhotos = activeCategory === 'ALL'
-    ? photos
-    : photos.filter((p) => p.category === activeCategory);
+  const filteredPhotos =
+    activeCategory === "ALL"
+      ? photos
+      : photos.filter((p) => p.category === activeCategory);
 
   // Lebih cepat saat filter kategori tertentu (non-ALL), biar tidak terasa lambat/berat.
-  const marqueeDuration = activeCategory === 'ALL' ? 90 : 32;
+  const marqueeDuration = activeCategory === "ALL" ? 90 : 32;
 
   // Duplicated arrays for seamless continuous infinite marquee sliding
   const marqueeRow1 = [...filteredPhotos, ...filteredPhotos, ...filteredPhotos];
-  const marqueeRow2 = [...filteredPhotos.slice().reverse(), ...filteredPhotos.slice().reverse(), ...filteredPhotos.slice().reverse()];
+  const marqueeRow2 = [
+    ...filteredPhotos.slice().reverse(),
+    ...filteredPhotos.slice().reverse(),
+    ...filteredPhotos.slice().reverse(),
+  ];
 
   const handlePrevPhoto = () => {
     if (selectedPhotoIndex === null) return;
-    setSelectedPhotoIndex((prev) => (prev === 0 ? filteredPhotos.length - 1 : (prev as number) - 1));
+    setSelectedPhotoIndex((prev) =>
+      prev === 0 ? filteredPhotos.length - 1 : (prev as number) - 1,
+    );
   };
 
   const handleNextPhoto = () => {
     if (selectedPhotoIndex === null) return;
-    setSelectedPhotoIndex((prev) => (prev === filteredPhotos.length - 1 ? 0 : (prev as number) + 1));
+    setSelectedPhotoIndex((prev) =>
+      prev === filteredPhotos.length - 1 ? 0 : (prev as number) + 1,
+    );
   };
 
   const toggleLike = (id: string, e?: React.MouseEvent) => {
@@ -66,21 +91,22 @@ export default function EventGallerySection() {
     setLikedPhotos((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
-  const photo = selectedPhotoIndex !== null ? filteredPhotos[selectedPhotoIndex] : null;
+  const photo =
+    selectedPhotoIndex !== null ? filteredPhotos[selectedPhotoIndex] : null;
   const isPhotoReady = photo ? loadedPhotoId === photo.id : false;
 
   useEffect(() => {
     if (selectedPhotoIndex !== null) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
       const handleKeyDown = (e: KeyboardEvent) => {
-        if (e.key === 'Escape') setSelectedPhotoIndex(null);
-        if (e.key === 'ArrowLeft') handlePrevPhoto();
-        if (e.key === 'ArrowRight') handleNextPhoto();
+        if (e.key === "Escape") setSelectedPhotoIndex(null);
+        if (e.key === "ArrowLeft") handlePrevPhoto();
+        if (e.key === "ArrowRight") handleNextPhoto();
       };
-      window.addEventListener('keydown', handleKeyDown);
+      window.addEventListener("keydown", handleKeyDown);
       return () => {
-        document.body.style.overflow = '';
-        window.removeEventListener('keydown', handleKeyDown);
+        document.body.style.overflow = "";
+        window.removeEventListener("keydown", handleKeyDown);
       };
     }
   }, [selectedPhotoIndex, filteredPhotos.length]);
@@ -88,105 +114,119 @@ export default function EventGallerySection() {
   return (
     <SectionShell id="gallery" band="none" space="sm">
       <SectionHeading
+        eyebrow="Galeri"
+        pillTone="pink"
         title="Galeri acara"
         lead="Dokumentasi lomba, seminar, dan perayaan ASTRO dari masa ke masa."
       />
 
       <div className="mt-10">
-
-          {/* ── Category Filter Pills ── */}
-          <div className="max-w-full overflow-x-auto px-2 pb-2 pt-1 no-scrollbar">
-            <ToggleGroup
-              type="single"
-              value={activeCategory}
-              onValueChange={(v) => v && setActiveCategory(v)}
-              spacing={2}
-            >
-              {[{ name: 'All', slug: 'ALL' } as any, ...categories].map((cat: any) => (
+        {/* ── Category Filter Pills ── */}
+        <div className="max-w-full overflow-x-auto px-2 pb-2 pt-1 no-scrollbar">
+          <ToggleGroup
+            type="single"
+            value={activeCategory}
+            onValueChange={(v) => v && setActiveCategory(v)}
+            spacing={2}
+          >
+            {[{ name: "All", slug: "ALL" } as any, ...categories].map(
+              (cat: any) => (
                 <ToggleGroupItem
                   key={cat.slug}
                   value={cat.slug}
-                  className="rounded-lg gap-2 border border-white/80 bg-white/70 px-4 py-2 text-xs font-black uppercase tracking-wider text-astro-blue backdrop-blur-xl data-[state=on]:border-white data-[state=on]:bg-linear-to-b data-[state=on]:from-astro-blue data-[state=on]:to-astro-blue data-[state=on]:text-white data-[state=on]:shadow-md"
+                  className="rounded-full gap-2 border border-white/80 bg-white/70 px-4 py-2 text-xs font-bold text-astro-navy backdrop-blur-xl data-[state=on]:border-white data-[state=on]:bg-astro-navy data-[state=on]:text-white data-[state=on]:shadow-md"
                 >
                   <Camera className="size-3.5" />
                   {cat.name}
                 </ToggleGroupItem>
-              ))}
-            </ToggleGroup>
-          </div>
+              ),
+            )}
+          </ToggleGroup>
         </div>
+      </div>
 
-        {/* ═══ MARQUEE ROWS ═══ */}
-        <div
-          className="relative w-full overflow-hidden py-4"
-          onMouseEnter={() => setIsMarqueeHovered(true)}
-          onMouseLeave={() => setIsMarqueeHovered(false)}
-        >
-          {/* Narrow edge fade masks */}
-          <div className="pointer-events-none absolute top-0 bottom-0 left-0 z-30 w-12 bg-linear-to-r from-sky-mid via-sky-mid/60 to-transparent sm:w-16 md:w-24" />
-          <div className="pointer-events-none absolute top-0 right-0 bottom-0 z-30 w-12 bg-linear-to-l from-sky-mid via-sky-mid/60 to-transparent sm:w-16 md:w-24" />
+      {/* ═══ MARQUEE ROWS ═══ */}
+      <div
+        className="relative w-full overflow-hidden py-4"
+        onMouseEnter={() => setIsMarqueeHovered(true)}
+        onMouseLeave={() => setIsMarqueeHovered(false)}
+      >
+        {/* Narrow edge fade masks */}
+        <div className="pointer-events-none absolute top-0 bottom-0 left-0 z-30 w-12 bg-linear-to-r from-sky-mid via-sky-mid/60 to-transparent sm:w-16 md:w-24" />
+        <div className="pointer-events-none absolute top-0 right-0 bottom-0 z-30 w-12 bg-linear-to-l from-sky-mid via-sky-mid/60 to-transparent sm:w-16 md:w-24" />
 
-          <div className="space-y-6">
-            {[marqueeRow1, marqueeRow2].map((row, rowIdx) => (
-              <div key={rowIdx} className="relative flex w-full overflow-hidden">
-                <motion.div
-                  animate={isMarqueeHovered ? false : { x: rowIdx === 0 ? ['0%', '-50%'] : ['-50%', '0%'] }}
-                  transition={{
-                    x: { repeat: Infinity, repeatType: 'loop', duration: rowIdx === 0 ? marqueeDuration : marqueeDuration + 10, ease: 'linear' },
-                  }}
-                  className="flex shrink-0 items-center gap-6"
-                >
-                  {row.map((photoItem, idx) => (
+        <div className="space-y-6">
+          {[marqueeRow1, marqueeRow2].map((row, rowIdx) => (
+            <div key={rowIdx} className="relative flex w-full overflow-hidden">
+              <motion.div
+                animate={
+                  isMarqueeHovered
+                    ? false
+                    : { x: rowIdx === 0 ? ["0%", "-50%"] : ["-50%", "0%"] }
+                }
+                transition={{
+                  x: {
+                    repeat: Infinity,
+                    repeatType: "loop",
+                    duration:
+                      rowIdx === 0 ? marqueeDuration : marqueeDuration + 10,
+                    ease: "linear",
+                  },
+                }}
+                className="flex shrink-0 items-center gap-6"
+              >
+                {row.map((photoItem, idx) => (
+                  <div
+                    key={`r${rowIdx}-${photoItem.id}-${idx}`}
+                    onClick={() =>
+                      setSelectedPhotoIndex(idx % filteredPhotos.length)
+                    }
+                    className="group relative aspect-[4/3] w-[280px] shrink-0 cursor-pointer overflow-hidden rounded-2xl border-2 border-white/80 bg-white/60 p-3 shadow-md backdrop-blur-2xl transition-all duration-500 hover:border-white hover:shadow-2xl sm:w-[330px] md:w-[380px]"
+                  >
+                    {/* Glass Refraction Highlight */}
+                    <div className="pointer-events-none absolute inset-0 z-10 bg-linear-to-tr from-white/10 via-white/35 to-transparent" />
+
                     <div
-                      key={`r${rowIdx}-${photoItem.id}-${idx}`}
-                      onClick={() => setSelectedPhotoIndex(idx % filteredPhotos.length)}
-                      className="group relative aspect-[4/3] w-[280px] shrink-0 cursor-pointer overflow-hidden rounded-2xl border-2 border-white/80 bg-white/60 p-3 shadow-md backdrop-blur-2xl transition-all duration-500 hover:border-white hover:shadow-2xl sm:w-[330px] md:w-[380px]"
-                      style={{ clipPath: 'polygon(14px 0, 100% 0, calc(100% - 14px) 100%, 0 100%)' }}
+                      className="relative h-full w-full overflow-hidden border border-white/60 bg-astro-navy transition-colors group-hover:border-astro-cyan"
+                      style={{ borderRadius: "18px" }}
                     >
-                      {/* Glass Refraction Highlight */}
-                      <div className="pointer-events-none absolute inset-0 z-10 bg-linear-to-tr from-white/10 via-white/35 to-transparent" />
+                      {/* Shimmer skeleton while thumbnail loads */}
+                      <SkeletonImage
+                        src={normalizeImageUrl(photoItem.imageUrl)}
+                        alt={photoItem.title}
+                        imgKey={photoItem.id}
+                        className="absolute inset-0 h-full w-full"
+                        sizes="380px"
+                        imgClassName="transition-all duration-700 ease-out group-hover:scale-115 group-hover:rotate-1 group-hover:brightness-105"
+                      />
 
-                      <div
-                        className="relative h-full w-full overflow-hidden border border-white/60 bg-astro-navy transition-colors group-hover:border-astro-cyan"
-                        style={{ borderRadius: '18px' }}
-                      >
-                        {/* Shimmer skeleton while thumbnail loads */}
-                        <SkeletonImage
-                          src={normalizeImageUrl(photoItem.imageUrl)}
-                          alt={photoItem.title}
-                          imgKey={photoItem.id}
-                          className="absolute inset-0 h-full w-full"
-                          sizes="380px"
-                          imgClassName="transition-all duration-700 ease-out group-hover:scale-115 group-hover:rotate-1 group-hover:brightness-105"
-                        />
+                      {/* Dark Gradient Legibility Overlay */}
+                      <div className="absolute inset-0 bg-linear-to-t from-astro-navy/85 via-astro-navy/20 to-transparent opacity-60 transition-opacity duration-300 group-hover:opacity-90" />
 
-                        {/* Dark Gradient Legibility Overlay */}
-                        <div className="absolute inset-0 bg-linear-to-t from-astro-navy/85 via-astro-navy/20 to-transparent opacity-60 transition-opacity duration-300 group-hover:opacity-90" />
+                      {/* Year Badge */}
+                      <div className="absolute top-3 left-3 z-20 flex items-center gap-2">
+                        <Badge className="rounded-full bg-white/90 px-2.5 py-0.5 text-xs font-bold text-astro-navy shadow-soft-sm">
+                          {photoItem.year}
+                        </Badge>
+                      </div>
 
-                        {/* Year Badge */}
-                        <div className="absolute top-3 left-3 z-20 flex items-center gap-2">
-                          <Badge className="rounded-md bg-astro-cyan text-10 font-black uppercase tracking-wider text-astro-navy shadow-md">
-                            {photoItem.year}
-                          </Badge>
-                        </div>
-
-                        {/* Photo Title Overlay */}
-                        <div className="absolute right-3 bottom-3 left-3 z-20 text-white">
-                          <h4 className="text-sm font-black leading-tight text-white transition-colors group-hover:text-astro-cyan md:text-base">
-                            {photoItem.title}
-                          </h4>
-                          <p className="mt-0.5 text-11 font-semibold text-astro-cyan-2 opacity-80">
-                            {photoItem.category}
-                          </p>
-                        </div>
+                      {/* Photo Title Overlay */}
+                      <div className="absolute right-3 bottom-3 left-3 z-20 text-white">
+                        <h4 className="text-sm font-black leading-tight text-white transition-colors group-hover:text-astro-cyan md:text-base">
+                          {photoItem.title}
+                        </h4>
+                        <p className="mt-0.5 text-11 font-semibold text-astro-cyan-2 opacity-80">
+                          {photoItem.category}
+                        </p>
                       </div>
                     </div>
-                  ))}
-                </motion.div>
-              </div>
-            ))}
-          </div>
+                  </div>
+                ))}
+              </motion.div>
+            </div>
+          ))}
         </div>
+      </div>
 
       {/* ═══ FULLSCREEN LIGHTBOX ═══ */}
       <AnimatePresence>
@@ -210,10 +250,10 @@ export default function EventGallerySection() {
               <div className="flex items-center gap-3">
                 {isPhotoReady ? (
                   <>
-                    <Badge className="rounded-md bg-astro-cyan text-11 font-black uppercase tracking-wider text-astro-navy shadow-sm">
+                    <Badge className="rounded-full bg-white px-2.5 py-0.5 text-xs font-bold text-astro-navy">
                       {photo.year}
                     </Badge>
-                    <span className="text-xs font-bold uppercase tracking-widest text-astro-cyan-2">
+                    <span className="text-xs font-medium text-white/80">
                       {photo.category}
                     </span>
                   </>
@@ -231,12 +271,15 @@ export default function EventGallerySection() {
                   size="icon"
                   onClick={(e) => toggleLike(photo.id, e)}
                   className={cn(
-                    'border border-white/20 bg-white/10 text-white hover:bg-white/20 shadow-sm',
-                    likedPhotos[photo.id] && 'scale-110 border-rose-500 bg-rose-500 text-white shadow-md hover:bg-rose-500',
+                    "border border-white/20 bg-white/10 text-white hover:bg-white/20 shadow-sm",
+                    likedPhotos[photo.id] &&
+                      "scale-110 border-rose-500 bg-rose-500 text-white shadow-md hover:bg-rose-500",
                   )}
                   aria-label="Suka foto ini"
                 >
-                  <Heart className={cn(likedPhotos[photo.id] && 'fill-current')} />
+                  <Heart
+                    className={cn(likedPhotos[photo.id] && "fill-current")}
+                  />
                 </Button>
                 <Button
                   variant="ghost"
@@ -293,9 +336,12 @@ export default function EventGallerySection() {
               <div>
                 {isPhotoReady ? (
                   <>
-                    <h3 className="text-base font-black text-white md:text-lg">{photo.title}</h3>
+                    <h3 className="text-base font-black text-white md:text-lg">
+                      {photo.title}
+                    </h3>
                     <p className="mt-0.5 text-xs font-semibold text-astro-cyan-2">
-                      Foto {selectedPhotoIndex! + 1} dari {filteredPhotos.length} dokumentasi resmi
+                      Foto {selectedPhotoIndex! + 1} dari{" "}
+                      {filteredPhotos.length} dokumentasi resmi
                     </p>
                   </>
                 ) : (
@@ -308,7 +354,8 @@ export default function EventGallerySection() {
 
               {isPhotoReady ? (
                 <div className="hidden items-center gap-1.5 border border-sky-top/30 bg-astro-blue/10 px-3 py-1.5 text-xs font-bold text-astro-cyan-2 rounded-lg shadow-sm sm:flex">
-                  <ZoomIn className="size-3.5 text-astro-cyan-2" /> HD Documentation
+                  <ZoomIn className="size-3.5 text-astro-cyan-2" /> HD
+                  Documentation
                 </div>
               ) : (
                 <div className="hidden sm:block h-7 w-32 rounded bg-astro-cyan-2/40 animate-pulse" />

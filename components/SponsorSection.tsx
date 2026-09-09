@@ -200,8 +200,8 @@ function PartnerShelf({
 }) {
   return (
     <div className="flex h-full flex-1 flex-col gap-3">
-      <p className="text-10 font-black uppercase tracking-[0.16em] text-muted-foreground">
-        {items.length > 0 ? `${items.length} partner` : "Open slot"}
+      <p className="text-xs font-bold text-ink/60">
+        {items.length > 0 ? `${items.length} partner` : "Slot terbuka"}
       </p>
 
       {items.length > 0 ? (

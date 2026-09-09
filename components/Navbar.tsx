@@ -70,14 +70,14 @@ export default function Navbar() {
 
   const handleLogout = async () => {
     await signOut();
-    router.replace("/login");
+    router.replace("/auth/login");
   };
 
   const handleDaftar = () => {
     if (isLoggedIn) {
       scrollTo(isProfilePage ? "/#competitions" : "#competitions");
     } else {
-      router.push("/login");
+      router.push("/auth/login");
     }
   };
 
@@ -120,7 +120,7 @@ export default function Navbar() {
           className="cursor-pointer justify-self-start"
           aria-label="ASTRO 2026 beranda"
         >
-          <BrandLock size="sm" tone="plain" />
+          <BrandLock size="md" tone="plain" />
         </button>
 
         <nav
@@ -150,7 +150,9 @@ export default function Navbar() {
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-44">
-                <DropdownMenuItem onClick={() => router.push("/check-registration")}>
+                <DropdownMenuItem
+                  onClick={() => router.push("/check-registration")}
+                >
                   <Search /> Cek pendaftaran
                 </DropdownMenuItem>
                 {userRole === "admin" && (
@@ -170,7 +172,7 @@ export default function Navbar() {
           ) : (
             <button
               type="button"
-              onClick={() => router.push("/login")}
+              onClick={() => router.push("/auth/login")}
               className="hidden items-center gap-1.5 px-2 py-1 text-sm font-semibold text-astro-navy/70 transition-colors hover:text-astro-navy md:inline-flex"
             >
               <LogIn className="size-3.5" aria-hidden />
@@ -197,7 +199,10 @@ export default function Navbar() {
                 <Menu />
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="flex h-full w-80 flex-col bg-white p-0">
+            <SheetContent
+              side="right"
+              className="flex h-full w-80 flex-col bg-white p-0"
+            >
               <SheetHeader className="border-b border-sky-mid/60 p-5">
                 <BrandLock size="sm" />
                 <SheetTitle className="sr-only">ASTRO 2026</SheetTitle>
@@ -262,7 +267,7 @@ export default function Navbar() {
                     variant="ghost"
                     className="justify-start"
                     onClick={() => {
-                      router.push("/login");
+                      router.push("/auth/login");
                       setIsMobileOpen(false);
                     }}
                   >

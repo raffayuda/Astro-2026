@@ -283,7 +283,6 @@ export default function WinnerManager({ competitionId }: WinnerManagerProps) {
                 className={`border p-3 transition-colors ${
                   isDraft ? 'bg-amber-50/80 border-amber-200' : 'bg-surface border-astro-cyan-2'
                 }`}
-                style={{ clipPath: 'polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%)' }}
               >
                 {/* Info Baris Atas */}
                 <div className="mb-2 flex items-start justify-between gap-2">
@@ -343,7 +342,7 @@ export default function WinnerManager({ competitionId }: WinnerManagerProps) {
                     <p className="text-9 font-bold text-ink uppercase tracking-wider">Sertifikat Terupload:</p>
                     {certs.map((c, i) => (
                       <div key={i} className="flex items-center justify-between bg-white border border-surface px-2.5 py-1.5"
-                        style={{ clipPath: 'polygon(3px 0, 100% 0, calc(100% - 3px) 100%, 0 100%)' }}>
+>
                         <div className="flex items-center gap-2 min-w-0">
                           <FileText className="w-3 h-3 text-ink flex-shrink-0" />
                           <span className="text-11 font-bold text-ink truncate">{c.name}</span>
@@ -385,7 +384,7 @@ export default function WinnerManager({ competitionId }: WinnerManagerProps) {
                 </div>
                 {newCert[reg.id]?.preview && (
                   <div className="mt-2 flex items-center gap-2 border border-surface bg-surface px-2 py-1.5"
-                    style={{ clipPath: 'polygon(3px 0, 100% 0, calc(100% - 3px) 100%, 0 100%)' }}>
+>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={newCert[reg.id]?.preview} alt={newCert[reg.id]?.name || 'Preview'} className="size-7 rounded object-cover" />
                     <span className="text-10 font-semibold text-ink">
@@ -399,7 +398,7 @@ export default function WinnerManager({ competitionId }: WinnerManagerProps) {
 
           {registrations.length === 0 && (
             <div className="bg-surface border border-astro-cyan-2 border-dashed py-8 text-center"
-              style={{ clipPath: 'polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%)' }}>
+>
               <Users className="w-8 h-8 text-astro-cyan-2 mx-auto mb-2" />
               <p className="text-xs text-ink italic">Belum ada peserta yang melakukan pembayaran lunas.</p>
             </div>
