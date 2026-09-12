@@ -45,7 +45,7 @@ export function SiteFooter({
                 <BrandLock size="md" />
               </Link>
               <p className="max-w-xs text-center text-xs font-medium text-white/70 md:text-left">
-                Ruang Tanpa Sekat, Tumpukan Bakat. Persembahan BEM STT-NF.
+                Ruang Tanpa Sekat, Tumpukan Bakat. Persembahan ASTRO STT-NF dan BEM STT-NF.
               </p>
             </div>
 
@@ -101,7 +101,7 @@ export function SiteFooter({
           </div>
 
           <div className="flex flex-col items-center justify-between gap-2 border-t border-white/15 pt-6 text-10 font-semibold uppercase tracking-widest text-white/50 sm:flex-row">
-            <p>&copy; 2026 BEM STT-NF</p>
+            <p>&copy; 2026 ASTRO STT-NF</p>
             <p>Sekolah Tinggi Teknologi Terpadu Nurul Fikri</p>
           </div>
         </div>

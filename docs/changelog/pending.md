@@ -114,3 +114,15 @@
 [11:32] - [app/register/[id]/page.tsx] - [UPDATE] - Wire initialPaymentCode and initialPaymentCodeType from registration response into PaymentStep
 [11:32] - [app/register/[id]/FormStep.tsx] - [UPDATE] - Forward paymentCode and paymentCodeType in onContinue callback
 [11:41] - [components/QrisDisplay.tsx] - [UPDATE] - Redesign QRIS card to an ultra-clean minimalist layout: remove heavy badge noise, center prominent amount, focus on QR with embedded logo, single primary download action, and 1-line guidance
+[12:15] - [components/CommitteeSection.tsx] - [FIX] - Portal committee member viewer dialog to document.body to prevent parent SectionShell stacking context and sibling SponsorSection from clipping modal
+[12:15] - [components/EventGallerySection.tsx] - [FIX] - Portal event gallery fullscreen lightbox to document.body to prevent section stacking context clipping
+[12:20] - [components/ui/sidebar.tsx] - [UPDATE] - Set gap-1.5 on SidebarMenu and mb-1.5 on SidebarGroupLabel to prevent adjacent menu items from merging
+[12:20] - [app/dashboard/DashboardShell.tsx] - [UPDATE] - Add comfortable vertical spacing (gap-1.5) and group header margin (mb-2) on dashboard sidebar
+[12:25] - [app/dashboard/committee/page.tsx] - [FIX] - Add p-3.5 sm:p-4 padding to committee member card list items to fix checkbox colliding with card border
+[12:30] - [app/dashboard/DashboardShell.tsx] - [ADD] - Display Today is current date calendar pill widget in top dashboard header bar
+[12:30] - [components/dashboard/PageHeader.tsx] - [UPDATE] - Support optional showDate and date prop to render Today is calendar badge
+[00:27] - [app/dashboard/DashboardShell.tsx] - [ADD] - Add dedicated hamburger Menu button in dashboard header for mobile sidebar toggle, mobile drawer close button (X), and auto-close on navigation
+[00:44] - [components/OverviewCharts.tsx] - [UPDATE] - Upgrade to comprehensive interactive analytics with daily registration trend AreaChart, competition performance BarChart, payment status Donut, category distribution, and secondary insight KPIs
+[00:44] - [app/dashboard/page.tsx] - [UPDATE] - Integrate server-side analytics calculations (conversion rate, potential revenue, ARPU, demographics, daily trends, and recent registrations) and enhance competition performance table
+[00:50] - [app/dashboard/page.tsx] - [FIX] - Consolidate 11 parallel database queries down to 4 streamlined queries and add force-dynamic to prevent connection pool exhaustion (max: 10)
+[00:50] - [components/OverviewCharts.tsx] - [FIX] - Remove redundant useRegistrationStats client hook to prevent 401 retry loops and allow synchronous render from initialData

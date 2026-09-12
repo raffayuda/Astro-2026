@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo, useCallback, useRef } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
 import { motion, useReducedMotion, AnimatePresence } from "motion/react";
 import { Users, X, ChevronLeft, ChevronRight } from "lucide-react";
@@ -16,6 +17,7 @@ import { useCommitteeMembers, useCommitteeDivisions } from "@/src/lib/hooks/use-
 
 export default function CommitteeSection() {
   const reduce = useReducedMotion();
+  const [mounted, setMounted] = useState<boolean>(false);
   const [activeDivision, setActiveDivision] = useState<string>("");
   const [hoveredId, setHoveredId] = useState<number | null>(null);
   const [selectedMemberIndex, setSelectedMemberIndex] = useState<number | null>(null);
@@ -69,6 +71,10 @@ export default function CommitteeSection() {
 
     return merged;
   }, [members, divList]);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (divisions.length > 0 && !activeDivision) setActiveDivision(divisions[0].slug);
@@ -203,21 +209,28 @@ export default function CommitteeSection() {
     );
   };
 
+  // Prevent body scroll when modal is active
+  useEffect(() => {
+    if (selectedMemberIndex === null) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [selectedMemberIndex !== null]);
+
   // Keyboard navigation inside viewer modal
   useEffect(() => {
-    if (selectedMemberIndex !== null) {
-      document.body.style.overflow = "hidden";
-      const handleKeyDown = (e: KeyboardEvent) => {
-        if (e.key === "Escape") setSelectedMemberIndex(null);
-        if (e.key === "ArrowLeft") handlePrevMember();
-        if (e.key === "ArrowRight") handleNextMember();
-      };
-      window.addEventListener("keydown", handleKeyDown);
-      return () => {
-        document.body.style.overflow = "";
-        window.removeEventListener("keydown", handleKeyDown);
-      };
-    }
+    if (selectedMemberIndex === null) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setSelectedMemberIndex(null);
+      if (e.key === "ArrowLeft") handlePrevMember();
+      if (e.key === "ArrowRight") handleNextMember();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
   }, [selectedMemberIndex, filteredMembers.length]);
 
   return (
@@ -432,127 +445,131 @@ export default function CommitteeSection() {
       </div>
 
       {/* ═══ PORTRAIT MEMBER VIEWER MODAL ═══ */}
-      <AnimatePresence>
-        {viewerMember && (
-          <motion.div
-            key="committee-modal"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-astro-navy/80 p-4 backdrop-blur-xl"
-            role="dialog"
-            aria-modal="true"
-            aria-label={viewerMember.name}
-            onClick={() => setSelectedMemberIndex(null)}
-          >
-            {/* Sky Glow Backdrop */}
-            <div className="pointer-events-none absolute top-1/2 left-1/2 z-0 size-[550px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-astro-sky/10 blur-[140px]" />
+      {mounted &&
+        createPortal(
+          <AnimatePresence>
+            {viewerMember && (
+              <motion.div
+                key="committee-modal"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="fixed inset-0 z-[100] flex items-center justify-center bg-astro-navy/80 p-4 backdrop-blur-xl"
+                role="dialog"
+                aria-modal="true"
+                aria-label={viewerMember.name}
+                onClick={() => setSelectedMemberIndex(null)}
+              >
+                {/* Sky Glow Backdrop */}
+                <div className="pointer-events-none absolute top-1/2 left-1/2 z-0 size-[550px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-astro-sky/10 blur-[140px]" />
 
-            {/* Centered Dark Navy Portrait Card */}
-            <motion.div
-              initial={{ scale: 0.95, opacity: 0, y: 15 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.95, opacity: 0, y: 15 }}
-              transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-              onClick={(e) => e.stopPropagation()}
-              className="relative z-10 flex flex-col w-full max-w-sm sm:max-w-md max-h-[92vh] overflow-hidden rounded-3xl border border-sky-top/30 bg-astro-navy/95 p-4 sm:p-5 text-white shadow-2xl backdrop-blur-2xl"
-            >
-              {/* Header inside Card */}
-              <div className="flex items-center justify-between pb-3">
-                <div className="flex items-center gap-2">
-                  {isMemberReady ? (
-                    <Badge className="rounded-md bg-astro-cyan text-11 font-black uppercase tracking-wider text-astro-navy shadow-sm">
-                      {currentDivision?.shortDisplay || currentDivision?.name || activeDivision}
-                    </Badge>
-                  ) : (
-                    <div className="h-5 w-28 rounded bg-astro-cyan-2/40 animate-pulse rounded-md" />
-                  )}
-                </div>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  aria-label="Tutup"
-                  onClick={() => setSelectedMemberIndex(null)}
-                  className="size-8 border border-white/15 bg-white/10 text-astro-cyan-2 hover:bg-white/20 hover:text-white rounded-full"
+                {/* Centered Dark Navy Portrait Card */}
+                <motion.div
+                  initial={{ scale: 0.95, opacity: 0, y: 15 }}
+                  animate={{ scale: 1, opacity: 1, y: 0 }}
+                  exit={{ scale: 0.95, opacity: 0, y: 15 }}
+                  transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+                  onClick={(e) => e.stopPropagation()}
+                  className="relative z-10 flex flex-col w-full max-w-sm sm:max-w-md max-h-[92vh] overflow-hidden rounded-3xl border border-sky-top/30 bg-astro-navy/95 p-4 sm:p-5 text-white shadow-2xl backdrop-blur-2xl"
                 >
-                  <X className="size-4" />
-                </Button>
-              </div>
-
-              {/* Image Stage inside Portrait Card */}
-              <div className="relative w-full aspect-[3/4] max-h-[46vh] sm:max-h-[50vh] overflow-hidden rounded-2xl border border-white/10 bg-astro-navy shadow-inner">
-                <SkeletonImage
-                  key={viewerMember.id}
-                  src={normalizeImageUrl(viewerMember.image) || "/assets/users.png"}
-                  alt={viewerMember.name}
-                  imgKey={viewerMember.id}
-                  className="h-full w-full"
-                  objectFit="cover"
-                  priority
-                  sizes="(max-width: 640px) 100vw, 420px"
-                  onReady={() => setLoadedMemberId(viewerMember.id)}
-                />
-
-                {/* White Circular Navigation Arrows */}
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={handlePrevMember}
-                  className="absolute top-1/2 left-2.5 z-30 -translate-y-1/2 size-9 rounded-full bg-white text-astro-navy shadow-lg hover:bg-astro-cyan hover:scale-105 transition-all"
-                  aria-label="Anggota sebelumnya"
-                >
-                  <ChevronLeft className="size-5" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={handleNextMember}
-                  className="absolute top-1/2 right-2.5 z-30 -translate-y-1/2 size-9 rounded-full bg-white text-astro-navy shadow-lg hover:bg-astro-cyan hover:scale-105 transition-all"
-                  aria-label="Anggota berikutnya"
-                >
-                  <ChevronRight className="size-5" />
-                </Button>
-              </div>
-
-              {/* Footer Info inside Portrait Card */}
-              <div className="pt-3 text-center overflow-y-auto max-h-[25vh] no-scrollbar">
-                {isMemberReady ? (
-                  <>
-                    <h3 className="text-lg sm:text-xl font-black text-white capitalize leading-tight">
-                      {viewerMember.name}
-                    </h3>
-                    <p className="mt-0.5 text-xs sm:text-sm font-bold text-astro-cyan">
-                      {viewerMember.role}
-                    </p>
-                    {(viewerMember.studyProgram || viewerMember.batch) && (
-                      <p className="mt-1 text-10 font-bold uppercase tracking-wider text-astro-cyan-2/90">
-                        {[viewerMember.studyProgram, viewerMember.batch].filter(Boolean).join(" ")}
-                      </p>
-                    )}
-                    {viewerMember.quote && (
-                      <p className="mt-2 px-2 text-xs text-astro-cyan-2 italic leading-relaxed">
-                        "{viewerMember.quote}"
-                      </p>
-                    )}
-                    <p className="mt-2 text-11 font-semibold text-ink">
-                      {selectedMemberIndex! + 1} dari {filteredMembers.length} anggota
-                    </p>
-                  </>
-                ) : (
-                  <div className="flex flex-col items-center justify-center py-1">
-                    <div className="h-5 w-44 rounded bg-astro-cyan-2/40 animate-pulse mb-2" />
-                    <div className="h-4 w-28 rounded bg-astro-cyan-2/40 animate-pulse mb-2" />
-                    <div className="h-3 w-40 rounded bg-astro-cyan-2/40 animate-pulse mb-2" />
-                    <div className="h-4 w-60 rounded bg-astro-cyan-2/40 animate-pulse mb-2" />
-                    <div className="h-3 w-24 rounded bg-astro-cyan-2/40 animate-pulse" />
+                  {/* Header inside Card */}
+                  <div className="flex items-center justify-between pb-3">
+                    <div className="flex items-center gap-2">
+                      {isMemberReady ? (
+                        <Badge className="rounded-md bg-astro-cyan text-11 font-black uppercase tracking-wider text-astro-navy shadow-sm">
+                          {currentDivision?.shortDisplay || currentDivision?.name || activeDivision}
+                        </Badge>
+                      ) : (
+                        <div className="h-5 w-28 rounded bg-astro-cyan-2/40 animate-pulse rounded-md" />
+                      )}
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      aria-label="Tutup"
+                      onClick={() => setSelectedMemberIndex(null)}
+                      className="size-8 border border-white/15 bg-white/10 text-astro-cyan-2 hover:bg-white/20 hover:text-white rounded-full"
+                    >
+                      <X className="size-4" />
+                    </Button>
                   </div>
-                )}
-              </div>
-            </motion.div>
-          </motion.div>
+
+                  {/* Image Stage inside Portrait Card */}
+                  <div className="relative w-full aspect-[3/4] max-h-[46vh] sm:max-h-[50vh] overflow-hidden rounded-2xl border border-white/10 bg-astro-navy shadow-inner">
+                    <SkeletonImage
+                      key={viewerMember.id}
+                      src={normalizeImageUrl(viewerMember.image) || "/assets/users.png"}
+                      alt={viewerMember.name}
+                      imgKey={viewerMember.id}
+                      className="h-full w-full"
+                      objectFit="cover"
+                      priority
+                      sizes="(max-width: 640px) 100vw, 420px"
+                      onReady={() => setLoadedMemberId(viewerMember.id)}
+                    />
+
+                    {/* White Circular Navigation Arrows */}
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={handlePrevMember}
+                      className="absolute top-1/2 left-2.5 z-30 -translate-y-1/2 size-9 rounded-full bg-white text-astro-navy shadow-lg hover:bg-astro-cyan hover:scale-105 transition-all"
+                      aria-label="Anggota sebelumnya"
+                    >
+                      <ChevronLeft className="size-5" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={handleNextMember}
+                      className="absolute top-1/2 right-2.5 z-30 -translate-y-1/2 size-9 rounded-full bg-white text-astro-navy shadow-lg hover:bg-astro-cyan hover:scale-105 transition-all"
+                      aria-label="Anggota berikutnya"
+                    >
+                      <ChevronRight className="size-5" />
+                    </Button>
+                  </div>
+
+                  {/* Footer Info inside Portrait Card */}
+                  <div className="pt-3 text-center overflow-y-auto max-h-[25vh] no-scrollbar">
+                    {isMemberReady ? (
+                      <>
+                        <h3 className="text-lg sm:text-xl font-black text-white capitalize leading-tight">
+                          {viewerMember.name}
+                        </h3>
+                        <p className="mt-0.5 text-xs sm:text-sm font-bold text-astro-cyan">
+                          {viewerMember.role}
+                        </p>
+                        {(viewerMember.studyProgram || viewerMember.batch) && (
+                          <p className="mt-1 text-10 font-bold uppercase tracking-wider text-astro-cyan-2/90">
+                            {[viewerMember.studyProgram, viewerMember.batch].filter(Boolean).join(" ")}
+                          </p>
+                        )}
+                        {viewerMember.quote && (
+                          <p className="mt-2 px-2 text-xs text-astro-cyan-2 italic leading-relaxed">
+                            "{viewerMember.quote}"
+                          </p>
+                        )}
+                        <p className="mt-2 text-11 font-semibold text-astro-cyan-2/80">
+                          {selectedMemberIndex! + 1} dari {filteredMembers.length} anggota
+                        </p>
+                      </>
+                    ) : (
+                      <div className="flex flex-col items-center justify-center py-1">
+                        <div className="h-5 w-44 rounded bg-astro-cyan-2/40 animate-pulse mb-2" />
+                        <div className="h-4 w-28 rounded bg-astro-cyan-2/40 animate-pulse mb-2" />
+                        <div className="h-3 w-40 rounded bg-astro-cyan-2/40 animate-pulse mb-2" />
+                        <div className="h-4 w-60 rounded bg-astro-cyan-2/40 animate-pulse mb-2" />
+                        <div className="h-3 w-24 rounded bg-astro-cyan-2/40 animate-pulse" />
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>,
+          document.body,
         )}
-      </AnimatePresence>
     </SectionShell>
   );
 }

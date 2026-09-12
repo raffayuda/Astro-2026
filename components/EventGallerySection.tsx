@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { motion, useReducedMotion, AnimatePresence } from "motion/react";
 import { Camera, ChevronLeft, ChevronRight, Heart, X, ZoomIn } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -30,6 +31,7 @@ interface GalleryCategory {
 
 export default function EventGallerySection() {
   const reduce = useReducedMotion();
+  const [mounted, setMounted] = useState<boolean>(false);
   const [activeCategory, setActiveCategory] = useState<string>("ALL");
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(null);
   const [loadedPhotoId, setLoadedPhotoId] = useState<string | null>(null);
@@ -70,8 +72,8 @@ export default function EventGallerySection() {
     );
   };
 
-  const toggleLike = (id: string, e?: React.MouseEvent) => {
-    e?.stopPropagation();
+  const toggleLike = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
     setLikedPhotos((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
@@ -79,19 +81,31 @@ export default function EventGallerySection() {
   const isPhotoReady = photo ? loadedPhotoId === photo.id : false;
 
   useEffect(() => {
-    if (selectedPhotoIndex !== null) {
-      document.body.style.overflow = "hidden";
-      const handleKeyDown = (e: KeyboardEvent) => {
-        if (e.key === "Escape") setSelectedPhotoIndex(null);
-        if (e.key === "ArrowLeft") handlePrevPhoto();
-        if (e.key === "ArrowRight") handleNextPhoto();
-      };
-      window.addEventListener("keydown", handleKeyDown);
-      return () => {
-        document.body.style.overflow = "";
-        window.removeEventListener("keydown", handleKeyDown);
-      };
-    }
+    setMounted(true);
+  }, []);
+
+  // Prevent body scroll when lightbox is active
+  useEffect(() => {
+    if (selectedPhotoIndex === null) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [selectedPhotoIndex !== null]);
+
+  // Keyboard navigation inside lightbox
+  useEffect(() => {
+    if (selectedPhotoIndex === null) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setSelectedPhotoIndex(null);
+      if (e.key === "ArrowLeft") handlePrevPhoto();
+      if (e.key === "ArrowRight") handleNextPhoto();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
   }, [selectedPhotoIndex, filteredPhotos.length]);
 
   return (
@@ -205,133 +219,137 @@ export default function EventGallerySection() {
       </div>
 
       {/* ═══ FULLSCREEN LIGHTBOX ═══ */}
-      <AnimatePresence>
-        {photo && (
-          <motion.div
-            key="lightbox"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-[100] flex flex-col bg-astro-navy/95 backdrop-blur-xl text-white"
-            role="dialog"
-            aria-modal="true"
-            aria-label={photo.title}
-          >
-            {/* Ambient Cyan Glow */}
-            <div className="pointer-events-none absolute top-1/2 left-1/2 z-0 size-[700px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-astro-sky/10 blur-[140px]" />
+      {mounted &&
+        createPortal(
+          <AnimatePresence>
+            {photo && (
+              <motion.div
+                key="lightbox"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: reduce ? 0 : 0.2 }}
+                className="fixed inset-0 z-[100] flex flex-col bg-astro-navy/95 backdrop-blur-xl text-white"
+                role="dialog"
+                aria-modal="true"
+                aria-label={photo.title}
+              >
+                {/* Ambient Cyan Glow */}
+                <div className="pointer-events-none absolute top-1/2 left-1/2 z-0 size-[700px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-astro-sky/10 blur-[140px]" />
 
-            {/* Header */}
-            <div className="relative z-10 flex items-center justify-between px-5 py-4 md:px-8 md:py-5">
-              <div className="flex items-center gap-3">
-                {isPhotoReady ? (
-                  <>
-                    <Badge className="rounded-full bg-white px-2.5 py-0.5 text-xs font-bold text-astro-navy">
-                      {photo.year}
-                    </Badge>
-                    <span className="text-xs font-medium text-white/80">{photo.category}</span>
-                  </>
-                ) : (
-                  <>
-                    <div className="h-5 w-14 rounded bg-astro-cyan-2/40 animate-pulse rounded-md" />
-                    <div className="h-4 w-24 rounded bg-astro-cyan-2/40 animate-pulse" />
-                  </>
-                )}
-              </div>
+                {/* Header */}
+                <div className="relative z-10 flex items-center justify-between px-5 py-4 md:px-8 md:py-5">
+                  <div className="flex items-center gap-3">
+                    {isPhotoReady ? (
+                      <>
+                        <Badge className="rounded-full bg-white px-2.5 py-0.5 text-xs font-bold text-astro-navy">
+                          {photo.year}
+                        </Badge>
+                        <span className="text-xs font-medium text-white/80">{photo.category}</span>
+                      </>
+                    ) : (
+                      <>
+                        <div className="h-5 w-14 rounded bg-astro-cyan-2/40 animate-pulse rounded-md" />
+                        <div className="h-4 w-24 rounded bg-astro-cyan-2/40 animate-pulse" />
+                      </>
+                    )}
+                  </div>
 
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={(e) => toggleLike(photo.id, e)}
-                  className={cn(
-                    "border border-white/20 bg-white/10 text-white hover:bg-white/20 shadow-sm",
-                    likedPhotos[photo.id] &&
-                      "scale-110 border-rose-500 bg-rose-500 text-white shadow-md hover:bg-rose-500",
-                  )}
-                  aria-label="Suka foto ini"
-                >
-                  <Heart className={cn(likedPhotos[photo.id] && "fill-current")} />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  aria-label="Tutup"
-                  onClick={() => setSelectedPhotoIndex(null)}
-                  className="border border-white/20 bg-white/10 text-white hover:bg-white/20 shadow-sm rounded-full"
-                >
-                  <X />
-                </Button>
-              </div>
-            </div>
-
-            {/* Main fullscreen image stage (landscape) */}
-            <div className="relative z-10 flex-1 min-h-0 px-4 pb-2 md:px-12">
-              <div className="relative h-full w-full overflow-hidden rounded-2xl border border-white/10 bg-astro-navy shadow-2xl">
-                {/* Animated pulse skeleton while loading */}
-                <SkeletonImage
-                  key={photo.id}
-                  src={normalizeImageUrl(photo.imageUrl)}
-                  alt={photo.title}
-                  imgKey={photo.id}
-                  className="h-full w-full"
-                  objectFit="contain"
-                  priority
-                  sizes="(max-width: 1280px) 100vw, 1280px"
-                  onReady={() => setLoadedPhotoId(photo.id)}
-                />
-
-                {/* White Circular Navigation Arrows */}
-                <Button
-                  variant="ghost"
-                  size="icon-lg"
-                  onClick={handlePrevPhoto}
-                  className="absolute top-1/2 left-3 z-30 -translate-y-1/2 size-10 rounded-full bg-white text-astro-navy shadow-lg hover:bg-astro-cyan hover:scale-105 transition-all md:left-6"
-                  aria-label="Foto sebelumnya"
-                >
-                  <ChevronLeft className="size-6" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon-lg"
-                  onClick={handleNextPhoto}
-                  className="absolute top-1/2 right-3 z-30 -translate-y-1/2 size-10 rounded-full bg-white text-astro-navy shadow-lg hover:bg-astro-cyan hover:scale-105 transition-all md:right-6"
-                  aria-label="Foto berikutnya"
-                >
-                  <ChevronRight className="size-6" />
-                </Button>
-              </div>
-            </div>
-
-            {/* Footer info */}
-            <div className="relative z-10 flex items-center justify-between px-5 py-4 md:px-8 md:py-5">
-              <div>
-                {isPhotoReady ? (
-                  <>
-                    <h3 className="text-base font-black text-white md:text-lg">{photo.title}</h3>
-                    <p className="mt-0.5 text-xs font-semibold text-astro-cyan-2">
-                      Foto {selectedPhotoIndex! + 1} dari {filteredPhotos.length} dokumentasi resmi
-                    </p>
-                  </>
-                ) : (
-                  <>
-                    <div className="h-6 w-48 sm:w-72 rounded bg-astro-cyan-2/40 animate-pulse mb-1.5" />
-                    <div className="h-4 w-36 sm:w-48 rounded bg-astro-cyan-2/40 animate-pulse" />
-                  </>
-                )}
-              </div>
-
-              {isPhotoReady ? (
-                <div className="hidden items-center gap-1.5 border border-sky-top/30 bg-astro-blue/10 px-3 py-1.5 text-xs font-bold text-astro-cyan-2 rounded-lg shadow-sm sm:flex">
-                  <ZoomIn className="size-3.5 text-astro-cyan-2" /> HD Documentation
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={(e) => toggleLike(photo.id, e)}
+                      className={cn(
+                        "border border-white/20 bg-white/10 text-white hover:bg-white/20 shadow-sm",
+                        likedPhotos[photo.id] &&
+                          "scale-110 border-rose-500 bg-rose-500 text-white shadow-md hover:bg-rose-500",
+                      )}
+                      aria-label="Suka foto ini"
+                    >
+                      <Heart className={cn(likedPhotos[photo.id] && "fill-current")} />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      aria-label="Tutup"
+                      onClick={() => setSelectedPhotoIndex(null)}
+                      className="border border-white/20 bg-white/10 text-white hover:bg-white/20 shadow-sm rounded-full"
+                    >
+                      <X />
+                    </Button>
+                  </div>
                 </div>
-              ) : (
-                <div className="hidden sm:block h-7 w-32 rounded bg-astro-cyan-2/40 animate-pulse" />
-              )}
-            </div>
-          </motion.div>
+
+                {/* Main fullscreen image stage (landscape) */}
+                <div className="relative z-10 flex-1 min-h-0 px-4 pb-2 md:px-12">
+                  <div className="relative h-full w-full overflow-hidden rounded-2xl border border-white/10 bg-astro-navy shadow-2xl">
+                    {/* Animated pulse skeleton while loading */}
+                    <SkeletonImage
+                      key={photo.id}
+                      src={normalizeImageUrl(photo.imageUrl)}
+                      alt={photo.title}
+                      imgKey={photo.id}
+                      className="h-full w-full"
+                      objectFit="contain"
+                      priority
+                      sizes="(max-width: 1280px) 100vw, 1280px"
+                      onReady={() => setLoadedPhotoId(photo.id)}
+                    />
+
+                    {/* White Circular Navigation Arrows */}
+                    <Button
+                      variant="ghost"
+                      size="icon-lg"
+                      onClick={handlePrevPhoto}
+                      className="absolute top-1/2 left-3 z-30 -translate-y-1/2 size-10 rounded-full bg-white text-astro-navy shadow-lg hover:bg-astro-cyan hover:scale-105 transition-all md:left-6"
+                      aria-label="Foto sebelumnya"
+                    >
+                      <ChevronLeft className="size-6" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon-lg"
+                      onClick={handleNextPhoto}
+                      className="absolute top-1/2 right-3 z-30 -translate-y-1/2 size-10 rounded-full bg-white text-astro-navy shadow-lg hover:bg-astro-cyan hover:scale-105 transition-all md:right-6"
+                      aria-label="Foto berikutnya"
+                    >
+                      <ChevronRight className="size-6" />
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Footer info */}
+                <div className="relative z-10 flex items-center justify-between px-5 py-4 md:px-8 md:py-5">
+                  <div>
+                    {isPhotoReady ? (
+                      <>
+                        <h3 className="text-base font-black text-white md:text-lg">{photo.title}</h3>
+                        <p className="mt-0.5 text-xs font-semibold text-astro-cyan-2">
+                          Foto {selectedPhotoIndex! + 1} dari {filteredPhotos.length} dokumentasi resmi
+                        </p>
+                      </>
+                    ) : (
+                      <>
+                        <div className="h-6 w-48 sm:w-72 rounded bg-astro-cyan-2/40 animate-pulse mb-1.5" />
+                        <div className="h-4 w-36 sm:w-48 rounded bg-astro-cyan-2/40 animate-pulse" />
+                      </>
+                    )}
+                  </div>
+
+                  {isPhotoReady ? (
+                    <div className="hidden items-center gap-1.5 border border-sky-top/30 bg-astro-blue/10 px-3 py-1.5 text-xs font-bold text-astro-cyan-2 rounded-lg shadow-sm sm:flex">
+                      <ZoomIn className="size-3.5 text-astro-cyan-2" /> HD Documentation
+                    </div>
+                  ) : (
+                    <div className="hidden sm:block h-7 w-32 rounded bg-astro-cyan-2/40 animate-pulse" />
+                  )}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>,
+          document.body,
         )}
-      </AnimatePresence>
     </SectionShell>
   );
 }

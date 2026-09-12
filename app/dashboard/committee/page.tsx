@@ -973,22 +973,22 @@ export default function CommitteePage() {
         {paginated.map((item) => (
           <Card
             key={item.id}
-            className="border border-border transition-colors hover:border-primary/50"
+            className="rounded-xl border border-border bg-card p-3.5 sm:p-4 transition-colors hover:border-primary/50 hover:shadow-soft"
           >
             <CardContent className="flex items-center justify-between gap-4 p-0">
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 sm:gap-3.5">
                 <input
                   type="checkbox"
                   checked={selected.has(item.id)}
                   onChange={() => toggleSelect(item.id)}
                   aria-label={`Pilih ${item.name}`}
-                  className="size-4 shrink-0 accent-primary"
+                  className="size-4 shrink-0 accent-primary cursor-pointer rounded"
                 />
                 {item.image ? (
                   <button
                     type="button"
                     onClick={() => setPreviewImage(item.image)}
-                    className="overflow-hidden rounded-full transition-opacity hover:opacity-80"
+                    className="overflow-hidden rounded-full transition-opacity hover:opacity-80 shrink-0"
                   >
                     <Image
                       src={normalizeImageUrl(item.image)}
@@ -1000,13 +1000,13 @@ export default function CommitteePage() {
                     />
                   </button>
                 ) : (
-                  <div className="flex size-10 items-center justify-center rounded-full bg-muted text-10 font-bold uppercase text-muted-foreground">
+                  <div className="flex size-10 items-center justify-center rounded-full bg-muted text-10 font-bold uppercase text-muted-foreground shrink-0">
                     {item.name.charAt(0)}
                   </div>
                 )}
-                <div>
-                  <span className="text-sm font-bold text-foreground">{item.name}</span>
-                  <div className="mt-0.5 flex gap-2">
+                <div className="min-w-0 flex-1">
+                  <span className="text-sm font-bold text-foreground truncate block">{item.name}</span>
+                  <div className="mt-0.5 flex flex-wrap items-center gap-1.5 sm:gap-2">
                     <span className="text-10 font-semibold text-muted-foreground">{item.role}</span>
                     {item.isLeader === "1" && (
                       <Badge
@@ -1028,7 +1028,7 @@ export default function CommitteePage() {
                   </div>
                 </div>
               </div>
-              <div className="flex gap-1">
+              <div className="flex gap-1 shrink-0">
                 <Button
                   variant="ghost"
                   size="icon-sm"

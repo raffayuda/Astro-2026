@@ -1,5 +1,5 @@
 import type * as React from "react";
-
+import { Calendar } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /**
@@ -11,11 +11,15 @@ function PageHeader({
   title,
   description,
   actions,
+  date,
+  showDate = false,
   className,
 }: {
   title: React.ReactNode;
   description?: React.ReactNode;
   actions?: React.ReactNode;
+  date?: React.ReactNode;
+  showDate?: boolean;
   className?: string;
 }) {
   return (
@@ -29,7 +33,28 @@ function PageHeader({
         <h1 className="text-2xl font-black uppercase tracking-tight text-foreground">{title}</h1>
         {description ? <p className="text-sm text-muted-foreground">{description}</p> : null}
       </div>
-      {actions ? <div className="flex flex-wrap items-center gap-2">{actions}</div> : null}
+      {actions || showDate || date ? (
+        <div className="flex flex-wrap items-center gap-2">
+          {actions}
+          {(showDate || date) && (
+            <div className="flex items-center gap-2 rounded-lg border border-astro-cyan-2/60 bg-white/70 px-3 py-1.5 text-xs text-muted-foreground shadow-2xs">
+              <Calendar className="size-3.5 text-astro-blue shrink-0" />
+              <span>
+                Today is{" "}
+                <strong className="font-bold text-astro-navy">
+                  {date ||
+                    new Date().toLocaleDateString("id-ID", {
+                      weekday: "long",
+                      day: "numeric",
+                      month: "long",
+                      year: "numeric",
+                    })}
+                </strong>
+              </span>
+            </div>
+          )}
+        </div>
+      ) : null}
     </div>
   );
 }
