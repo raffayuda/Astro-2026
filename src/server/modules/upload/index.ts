@@ -1,7 +1,7 @@
-import { Elysia, t, status } from 'elysia';
-import { authPlugin } from '@/src/server/plugins/auth';
-import { createClient } from '@supabase/supabase-js';
-import { randomUUID } from 'node:crypto';
+import { Elysia, t, status } from "elysia";
+import { authPlugin } from "@/src/server/plugins/auth";
+import { createClient } from "@supabase/supabase-js";
+import { randomUUID } from "node:crypto";
 
 export const MAX_UPLOAD_SIZE = 10 * 1024 * 1024; // 10 MB
 /** Exclusion for Committee member uploads (allows high-res portrait photos up to 30 MB). */
@@ -10,18 +10,47 @@ export const MAX_COMMITTEE_UPLOAD_SIZE = 30 * 1024 * 1024; // 30 MB
 export const MAX_PUBLIC_UPLOAD_SIZE = 5 * 1024 * 1024; // 5 MB
 
 /** File types allowed for upload, keyed by magic-byte signature. */
-const MAGIC_BYTES: { ext: string; mime: string; signature: number[]; check: (h: Uint8Array) => boolean }[] = [
-  { ext: 'png', mime: 'image/png', signature: [0x89, 0x50, 0x4e, 0x47], check: (h) => h.length >= 4 },
-  { ext: 'jpg', mime: 'image/jpeg', signature: [0xff, 0xd8, 0xff], check: (h) => h.length >= 3 },
+const MAGIC_BYTES: {
+  ext: string;
+  mime: string;
+  signature: number[];
+  check: (h: Uint8Array) => boolean;
+}[] = [
+  {
+    ext: "png",
+    mime: "image/png",
+    signature: [0x89, 0x50, 0x4e, 0x47],
+    check: (h) => h.length >= 4,
+  },
+  { ext: "jpg", mime: "image/jpeg", signature: [0xff, 0xd8, 0xff], check: (h) => h.length >= 3 },
   {
     // WEBP: RIFF....WEBP — verify the WEBP marker, not just RIFF (avoids AVI/WAV)
-    ext: 'webp', mime: 'image/webp', signature: [0x52, 0x49, 0x46, 0x46], check: (h) =>
+    ext: "webp",
+    mime: "image/webp",
+    signature: [0x52, 0x49, 0x46, 0x46],
+    check: (h) =>
       h.length >= 12 &&
-      h[0] === 0x52 && h[1] === 0x49 && h[2] === 0x46 && h[3] === 0x46 && // RIFF
-      h[8] === 0x57 && h[9] === 0x45 && h[10] === 0x42 && h[11] === 0x50, // WEBP
+      h[0] === 0x52 &&
+      h[1] === 0x49 &&
+      h[2] === 0x46 &&
+      h[3] === 0x46 && // RIFF
+      h[8] === 0x57 &&
+      h[9] === 0x45 &&
+      h[10] === 0x42 &&
+      h[11] === 0x50, // WEBP
   },
-  { ext: 'gif', mime: 'image/gif', signature: [0x47, 0x49, 0x46, 0x38], check: (h) => h.length >= 4 },
-  { ext: 'pdf', mime: 'application/pdf', signature: [0x25, 0x50, 0x44, 0x46], check: (h) => h.length >= 4 },
+  {
+    ext: "gif",
+    mime: "image/gif",
+    signature: [0x47, 0x49, 0x46, 0x38],
+    check: (h) => h.length >= 4,
+  },
+  {
+    ext: "pdf",
+    mime: "application/pdf",
+    signature: [0x25, 0x50, 0x44, 0x46],
+    check: (h) => h.length >= 4,
+  },
 ];
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -34,10 +63,10 @@ const supabaseKey =
  */
 export async function deleteSupabaseFile(url: string | null | undefined) {
   if (!url || !supabaseUrl || !supabaseKey) return;
-  
+
   // Example URL: https://[ID].supabase.co/storage/v1/object/public/uploads/uploads/filename.ext
   // or legacy local path: /uploads/filename.ext (which we don't delete automatically as it's legacy)
-  const uploadsPathString = '/storage/v1/object/public/uploads/';
+  const uploadsPathString = "/storage/v1/object/public/uploads/";
   if (!url.includes(uploadsPathString)) return;
 
   try {
@@ -45,13 +74,13 @@ export async function deleteSupabaseFile(url: string | null | undefined) {
     if (!relativePath) return;
 
     const supabase = createClient(supabaseUrl, supabaseKey);
-    const { error } = await supabase.storage.from('uploads').remove([relativePath]);
-    
+    const { error } = await supabase.storage.from("uploads").remove([relativePath]);
+
     if (error) {
-      console.error('Failed to delete file from Supabase:', error);
+      console.error("Failed to delete file from Supabase:", error);
     }
   } catch (err) {
-    console.error('Error in deleteSupabaseFile:', err);
+    console.error("Error in deleteSupabaseFile:", err);
   }
 }
 
@@ -67,11 +96,11 @@ async function storeUpload(
     const mb = Math.round(opts.maxSize / (1024 * 1024));
     return { error: `File terlalu besar (maksimal ${mb}MB)`, status: 400 };
   }
-  if (file.size === 0) return { error: 'File kosong', status: 400 };
+  if (file.size === 0) return { error: "File kosong", status: 400 };
 
   if (!supabaseUrl || !supabaseKey) {
-    console.error('Supabase env vars missing for upload');
-    return { error: 'Konfigurasi storage tidak lengkap', status: 500 };
+    console.error("Supabase env vars missing for upload");
+    return { error: "Konfigurasi storage tidak lengkap", status: 500 };
   }
 
   // Sniff the real content type from the first bytes — never trust the
@@ -79,7 +108,7 @@ async function storeUpload(
   const bytes = new Uint8Array(await file.arrayBuffer());
   const head = bytes.subarray(0, 12);
   const allowed = opts.imagesOnly
-    ? MAGIC_BYTES.filter((m) => m.mime.startsWith('image/'))
+    ? MAGIC_BYTES.filter((m) => m.mime.startsWith("image/"))
     : MAGIC_BYTES;
   const match = allowed.find(
     (m) => m.check(head) && m.signature.every((byte, i) => head[i] === byte),
@@ -88,8 +117,8 @@ async function storeUpload(
   if (!match) {
     return {
       error: opts.imagesOnly
-        ? 'Hanya file gambar (PNG/JPG/WEBP/GIF) yang diizinkan'
-        : 'Hanya file gambar (PNG/JPG/WEBP/GIF) dan PDF yang diizinkan',
+        ? "Hanya file gambar (PNG/JPG/WEBP/GIF) yang diizinkan"
+        : "Hanya file gambar (PNG/JPG/WEBP/GIF) dan PDF yang diizinkan",
       status: 400,
     };
   }
@@ -98,15 +127,15 @@ async function storeUpload(
   const path = `uploads/${randomUUID()}.${match.ext}`;
 
   const { data, error } = await supabase.storage
-    .from('uploads')
+    .from("uploads")
     .upload(path, bytes, { contentType: match.mime, upsert: false });
 
   if (error || !data?.path) {
-    console.error('Supabase upload failed:', error);
-    return { error: 'Gagal menyimpan file', status: 500 };
+    console.error("Supabase upload failed:", error);
+    return { error: "Gagal menyimpan file", status: 500 };
   }
 
-  const { data: publicUrl } = supabase.storage.from('uploads').getPublicUrl(data.path);
+  const { data: publicUrl } = supabase.storage.from("uploads").getPublicUrl(data.path);
   return { url: publicUrl.publicUrl };
 }
 
@@ -116,66 +145,78 @@ async function storeUpload(
  * absolute public URL. Local-fs writes do not work on Vercel (read-only
  * `/var/task`), so all uploads go to object storage instead.
  */
-export const uploadModule = new Elysia({ prefix: '/upload' })
+export const uploadModule = new Elysia({ prefix: "/upload" })
   .use(authPlugin)
-  .post('/', async ({ body, user }) => {
-    // Defense in depth: the `admin: true` macro already rejects non-admins
-    // (401 unauth / 403 forbidden), but re-verify the resolved session user.
-    if (user?.role !== 'admin') return status(403, { error: 'Forbidden' });
+  .post(
+    "/",
+    async ({ body, user }) => {
+      // Defense in depth: the `admin: true` macro already rejects non-admins
+      // (401 unauth / 403 forbidden), but re-verify the resolved session user.
+      if (user?.role !== "admin") return status(403, { error: "Forbidden" });
 
-    const file = body.file;
-    if (!file) return status(400, { error: 'File tidak ditemukan' });
+      const file = body.file;
+      if (!file) return status(400, { error: "File tidak ditemukan" });
 
-    const result = await storeUpload(file, { maxSize: MAX_UPLOAD_SIZE });
-    if ('error' in result) return status(result.status, { error: result.error });
-    return result;
-  }, {
-    body: t.Object({
-      file: t.File({ maxSize: MAX_UPLOAD_SIZE }),
-    }),
-    admin: true,
-  })
+      const result = await storeUpload(file, { maxSize: MAX_UPLOAD_SIZE });
+      if ("error" in result) return status(result.status, { error: result.error });
+      return result;
+    },
+    {
+      body: t.Object({
+        file: t.File({ maxSize: MAX_UPLOAD_SIZE }),
+      }),
+      admin: true,
+    },
+  )
 
   /**
    * Committee member photo upload (admin) — exclusion for committee photos
    * allowing higher resolution photos up to 30 MB.
    */
-  .post('/committee', async ({ body, user }) => {
-    if (user?.role !== 'admin') return status(403, { error: 'Forbidden' });
+  .post(
+    "/committee",
+    async ({ body, user }) => {
+      if (user?.role !== "admin") return status(403, { error: "Forbidden" });
 
-    const file = body.file;
-    if (!file) return status(400, { error: 'File tidak ditemukan' });
+      const file = body.file;
+      if (!file) return status(400, { error: "File tidak ditemukan" });
 
-    const result = await storeUpload(file, {
-      maxSize: MAX_COMMITTEE_UPLOAD_SIZE,
-      imagesOnly: true,
-    });
-    if ('error' in result) return status(result.status, { error: result.error });
-    return result;
-  }, {
-    body: t.Object({
-      file: t.File({ maxSize: MAX_COMMITTEE_UPLOAD_SIZE }),
-    }),
-    admin: true,
-  })
+      const result = await storeUpload(file, {
+        maxSize: MAX_COMMITTEE_UPLOAD_SIZE,
+        imagesOnly: true,
+      });
+      if ("error" in result) return status(result.status, { error: result.error });
+      return result;
+    },
+    {
+      body: t.Object({
+        file: t.File({ maxSize: MAX_COMMITTEE_UPLOAD_SIZE }),
+      }),
+      admin: true,
+    },
+  )
 
   /**
    * Player-photo upload (anonymous) — registration happens without an account,
    * so participants must be able to attach their own photo. Images only, 5 MB
    * cap, content sniffed by magic bytes.
    */
-  .post('/player-photo', async ({ body }) => {
-    const file = body.file;
-    if (!file) return status(400, { error: 'File tidak ditemukan' });
+  .post(
+    "/player-photo",
+    async ({ body }) => {
+      const file = body.file;
+      if (!file) return status(400, { error: "File tidak ditemukan" });
 
-    const result = await storeUpload(file, {
-      maxSize: MAX_PUBLIC_UPLOAD_SIZE,
-      imagesOnly: true,
-    });
-    if ('error' in result) return status(result.status, { error: result.error });
-    return result;
-  }, {
-    body: t.Object({
-      file: t.File({ maxSize: MAX_PUBLIC_UPLOAD_SIZE }),
-    }),
-  });
+      const result = await storeUpload(file, {
+        maxSize: MAX_PUBLIC_UPLOAD_SIZE,
+        imagesOnly: true,
+      });
+      if ("error" in result) return status(result.status, { error: result.error });
+      return result;
+    },
+    {
+      body: t.Object({
+        file: t.File({ maxSize: MAX_PUBLIC_UPLOAD_SIZE }),
+      }),
+    },
+  );

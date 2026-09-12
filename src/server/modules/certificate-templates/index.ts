@@ -1,7 +1,7 @@
-import { Elysia, t, status } from 'elysia';
-import { authPlugin } from '@/src/server/plugins/auth';
-import { certificateTemplateSchema } from './model';
-import * as service from './service';
+import { Elysia, t, status } from "elysia";
+import { authPlugin } from "@/src/server/plugins/auth";
+import { certificateTemplateSchema } from "./model";
+import * as service from "./service";
 
 /**
  * Certificate templates module.
@@ -9,15 +9,15 @@ import * as service from './service';
  * - POST/PUT/DELETE: admin only
  */
 export const certificateTemplatesModule = new Elysia({
-  prefix: '/certificate-templates',
+  prefix: "/certificate-templates",
 })
   .use(authPlugin)
 
   .get(
-    '/',
+    "/",
     async ({ query }) => {
       if (!query.competitionId) {
-        return status(400, { error: 'competitionId wajib diisi' });
+        return status(400, { error: "competitionId wajib diisi" });
       }
       return service.listTemplates(query.competitionId);
     },
@@ -27,7 +27,7 @@ export const certificateTemplatesModule = new Elysia({
   )
 
   .post(
-    '/',
+    "/",
     async ({ body }) => {
       const template = await service.upsertTemplate(body);
       return status(201, template);
@@ -39,10 +39,10 @@ export const certificateTemplatesModule = new Elysia({
   )
 
   .delete(
-    '/:id',
+    "/:id",
     async ({ params }) => {
       const deleted = await service.deleteTemplate(Number(params.id));
-      if (!deleted) return status(404, { error: 'Template tidak ditemukan' });
+      if (!deleted) return status(404, { error: "Template tidak ditemukan" });
       return { success: true };
     },
     {

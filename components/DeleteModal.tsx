@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { ResponsiveAlertDialog } from '@/components/responsive-alert-dialog';
+import { ResponsiveAlertDialog } from "@/components/responsive-alert-dialog";
 
 interface Props {
   open: boolean;
@@ -11,7 +11,14 @@ interface Props {
   loading?: boolean;
 }
 
-export default function DeleteModal({ open, title, message, onConfirm, onCancel, loading = false }: Props) {
+export default function DeleteModal({
+  open,
+  title,
+  message,
+  onConfirm,
+  onCancel,
+  loading = false,
+}: Props) {
   return (
     <ResponsiveAlertDialog
       open={open}
@@ -19,7 +26,7 @@ export default function DeleteModal({ open, title, message, onConfirm, onCancel,
       title={title}
       description={message}
       cancelText="Batal"
-      confirmText={loading ? 'Menghapus...' : 'Hapus'}
+      confirmText={loading ? "Menghapus..." : "Hapus"}
       destructive
       loading={loading}
       onConfirm={onConfirm}

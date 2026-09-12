@@ -1,26 +1,26 @@
-import { Elysia } from 'elysia';
-import { auth } from '@/src/server/auth';
-import { authRoutes } from '@/src/server/auth-routes';
-import { authPlugin } from '@/src/server/plugins/auth';
-import { formatZodError } from '@/src/server/helpers/validation';
-import { competitionsModule } from '@/src/server/modules/competitions';
-import { registrationsModule } from '@/src/server/modules/registrations';
-import { usersModule } from '@/src/server/modules/users';
-import { categoriesModule } from '@/src/server/modules/categories';
-import { faqsModule } from '@/src/server/modules/faqs';
-import { committeeMembersModule } from '@/src/server/modules/committee-members';
-import { committeeDivisionsModule } from '@/src/server/modules/committee-divisions';
-import { galleryPhotosModule } from '@/src/server/modules/gallery-photos';
-import { galleryCategoriesModule } from '@/src/server/modules/gallery-categories';
-import { journeysModule } from '@/src/server/modules/journeys';
-import { journeyPhotosModule } from '@/src/server/modules/journey-photos';
-import { sponsorsModule } from '@/src/server/modules/sponsors';
-import { mediaPartnersModule } from '@/src/server/modules/media-partners';
-import { certificatesModule } from '@/src/server/modules/certificates';
-import { certificateTemplatesModule } from '@/src/server/modules/certificate-templates';
-import { uploadModule } from '@/src/server/modules/upload';
-import { paymentsModule } from '@/src/server/modules/payments';
-import { invitationsModule } from '@/src/server/modules/invitations';
+import { Elysia } from "elysia";
+import { auth } from "@/src/server/auth";
+import { authRoutes } from "@/src/server/auth-routes";
+import { authPlugin } from "@/src/server/plugins/auth";
+import { formatZodError } from "@/src/server/helpers/validation";
+import { competitionsModule } from "@/src/server/modules/competitions";
+import { registrationsModule } from "@/src/server/modules/registrations";
+import { usersModule } from "@/src/server/modules/users";
+import { categoriesModule } from "@/src/server/modules/categories";
+import { faqsModule } from "@/src/server/modules/faqs";
+import { committeeMembersModule } from "@/src/server/modules/committee-members";
+import { committeeDivisionsModule } from "@/src/server/modules/committee-divisions";
+import { galleryPhotosModule } from "@/src/server/modules/gallery-photos";
+import { galleryCategoriesModule } from "@/src/server/modules/gallery-categories";
+import { journeysModule } from "@/src/server/modules/journeys";
+import { journeyPhotosModule } from "@/src/server/modules/journey-photos";
+import { sponsorsModule } from "@/src/server/modules/sponsors";
+import { mediaPartnersModule } from "@/src/server/modules/media-partners";
+import { certificatesModule } from "@/src/server/modules/certificates";
+import { certificateTemplatesModule } from "@/src/server/modules/certificate-templates";
+import { uploadModule } from "@/src/server/modules/upload";
+import { paymentsModule } from "@/src/server/modules/payments";
+import { invitationsModule } from "@/src/server/modules/invitations";
 
 /**
  * Root Elysia app — mounted under `/api` via the single catch-all route.
@@ -31,18 +31,38 @@ import { invitationsModule } from '@/src/server/modules/invitations';
  *
  * Validation errors are flattened to `{ error: "field: message" }` so clients
  * can show exactly which field failed and why.
+ *
+ * Anything else that throws is logged server-side and answered with a generic
+ * message. Elysia's default handler replies with `error.message`, which for an
+ * unhandled driver error is the raw Postgres text (table and column names,
+ * constraint names) on a public endpoint.
  */
-export const app = new Elysia({ prefix: '/api' })
+export const app = new Elysia({ prefix: "/api" })
   .use(authPlugin)
-  .onError(({ code, error, set }) => {
-    if (code === 'VALIDATION') {
+  .onError(({ code, error, path, request, set }) => {
+    if (code === "VALIDATION") {
       set.status = 400;
       return { error: formatZodError(error as any) };
     }
+
+    if (code === "NOT_FOUND") {
+      set.status = 404;
+      return { error: "Endpoint tidak ditemukan" };
+    }
+
+    if (code === "PARSE") {
+      set.status = 400;
+      return { error: "Format request tidak valid" };
+    }
+
+    // Keep the detail in the server log, never in the response body.
+    console.error(`[api] ${code} on ${request.method} ${path}:`, error);
+    set.status = 500;
+    return { error: "Terjadi kesalahan pada server. Silakan coba lagi." };
   })
   .use(authRoutes)
   .mount(auth.handler)
-  .get('/health', () => ({ status: 'ok' }))
+  .get("/health", () => ({ status: "ok" }))
   .use(competitionsModule)
   .use(registrationsModule)
   .use(usersModule)

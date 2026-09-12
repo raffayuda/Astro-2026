@@ -1,21 +1,54 @@
-import { db } from '@/src/db';
-import { registrations, competitions } from '@/src/db/schema';
-import { eq } from 'drizzle-orm';
-import { notFound } from 'next/navigation';
-import { CalendarDays, Coins, Mail, Phone, Building2, User, CheckCircle2, XCircle, Tag, Globe, FileText, ExternalLink } from 'lucide-react';
-import Link from 'next/link';
-import Image from 'next/image';
-import PaymentStatusUpdate from './PaymentStatusUpdate';
-import RegistrationDetailActions from './RegistrationDetailActions';
+import { db } from "@/src/db";
+import { registrations, competitions } from "@/src/db/schema";
+import { eq } from "drizzle-orm";
+import { notFound } from "next/navigation";
+import {
+  ArrowLeft,
+  Building2,
+  CalendarDays,
+  CheckCircle2,
+  Coins,
+  ExternalLink,
+  FileText,
+  Globe,
+  Mail,
+  Phone,
+  Tag,
+  User,
+  XCircle,
+  type LucideIcon,
+} from "lucide-react";
+import Link from "next/link";
+import Image from "next/image";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { DetailItem, SectionCard } from "@/components/dashboard";
+import { asStringRecord } from "@/lib/flags";
+import { isSafeUrl, safeHref } from "@/lib/urls";
+import { cn } from "@/lib/utils";
+import PaymentStatusUpdate from "./PaymentStatusUpdate";
+import RegistrationDetailActions from "./RegistrationDetailActions";
 
-const statusConfig: Record<string, { label: string; color: string; icon: any }> = {
-  pending: { label: 'Pending', color: 'bg-amber-50 text-amber-700 border-amber-200', icon: XCircle },
-  detecting: { label: 'Detecting', color: 'bg-blue-50 text-blue-700 border-blue-200', icon: XCircle },
-  paid: { label: 'Lunas', color: 'bg-emerald-50 text-emerald-700 border-emerald-200', icon: CheckCircle2 },
-  failed: { label: 'Gagal', color: 'bg-red-50 text-red-700 border-red-200', icon: XCircle },
+const statusConfig: Record<string, { label: string; color: string; icon: LucideIcon }> = {
+  pending: {
+    label: "Pending",
+    color: "bg-amber-50 text-amber-700 border-amber-200",
+    icon: XCircle,
+  },
+  detecting: {
+    label: "Detecting",
+    color: "bg-sky-bottom text-astro-navy border-astro-cyan-2",
+    icon: XCircle,
+  },
+  paid: {
+    label: "Lunas",
+    color: "bg-emerald-50 text-emerald-700 border-emerald-200",
+    icon: CheckCircle2,
+  },
+  failed: { label: "Gagal", color: "bg-red-50 text-red-700 border-red-200", icon: XCircle },
 };
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export default async function RegistrationDetailPage({
   params,
@@ -33,6 +66,7 @@ export default async function RegistrationDetailPage({
       teamName: registrations.teamName,
       leaderName: registrations.leaderName,
       leaderIdentity: registrations.leaderIdentity,
+      leaderGameId: registrations.leaderGameId,
       leaderPhotoUrl: registrations.leaderPhotoUrl,
       members: registrations.members,
       memberDetails: registrations.memberDetails,
@@ -61,34 +95,43 @@ export default async function RegistrationDetailPage({
     notFound();
   }
 
-  const StatusIcon = statusConfig[reg.paymentStatus]?.icon || statusConfig.pending.icon;
+  const status = statusConfig[reg.paymentStatus] ?? statusConfig.pending;
+  const StatusIcon = status.icon;
+  const customFields = asStringRecord(reg.customFields);
+  const customFieldDefs = Array.isArray(reg.competitionCustomFields)
+    ? (reg.competitionCustomFields as { id: string; label?: string }[])
+    : [];
 
   return (
-    <div className="space-y-6 max-w-7xl">
-      {/* Back + Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <Link
-            href="/dashboard/registrations"
-            className="text-xs font-bold text-slate-500 hover:text-astro-cyan uppercase tracking-wider transition-colors inline-flex items-center gap-1"
+    <div className="max-w-7xl space-y-6">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div className="space-y-2">
+          <Button
+            asChild
+            variant="ghost"
+            size="sm"
+            className="h-7 gap-1 px-2 text-xs font-bold uppercase tracking-wider text-muted-foreground"
           >
-            ← Kembali
-          </Link>
-          <h1 className="text-xl md:text-2xl font-black text-slate-900 uppercase tracking-tight mt-2">
+            <Link href="/dashboard/registrations">
+              <ArrowLeft className="size-3.5" /> Kembali
+            </Link>
+          </Button>
+          <h1 className="text-2xl font-black uppercase tracking-tight text-foreground">
             Detail Pendaftaran
           </h1>
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
-          <div className="flex items-center gap-2">
-            <StatusIcon className={`w-4 h-4 ${statusConfig[reg.paymentStatus]?.color?.split(' ')[1] || 'text-slate-500'}`} />
-            <span
-              className={`px-3 py-1 text-[10px] font-bold uppercase tracking-wider border ${statusConfig[reg.paymentStatus]?.color || statusConfig.pending.color}`}
-              style={{ clipPath: 'polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%)' }}
-            >
-              {statusConfig[reg.paymentStatus]?.label || reg.paymentStatus}
-            </span>
-          </div>
+          <Badge
+            variant="outline"
+            className={cn(
+              "gap-1.5 rounded-md border text-10 font-bold uppercase tracking-wider",
+              status.color,
+            )}
+          >
+            <StatusIcon className="size-3.5" />
+            {status.label}
+          </Badge>
 
           <RegistrationDetailActions
             registration={{
@@ -101,12 +144,12 @@ export default async function RegistrationDetailPage({
               fullName: reg.fullName,
               teamName: reg.teamName,
               leaderName: reg.leaderName,
-              institution: reg.institution || '—',
+              institution: reg.institution || "—",
               email: reg.email,
               whatsapp: reg.whatsapp,
               members: reg.members,
-              memberDetails: reg.memberDetails as any,
-              customFields: reg.customFields as any,
+              memberDetails: reg.memberDetails,
+              customFields,
               competitionName: reg.competitionName,
               competitionCategory: reg.competitionCategory,
               createdAt: reg.createdAt,
@@ -115,287 +158,229 @@ export default async function RegistrationDetailPage({
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Main Info */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Identity */}
-          <div className="bg-white border border-slate-200 relative"
-            style={{ clipPath: 'polygon(14px 0, 100% 0, calc(100% - 14px) 100%, 0 100%)' }}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div className="space-y-6 lg:col-span-2">
+          <SectionCard
+            icon={<User className="size-4 text-primary" />}
+            title={reg.type === "team" ? "Data Tim" : "Data Peserta"}
           >
-            <div className="absolute -top-[1px] -left-[1px] w-8 h-8 bg-astro-cyan"
-              style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }}
-            />
-            <div className="p-5 md:p-6 space-y-5">
-              <h2 className="text-sm font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
-                <User className="w-4 h-4 text-astro-cyan" />
-                {reg.type === 'team' ? 'Data Tim' : 'Data Peserta'}
-              </h2>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              {reg.type === "team" ? (
+                <>
+                  <DetailItem label="Nama Tim">{reg.teamName}</DetailItem>
+                  <DetailItem label="Ketua Tim">{reg.leaderName}</DetailItem>
+                  <DetailItem label="Identitas Ketua">{reg.leaderIdentity}</DetailItem>
+                  {reg.leaderGameId && (
+                    <DetailItem label="ID Akun Ketua">
+                      <code className="font-mono text-xs font-bold">{reg.leaderGameId}</code>
+                    </DetailItem>
+                  )}
+                  {isSafeUrl(reg.leaderPhotoUrl) && (
+                    <DetailItem label="Foto Ketua">
+                      <a
+                        href={safeHref(reg.leaderPhotoUrl)}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="mt-1 block w-20 overflow-hidden rounded-md border border-border"
+                      >
+                        <Image
+                          src={reg.leaderPhotoUrl}
+                          alt={reg.leaderName || "Foto ketua"}
+                          width={80}
+                          height={80}
+                          className="size-20 object-cover"
+                        />
+                      </a>
+                    </DetailItem>
+                  )}
+                  {reg.memberDetails?.length ? (
+                    <DetailItem label="Anggota Tim" className="sm:col-span-2">
+                      <div className="mt-2 flex flex-wrap gap-3">
+                        {reg.memberDetails.map((m, i) => (
+                          <div key={`${m.name}-${i}`} className="w-20">
+                            {isSafeUrl(m.photoUrl) ? (
+                              <a href={safeHref(m.photoUrl)} target="_blank" rel="noreferrer">
+                                <Image
+                                  src={m.photoUrl}
+                                  alt={m.name}
+                                  width={80}
+                                  height={80}
+                                  className="size-20 rounded-md border border-border object-cover"
+                                />
+                              </a>
+                            ) : (
+                              <div className="flex size-20 items-center justify-center rounded-md border border-dashed border-border text-10 text-muted-foreground">
+                                Tanpa foto
+                              </div>
+                            )}
+                            <p className="mt-1 text-11 font-semibold leading-tight text-foreground">
+                              {m.name}
+                            </p>
+                            {m.gameId && (
+                              <p className="text-10 leading-tight text-muted-foreground">
+                                ID: <code className="font-mono">{m.gameId}</code>
+                              </p>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </DetailItem>
+                  ) : reg.members ? (
+                    <DetailItem label="Anggota Tim" className="sm:col-span-2">
+                      <span className="whitespace-pre-line">{reg.members}</span>
+                    </DetailItem>
+                  ) : null}
+                </>
+              ) : (
+                <>
+                  <DetailItem label="Nama Lengkap">{reg.fullName}</DetailItem>
+                  <DetailItem label="Nomor Identitas">{reg.identityNumber}</DetailItem>
+                  {reg.leaderGameId && (
+                    <DetailItem label="ID Akun Pemain">
+                      <code className="font-mono text-xs font-bold">{reg.leaderGameId}</code>
+                    </DetailItem>
+                  )}
+                </>
+              )}
+              <DetailItem label="Sekolah / Instansi" icon={<Building2 className="size-3" />}>
+                {reg.institution}
+              </DetailItem>
+            </div>
+          </SectionCard>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {reg.type === 'team' ? (
-                  <>
-                    <div>
-                      <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Nama Tim</span>
-                      <p className="text-sm font-bold text-slate-900 mt-0.5">{reg.teamName}</p>
-                    </div>
-                    <div>
-                      <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Ketua Tim</span>
-                      <p className="text-sm font-bold text-slate-900 mt-0.5">{reg.leaderName}</p>
-                    </div>
-                    <div>
-                      <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Identitas Ketua</span>
-                      <p className="text-sm text-slate-700 mt-0.5">{reg.leaderIdentity}</p>
-                    </div>
-                    {reg.leaderPhotoUrl && (
-                      <div>
-                        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Foto Ketua</span>
+          {Object.keys(customFields).length > 0 && (
+            <SectionCard
+              icon={<FileText className="size-4 text-primary" />}
+              title="Berkas & Data Khusus Lomba"
+            >
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                {Object.entries(customFields).map(([key, val]) => {
+                  const label = customFieldDefs.find((f) => f.id === key)?.label || key;
+                  // Only a safe http(s) target is treated as a viewable file.
+                  const isImg = isSafeUrl(val);
+
+                  if (!isImg) {
+                    return (
+                      <DetailItem key={key} label={label}>
+                        <span className="whitespace-pre-line">{val || "-"}</span>
+                      </DetailItem>
+                    );
+                  }
+
+                  return (
+                    <DetailItem key={key} label={label} className="sm:col-span-2">
+                      <div className="mt-1.5 flex items-center gap-3">
                         <a
-                          href={reg.leaderPhotoUrl}
+                          href={safeHref(val)}
                           target="_blank"
                           rel="noreferrer"
-                          className="mt-1 block w-20 overflow-hidden rounded-md border border-slate-200"
+                          className="relative block size-24 shrink-0 overflow-hidden rounded-md border border-border bg-muted transition-opacity hover:opacity-90"
                         >
-                          <Image
-                            src={reg.leaderPhotoUrl}
-                            alt={reg.leaderName || 'Foto ketua'}
-                            width={80}
-                            height={80}
-                            className="h-20 w-20 object-cover"
-                          />
+                          <Image src={val} alt={label} fill sizes="96px" className="object-cover" />
                         </a>
-                      </div>
-                    )}
-                    {reg.memberDetails?.length ? (
-                      <div className="sm:col-span-2">
-                        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Anggota Tim</span>
-                        <div className="mt-2 flex flex-wrap gap-3">
-                          {reg.memberDetails.map((m, i) => (
-                            <div key={`${m.name}-${i}`} className="w-20">
-                              {m.photoUrl ? (
-                                <a href={m.photoUrl} target="_blank" rel="noreferrer">
-                                  <Image
-                                    src={m.photoUrl}
-                                    alt={m.name}
-                                    width={80}
-                                    height={80}
-                                    className="h-20 w-20 rounded-md border border-slate-200 object-cover"
-                                  />
-                                </a>
-                              ) : (
-                                <div className="flex h-20 w-20 items-center justify-center rounded-md border border-dashed border-slate-200 text-[10px] text-slate-400">
-                                  Tanpa foto
-                                </div>
-                              )}
-                              <p className="mt-1 text-[11px] leading-tight text-slate-700">{m.name}</p>
-                            </div>
-                          ))}
+                        <div className="space-y-1">
+                          <a
+                            href={safeHref(val)}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex items-center gap-1 text-xs font-bold text-primary hover:underline"
+                          >
+                            <ExternalLink className="size-3.5" />
+                            Buka berkas ukuran penuh
+                          </a>
+                          <p className="text-11 font-normal text-muted-foreground">
+                            Berkas diunggah oleh pendaftar saat registrasi
+                          </p>
                         </div>
                       </div>
-                    ) : reg.members ? (
-                      <div className="sm:col-span-2">
-                        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Anggota Tim</span>
-                        <p className="text-sm text-slate-700 mt-0.5 whitespace-pre-line">{reg.members}</p>
-                      </div>
-                    ) : null}
-                  </>
-                ) : (
-                  <>
-                    <div>
-                      <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Nama Lengkap</span>
-                      <p className="text-sm font-bold text-slate-900 mt-0.5">{reg.fullName}</p>
-                    </div>
-                    <div>
-                      <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Nomor Identitas</span>
-                      <p className="text-sm text-slate-700 mt-0.5">{reg.identityNumber}</p>
-                    </div>
-                  </>
-                )}
-                <div>
-                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
-                    <Building2 className="w-3 h-3" /> Sekolah / Instansi
-                  </span>
-                  <p className="text-sm font-medium text-slate-900 mt-0.5">{reg.institution}</p>
-                </div>
+                    </DetailItem>
+                  );
+                })}
               </div>
-            </div>
-          </div>
-
-          {/* Berkas & Informasi Khusus Lomba */}
-          {reg.customFields && Object.keys(reg.customFields).length > 0 && (
-            <div className="bg-white border border-slate-200 relative"
-              style={{ clipPath: 'polygon(14px 0, 100% 0, calc(100% - 14px) 100%, 0 100%)' }}
-            >
-              <div className="p-5 md:p-6 space-y-5">
-                <h2 className="text-sm font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
-                  <FileText className="w-4 h-4 text-astro-cyan" />
-                  Berkas & Data Khusus Lomba
-                </h2>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {Object.entries(reg.customFields).map(([key, val]) => {
-                    const fieldDef = (reg.competitionCustomFields || []).find((f: any) => f.id === key);
-                    const label = fieldDef?.label || key;
-                    const isImg = typeof val === 'string' && (val.startsWith('http') || val.includes('/storage/v1/object/public/'));
-
-                    if (isImg) {
-                      return (
-                        <div key={key} className="space-y-1.5 sm:col-span-2">
-                          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
-                            {label}
-                          </span>
-                          <div className="flex items-center gap-3">
-                            <a
-                              href={val}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="block relative size-24 shrink-0 overflow-hidden rounded-md border border-slate-200 bg-slate-50 hover:opacity-90 transition-opacity"
-                            >
-                              <Image
-                                src={val}
-                                alt={label}
-                                fill
-                                sizes="96px"
-                                className="object-cover"
-                              />
-                            </a>
-                            <div className="space-y-1">
-                              <a
-                                href={val}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="inline-flex items-center gap-1 text-xs font-bold text-astro-cyan hover:underline"
-                              >
-                                <ExternalLink className="size-3.5" />
-                                Buka Berkas / Foto Ukuran Penuh
-                              </a>
-                              <p className="text-[11px] text-slate-500">
-                                Berkas diunggah oleh pendaftar saat registrasi
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    }
-
-                    return (
-                      <div key={key} className="space-y-0.5">
-                        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
-                          {label}
-                        </span>
-                        <p className="text-sm text-slate-900 font-medium whitespace-pre-line">
-                          {String(val || '-')}
-                        </p>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
+            </SectionCard>
           )}
 
-          {/* Contact */}
-          <div className="bg-white border border-slate-200 relative"
-            style={{ clipPath: 'polygon(14px 0, 100% 0, calc(100% - 14px) 100%, 0 100%)' }}
-          >
-            <div className="p-5 md:p-6 space-y-4">
-              <h2 className="text-sm font-black text-slate-900 uppercase tracking-tight">Kontak</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
-                    <Mail className="w-3 h-3" /> Email
-                  </span>
-                  <p className="text-sm text-slate-900 mt-0.5">{reg.email}</p>
-                </div>
-                <div>
-                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
-                    <Phone className="w-3 h-3" /> WhatsApp
-                  </span>
-                  <p className="text-sm text-slate-900 mt-0.5">{reg.whatsapp}</p>
-                </div>
-              </div>
+          <SectionCard title="Kontak">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <DetailItem label="Email" icon={<Mail className="size-3" />}>
+                {reg.email}
+              </DetailItem>
+              <DetailItem label="WhatsApp" icon={<Phone className="size-3" />}>
+                {reg.whatsapp}
+              </DetailItem>
             </div>
-          </div>
+          </SectionCard>
         </div>
 
-        {/* Sidebar */}
         <div className="space-y-6">
-          {/* Competition Info */}
-          <div className="bg-white border border-slate-200 relative"
-            style={{ clipPath: 'polygon(12px 0, 100% 0, calc(100% - 12px) 100%, 0 100%)' }}
-          >
-            <div className="p-5 space-y-4">
-              <h3 className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.15em] flex items-center gap-1">
-                <Tag className="w-3 h-3" /> Lomba
-              </h3>
-              <p className="text-sm font-bold text-slate-900">{reg.competitionName}</p>
+          <SectionCard icon={<Tag className="size-4 text-primary" />} title="Lomba">
+            <div className="space-y-4">
+              <p className="text-sm font-bold text-foreground">{reg.competitionName}</p>
               <div className="flex flex-wrap gap-1.5">
-                <span className="inline-flex items-center px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider border bg-slate-50 text-slate-600 border-slate-200"
-                  style={{ clipPath: 'polygon(3px 0, 100% 0, calc(100% - 3px) 100%, 0 100%)' }}
-                >
+                <Badge variant="outline" className="text-9 font-bold uppercase tracking-wider">
                   {reg.competitionCategory}
-                </span>
-                <span className="inline-flex items-center px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider border bg-sky-50 text-sky-700 border-sky-200"
-                  style={{ clipPath: 'polygon(3px 0, 100% 0, calc(100% - 3px) 100%, 0 100%)' }}
+                </Badge>
+                <Badge
+                  variant="outline"
+                  className="gap-1 border-astro-cyan-2 bg-sky-bottom text-9 font-bold uppercase tracking-wider text-astro-navy"
                 >
-                  <Globe className="w-2.5 h-2.5 mr-1" />
-                  {reg.competitionOrigin === 'external' ? 'Eksternal' : 'Internal'}
-                </span>
-                <span className={`inline-flex items-center px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider border ${
-                  reg.competitionIsFree === '1'
-                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                    : 'bg-amber-50 text-amber-700 border-amber-200'
-                }`}
-                  style={{ clipPath: 'polygon(3px 0, 100% 0, calc(100% - 3px) 100%, 0 100%)' }}
+                  <Globe className="size-2.5" />
+                  {reg.competitionOrigin === "external" ? "Eksternal" : "Internal"}
+                </Badge>
+                <Badge
+                  variant="outline"
+                  className={cn(
+                    "text-9 font-bold uppercase tracking-wider",
+                    reg.competitionIsFree === "1"
+                      ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+                      : "border-amber-200 bg-amber-50 text-amber-700",
+                  )}
                 >
-                  {reg.competitionIsFree === '1' ? 'Gratis' : 'Berbayar'}
-                </span>
+                  {reg.competitionIsFree === "1" ? "Gratis" : "Berbayar"}
+                </Badge>
               </div>
               {reg.competitionFee > 0 && (
-                <div className="pt-3 border-t border-slate-100">
-                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Biaya</span>
-                  <p className="text-sm font-bold text-slate-900 mt-0.5">
-                    Rp {reg.competitionFee.toLocaleString('id-ID')}
-                  </p>
+                <div className="border-t border-border pt-3">
+                  <DetailItem label="Biaya">
+                    <span className="font-bold">
+                      Rp {reg.competitionFee.toLocaleString("id-ID")}
+                    </span>
+                  </DetailItem>
                 </div>
               )}
             </div>
-          </div>
+          </SectionCard>
 
-          {/* Payment Info */}
-          <div className="bg-white border border-slate-200 relative"
-            style={{ clipPath: 'polygon(12px 0, 100% 0, calc(100% - 12px) 100%, 0 100%)' }}
+          <SectionCard
+            icon={<Coins className="size-4 text-primary" />}
+            title="Pembayaran"
+            bodyClassName="space-y-4"
           >
-            <div className="p-5 space-y-4">
-              <h3 className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.15em] flex items-center gap-1">
-                <Coins className="w-3 h-3" /> Pembayaran
-              </h3>
-              <div>
-                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Referensi</span>
-                <p className="text-xs font-mono font-bold text-slate-900 mt-0.5">{reg.paymentReference || '—'}</p>
-              </div>
-              <div>
-                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Jumlah</span>
-                <p className="text-lg font-black text-astro-cyan mt-0.5">
-                  Rp {reg.paymentAmount.toLocaleString('id-ID')}
-                </p>
-              </div>
-              <div>
-                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Metode</span>
-                <p className="text-sm text-slate-900 mt-0.5 capitalize">{reg.paymentMethod || '—'}</p>
-              </div>
-              <div>
-                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
-                  <CalendarDays className="w-3 h-3" /> Didaftarkan
-                </span>
-                <p className="text-sm text-slate-600 mt-0.5">
-                  {reg.createdAt ? new Date(reg.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—'}
-                </p>
-              </div>
+            <DetailItem label="Referensi">
+              <code className="font-mono text-xs font-bold">{reg.paymentReference || "—"}</code>
+            </DetailItem>
+            <DetailItem label="Jumlah">
+              <span className="text-lg font-black text-primary">
+                Rp {reg.paymentAmount.toLocaleString("id-ID")}
+              </span>
+            </DetailItem>
+            <DetailItem label="Metode">
+              <span className="capitalize">{reg.paymentMethod || "—"}</span>
+            </DetailItem>
+            <DetailItem label="Didaftarkan" icon={<CalendarDays className="size-3" />}>
+              {reg.createdAt
+                ? new Date(reg.createdAt).toLocaleDateString("id-ID", {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })
+                : "—"}
+            </DetailItem>
 
-              {/* Status Update */}
-              <PaymentStatusUpdate registrationId={reg.id} currentStatus={reg.paymentStatus} />
-            </div>
-          </div>
+            <PaymentStatusUpdate registrationId={reg.id} currentStatus={reg.paymentStatus} />
+          </SectionCard>
         </div>
       </div>
     </div>

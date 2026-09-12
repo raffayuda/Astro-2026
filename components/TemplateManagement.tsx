@@ -1,18 +1,24 @@
-'use client';
+"use client";
 
-import { useEffect, useRef, useState } from 'react';
-import { Upload, Save, Plus, Trash2, FileImage } from 'lucide-react';
-import { toast } from 'sonner';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Spinner } from '@/components/ui/spinner';
-import { apiHelpers } from '@/src/lib/api';
+import { useEffect, useRef, useState } from "react";
+import { Upload, Save, Plus, Trash2, FileImage } from "lucide-react";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Spinner } from "@/components/ui/spinner";
+import { apiHelpers } from "@/src/lib/api";
 import {
   useCertificateTemplates,
   useCertificateTemplateMutations,
-} from '@/src/lib/hooks/use-queries';
+} from "@/src/lib/hooks/use-queries";
 
 interface OverlayField {
   field: string;
@@ -28,35 +34,41 @@ interface Props {
   competitionId: string;
 }
 
-const RANK_OPTIONS = ['1', '2', '3'] as const;
+const RANK_OPTIONS = ["1", "2", "3"] as const;
 const DEFAULT_OVERLAY: OverlayField = {
-  field: 'participantName',
+  field: "participantName",
   x: 0,
   y: 0,
   fontSize: 24,
-  color: '#000000',
-  align: 'center',
+  color: "#000000",
+  align: "center",
   maxWidth: 300,
 };
 
 const OVERLAY_FIELDS = [
-  'participantName', 'rank', 'competitionTitle', 'category',
-  'institution', 'teamName', 'teamMembers', 'date', 'competitionTagline', 'competitionType',
+  "participantName",
+  "rank",
+  "competitionTitle",
+  "category",
+  "institution",
+  "teamName",
+  "teamMembers",
+  "date",
+  "competitionTagline",
+  "competitionType",
 ];
 
 export default function TemplateManagement({ competitionId }: Props) {
-  const [selectedRank, setSelectedRank] = useState<string>('1');
-  const [templateImageUrl, setTemplateImageUrl] = useState('');
-  const [overlayFields, setOverlayFields] = useState<OverlayField[]>([
-    { ...DEFAULT_OVERLAY },
-  ]);
+  const [selectedRank, setSelectedRank] = useState<string>("1");
+  const [templateImageUrl, setTemplateImageUrl] = useState("");
+  const [overlayFields, setOverlayFields] = useState<OverlayField[]>([{ ...DEFAULT_OVERLAY }]);
   const [uploadingTemplate, setUploadingTemplate] = useState(false);
   const [deletingTemplateId, setDeletingTemplateId] = useState<number | null>(null);
 
   // Drag-to-position / drag-to-resize state for the preview overlay boxes.
   const [dragState, setDragState] = useState<{
     idx: number;
-    mode: 'move' | 'resize' | 'fontsize';
+    mode: "move" | "resize" | "fontsize";
     startPx: number;
     startPy: number;
     grabDX: number;
@@ -85,8 +97,7 @@ export default function TemplateManagement({ competitionId }: Props) {
     return () => ro.disconnect();
   }, [templateImageUrl, naturalSize]);
 
-  const previewScale =
-    naturalSize && displayWidth > 0 ? displayWidth / naturalSize.w : 1;
+  const previewScale = naturalSize && displayWidth > 0 ? displayWidth / naturalSize.w : 1;
 
   const { data: templatesRaw, isLoading: templatesLoading } =
     useCertificateTemplates(competitionId);
@@ -94,9 +105,7 @@ export default function TemplateManagement({ competitionId }: Props) {
     useCertificateTemplateMutations(competitionId);
   const templates = Array.isArray(templatesRaw) ? templatesRaw : [];
 
-  const handleUploadTemplateImage = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  const handleUploadTemplateImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     setUploadingTemplate(true);
@@ -104,13 +113,13 @@ export default function TemplateManagement({ competitionId }: Props) {
       const uploadRes = await apiHelpers.upload(file);
       const url = (uploadRes as any)?.url;
       if (!url) {
-        toast.error('Upload template gagal');
+        toast.error("Upload template gagal");
         return;
       }
       setTemplateImageUrl(url);
-      toast.success('Template image berhasil diupload');
+      toast.success("Template image berhasil diupload");
     } catch {
-      toast.error('Gagal upload template image');
+      toast.error("Gagal upload template image");
     } finally {
       setUploadingTemplate(false);
     }
@@ -120,13 +129,8 @@ export default function TemplateManagement({ competitionId }: Props) {
     setOverlayFields((prev) => [...prev, { ...DEFAULT_OVERLAY }]);
   };
 
-  const handleUpdateOverlay = (
-    idx: number,
-    updates: Partial<OverlayField>,
-  ) => {
-    setOverlayFields((prev) =>
-      prev.map((f, i) => (i === idx ? { ...f, ...updates } : f)),
-    );
+  const handleUpdateOverlay = (idx: number, updates: Partial<OverlayField>) => {
+    setOverlayFields((prev) => prev.map((f, i) => (i === idx ? { ...f, ...updates } : f)));
   };
 
   const handleRemoveOverlay = (idx: number) => {
@@ -136,7 +140,7 @@ export default function TemplateManagement({ competitionId }: Props) {
   const onPointerDown = (
     e: React.PointerEvent,
     idx: number,
-    mode: 'move' | 'resize' | 'fontsize',
+    mode: "move" | "resize" | "fontsize",
   ) => {
     e.preventDefault();
     e.stopPropagation();
@@ -169,7 +173,7 @@ export default function TemplateManagement({ competitionId }: Props) {
       const scale = previewScale || 1;
       const { orig, mode } = dragState;
 
-      if (mode === 'move') {
+      if (mode === "move") {
         const nx = (px - dragState.grabDX) / scale;
         const ny = (py - dragState.grabDY) / scale;
         setOverlayFields((prev) =>
@@ -192,11 +196,7 @@ export default function TemplateManagement({ competitionId }: Props) {
         const fontSize = Math.max(8, Math.round((orig.fontSize || 16) + (dy - dx) / scale));
         setOverlayFields((prev) =>
           prev.map((f, i) =>
-            i === dragState.idx
-              ? mode === 'resize'
-                ? { ...f, maxWidth }
-                : { ...f, fontSize }
-              : f,
+            i === dragState.idx ? (mode === "resize" ? { ...f, maxWidth } : { ...f, fontSize }) : f,
           ),
         );
       }
@@ -204,19 +204,19 @@ export default function TemplateManagement({ competitionId }: Props) {
 
     const stopDrag = () => setDragState(null);
 
-    window.addEventListener('pointermove', applyDrag);
-    window.addEventListener('pointerup', stopDrag);
-    window.addEventListener('pointercancel', stopDrag);
+    window.addEventListener("pointermove", applyDrag);
+    window.addEventListener("pointerup", stopDrag);
+    window.addEventListener("pointercancel", stopDrag);
     return () => {
-      window.removeEventListener('pointermove', applyDrag);
-      window.removeEventListener('pointerup', stopDrag);
-      window.removeEventListener('pointercancel', stopDrag);
+      window.removeEventListener("pointermove", applyDrag);
+      window.removeEventListener("pointerup", stopDrag);
+      window.removeEventListener("pointercancel", stopDrag);
     };
   }, [dragState, previewScale]);
 
   const handleSaveTemplate = async () => {
     if (!templateImageUrl) {
-      toast.error('Upload template image dulu');
+      toast.error("Upload template image dulu");
       return;
     }
     try {
@@ -229,7 +229,7 @@ export default function TemplateManagement({ competitionId }: Props) {
       });
       toast.success(`Template Juara ${selectedRank} berhasil disimpan`);
     } catch {
-      toast.error('Gagal menyimpan template');
+      toast.error("Gagal menyimpan template");
     }
   };
 
@@ -237,32 +237,32 @@ export default function TemplateManagement({ competitionId }: Props) {
     const tmpl = templates.find((t: any) => String(t.rank) === rank);
     setSelectedRank(rank);
     if (tmpl) {
-      setTemplateImageUrl(tmpl.templateImageUrl || '');
+      setTemplateImageUrl(tmpl.templateImageUrl || "");
       setOverlayFields(
         (tmpl.textOverlays || []).map((o: any) => ({
-          field: o.field || 'participantName',
+          field: o.field || "participantName",
           x: o.x || 0,
           y: o.y || 0,
           fontSize: o.fontSize || 16,
-          color: o.color || '#000000',
-          align: o.align || 'center',
+          color: o.color || "#000000",
+          align: o.align || "center",
           maxWidth: o.maxWidth || 300,
         })),
       );
     } else {
-      setTemplateImageUrl('');
+      setTemplateImageUrl("");
       setOverlayFields([{ ...DEFAULT_OVERLAY }]);
     }
   };
 
   const handleRemoveTemplate = async (id: number) => {
-    if (!window.confirm('Hapus template ini?')) return;
+    if (!window.confirm("Hapus template ini?")) return;
     setDeletingTemplateId(id);
     try {
       await removeTemplateMut.mutateAsync(id);
-      toast.success('Template dihapus');
+      toast.success("Template dihapus");
     } catch {
-      toast.error('Gagal hapus template');
+      toast.error("Gagal hapus template");
     } finally {
       setDeletingTemplateId(null);
     }
@@ -274,7 +274,7 @@ export default function TemplateManagement({ competitionId }: Props) {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div className="flex items-end gap-3">
           <div>
-            <Label className="text-[10px] font-black uppercase tracking-wider text-muted-foreground">
+            <Label className="text-10 font-black uppercase tracking-wider text-muted-foreground">
               Peringkat
             </Label>
             <Select value={selectedRank} onValueChange={(v) => handleLoadTemplate(v)}>
@@ -293,11 +293,15 @@ export default function TemplateManagement({ competitionId }: Props) {
           <Button
             size="sm"
             variant="outline"
-            className="clip-angled-sm text-[10px] font-black uppercase tracking-wider"
+            className="rounded-md text-10 font-black uppercase tracking-wider"
             onClick={handleSaveTemplate}
             disabled={createTemplateMut.isPending}
           >
-            {createTemplateMut.isPending ? <Spinner className="size-3.5" /> : <Save className="size-3.5" />}
+            {createTemplateMut.isPending ? (
+              <Spinner className="size-3.5" />
+            ) : (
+              <Save className="size-3.5" />
+            )}
             Simpan Template
           </Button>
         </div>
@@ -310,11 +314,16 @@ export default function TemplateManagement({ competitionId }: Props) {
                 key={t.id}
                 size="sm"
                 variant="outline"
-                className="clip-angled-sm text-[10px] font-black uppercase tracking-wider"
+                className="rounded-md text-10 font-black uppercase tracking-wider"
                 onClick={() => handleRemoveTemplate(t.id)}
                 disabled={deletingTemplateId === t.id}
               >
-                {deletingTemplateId === t.id ? <Spinner className="size-3.5" /> : <Trash2 className="size-3.5" />} Hapus
+                {deletingTemplateId === t.id ? (
+                  <Spinner className="size-3.5" />
+                ) : (
+                  <Trash2 className="size-3.5" />
+                )}{" "}
+                Hapus
               </Button>
             ))}
         </div>
@@ -322,7 +331,7 @@ export default function TemplateManagement({ competitionId }: Props) {
 
       {/* Upload template image */}
       <div className="space-y-2">
-        <Label className="text-[10px] font-black uppercase tracking-wider text-muted-foreground">
+        <Label className="text-10 font-black uppercase tracking-wider text-muted-foreground">
           Template Image (hasil Canva)
         </Label>
         <div className="flex items-center gap-2">
@@ -335,11 +344,16 @@ export default function TemplateManagement({ competitionId }: Props) {
             onChange={handleUploadTemplateImage}
           />
           <label htmlFor="template-upload" className="flex-shrink-0 cursor-pointer">
-            <Button asChild size="sm" variant="outline" disabled={uploadingTemplate}
-              className="clip-angled-sm gap-1 text-[10px] font-black uppercase tracking-wider">
+            <Button
+              asChild
+              size="sm"
+              variant="outline"
+              disabled={uploadingTemplate}
+              className="rounded-md gap-1 text-10 font-black uppercase tracking-wider"
+            >
               <span>
                 {uploadingTemplate ? <Spinner className="size-3" /> : <Upload className="size-3" />}
-                {uploadingTemplate ? 'Mengunggah...' : 'Upload Gambar'}
+                {uploadingTemplate ? "Mengunggah..." : "Upload Gambar"}
               </span>
             </Button>
           </label>
@@ -357,7 +371,7 @@ export default function TemplateManagement({ competitionId }: Props) {
               href={templateImageUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-cyan-600 hover:text-cyan-700"
+              className="text-astro-blue hover:text-astro-navy"
             >
               {templateImageUrl}
             </a>
@@ -368,22 +382,27 @@ export default function TemplateManagement({ competitionId }: Props) {
       {/* Text overlay fields */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <Label className="text-[10px] font-black uppercase tracking-wider text-muted-foreground">
+          <Label className="text-10 font-black uppercase tracking-wider text-muted-foreground">
             Text Overlay Fields
           </Label>
-          <Button size="sm" variant="outline"
-            className="clip-angled-sm gap-1 text-[10px] font-black uppercase tracking-wider"
-            onClick={handleAddOverlayField}>
+          <Button
+            size="sm"
+            variant="outline"
+            className="rounded-md gap-1 text-10 font-black uppercase tracking-wider"
+            onClick={handleAddOverlayField}
+          >
             <Plus className="size-3" /> Tambah Field
           </Button>
         </div>
 
         <div className="max-h-80 space-y-3 overflow-y-auto pr-1">
           {overlayFields.map((field, idx) => (
-            <div key={idx}
-              className="flex flex-wrap items-end gap-2.5 rounded-lg border border-border p-3">
+            <div
+              key={idx}
+              className="flex flex-wrap items-end gap-2.5 rounded-lg border border-border p-3"
+            >
               <div className="flex-1 min-w-[120px]">
-                <Label className="text-[9px] text-muted-foreground">Field</Label>
+                <Label className="text-9 text-muted-foreground">Field</Label>
                 <Select
                   value={field.field}
                   onValueChange={(v) => handleUpdateOverlay(idx, { field: v })}
@@ -393,13 +412,15 @@ export default function TemplateManagement({ competitionId }: Props) {
                   </SelectTrigger>
                   <SelectContent>
                     {OVERLAY_FIELDS.map((f) => (
-                      <SelectItem key={f} value={f}>{f}</SelectItem>
+                      <SelectItem key={f} value={f}>
+                        {f}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
               <div className="w-16">
-                <Label className="text-[9px] text-muted-foreground">X (px)</Label>
+                <Label className="text-9 text-muted-foreground">X (px)</Label>
                 <Input
                   type="number"
                   value={field.x}
@@ -408,7 +429,7 @@ export default function TemplateManagement({ competitionId }: Props) {
                 />
               </div>
               <div className="w-16">
-                <Label className="text-[9px] text-muted-foreground">Y (px)</Label>
+                <Label className="text-9 text-muted-foreground">Y (px)</Label>
                 <Input
                   type="number"
                   value={field.y}
@@ -417,7 +438,7 @@ export default function TemplateManagement({ competitionId }: Props) {
                 />
               </div>
               <div className="w-20">
-                <Label className="text-[9px] text-muted-foreground">Font Size</Label>
+                <Label className="text-9 text-muted-foreground">Font Size</Label>
                 <Input
                   type="number"
                   value={field.fontSize}
@@ -426,7 +447,7 @@ export default function TemplateManagement({ competitionId }: Props) {
                 />
               </div>
               <div className="w-24">
-                <Label className="text-[9px] text-muted-foreground">Color</Label>
+                <Label className="text-9 text-muted-foreground">Color</Label>
                 <Input
                   type="color"
                   value={field.color}
@@ -435,7 +456,7 @@ export default function TemplateManagement({ competitionId }: Props) {
                 />
               </div>
               <div className="w-24">
-                <Label className="text-[9px] text-muted-foreground">Align</Label>
+                <Label className="text-9 text-muted-foreground">Align</Label>
                 <Select
                   value={field.align}
                   onValueChange={(v) => handleUpdateOverlay(idx, { align: v })}
@@ -451,7 +472,7 @@ export default function TemplateManagement({ competitionId }: Props) {
                 </Select>
               </div>
               <div className="w-28">
-                <Label className="text-[9px] text-muted-foreground">Max Width</Label>
+                <Label className="text-9 text-muted-foreground">Max Width</Label>
                 <Input
                   type="number"
                   value={field.maxWidth}
@@ -476,7 +497,7 @@ export default function TemplateManagement({ competitionId }: Props) {
       {/* Preview */}
       {templateImageUrl && (
         <div className="pt-3">
-          <Label className="block text-[10px] font-black uppercase tracking-wider text-muted-foreground mb-2">
+          <Label className="block text-10 font-black uppercase tracking-wider text-muted-foreground mb-2">
             Preview Template — Juara {selectedRank}
           </Label>
           <div
@@ -500,9 +521,9 @@ export default function TemplateManagement({ competitionId }: Props) {
               return (
                 <div
                   key={i}
-                  onPointerDown={(e) => onPointerDown(e, i, 'move')}
-                  className={`absolute cursor-move border-2 border-cyan-500 bg-cyan-500/30 ${
-                    isDragging ? 'ring-2 ring-cyan-300 z-10' : ''
+                  onPointerDown={(e) => onPointerDown(e, i, "move")}
+                  className={`absolute cursor-move border-2 border-astro-blue bg-astro-blue/30 ${
+                    isDragging ? "ring-2 ring-astro-cyan-2 z-10" : ""
                   }`}
                   style={{
                     left: `${of.x * previewScale}px`,
@@ -511,23 +532,23 @@ export default function TemplateManagement({ competitionId }: Props) {
                     fontSize: `${(of.fontSize || 16) * previewScale}px`,
                     color: of.color,
                     lineHeight: 1.2,
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    touchAction: 'none',
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    touchAction: "none",
                   }}
                 >
                   <span className="pointer-events-none">{of.field}</span>
                   {/* Drag handle: resize maxWidth */}
                   <span
-                    onPointerDown={(e) => onPointerDown(e, i, 'resize')}
-                    className="absolute -right-1.5 top-1/2 h-5 w-3 -translate-y-1/2 cursor-ew-resize border border-cyan-300 bg-cyan-600/90"
-                    style={{ touchAction: 'none' }}
+                    onPointerDown={(e) => onPointerDown(e, i, "resize")}
+                    className="absolute -right-1.5 top-1/2 h-5 w-3 -translate-y-1/2 cursor-ew-resize border border-astro-cyan-2 bg-astro-blue/90"
+                    style={{ touchAction: "none" }}
                   />
                   {/* Drag handle: fontSize */}
                   <span
-                    onPointerDown={(e) => onPointerDown(e, i, 'fontsize')}
-                    className="absolute -bottom-1.5 right-1/2 h-3 w-5 translate-x-1/2 cursor-ns-resize border border-cyan-300 bg-cyan-600/90"
-                    style={{ touchAction: 'none' }}
+                    onPointerDown={(e) => onPointerDown(e, i, "fontsize")}
+                    className="absolute -bottom-1.5 right-1/2 h-3 w-5 translate-x-1/2 cursor-ns-resize border border-astro-cyan-2 bg-astro-blue/90"
+                    style={{ touchAction: "none" }}
                   />
                 </div>
               );

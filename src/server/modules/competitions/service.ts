@@ -1,14 +1,14 @@
-import { db } from '@/src/db';
-import { competitions, registrations, competitionTimeline } from '@/src/db/schema';
-import { eq, desc, asc, count } from 'drizzle-orm';
-import type { CompetitionInput, TimelineItem } from './model';
-import { revalidatePath } from 'next/cache';
+import { db } from "@/src/db";
+import { competitions, registrations, competitionTimeline } from "@/src/db/schema";
+import { eq, desc, asc, count } from "drizzle-orm";
+import type { CompetitionInput, TimelineItem } from "./model";
+import { revalidatePath } from "next/cache";
 
 /** Safely revalidate public web portal paths when competitions change. */
 export function revalidateCompetitionPaths(id?: string) {
   try {
-    revalidatePath('/');
-    revalidatePath('/competitions');
+    revalidatePath("/");
+    revalidatePath("/competitions");
     if (id) {
       revalidatePath(`/competitions/${id}`);
       revalidatePath(`/register/${id}`);
@@ -20,7 +20,7 @@ export function revalidateCompetitionPaths(id?: string) {
 
 /** Convert a Drizzle text-boolean ('1'/'0') to a real boolean. */
 function toBool(value: string | null | undefined): boolean {
-  return value === '1';
+  return value === "1";
 }
 
 /** Map a DB competition row to the API shape (booleans as real booleans). */
@@ -37,7 +37,7 @@ function toApiCompetition(row: typeof competitions.$inferSelect) {
 
 /** Get the currently active batch from a list of competition batches */
 export function getActiveCompetitionBatch(
-  batches: typeof competitions.$inferSelect['batches'] | null | undefined,
+  batches: (typeof competitions.$inferSelect)["batches"] | null | undefined,
   now = new Date(),
 ) {
   if (!batches || !Array.isArray(batches) || batches.length === 0) return null;
@@ -56,16 +56,16 @@ export function getEffectiveFee(
     fee: number;
     isFree?: boolean | string | null;
     hasBatches?: boolean | string | null;
-    batches?: typeof competitions.$inferSelect['batches'] | null;
+    batches?: (typeof competitions.$inferSelect)["batches"] | null;
   },
   now = new Date(),
 ) {
-  const isFree = competition.isFree === true || competition.isFree === '1';
+  const isFree = competition.isFree === true || competition.isFree === "1";
   if (isFree) {
     return { fee: 0, batchName: null, isBatch: false, activeBatch: null };
   }
 
-  const hasBatches = competition.hasBatches === true || competition.hasBatches === '1';
+  const hasBatches = competition.hasBatches === true || competition.hasBatches === "1";
   if (hasBatches && competition.batches && competition.batches.length > 0) {
     const activeBatch = getActiveCompetitionBatch(competition.batches, now);
     if (activeBatch) {
@@ -77,18 +77,12 @@ export function getEffectiveFee(
 }
 
 export async function listCompetitions() {
-  const data = await db
-    .select()
-    .from(competitions)
-    .orderBy(desc(competitions.createdAt));
+  const data = await db.select().from(competitions).orderBy(desc(competitions.createdAt));
   return data.map(toApiCompetition);
 }
 
 export async function getCompetition(id: string) {
-  const [row] = await db
-    .select()
-    .from(competitions)
-    .where(eq(competitions.id, id));
+  const [row] = await db.select().from(competitions).where(eq(competitions.id, id));
   return row ? toApiCompetition(row) : null;
 }
 
@@ -103,7 +97,7 @@ export async function createCompetition(input: CompetitionInput) {
       tagline: input.tagline,
       description: input.description,
       fee: isFree ? 0 : (input.fee ?? 0),
-      hasBatches: input.hasBatches ? '1' : '0',
+      hasBatches: input.hasBatches ? "1" : "0",
       batches: input.batches ?? [],
       guidebookSections: input.guidebookSections ?? [],
       customFields: input.customFields ?? [],
@@ -123,13 +117,13 @@ export async function createCompetition(input: CompetitionInput) {
       maxTeamMembers: input.maxTeamMembers,
       minTeamMembers: input.minTeamMembers,
       membersRequired: input.membersRequired,
-      playerPhotoRequired: input.playerPhotoRequired ? '1' : '0',
-      isFree: isFree ? '1' : '0',
+      playerPhotoRequired: input.playerPhotoRequired ? "1" : "0",
+      isFree: isFree ? "1" : "0",
       origin: input.origin,
-      certificateEnabled: input.certificateEnabled ? '1' : '0',
+      certificateEnabled: input.certificateEnabled ? "1" : "0",
       certificateType: input.certificateType,
       certificateTemplate: input.certificateTemplate,
-      isActive: input.isActive ? '1' : '0',
+      isActive: input.isActive ? "1" : "0",
     })
     .returning();
   revalidateCompetitionPaths(input.id);
@@ -144,7 +138,7 @@ export async function updateCompetition(id: string, input: Partial<CompetitionIn
   if (input.description !== undefined) updates.description = input.description;
 
   if (input.isFree !== undefined) {
-    updates.isFree = input.isFree ? '1' : '0';
+    updates.isFree = input.isFree ? "1" : "0";
     if (input.isFree) {
       updates.fee = 0;
     }
@@ -153,7 +147,7 @@ export async function updateCompetition(id: string, input: Partial<CompetitionIn
     updates.fee = input.fee;
   }
   if (input.hasBatches !== undefined) {
-    updates.hasBatches = input.hasBatches ? '1' : '0';
+    updates.hasBatches = input.hasBatches ? "1" : "0";
   }
   if (input.batches !== undefined) {
     updates.batches = input.batches;
@@ -183,14 +177,14 @@ export async function updateCompetition(id: string, input: Partial<CompetitionIn
   if (input.minTeamMembers !== undefined) updates.minTeamMembers = input.minTeamMembers;
   if (input.membersRequired !== undefined) updates.membersRequired = input.membersRequired;
   if (input.playerPhotoRequired !== undefined)
-    updates.playerPhotoRequired = input.playerPhotoRequired ? '1' : '0';
+    updates.playerPhotoRequired = input.playerPhotoRequired ? "1" : "0";
   if (input.origin !== undefined) updates.origin = input.origin;
   if (input.certificateEnabled !== undefined)
-    updates.certificateEnabled = input.certificateEnabled ? '1' : '0';
+    updates.certificateEnabled = input.certificateEnabled ? "1" : "0";
   if (input.certificateType !== undefined) updates.certificateType = input.certificateType;
   if (input.certificateTemplate !== undefined)
     updates.certificateTemplate = input.certificateTemplate;
-  if (input.isActive !== undefined) updates.isActive = input.isActive ? '1' : '0';
+  if (input.isActive !== undefined) updates.isActive = input.isActive ? "1" : "0";
 
   const [row] = await db
     .update(competitions)
@@ -236,7 +230,7 @@ export async function listCompetitionsWithWinners() {
   const compsWithWinners = await db
     .select({ id: registrations.competitionId })
     .from(registrations)
-    .where(eq(registrations.isWinner, '1'))
+    .where(eq(registrations.isWinner, "1"))
     .groupBy(registrations.competitionId);
 
   const winnerIds = new Set(compsWithWinners.map((r) => r.id));
@@ -265,8 +259,7 @@ export async function createTimelineItem(competitionId: string, input: TimelineI
     .where(eq(competitionTimeline.competitionId, competitionId))
     .orderBy(asc(competitionTimeline.sortOrder));
 
-  const nextOrder =
-    existing.length > 0 ? (existing[existing.length - 1].sortOrder ?? 0) + 1 : 0;
+  const nextOrder = existing.length > 0 ? (existing[existing.length - 1].sortOrder ?? 0) + 1 : 0;
 
   const [row] = await db
     .insert(competitionTimeline)

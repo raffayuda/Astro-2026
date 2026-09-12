@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { api } from '@/src/lib/eden';
-import { getApiError } from '@/src/lib/api';
-import type { RegistrationFormValues } from '@/src/lib/forms/registration';
-import { toRegistrationBody, toSelfServiceBody } from '@/src/lib/forms/registration';
+import { api } from "@/src/lib/eden";
+import { getApiError } from "@/src/lib/api";
+import type { RegistrationFormValues } from "@/src/lib/forms/registration";
+import { toRegistrationBody, toSelfServiceBody } from "@/src/lib/forms/registration";
 
 /**
  * Registration API helpers via the typed Eden client (ky-backed).
@@ -12,24 +12,21 @@ import { toRegistrationBody, toSelfServiceBody } from '@/src/lib/forms/registrat
 export function useRegistrationApi() {
   async function create(
     competitionId: string,
-    type: 'team' | 'individual',
+    type: "team" | "individual",
     values: RegistrationFormValues,
   ) {
     const res = await api.registrations.post({
       ...toRegistrationBody(values, competitionId, type),
     });
-    if (res.error) throw new Error(getApiError(res.error, 'Gagal mendaftar'));
+    if (res.error) throw new Error(getApiError(res.error, "Gagal mendaftar"));
     return res.data;
   }
 
-  async function update(
-    registrationId: string,
-    values: RegistrationFormValues,
-  ) {
+  async function update(registrationId: string, values: RegistrationFormValues) {
     const res = await api.registrations({ id: registrationId }).patch({
       ...toSelfServiceBody(values),
     });
-    if (res.error) throw new Error(getApiError(res.error, 'Gagal memperbarui'));
+    if (res.error) throw new Error(getApiError(res.error, "Gagal memperbarui"));
     return res.data;
   }
 

@@ -1,103 +1,27 @@
-'use client';
+"use client";
 
-import Image from 'next/image';
-import { motion, useReducedMotion } from 'motion/react';
-import { ArrowUpRight } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import Image from "next/image";
+import { motion, useReducedMotion } from "motion/react";
+import { CtaButton } from "@/components/brand/CtaButton";
+import { SectionHeading } from "@/components/brand/SectionHeading";
+import { SectionShell } from "@/components/brand/SectionShell";
+import { WindowCard } from "@/components/brand/WindowCard";
 
 const MotionImage = motion.create(Image);
-
-function InstagramIcon({ className = 'w-4 h-4' }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
-      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-      <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
-    </svg>
-  );
-}
 
 export default function SocialMediaSection({ priority = false }: { priority?: boolean }) {
   const reduce = useReducedMotion();
 
-  // Pure clean neutral sky studio background matching adjacent sections
-
   return (
-    <section
-      id="social"
-      className="relative min-h-screen w-full overflow-hidden text-slate-900 py-16 md:py-24 font-sans bg-sky-100"
-    >
-      {/* ── Subtle Sky Ambient Glow ── */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-cyan-300/20 rounded-full blur-[130px] pointer-events-none z-0" />
-
-      {/* ── Subtle Sky Cloud Wisps ── */}
-      <MotionImage
-        src="/assets/awan1.png"
-        alt=""
-        width={200}
-        height={130}
-        animate={reduce ? undefined : { x: [0, 12, 0] }}
-        transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute top-[8%] left-[2%] w-24 md:w-44 h-auto opacity-[0.18] pointer-events-none select-none z-0"
-      />
-      <MotionImage
-        src="/assets/awan2.png"
-        alt=""
-        width={220}
-        height={140}
-        animate={reduce ? undefined : { x: [0, -15, 0] }}
-        transition={{ duration: 16, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute top-[14%] right-[2%] w-28 md:w-52 h-auto opacity-[0.15] pointer-events-none select-none z-0"
+    <SectionShell id="social" band="none" space="sm" className={priority ? "pt-24" : undefined}>
+      <SectionHeading
+        eyebrow="Kanal"
+        pillTone="blue"
+        title="Lebih dekat dengan ASTRO"
+        lead="Kanal resmi Instagram, dokumentasi, dan press kit ASTRO 2026."
       />
 
-      <div className="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center">
-
-        {/* ── 1. HEADLINE AREA ── */}
-        <div className="text-center max-w-3xl mx-auto mb-10 md:mb-12">
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="mb-4"
-          >
-            <Badge variant="outline" className="gap-2 border-slate-200 bg-white/80 px-3.5 py-1 text-xs font-semibold text-slate-700 shadow-sm backdrop-blur-md">
-              <InstagramIcon className="size-3.5 text-slate-800" />
-              @astrosttnf
-            </Badge>
-          </motion.div>
-
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-            className="font-masterpiece text-3xl sm:text-5xl md:text-6xl lg:text-7xl text-slate-900 tracking-tight leading-tight font-extrabold"
-          >
-            Lebih Dekat. Lebih Seru.<br />
-            <span className="text-sky-600 font-normal italic">Lebih ASTRO.</span>
-          </motion.h2>
-
-          <motion.p
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="mt-4 text-xs sm:text-sm md:text-base text-slate-600 font-medium tracking-wide"
-          >
-            Official Media Hub & Interactive Feed ASTRO 2026
-          </motion.p>
-        </div>
-
+      <div className="mt-10 flex flex-col items-center">
         {/* ── 2. PRODUCT IMAGE (Aligned exactly to the width of the spec grid) ── */}
         <div className="relative w-full max-w-7xl mb-12 md:mb-16 flex justify-center">
           <motion.div
@@ -115,11 +39,11 @@ export default function SocialMediaSection({ priority = false }: { priority?: bo
               height={1303}
               sizes="(max-width: 1024px) 90vw, 1200px"
               animate={reduce ? undefined : { y: [0, -8, 0] }}
-              transition={{ duration: 5.5, repeat: Infinity, ease: 'easeInOut' }}
+              transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut" }}
               className="hidden sm:block w-full h-auto object-contain select-none z-0"
               style={{
-                maskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 96%)',
-                WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 96%)',
+                maskImage: "linear-gradient(to bottom, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 96%)",
+                WebkitMaskImage: "linear-gradient(to bottom, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 96%)",
               }}
               priority={priority}
             />
@@ -140,85 +64,60 @@ export default function SocialMediaSection({ priority = false }: { priority?: bo
             width={800}
             height={1600}
             animate={reduce ? undefined : { y: [0, -6, 0] }}
-            transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
+            transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
             className="w-full h-auto object-contain select-none z-0"
             style={{
-              maskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 92%)',
-              WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 92%)',
+              maskImage: "linear-gradient(to bottom, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 92%)",
+              WebkitMaskImage: "linear-gradient(to bottom, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 92%)",
             }}
             priority={priority}
           />
         </motion.div>
 
         {/* ── 3. SPEC GRID (Shares exact container alignment) ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.3 }}
-          className="w-full max-w-6xl grid md:grid-cols-2 gap-x-14 gap-y-10 border-t border-slate-300/60 pt-12 md:pt-16 z-20"
-        >
-          {/* Spec Item 1 */}
-          <div className="flex flex-col gap-2 border-b border-slate-300/40 pb-8 md:border-b-0 md:pb-0">
-            <h3 className="text-sm md:text-base font-bold text-slate-900 tracking-tight">
-              Highlights & Dokumentasi Eksklusif
-            </h3>
-            <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-normal">
-              Liputan penuh seluruh cabang kompetisi, momen terbaik di panggung utama, dan galeri kegiatan ASTRO 2026.
-            </p>
+        <WindowCard title="Kenapa ikuti kanal ini" className="z-20 w-full max-w-6xl">
+          <div className="grid gap-x-10 gap-y-8 md:grid-cols-2">
+            <div className="flex flex-col gap-2">
+              <h3 className="font-heading text-sm font-bold tracking-tight text-astro-navy md:text-base">
+                Highlights dan dokumentasi
+              </h3>
+              <p className="text-sm font-medium leading-relaxed text-astro-navy/70">
+                Liputan cabang kompetisi, momen panggung utama, dan galeri kegiatan ASTRO 2026.
+              </p>
+            </div>
+            <div className="flex flex-col gap-2">
+              <h3 className="font-heading text-sm font-bold tracking-tight text-astro-navy md:text-base">
+                Update pendaftaran
+              </h3>
+              <p className="text-sm font-medium leading-relaxed text-astro-navy/70">
+                Informasi kuota, jadwal pengumuman, dan konsultasi cepat lewat DM panitia.
+              </p>
+            </div>
+            <div className="flex flex-col gap-2">
+              <h3 className="font-heading text-sm font-bold tracking-tight text-astro-navy md:text-base">
+                Komunitas pelajar
+              </h3>
+              <p className="text-sm font-medium leading-relaxed text-astro-navy/70">
+                Menghubungkan inovator muda dari sekolah dan kampus se-Indonesia.
+              </p>
+            </div>
+            <div className="flex flex-col gap-2">
+              <h3 className="font-heading text-sm font-bold tracking-tight text-astro-navy md:text-base">
+                Press kit resmi
+              </h3>
+              <p className="text-sm font-medium leading-relaxed text-astro-navy/70">
+                Logo, materi publikasi, dan aset visual untuk mitra media.
+              </p>
+            </div>
           </div>
+        </WindowCard>
 
-          {/* Spec Item 2 */}
-          <div className="flex flex-col gap-2 border-b border-slate-300/40 pb-8 md:border-b-0 md:pb-0">
-            <h3 className="text-sm md:text-base font-bold text-slate-900 tracking-tight">
-              Update Real-Time Pendaftaran
-            </h3>
-            <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-normal">
-              Informasi kuota perlombaan, jadwal pengumuman, dan konsultasi cepat langsung melalui DM panitia.
-            </p>
-          </div>
-
-          {/* Spec Item 3 */}
-          <div className="flex flex-col gap-2 border-b border-slate-300/40 pb-8 md:border-b-0 md:pb-0">
-            <h3 className="text-sm md:text-base font-bold text-slate-900 tracking-tight">
-              Jaringan Komunitas Pelajar
-            </h3>
-            <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-normal">
-              Menghubungkan ratusan inovator muda dari universitas dan sekolah terbaik di seluruh Indonesia.
-            </p>
-          </div>
-
-          {/* Spec Item 4 */}
-          <div className="flex flex-col gap-2">
-            <h3 className="text-sm md:text-base font-bold text-slate-900 tracking-tight">
-              Rilis Pers & Aset Visual Resmi
-            </h3>
-            <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-normal">
-              Akses cepat ke materi publikasi, logo resmi, dan press kit terverifikasi untuk mitra media.
-            </p>
-          </div>
-        </motion.div>
-
-        {/* ── 4. BOTTOM ACTION CTA ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="mt-12 md:mt-16 text-center z-20"
-        >
-          <Button
-            asChild
-            className="group gap-2.5 rounded-full bg-slate-900 px-6 py-3.5 text-xs font-semibold text-white shadow-lg shadow-slate-900/10 transition-all duration-300 hover:bg-slate-800 hover:shadow-slate-900/20 active:scale-95"
-          >
-            <a href="https://instagram.com/astrosttnf" target="_blank" rel="noopener noreferrer">
-              <span>Ikuti @astrosttnf di Instagram</span>
-              <ArrowUpRight className="size-4 text-slate-400 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-white" />
-            </a>
-          </Button>
-        </motion.div>
-
+        <div className="z-20 mt-10 text-center md:mt-12">
+          <CtaButton href="https://instagram.com/astrosttnf" size="lg" showChevron={false}>
+            Ikuti @astrosttnf
+          </CtaButton>
+        </div>
       </div>
-    </section>
+    </SectionShell>
   );
 }

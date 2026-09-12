@@ -1,56 +1,48 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import Image from "next/image";
-import { motion, AnimatePresence, useReducedMotion } from "motion/react";
+import { useMemo, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import { Search } from "lucide-react";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "@/components/ui/input-group";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import {
-  Empty,
-  EmptyDescription,
-  EmptyHeader,
-  EmptyTitle,
-} from "@/components/ui/empty";
-import type { Competition, CategoryType } from "@/types/astro";
-import CompetitionCard from "./CompetitionCard";
 
-const MotionImage = motion.create(Image);
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { Empty, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
+import { SectionHeading, SectionShell, Surface } from "@/components/brand";
+import { cn } from "@/lib/utils";
+import type { CategoryType, Competition } from "@/types/astro";
+import CompetitionCard from "./CompetitionCard";
 
 interface Props {
   competitions: Competition[];
 }
 
+/**
+ * Competition catalog — heading, one filter bar, one grid.
+ *
+ * Filters used to live in a sticky sidebar next to a two-column grid, which
+ * cost a third of the width and left the cards cramped. They are a toolbar now,
+ * so the grid gets the full container and runs three-up.
+ */
 export default function AboutSection({ competitions }: Props) {
-  const reduce = useReducedMotion();
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<
-    CategoryType | "all"
-  >("all");
-  const [selectedOrigin, setSelectedOrigin] = useState<
-    "all" | "internal" | "external"
-  >("all");
+  const [selectedCategory, setSelectedCategory] = useState<CategoryType | "all">("all");
+  const [selectedOrigin, setSelectedOrigin] = useState<"all" | "internal" | "external">("all");
 
-  // Derive categories dynamically from competition data
   const categoryMap = useMemo(() => {
     const map = new Map<CategoryType, string>();
-    competitions.forEach((c) => {
-      if (!map.has(c.category)) {
-        // Capitalize label
-        const label = c.category.charAt(0).toUpperCase() + c.category.slice(1);
-        map.set(c.category, label);
+    competitions.forEach((competition) => {
+      if (!map.has(competition.category)) {
+        map.set(
+          competition.category,
+          competition.category.charAt(0).toUpperCase() + competition.category.slice(1),
+        );
       }
     });
     return map;
   }, [competitions]);
 
-  const CATEGORIES: { label: string; value: CategoryType | "all" }[] = useMemo(
+  const categories: { label: string; value: CategoryType | "all" }[] = useMemo(
     () => [
-      { label: "SEMUA", value: "all" as const },
+      { label: "Semua", value: "all" as const },
       ...Array.from(categoryMap.entries()).map(([value, label]) => ({
         label,
         value,
@@ -59,291 +51,155 @@ export default function AboutSection({ competitions }: Props) {
     [categoryMap],
   );
 
-  const categoryOrder = useMemo(
-    () => Array.from(categoryMap.keys()),
-    [categoryMap],
-  );
+  const categoryOrder = useMemo(() => Array.from(categoryMap.keys()), [categoryMap]);
 
   const filtered = useMemo(() => {
-    const q = searchQuery.toLowerCase().trim();
+    const query = searchQuery.toLowerCase().trim();
+
     return competitions
-      .filter((c) => {
-        const matchCat =
-          selectedCategory === "all" || c.category === selectedCategory;
-        const matchOrigin =
-          selectedOrigin === "all" || c.origin === selectedOrigin;
-        const matchQ =
-          !q ||
-          c.title.toLowerCase().includes(q) ||
-          c.tagline.toLowerCase().includes(q);
-        return matchCat && matchOrigin && matchQ;
+      .filter((competition) => {
+        const matchCategory =
+          selectedCategory === "all" || competition.category === selectedCategory;
+        const matchOrigin = selectedOrigin === "all" || competition.origin === selectedOrigin;
+        const matchQuery =
+          !query ||
+          competition.title.toLowerCase().includes(query) ||
+          competition.tagline.toLowerCase().includes(query);
+
+        return matchCategory && matchOrigin && matchQuery;
       })
       .sort((a, b) => {
-        const catDiff =
-          categoryOrder.indexOf(a.category) - categoryOrder.indexOf(b.category);
-        if (catDiff !== 0) return catDiff;
+        const categoryDiff = categoryOrder.indexOf(a.category) - categoryOrder.indexOf(b.category);
+        if (categoryDiff !== 0) return categoryDiff;
         return a.title.localeCompare(b.title);
       });
-    // oxlint-disable-next-line react-hooks/exhaustive-deps
-  }, [competitions, selectedCategory, selectedOrigin, searchQuery]);
+  }, [competitions, selectedCategory, selectedOrigin, searchQuery, categoryOrder]);
 
   return (
-    <section
-      id="competitions"
-      className="relative py-20 md:py-28 overflow-hidden"
-    >
-      {/* Background — seamless transition from Hero's sky fade */}
-      <div className="absolute inset-0 bg-gradient-to-b from-sky-100/80 via-white to-white -z-10" />
-      <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-cyan-500/2 blur-[120px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-cyan-500/2 blur-[120px] rounded-full pointer-events-none" />
-
-      {/* ─── FLOATING BLOB ROUND IMAGES ─── */}
-      <motion.div
-        initial={reduce ? false : { opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8 }}
-      >
-        <Image
-          src="/assets/blob-round.png"
-          alt=""
-          width={112}
-          height={112}
-          className="absolute top-[2%] right-[2%] w-12 h-12 md:w-40 md:h-40 md:top-[8%] md:right-[12%] object-contain pointer-events-none select-none z-10"
+    <SectionShell id="competitions" band="none" space="md" pattern>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between sm:gap-5">
+        <SectionHeading
+          eyebrow="Katalog"
+          pillTone="orange"
+          title="Pilih cabang yang pas"
+          lead="Cari berdasarkan nama, kategori, atau asal kompetisi."
+          align="start"
+          className="min-w-0 flex-1"
         />
-      </motion.div>
-      <motion.div
-        initial={reduce ? false : { opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8, delay: 0.1 }}
-      >
-        <Image
-          src="/assets/blob-round.png"
-          alt=""
-          width={96}
-          height={96}
-          className="absolute top-[30%] left-[1%] w-12 h-12 md:w-36 md:h-36 md:top-[35%] md:left-[2%] object-contain pointer-events-none select-none z-10"
-        />
-      </motion.div>
-      <motion.div
-        initial={reduce ? false : { opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8, delay: 0.2 }}
-      >
-        <Image
-          src="/assets/blob-round.png"
-          alt=""
-          width={64}
-          height={64}
-          className="absolute top-[60%] right-[1%] w-10 h-10 md:w-24 md:h-24 md:top-[55%] md:right-[3%] object-contain pointer-events-none select-none z-10"
-        />
-      </motion.div>
-      <motion.div
-        initial={reduce ? false : { opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8, delay: 0.3 }}
-      >
-        <Image
-          src="/assets/blob-round.png"
-          alt=""
-          width={80}
-          height={80}
-          className="absolute bottom-[2%] left-[2%] w-10 h-10 md:w-32 md:h-32 md:bottom-[10%] md:left-[10%] object-contain pointer-events-none select-none z-10"
-        />
-      </motion.div>
 
-      {/* ─── EARTH DECORATIVE ─── */}
-      <motion.div
-        initial={reduce ? false : { opacity: 0, scale: 0.6 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-        className="absolute top-[5%] right-[5%] md:top-[12%] md:right-[4%] z-10 pointer-events-none select-none"
-      >
-        <MotionImage
-          src="/assets/earth.png"
-          alt=""
-          width={280}
-          height={280}
-          sizes="(min-width: 768px) 280px, 96px"
-          animate={{ y: [0, -18, 0] }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          className="w-15 h-15 md:w-[280px] md:h-[280px] object-contain"
-        />
-      </motion.div>
-
-      {/* ─── AWAN DECORATIVE ─── */}
-      <motion.div
-        initial={reduce ? false : { opacity: 0, x: -60 }}
-        whileInView={{ opacity: 1, x: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-        className="absolute top-[32%] left-[1%] md:top-[12%] md:left-[3%] z-10 pointer-events-none select-none"
-      >
-        <MotionImage
-          src="/assets/awan1.png"
-          alt=""
-          width={160}
-          height={160}
-          animate={{ x: [0, 15, 0] }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-          className="w-10 h-10 md:w-[160px] md:h-[160px] object-contain"
-        />
-      </motion.div>
-
-      <motion.div
-        initial={reduce ? false : { opacity: 0, x: 60 }}
-        whileInView={{ opacity: 1, x: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 1.2, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-        className="absolute bottom-[8%] right-[1%] md:bottom-[15%] md:right-[3%] z-10 pointer-events-none select-none"
-      >
-        <MotionImage
-          src="/assets/awan2.png"
-          alt=""
-          width={200}
-          height={200}
-          animate={{ x: [0, -12, 0] }}
-          transition={{ duration: 11, repeat: Infinity, ease: "easeInOut" }}
-          className="w-10 h-10 md:w-[200px] md:h-[200px] object-contain"
-        />
-      </motion.div>
-
-      <div className="relative z-30 max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
-        {/* Pilih Lombamu */}
-        <div>
-          {/* Title — rata kiri */}
-          <div className="mb-8">
-            <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-            >
-              <div className="accent-line mb-3" />
-              <h2 className="font-masterpiece text-4xl md:text-5xl lg:text-6xl text-slate-900 leading-tight">
-                Pilih
-                <br />
-                <span className="text-astro-cyan">Lombamu</span>
-              </h2>
-              <p className="text-sm text-slate-600 mt-2">
-                Tersedia berbagai cabang lomba seru dari tiga kategori berbeda.
-              </p>
-            </motion.div>
-          </div>
-
-          {/* Filters */}
-          <div className="mb-6 flex flex-col gap-3">
-            {/* Row 1: Search + Origin */}
-            <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
-              <div className="relative flex-1 sm:max-w-xs">
-                <InputGroup className="clip-angled h-10 border-border bg-background">
-                  <InputGroupAddon align="inline-start">
-                    <Search className="size-3.5 text-muted-foreground" />
-                  </InputGroupAddon>
-                  <InputGroupInput
-                    placeholder="CARI LOMBA..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="text-xs font-bold tracking-wider uppercase"
-                  />
-                </InputGroup>
-              </div>
-              {/* Origin filter — parallelogram buttons, no label */}
-              <div className="self-start sm:self-auto">
-                <ToggleGroup
-                  type="single"
-                  value={selectedOrigin}
-                  onValueChange={(v) =>
-                    v &&
-                    setSelectedOrigin(
-                      v as "all" | "internal" | "external",
-                    )
-                  }
-                  spacing={1}
-                >
-                  {[
-                    { label: "Semua", value: "all" as const },
-                    { label: "Internal", value: "internal" as const },
-                    { label: "Eksternal", value: "external" as const },
-                  ].map((opt) => (
-                    <ToggleGroupItem
-                      key={opt.value}
-                      value={opt.value}
-                      className="clip-angled px-4 py-2 text-[10px] font-bold uppercase tracking-[0.15em] data-[state=on]:bg-astro-cyan data-[state=on]:text-slate-950 data-[state=on]:shadow-sm data-[state=off]:border data-[state=off]:border-border data-[state=off]:bg-white data-[state=off]:text-muted-foreground data-[state=off]:hover:text-foreground"
-                    >
-                      {opt.label}
-                    </ToggleGroupItem>
-                  ))}
-                </ToggleGroup>
-              </div>
-            </div>
-
-            {/* Row 2: Category buttons */}
-            <div className="flex flex-wrap items-center gap-1">
-              <span className="mr-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-                Kategori
-              </span>
-              <ToggleGroup
-                type="single"
-                value={selectedCategory}
-                onValueChange={(v) =>
-                  v && setSelectedCategory(v as CategoryType | "all")
-                }
-                spacing={1}
-              >
-                {CATEGORIES.map((cat) => (
-                  <ToggleGroupItem
-                    key={cat.value}
-                    value={cat.value}
-                    className="clip-angled px-4 py-2 text-[10px] font-bold uppercase tracking-[0.15em] data-[state=on]:bg-astro-cyan data-[state=on]:text-slate-950 data-[state=on]:shadow-sm data-[state=off]:border data-[state=off]:border-border data-[state=off]:bg-white data-[state=off]:text-muted-foreground data-[state=off]:hover:text-foreground"
-                  >
-                    {cat.label}
-                  </ToggleGroupItem>
-                ))}
-              </ToggleGroup>
-            </div>
-          </div>
-
-          {/* Competition Grid */}
-          <AnimatePresence mode="wait">
-            {filtered.length > 0 ? (
-              <motion.div
-                key={`${selectedCategory}-${searchQuery}`}
-                className="grid gap-4 sm:grid-cols-2 md:grid-cols-3"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.2 }}
-              >
-                {filtered.map((c, i) => (
-                  <CompetitionCard key={c.id} competition={c} index={i} />
-                ))}
-              </motion.div>
-            ) : (
-              <motion.div
-                key="empty"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-              >
-                <Empty className="clip-angled-lg border border-border bg-white py-16 shadow-sm">
-                  <EmptyHeader>
-                    <EmptyTitle className="text-base font-black uppercase tracking-wider">
-                      Tidak Ditemukan
-                    </EmptyTitle>
-                    <EmptyDescription>
-                      Coba kata kunci atau filter lain.
-                    </EmptyDescription>
-                  </EmptyHeader>
-                </Empty>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
+        <label className="relative block w-full sm:w-72 sm:shrink-0">
+          <span className="sr-only">Cari nama lomba</span>
+          <Search
+            aria-hidden
+            className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-ink/40"
+          />
+          <input
+            type="text"
+            autoComplete="off"
+            placeholder="Cari nama lomba..."
+            value={searchQuery}
+            onChange={(event) => setSearchQuery(event.target.value)}
+            className="h-12 w-full rounded-full bg-white/90 pr-4 pl-10 text-base font-medium text-ink shadow-soft ring-1 ring-white/80 outline-none placeholder:font-medium placeholder:text-ink/40 focus-visible:ring-2 focus-visible:ring-astro-blue/35 sm:h-11 sm:text-sm"
+          />
+        </label>
       </div>
-    </section>
+
+      <Surface
+        tone="plain"
+        radius="2xl"
+        pad="sm"
+        className="mt-6 flex flex-col items-stretch gap-4 ring-1 ring-white/80 sm:mt-8 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-8 sm:gap-y-3"
+      >
+        <FilterGroup
+          label="Kategori"
+          value={selectedCategory}
+          items={categories}
+          onChange={(value) => setSelectedCategory(value as CategoryType | "all")}
+        />
+        <FilterGroup
+          label="Asal"
+          value={selectedOrigin}
+          items={[
+            { label: "Semua", value: "all" },
+            { label: "Internal", value: "internal" },
+            { label: "Eksternal", value: "external" },
+          ]}
+          onChange={(value) => setSelectedOrigin(value as "all" | "internal" | "external")}
+        />
+        <p className="text-xs font-bold text-ink/60 sm:ml-auto">{filtered.length} lomba</p>
+      </Surface>
+
+      <AnimatePresence mode="wait">
+        {filtered.length > 0 ? (
+          <motion.div
+            key={`${selectedCategory}-${selectedOrigin}-${searchQuery}`}
+            className="mt-6 grid gap-4 sm:mt-8 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            {filtered.map((competition, index) => (
+              <CompetitionCard key={competition.id} competition={competition} index={index} />
+            ))}
+          </motion.div>
+        ) : (
+          <motion.div
+            key="empty"
+            className="mt-8"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+          >
+            <Surface tone="plain" radius="2xl" pad="xl">
+              <Empty>
+                <EmptyHeader>
+                  <EmptyTitle className="font-heading text-base font-black">
+                    Tidak ditemukan
+                  </EmptyTitle>
+                  <EmptyDescription>Coba kata kunci atau filter lain.</EmptyDescription>
+                </EmptyHeader>
+              </Empty>
+            </Surface>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </SectionShell>
+  );
+}
+
+function FilterGroup({
+  label,
+  value,
+  items,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  items: { label: string; value: string }[];
+  onChange: (value: string) => void;
+}) {
+  return (
+    <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
+      <p className="text-xs font-bold text-ink/60">{label}</p>
+      <ToggleGroup
+        type="single"
+        value={value}
+        onValueChange={(nextValue) => nextValue && onChange(nextValue)}
+        className="flex flex-wrap justify-start gap-1.5"
+      >
+        {items.map((item) => (
+          <ToggleGroupItem
+            key={item.value}
+            value={item.value}
+            className={cn(
+              "min-h-9 rounded-full px-3.5 text-xs font-bold",
+              "data-[state=on]:bg-astro-navy data-[state=on]:text-white",
+            )}
+          >
+            {item.label}
+          </ToggleGroupItem>
+        ))}
+      </ToggleGroup>
+    </div>
   );
 }

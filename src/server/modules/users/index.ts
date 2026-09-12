@@ -1,22 +1,22 @@
-import { Elysia, t, status } from 'elysia';
-import { authPlugin } from '@/src/server/plugins/auth';
-import { db } from '@/src/db';
-import { users } from '@/src/db/schema';
-import { eq, desc } from 'drizzle-orm';
-import { headers } from 'next/headers';
-import { auth } from '@/src/server/auth';
-import { z } from 'zod';
+import { Elysia, t, status } from "elysia";
+import { authPlugin } from "@/src/server/plugins/auth";
+import { db } from "@/src/db";
+import { users } from "@/src/db/schema";
+import { eq, desc } from "drizzle-orm";
+import { headers } from "next/headers";
+import { auth } from "@/src/server/auth";
+import { z } from "zod";
 
 const userCreateSchema = z.object({
-  email: z.string().email('Format email tidak valid'),
-  password: z.string().min(6, 'Password minimal 6 karakter'),
+  email: z.string().email("Format email tidak valid"),
+  password: z.string().min(6, "Password minimal 6 karakter"),
   name: z.string().optional(),
-  role: z.enum(['admin', 'participant'], 'Role tidak valid').optional().default('participant'),
+  role: z.enum(["admin", "participant"], "Role tidak valid").optional().default("participant"),
 });
 
 const userUpdateSchema = z.object({
   name: z.string().optional(),
-  role: z.enum(['admin', 'participant']).optional(),
+  role: z.enum(["admin", "participant"]).optional(),
   emailVerified: z.boolean().optional(),
 });
 
@@ -24,75 +24,82 @@ const userUpdateSchema = z.object({
  * Users module — admin-only CRUD.
  * GET/DELETE hit the public.users table; POST creates via Better Auth admin API.
  */
-export const usersModule = new Elysia({ prefix: '/users' })
+export const usersModule = new Elysia({ prefix: "/users" })
   .use(authPlugin)
 
-  .get('/', async () => {
-    const data = await db
-      .select()
-      .from(users)
-      .orderBy(desc(users.createdAt));
-    return { data };
-  }, { admin: true })
+  .get(
+    "/",
+    async () => {
+      const data = await db.select().from(users).orderBy(desc(users.createdAt));
+      return { data };
+    },
+    { admin: true },
+  )
 
-  .post('/', async ({ body }) => {
-    const normalizedEmail = body.email.toLowerCase().trim();
-    const result = await auth.api.createUser({
-      body: {
-        email: normalizedEmail,
-        password: body.password,
-        name: body.name || normalizedEmail.split('@')[0],
-        role: body.role as 'admin' | 'user',
-      },
-      headers: await headers(),
-    });
+  .post(
+    "/",
+    async ({ body }) => {
+      const normalizedEmail = body.email.toLowerCase().trim();
+      const result = await auth.api.createUser({
+        body: {
+          email: normalizedEmail,
+          password: body.password,
+          name: body.name || normalizedEmail.split("@")[0],
+          role: body.role as "admin" | "user",
+        },
+        headers: await headers(),
+      });
 
-    if ('error' in result && result.error) {
-      const err = result.error as { message?: string };
-      return status(400, { error: err.message ?? 'Gagal membuat user' });
-    }
+      if ("error" in result && result.error) {
+        const err = result.error as { message?: string };
+        return status(400, { error: err.message ?? "Gagal membuat user" });
+      }
 
-    // Automatically mark dashboard-created users as verified so they can log in without OTP
-    await db
-      .update(users)
-      .set({ emailVerified: true })
-      .where(eq(users.email, normalizedEmail));
+      // Automatically mark dashboard-created users as verified so they can log in without OTP
+      await db.update(users).set({ emailVerified: true }).where(eq(users.email, normalizedEmail));
 
-    return status(201, { data: result });
-  }, {
-    body: userCreateSchema,
-    admin: true,
-  })
+      return status(201, { data: result });
+    },
+    {
+      body: userCreateSchema,
+      admin: true,
+    },
+  )
 
-  .put('/:id', async ({ params, body }) => {
-    const updates: { name?: string; role?: string; emailVerified?: boolean } = {};
-    if (body.name !== undefined) updates.name = body.name;
-    if (body.role !== undefined) updates.role = body.role;
-    if (body.emailVerified !== undefined) updates.emailVerified = body.emailVerified;
+  .put(
+    "/:id",
+    async ({ params, body }) => {
+      const updates: { name?: string; role?: string; emailVerified?: boolean } = {};
+      if (body.name !== undefined) updates.name = body.name;
+      if (body.role !== undefined) updates.role = body.role;
+      if (body.emailVerified !== undefined) updates.emailVerified = body.emailVerified;
 
-    const [updated] = await db
-      .update(users)
-      .set(updates)
-      .where(eq(users.id, params.id))
-      .returning();
+      const [updated] = await db
+        .update(users)
+        .set(updates)
+        .where(eq(users.id, params.id))
+        .returning();
 
-    if (!updated) return status(404, { error: 'User tidak ditemukan' });
-    return { data: updated };
-  }, {
-    params: t.Object({ id: t.String() }),
-    body: userUpdateSchema,
-    admin: true,
-  })
+      if (!updated) return status(404, { error: "User tidak ditemukan" });
+      return { data: updated };
+    },
+    {
+      params: t.Object({ id: t.String() }),
+      body: userUpdateSchema,
+      admin: true,
+    },
+  )
 
-  .delete('/:id', async ({ params }) => {
-    const [deleted] = await db
-      .delete(users)
-      .where(eq(users.id, params.id))
-      .returning();
+  .delete(
+    "/:id",
+    async ({ params }) => {
+      const [deleted] = await db.delete(users).where(eq(users.id, params.id)).returning();
 
-    if (!deleted) return status(404, { error: 'User tidak ditemukan' });
-    return { success: true };
-  }, {
-    params: t.Object({ id: t.String() }),
-    admin: true,
-  });
+      if (!deleted) return status(404, { error: "User tidak ditemukan" });
+      return { success: true };
+    },
+    {
+      params: t.Object({ id: t.String() }),
+      admin: true,
+    },
+  );

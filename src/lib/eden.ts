@@ -1,11 +1,11 @@
-import { treaty } from '@elysiajs/eden';
-import ky from 'ky';
-import type { App } from '@/src/server';
+import { treaty } from "@elysiajs/eden";
+import ky from "ky";
+import type { App } from "@/src/server";
 
 const baseUrl =
-  typeof window !== 'undefined'
+  typeof window !== "undefined"
     ? window.location.origin
-    : (process.env.NEXT_PUBLIC_BASE_URL ?? 'http://localhost:3000');
+    : (process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000");
 
 /**
  * ky-backed fetch wrapper used as Eden's fetcher.
@@ -20,7 +20,7 @@ const baseUrl =
 function kyFetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
   return ky(input as any, {
     ...(init as any),
-    cache: init?.cache ?? 'no-store',
+    cache: init?.cache ?? "no-store",
     throwHttpErrors: false,
     // Certificate PDF generation can take a while (many winners + uploads).
     timeout: 5 * 60 * 1000, // 5 minutes
@@ -36,7 +36,7 @@ function kyFetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response
 export const api = treaty<App>(baseUrl, {
   fetcher: kyFetch,
   fetch: {
-    credentials: 'include',
+    credentials: "include",
   },
 }).api;
 

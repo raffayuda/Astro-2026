@@ -1,13 +1,8 @@
-'use client';
+"use client";
 
 import * as React from "react";
 import Image from "next/image";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { normalizeImageUrl } from "@/components/ImportCommittee";
 
 interface ImagePreviewModalProps {
@@ -16,7 +11,11 @@ interface ImagePreviewModalProps {
   title?: string;
 }
 
-export default function ImagePreviewModal({ url, onClose, title = "Preview Gambar" }: ImagePreviewModalProps) {
+export default function ImagePreviewModal({
+  url,
+  onClose,
+  title = "Preview Gambar",
+}: ImagePreviewModalProps) {
   return (
     <Dialog open={!!url} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-4xl border-border bg-card p-6">

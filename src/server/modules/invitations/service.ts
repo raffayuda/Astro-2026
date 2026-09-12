@@ -1,11 +1,11 @@
-import { db } from '@/src/db';
-import { userInvitations, users } from '@/src/db/schema';
-import { eq, desc, sql } from 'drizzle-orm';
-import { Resend } from 'resend';
-import crypto from 'node:crypto';
-import { auth } from '@/src/server/auth';
-import { headers } from 'next/headers';
-import type { InvitationCreate, InvitationAccept } from './model';
+import { db } from "@/src/db";
+import { userInvitations, users } from "@/src/db/schema";
+import { eq, desc, sql } from "drizzle-orm";
+import { Resend } from "resend";
+import crypto from "node:crypto";
+import { auth } from "@/src/server/auth";
+import { headers } from "next/headers";
+import type { InvitationCreate, InvitationAccept } from "./model";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -13,21 +13,21 @@ function getBaseUrl(): string {
   return (
     process.env.NEXT_PUBLIC_BASE_URL ||
     process.env.BETTER_AUTH_URL ||
-    'https://astro.nurulfikri.ac.id'
-  ).replace(/\/+$/, '');
+    "https://astro.nurulfikri.ac.id"
+  ).replace(/\/+$/, "");
 }
 
-export type InvitationStatus = 'pending' | 'accepted' | 'expired' | 'revoked';
+export type InvitationStatus = "pending" | "accepted" | "expired" | "revoked";
 
 export function computeInvitationStatus(invitation: {
   revokedAt: Date | null;
   usedAt: Date | null;
   expiresAt: Date;
 }): InvitationStatus {
-  if (invitation.revokedAt) return 'revoked';
-  if (invitation.usedAt) return 'accepted';
-  if (new Date() > new Date(invitation.expiresAt)) return 'expired';
-  return 'pending';
+  if (invitation.revokedAt) return "revoked";
+  if (invitation.usedAt) return "accepted";
+  if (new Date() > new Date(invitation.expiresAt)) return "expired";
+  return "pending";
 }
 
 export async function listInvitations() {
@@ -59,10 +59,7 @@ export async function listInvitations() {
   return { data };
 }
 
-export async function createInvitation(
-  input: InvitationCreate,
-  callerUserId?: string,
-) {
+export async function createInvitation(input: InvitationCreate, callerUserId?: string) {
   const normalizedEmail = input.email ? input.email.toLowerCase().trim() : null;
 
   if (normalizedEmail) {
@@ -81,7 +78,7 @@ export async function createInvitation(
     }
   }
 
-  const token = crypto.randomBytes(24).toString('hex');
+  const token = crypto.randomBytes(24).toString("hex");
   const expiresInMs = (input.expiresInHours || 168) * 60 * 60 * 1000;
   const expiresAt = new Date(Date.now() + expiresInMs);
 
@@ -101,9 +98,9 @@ export async function createInvitation(
   // Optional: Send invitation email via Resend
   if (input.sendEmail && normalizedEmail && process.env.RESEND_API_KEY) {
     try {
-      const roleLabel = input.role === 'admin' ? 'Admin / Panitia' : 'Peserta';
+      const roleLabel = input.role === "admin" ? "Admin / Panitia" : "Peserta";
       await resend.emails.send({
-        from: 'ASTRO 2026 <noreply@mailer.kta.blue>',
+        from: "ASTRO 2026 <noreply@mailer.kta.blue>",
         to: normalizedEmail,
         subject: `Undangan Bergabung ke ASTRO 2026 (${roleLabel})`,
         html: `
@@ -136,14 +133,14 @@ export async function createInvitation(
         `,
       });
     } catch (emailErr) {
-      console.error('Failed to send invitation email:', emailErr);
+      console.error("Failed to send invitation email:", emailErr);
     }
   }
 
   return {
     data: {
       ...invitation,
-      status: 'pending' as const,
+      status: "pending" as const,
       inviteUrl,
     },
   };
@@ -160,7 +157,7 @@ export async function revokeInvitation(id: string) {
     .returning();
 
   if (!updated) {
-    return { error: 'Undangan tidak ditemukan', status: 404 } as const;
+    return { error: "Undangan tidak ditemukan", status: 404 } as const;
   }
 
   return { data: updated };
@@ -176,30 +173,30 @@ export async function verifyInvitation(token: string) {
   if (!inv) {
     return {
       valid: false,
-      error: 'Tautan undangan tidak ditemukan atau tidak valid.',
+      error: "Tautan undangan tidak ditemukan atau tidak valid.",
     } as const;
   }
 
   const status = computeInvitationStatus(inv);
 
-  if (status === 'revoked') {
+  if (status === "revoked") {
     return {
       valid: false,
-      error: 'Tautan undangan ini telah dibatalkan oleh administrator.',
+      error: "Tautan undangan ini telah dibatalkan oleh administrator.",
     } as const;
   }
 
-  if (status === 'accepted') {
+  if (status === "accepted") {
     return {
       valid: false,
-      error: 'Tautan undangan ini sudah pernah digunakan.',
+      error: "Tautan undangan ini sudah pernah digunakan.",
     } as const;
   }
 
-  if (status === 'expired') {
+  if (status === "expired") {
     return {
       valid: false,
-      error: 'Tautan undangan ini telah melewati masa berlaku (kadaluarsa).',
+      error: "Tautan undangan ini telah melewati masa berlaku (kadaluarsa).",
     } as const;
   }
 
@@ -224,7 +221,7 @@ export async function acceptInvitation(token: string, input: InvitationAccept) {
   const targetEmail = (inv.email || input.email)?.toLowerCase().trim();
 
   if (!targetEmail) {
-    return { error: 'Email wajib diisi.', status: 400 } as const;
+    return { error: "Email wajib diisi.", status: 400 } as const;
   }
 
   // Check if user with targetEmail already exists
@@ -255,15 +252,15 @@ export async function acceptInvitation(token: string, input: InvitationAccept) {
         email: targetEmail,
         password: input.password,
         name: input.name,
-        role: inv.role as 'admin' | 'user',
+        role: inv.role as "admin" | "user",
       },
       headers: await headers(),
     });
 
-    if ('error' in result && result.error) {
+    if ("error" in result && result.error) {
       const err = result.error as { message?: string };
       return {
-        error: err.message || 'Gagal mendaftarkan akun baru.',
+        error: err.message || "Gagal mendaftarkan akun baru.",
         status: 400,
       } as const;
     }

@@ -2,26 +2,154 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+/* Kept so `dark:` utilities stay inert. Nothing ever adds `.dark` (no ThemeProvider is
+   mounted), and removing this would hand `dark:` back to prefers-color-scheme, which
+   would activate ~26 orphaned dark: utilities against a light-only palette. */
 @custom-variant dark (&:is(.dark *));
 
-/* ─── Tailwind v4 Theme ─── */
+/* ═══════════════════════════════════════════════════════════════════
+   ASTRO 2026 — Tailwind v4 theme (CSS-first; there is no tailwind.config)
+   Palette source: design/astro-design-system.json
+   ═══════════════════════════════════════════════════════════════════ */
 @theme inline {
+  /* ── Fonts ── */
   --font-sans: var(--font-sans);
-  --font-display: var(--font-space-grotesk), var(--font-plus-jakarta-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-masterpiece: var(--font-masterpiece);
+  --font-display: var(--font-plus-jakarta-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-title: var(--font-alexandria), ui-sans-serif, system-ui, sans-serif;
+  --font-subtitle: var(--font-lexend-exa), ui-sans-serif, system-ui, sans-serif;
+  /* Plus Jakarta Sans for every heading and stat figure. Masterpiece stays
+     reserved for the big chrome hero wordmarks, where its display weight works;
+     at small sizes in dashboard tables it is unreadable. */
+  --font-heading: var(--font-plus-jakarta-sans), ui-sans-serif, system-ui, sans-serif;
 
-  --color-deep-slate: #ffffff;
-  --color-astro-cyan: #06B6D4;
-  --color-surface-dark: #f8fafc;
-  --color-surface-mid: #f1f5f9;
+  /* ── Brand: primary ── */
+  --color-astro-blue: #3b82f6;
+  --color-astro-cyan-2: #93c5fd;
+  --color-astro-navy: #1e3a8a;
+  /* Bright gradient end for CTAs and sky ramps. */
+  --color-astro-sky: #38bdf8;
 
-  --shadow-glow-cyan: 0 0 20px rgba(6, 182, 212, 0.05);
-  --shadow-glow-cyan-lg: 0 0 40px rgba(6, 182, 212, 0.1);
-  --shadow-glow-cyan-btn: 0 0 20px rgba(6, 182, 212, 0.3);
+  /* Physical casing greys for the retro monitor widget. Not brand colours, but
+     named so no component reaches into Tailwind's built-in ramps. */
+  --color-casing: #e4e4e7;
+  --color-casing-deep: #a1a1aa;
 
-  --animate-glow-pulse: glow-pulse 3s ease-in-out infinite;
+  /* ── Logo artwork colours ──
+     Sampled straight from public/assets/logo-astro.png so the hero scene, the
+     mascot and the wordmark sit in one palette. The --color-astro-* ramp above
+     is the UI palette (Tailwind blue) and is deliberately left alone: ~130 call
+     sites depend on it. Use these only for the illustrated scene. */
+  --color-logo-navy: #131a3d;
+  --color-logo-mint: #4be6a0;
+  --color-logo-sky: #3ab7e8;
+  --color-logo-sun: #ffc41f;
+  --color-logo-pink: #ef6ba4;
+  --color-logo-leaf: #34a45b;
+
+  /* ── ASTRO GOT TALENT poster palette ──
+     Sampled from Figma frame 795:2 "COVER AGT" in the ASTRO 2026 file. The
+     poster is a warm pink/cream world, so it gets its own names rather than
+     bending the blue --color-astro-* UI ramp that ~130 sites depend on. */
+  --color-agt-pink: #ff1ca8;
+  --color-agt-cream: #fff2d0;
+  --color-agt-orange: #f67334;
+  --color-agt-mint: #20f4aa;
+  --color-agt-lime: #48fe68;
+
+  /* ── Brand: accent ── */
+  --color-pastel-orange: #ff9e64;
+  --color-astro-gold: #facc15;
+  --color-astro-pink: #ec4899;
+  --color-astro-lime2: #a3e635;
+
+  /* ── Brand: neutral ── */
+  --color-surface: #f3f4f6;
+  --color-ink: #1f2937;
+
+  /* ── Brand: sky ramp ── */
+  --color-sky-top: #7ec8f5;
+  --color-sky-mid: #b8e4fb;
+  --color-sky-bottom: #e8f6fe;
+
+  /* ── Legacy token names, remapped onto the new palette ──
+     ~130 call sites still use these utilities (text-astro-cyan, bg-astro-lime, …).
+     Keeping the names declared means those sites adopt the new palette with no edits. */
+  --color-astro-cyan: #3b82f6;
+  --color-astro-royal: #1e3a8a;
+  --color-astro-lime: #facc15;
+  --color-astro-mint: #93c5fd;
+  --color-astro-leaf: #a3e635;
+  --color-deep-slate: #1e3a8a;
+  --color-surface-dark: #b8e4fb;
+  --color-surface-mid: #f3f4f6;
+
+  /* ── Shadows ──
+     The component style guide uses SOFT DIFFUSE shadows on borderless gradient
+     surfaces, so those are the default. The hard-offset "sticker" set is kept for
+     poster-style surfaces (chevron frames, price pills) that genuinely want it.
+     Tailwind's own --shadow-sm/md/lg are deliberately left alone so dropdowns,
+     popovers and dialogs keep neutral elevation. */
+  --shadow-soft-sm: 0 1px 2px rgba(30, 58, 138, 0.06), 0 2px 6px rgba(30, 58, 138, 0.06);
+  --shadow-soft: 0 2px 4px rgba(30, 58, 138, 0.06), 0 8px 20px rgba(30, 58, 138, 0.1);
+  --shadow-soft-lg: 0 4px 8px rgba(30, 58, 138, 0.07), 0 16px 36px rgba(30, 58, 138, 0.14);
+  --shadow-glow-blue: 0 6px 18px rgba(59, 130, 246, 0.38);
+  --shadow-glow-orange: 0 6px 18px rgba(255, 158, 100, 0.4);
+  --shadow-glow-pink: 0 6px 18px rgba(236, 72, 153, 0.35);
+  --shadow-sticker-sm: 0 2px 0 #1e3a8a;
+  --shadow-sticker: 0 4px 0 #1e3a8a;
+  --shadow-sticker-lg: 0 6px 0 #1e3a8a;
+  --shadow-gloss: inset 0 2px 0 rgba(255, 255, 255, 0.65);
+  /* Inner top shadow for pills and title plates, per the spec:
+     0px -6.2px 6.07px 0px #00000040 inset. */
+  --shadow-inset-top: inset 0 -6.2px 6.07px rgba(0, 0, 0, 0.25);
+  --shadow-inset-screen: inset 0 4px 12px rgba(0, 0, 0, 0.35);
+  /* Poster title plate, per the Figma spec: 0 -9px 4px #00000040 inset. */
+  --shadow-plate: inset 0 -9px 4px rgba(0, 0, 0, 0.25);
+
+  /* ── Micro type ramp ──
+     Named by pixel size so there is exactly one utility per step and no
+     ambiguity. Replaces 408 arbitrary text-[Npx] values. */
+  --text-8: 0.5rem;
+  --text-9: 0.5625rem;
+  --text-10: 0.625rem;
+  --text-11: 0.6875rem;
+
+  /* ── Display type scale ──
+     v4 lets a font-size token carry its own line-height, letter-spacing and
+     weight, so `text-title` applies the whole spec as a single utility. Sizes
+     are clamped: the spec's fixed px is the desktop ceiling. */
+  --text-title: clamp(2.75rem, 11vw, 162.55px);
+  --text-title--line-height: 1;
+  --text-title--letter-spacing: -0.06em;
+  --text-title--font-weight: 700;
+
+  /* Secondary title step, for names and section heroes. */
+  --text-title-sm: clamp(2.25rem, 9vw, 126.06px);
+  --text-title-sm--line-height: 1;
+  --text-title-sm--letter-spacing: -0.06em;
+  --text-title-sm--font-weight: 700;
+
+  --text-subtitle: clamp(1.375rem, 4vw, 35.05px);
+  --text-subtitle--line-height: 1;
+  --text-subtitle--letter-spacing: -0.19em;
+  --text-subtitle--font-weight: 700;
+
   --animate-shimmer: shimmer 2.5s ease-in-out infinite;
-  --font-heading: var(--font-sans);
+  --animate-hero-rise: hero-rise 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-bubble-drift: bubble-drift 9s ease-in-out infinite;
+
+  /* ── Radius ramp: literal px so class names and token values agree ──
+     Tailwind v4 ships lg=8px/md=6px; the old calc(--radius * n) ramp gave lg=16px/
+     md=12.8px. Spec calls for lg=12px, md=8px. */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+  --radius-3xl: 24px;
+  --radius-4xl: 32px;
+
+  /* ── shadcn semantic bridge ── */
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -53,213 +181,81 @@
   --color-card: var(--card);
   --color-foreground: var(--foreground);
   --color-background: var(--background);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-@keyframes glow-pulse {
-  0%, 100% { opacity: 0.6; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.05); }
+/* ═══════════════════════════════════════════════════════════════════
+   shadcn semantic tokens — retuned to the artwork palette
+   ═══════════════════════════════════════════════════════════════════ */
+:root {
+  --background: oklch(0.985 0.015 235);
+  --foreground: oklch(0.31 0.03 258);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.31 0.03 258);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.31 0.03 258);
+  --primary: oklch(0.643 0.183 259);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.812 0.101 250);
+  --secondary-foreground: oklch(0.34 0.116 265);
+  --muted: oklch(0.96 0.006 258);
+  --muted-foreground: oklch(0.49 0.03 258);
+  --accent: oklch(0.87 0.163 92);
+  --accent-foreground: oklch(0.34 0.116 265);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.812 0.101 250);
+  --input: oklch(0.812 0.101 250);
+  --ring: oklch(0.643 0.183 259);
+  --chart-1: oklch(0.643 0.183 259);
+  --chart-2: oklch(0.812 0.101 250);
+  --chart-3: oklch(0.87 0.163 92);
+  --chart-4: oklch(0.771 0.128 45);
+  --chart-5: oklch(0.65 0.222 355);
+  --radius: 1rem;
+  --sidebar: oklch(0.975 0.012 235);
+  --sidebar-foreground: oklch(0.31 0.03 258);
+  --sidebar-primary: oklch(0.643 0.183 259);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.812 0.101 250);
+  --sidebar-accent-foreground: oklch(0.34 0.116 265);
+  --sidebar-border: oklch(0.812 0.101 250);
+  --sidebar-ring: oklch(0.643 0.183 259);
 }
 
+/* ═══════════════════════════════════════════════════════════════════
+   Keyframes
+   ═══════════════════════════════════════════════════════════════════ */
 @keyframes shimmer {
-  0% { background-position: -200% center; }
-  100% { background-position: 200% center; }
-}
-
-/* Animated shimmer skeleton for lazy-loaded images */
-.shimmer {
-  background: linear-gradient(
-    110deg,
-    rgba(148, 163, 184, 0.15) 8%,
-    rgba(148, 163, 184, 0.4) 18%,
-    rgba(148, 163, 184, 0.15) 33%
-  );
-  background-size: 200% 100%;
-  animation: shimmer 1.8s ease-in-out infinite;
-}
-
-/* Entrance for hero content — transform-only so text paints immediately (LCP-friendly) */
-@keyframes hero-rise {
-  from { transform: translateY(24px); }
-  to { transform: translateY(0); }
-}
-
-.animate-hero-rise {
-  animation: hero-rise 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-/* ─── Base ─── */
-html { scroll-behavior: smooth; }
-
-body {
-  background: #ffffff;
-  color: #334155;
-  font-family: var(--font-sans);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-/* ─── Scrollbar ─── */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: #f8fafc; }
-::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-
-/* ─── Selection ─── */
-::selection {
-  background-color: rgba(6, 182, 212, 0.2);
-  color: #0f172a;
-}
-
-/* ─── Angular Diagonal Divider ─── */
-.diagonal-divider-down {
-  position: relative;
-}
-.diagonal-divider-down::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: -2%;
-  right: -2%;
-  height: 80px;
-  background: inherit;
-  transform: rotate(-1.5deg);
-  transform-origin: bottom right;
-}
-
-.diagonal-divider-up {
-  position: relative;
-}
-.diagonal-divider-up::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -2%;
-  right: -2%;
-  height: 80px;
-  background: inherit;
-  transform: rotate(1.5deg);
-  transform-origin: top left;
-}
-
-/* ─── Accent Line (angular decoration) ─── */
-.accent-line {
-  width: 60px;
-  height: 4px;
-  background: linear-gradient(90deg, #06B6D4, #0f172a);
-  transform: skewX(-12deg);
-}
-
-.accent-line-wide {
-  width: 120px;
-  height: 3px;
-  background: linear-gradient(90deg, #06B6D4, #0f172a);
-  transform: skewX(-12deg);
-}
-
-/* ─── Massive Typography ─── */
-.text-massive {
-  font-size: clamp(4rem, 15vw, 12rem);
-  font-weight: 900;
-  line-height: 0.85;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-  font-family: var(--font-masterpiece), var(--font-space-grotesk), sans-serif;
-}
-
-.text-display {
-  font-size: clamp(2rem, 5vw, 4.5rem);
-  font-weight: 800;
-  line-height: 0.95;
-  letter-spacing: -0.03em;
-  text-transform: uppercase;
-}
-
-/* ─── Reduced Motion ─── */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
   }
 }
 
-:root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.208 0.042 264.695);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.208 0.042 264.695);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.208 0.042 264.695);
-  --primary: oklch(0.715 0.143 215.221);
-  --primary-foreground: oklch(0.129 0.042 264.695);
-  --secondary: oklch(0.97 0.003 264.542);
-  --secondary-foreground: oklch(0.208 0.042 264.695);
-  --muted: oklch(0.97 0.003 264.542);
-  --muted-foreground: oklch(0.554 0.046 257.417);
-  --accent: oklch(0.945 0.045 215);
-  --accent-foreground: oklch(0.208 0.042 264.695);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.929 0.013 255.508);
-  --input: oklch(0.929 0.013 255.508);
-  --ring: oklch(0.715 0.143 215.221);
-  --chart-1: oklch(0.715 0.143 215.221);
-  --chart-2: oklch(0.498 0.116 232.661);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.696 0.17 162.48);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --radius: 0.5rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.208 0.042 264.695);
-  --sidebar-primary: oklch(0.715 0.143 215.221);
-  --sidebar-primary-foreground: oklch(0.129 0.042 264.695);
-  --sidebar-accent: oklch(0.945 0.045 215);
-  --sidebar-accent-foreground: oklch(0.208 0.042 264.695);
-  --sidebar-border: oklch(0.929 0.013 255.508);
-  --sidebar-ring: oklch(0.715 0.143 215.221);
+/* Transform-only so hero text paints immediately (LCP-friendly) */
+@keyframes hero-rise {
+  from {
+    transform: translateY(24px);
+  }
+  to {
+    transform: translateY(0);
+  }
 }
 
-.dark {
-  --background: oklch(0.129 0.042 264.695);
-  --foreground: oklch(0.984 0.003 247.858);
-  --card: oklch(0.208 0.042 264.695);
-  --card-foreground: oklch(0.984 0.003 247.858);
-  --popover: oklch(0.208 0.042 264.695);
-  --popover-foreground: oklch(0.984 0.003 247.858);
-  --primary: oklch(0.715 0.143 215.221);
-  --primary-foreground: oklch(0.129 0.042 264.695);
-  --secondary: oklch(0.279 0.041 260.031);
-  --secondary-foreground: oklch(0.984 0.003 247.858);
-  --muted: oklch(0.279 0.041 260.031);
-  --muted-foreground: oklch(0.704 0.04 256.788);
-  --accent: oklch(0.279 0.041 260.031);
-  --accent-foreground: oklch(0.984 0.003 247.858);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.715 0.143 215.221);
-  --chart-1: oklch(0.715 0.143 215.221);
-  --chart-2: oklch(0.498 0.116 232.661);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.696 0.17 162.48);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.208 0.042 264.695);
-  --sidebar-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-primary: oklch(0.715 0.143 215.221);
-  --sidebar-primary-foreground: oklch(0.129 0.042 264.695);
-  --sidebar-accent: oklch(0.279 0.041 260.031);
-  --sidebar-accent-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.715 0.143 215.221);
+@keyframes bubble-drift {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-18px) scale(1.04);
+  }
 }
 
+/* ═══════════════════════════════════════════════════════════════════
+   Base
+   ═══════════════════════════════════════════════════════════════════ */
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -272,70 +268,101 @@ body {
   }
 }
 
-/* ─── Angular Brand Utility ─── */
-.clip-angled {
-  border-radius: 0px;
-  clip-path: polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%);
-}
-.clip-angled-sm {
-  border-radius: 0px;
-  clip-path: polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%);
-}
-.clip-angled-lg {
-  border-radius: 0px;
-  clip-path: polygon(14px 0, 100% 0, calc(100% - 14px) 100%, 0 100%);
+html {
+  scroll-behavior: smooth;
 }
 
-/* ─── ASTRO 2026 Official Invoice Print Styles ─── */
-@media screen {
-  #astro-print-portal {
-    display: none !important;
+/* Unlayered, so it wins over the @layer base body rule above.
+   Page ground is sky. White and cream are plates on PageShell, matching the
+   brand-kit slides and Cerdas Cermat posters. */
+body {
+  background: #b8e4fb;
+  color: #1f2937;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #e8f6fe;
+}
+::-webkit-scrollbar-thumb {
+  background: #3b82f6;
+  border-radius: 999px;
+  border: 2px solid #e8f6fe;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #1e3a8a;
+}
+
+::selection {
+  background-color: rgba(250, 204, 21, 0.6);
+  color: #1e3a8a;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Reduced motion — CSS animations only. Motion's JS-driven values still
+   need a useReducedMotion() guard at the call site.
+   ═══════════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Print — invoice only.
+
+   `PrintPortal` mounts the invoice as a direct child of <body> under
+   #astro-print-portal. On screen that node is hidden outright; in print
+   every other body child is hidden instead, so the sheet carries the
+   invoice alone with no navbar, footer, sky ground or toasts.
+   ═══════════════════════════════════════════════════════════════════ */
+#astro-print-portal {
+  display: none;
 }
 
 @media print {
   @page {
-    size: A4 portrait;
-    margin: 8mm 10mm;
+    size: A4;
+    margin: 12mm;
   }
 
   html,
   body {
-    background: #ffffff !important;
-    background-color: #ffffff !important;
-    color: #0f172a !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    width: 100% !important;
     height: auto !important;
-    min-height: 0 !important;
     overflow: visible !important;
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
+    background: #fff !important;
   }
 
-  /* Hide all top-level body elements except the dedicated print portal */
   body > *:not(#astro-print-portal) {
     display: none !important;
-    visibility: hidden !important;
-    height: 0 !important;
-    overflow: hidden !important;
   }
 
-  /* Show only the print portal */
-  body > #astro-print-portal {
+  #astro-print-portal {
     display: block !important;
-    visibility: visible !important;
-    position: static !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 auto !important;
-    padding: 0 !important;
-    background: #ffffff !important;
-    opacity: 1 !important;
   }
 
-  body > #astro-print-portal * {
-    visibility: visible !important;
+  /* Keep the tinted status blocks and badges legible on paper. */
+  #astro-print-portal,
+  #astro-print-portal * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
-}
+
+  /* Do not split a roster cell, a summary row or a signature block. */
+  #printable-invoice-content dl,
+  #printable-invoice-content dl > div,
+  #printable-invoice-content table tr {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}

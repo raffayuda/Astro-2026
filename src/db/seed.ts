@@ -1,27 +1,30 @@
-import * as dotenv from 'dotenv';
+import * as dotenv from "dotenv";
 
-dotenv.config({ path: '.env.local' });
+dotenv.config({ path: ".env.local" });
 
-import { eq } from 'drizzle-orm';
-import { db } from './index';
-import { categories, competitions, competitionTimeline, faqs, users } from './schema';
-import astroData from '../../data/astro-data.json';
+import { eq } from "drizzle-orm";
+import { db } from "./index";
+import { categories, competitions, competitionTimeline, faqs, users } from "./schema";
+import astroData from "../../data/astro-data.json";
 
 type Competition = (typeof astroData.competitions)[number];
 
 const CATEGORY_LABELS: Record<string, { label: string; color: string }> = {
-  akademik: { label: 'Akademik', color: 'text-emerald-700 bg-emerald-50 border-emerald-200' },
-  olahraga: { label: 'Olahraga', color: 'text-orange-700 bg-orange-50 border-orange-200' },
-  esports: { label: 'Esports', color: 'text-cyan-700 bg-cyan-50 border-cyan-200' },
-  'kesenian-/-seni': { label: 'Kesenian / Seni', color: 'text-violet-700 bg-violet-50 border-violet-200' },
+  akademik: { label: "Akademik", color: "text-emerald-700 bg-emerald-50 border-emerald-200" },
+  olahraga: { label: "Olahraga", color: "text-orange-700 bg-orange-50 border-orange-200" },
+  esports: { label: "Esports", color: "text-cyan-700 bg-cyan-50 border-cyan-200" },
+  "kesenian-/-seni": {
+    label: "Kesenian / Seni",
+    color: "text-violet-700 bg-violet-50 border-violet-200",
+  },
 };
 
-const ADMIN_EMAIL = 'admin@gmail.com';
-const ADMIN_PASSWORD = 'password';
-const ADMIN_NAME = 'Admin ASTRO';
+const ADMIN_EMAIL = "admin@gmail.com";
+const ADMIN_PASSWORD = "password";
+const ADMIN_NAME = "Admin ASTRO";
 
 function prizeValue(comp: Competition, label: string) {
-  return comp.prizes.find((p) => p.label === label)?.value ?? '';
+  return comp.prizes.find((p) => p.label === label)?.value ?? "";
 }
 
 async function seedCategories() {
@@ -29,7 +32,7 @@ async function seedCategories() {
   const rows = ids.map((id, i) => ({
     id,
     label: CATEGORY_LABELS[id]?.label ?? id,
-    color: CATEGORY_LABELS[id]?.color ?? 'text-cyan-700 bg-cyan-50 border-cyan-200',
+    color: CATEGORY_LABELS[id]?.color ?? "text-cyan-700 bg-cyan-50 border-cyan-200",
     sortOrder: i,
   }));
 
@@ -49,16 +52,17 @@ async function seedCompetitions() {
     filledSlots: comp.filledSlots,
     scheduleDate: new Date(comp.scheduleDate),
     location: comp.location,
-    prizesFirst: prizeValue(comp, 'Juara 1'),
-    prizesSecond: prizeValue(comp, 'Juara 2'),
-    prizesThird: prizeValue(comp, 'Juara 3'),
+    prizesFirst: prizeValue(comp, "Juara 1"),
+    prizesSecond: prizeValue(comp, "Juara 2"),
+    prizesThird: prizeValue(comp, "Juara 3"),
     prizes: comp.prizes,
     rulesSummary: comp.rulesSummary,
     rulebookUrl: comp.rulebookUrl,
     contactName: comp.contactPerson.name,
     contactWhatsapp: comp.contactPerson.whatsapp,
-    playerPhotoRequired:
-      (comp as { playerPhotoRequired?: boolean }).playerPhotoRequired ? '1' : '0',
+    playerPhotoRequired: (comp as { playerPhotoRequired?: boolean }).playerPhotoRequired
+      ? "1"
+      : "0",
     guidebookSections:
       (comp as { guidebookSections?: Array<{ id: string; title: string; content: string }> })
         .guidebookSections ?? [],
@@ -101,7 +105,7 @@ async function seedFaqs() {
 
   const existing = await db.select({ id: faqs.id }).from(faqs).limit(1);
   if (existing.length > 0) {
-    console.log('Skipped FAQs (already seeded)');
+    console.log("Skipped FAQs (already seeded)");
     return;
   }
 
@@ -110,7 +114,7 @@ async function seedFaqs() {
 }
 
 async function seedAdminUser() {
-  const { auth } = await import('@/src/server/auth');
+  const { auth } = await import("@/src/server/auth");
 
   const [existing] = await db.select().from(users).where(eq(users.email, ADMIN_EMAIL));
 
@@ -124,8 +128,10 @@ async function seedAdminUser() {
   }
 
   if (!adminId) {
-    console.log('Could not create admin user — create manually and run:');
-    console.log(`  UPDATE users SET role = 'admin', email_verified = true WHERE email = '${ADMIN_EMAIL}';`);
+    console.log("Could not create admin user — create manually and run:");
+    console.log(
+      `  UPDATE users SET role = 'admin', email_verified = true WHERE email = '${ADMIN_EMAIL}';`,
+    );
     return;
   }
 
@@ -134,16 +140,16 @@ async function seedAdminUser() {
   // whether the user was just created or already existed.
   await db
     .update(users)
-    .set({ role: 'admin', emailVerified: true, updatedAt: new Date() })
+    .set({ role: "admin", emailVerified: true, updatedAt: new Date() })
     .where(eq(users.id, adminId));
 
-  console.log('Admin user ready:');
+  console.log("Admin user ready:");
   console.log(`  Email: ${ADMIN_EMAIL}`);
   console.log(`  Password: ${ADMIN_PASSWORD}`);
 }
 
 async function seed() {
-  console.log('Seeding database...');
+  console.log("Seeding database...");
 
   await seedCategories();
   await seedCompetitions();
@@ -151,12 +157,12 @@ async function seed() {
   await seedFaqs();
   await seedAdminUser();
 
-  console.log('Seed complete!');
+  console.log("Seed complete!");
 }
 
 seed()
   .catch((err) => {
-    console.error('Seed failed:', err);
+    console.error("Seed failed:", err);
     process.exitCode = 1;
   })
   .finally(() => process.exit());

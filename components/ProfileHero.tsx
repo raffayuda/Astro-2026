@@ -1,225 +1,86 @@
 "use client";
 
-import Image from "next/image";
 import { motion, useReducedMotion } from "motion/react";
-import { ArrowDown } from "lucide-react";
+import { ChromeTitle } from "@/components/brand/ChromeTitle";
+import { CtaButton } from "@/components/brand/CtaButton";
+import { GrassStrip } from "@/components/brand/GrassStrip";
+import { Pill } from "@/components/brand/Pill";
+import { MascotCarousel } from "@/components/MascotCarousel";
 import { Button } from "@/components/ui/button";
 
-const MotionImage = motion.create(Image);
-
-const stagger = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.1, delayChildren: 0.2 } },
-};
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 30 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as const },
-  },
-};
+const EASE = [0.16, 1, 0.3, 1] as const;
 
 export default function ProfileHero() {
   const reduce = useReducedMotion();
 
+  const stage = {
+    hidden: { opacity: 0, y: 18 },
+    show: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: reduce ? 0 : 0.55, ease: EASE },
+    },
+  };
+
   return (
     <section
       id="home"
-      className="relative min-h-[100svh] flex bg-gradient-to-b from-sky-400 via-sky-300 to-sky-100 flex-col items-center justify-start overflow-hidden pt-[18svh] md:pt-[15svh]"
+      className="relative isolate flex min-h-[100dvh] flex-col overflow-x-clip pt-20"
     >
-      {/* ─── CLOUD IMAGES ─── */}
-      {/* Big cloud top-left */}
-      <MotionImage
-        src="/assets/cloud.png"
-        alt=""
-        width={288}
-        height={200}
-        animate={{ x: [0, 20, 0] }}
-        transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-[8%] -left-10 w-72 h-auto opacity-65 pointer-events-none select-none z-0"
-      />
-
-      {/* Big cloud top-right */}
-      <MotionImage
-        src="/assets/cloud.png"
-        alt=""
-        width={320}
-        height={220}
-        animate={{ x: [0, -20, 0] }}
-        transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-[15%] -right-16 w-80 h-auto opacity-55 pointer-events-none select-none z-0"
-      />
-
-      {/* Small cloud middle-left */}
-      <MotionImage
-        src="/assets/cloud.png"
-        alt=""
-        width={192}
-        height={140}
-        animate={{ x: [0, 15, 0] }}
-        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-[45%] -left-8 w-48 h-auto opacity-45 pointer-events-none select-none z-0"
-      />
-
-      {/* Small cloud right */}
-      <MotionImage
-        src="/assets/cloud.png"
-        alt=""
-        width={160}
-        height={120}
-        animate={{ x: [0, -12, 0] }}
-        transition={{ duration: 11, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-[55%] -right-6 w-40 h-auto opacity-40 pointer-events-none select-none z-0"
-      />
-
-      {/* ─── CHROME BLOB SHAPE (static, large, edge-placed) ─── */}
-      <Image
-        src="/assets/chrome-blob-shape.png"
-        alt=""
-        width={224}
-        height={224}
-        className="absolute -top-12 -right-12 w-56 h-56 md:w-[28rem] md:h-[28rem] object-contain pointer-events-none select-none z-0"
-      />
-      <Image
-        src="/assets/chrome-blob-shape.png"
-        alt=""
-        width={256}
-        height={256}
-        className="absolute -bottom-16 -left-16 w-64 h-64 md:w-[32rem] md:h-[32rem] object-contain pointer-events-none select-none z-0"
-      />
-      <Image
-        src="/assets/chrome-blob-shape.png"
-        alt=""
-        width={192}
-        height={192}
-        className="absolute -top-10 -left-10 w-48 h-48 md:w-[22rem] md:h-[22rem] object-contain pointer-events-none select-none z-0"
-      />
-      <Image
-        src="/assets/chrome-blob-shape.png"
-        alt=""
-        width={224}
-        height={224}
-        className="absolute -bottom-12 -right-12 w-56 h-56 md:w-[24rem] md:h-[24rem] object-contain pointer-events-none select-none z-0"
-      />
-
-      {/* ─── FLOATING BLOB ROUND IMAGES ─── */}
-      <MotionImage
-        src="/assets/blob-round.png"
-        alt=""
-        width={112}
-        height={112}
-        animate={{ y: [0, -20, 0] }}
-        transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-[10%] right-[8%] w-28 h-28 md:w-40 md:h-40 object-contain pointer-events-none select-none z-0"
-      />
-      <MotionImage
-        src="/assets/blob-round.png"
-        alt=""
-        width={96}
-        height={96}
-        animate={{ y: [0, -14, 0] }}
-        transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute bottom-[22%] left-[4%] w-24 h-24 md:w-36 md:h-36 object-contain pointer-events-none select-none z-0"
-      />
-      <MotionImage
-        src="/assets/blob-round.png"
-        alt=""
-        width={64}
-        height={64}
-        animate={{ y: [0, -12, 0] }}
-        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-[38%] left-[16%] w-16 h-16 md:w-24 md:h-24 object-contain pointer-events-none select-none z-0"
-      />
-      <MotionImage
-        src="/assets/blob-round.png"
-        alt=""
-        width={112}
-        height={112}
-        animate={{ y: [0, -18, 0] }}
-        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute bottom-[15%] right-[4%] w-28 h-28 md:w-40 md:h-40 object-contain pointer-events-none select-none z-0"
-      />
-
-      <motion.div
-        className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 text-center"
-        variants={reduce ? undefined : stagger}
-        initial="hidden"
-        animate="visible"
-      >
-        {/* ─── MAIN TITLE ─── */}
-        <motion.div variants={fadeUp} className="mb-6 md:mb-0 md:-mt-6">
-          <h1 className="text-massive mb-0">
-            <span
-              className="block bg-gradient-to-b from-slate-300 via-slate-400 to-slate-600 bg-clip-text text-transparent drop-shadow-[0_4px_30px_rgba(0,0,0,0.15)]"
-              style={{
-                textShadow:
-                  "0 2px 0 #cbd5e1, 0 4px 0 #94a3b8, 0 6px 0 #64748b, 0 8px 20px rgba(0,0,0,0.3)",
-              }}
-            >
-              ASTRO
-            </span>
-            <span
-              className="block bg-gradient-to-b from-slate-200 via-slate-500 to-slate-800 bg-clip-text text-transparent"
-              style={{
-                textShadow:
-                  "0 2px 0 #e2e8f0, 0 4px 0 #94a3b8, 0 6px 0 #475569, 0 8px 0 #1e293b, 0 12px 30px rgba(0,0,0,0.35)",
-              }}
-            >
-              2026
-            </span>
-          </h1>
-
-          {/* Tagline - Split Creative */}
-          <p className="mt-6 font-masterpiece leading-snug drop-shadow-[0_2px_12px_rgba(0,0,0,0.08)]">
-            <span className="text-3xl sm:text-4xl md:text-5xl text-white/95 block">
-              Where Innovation
-            </span>
-            <span className="text-4xl sm:text-5xl md:text-6xl bg-gradient-to-r from-yellow-200 via-orange-200 to-pink-200 bg-clip-text text-transparent block -mt-1">
-              Meets the Stars
-            </span>
-          </p>
-        </motion.div>
-
-        {/* Accent line */}
+      <h1 className="sr-only">ASTRO 2026. Where innovation meets the stars.</h1>
+      <div className="relative z-10 mx-auto grid w-full max-w-6xl flex-1 items-center gap-6 px-5 pb-32 pt-4 sm:px-8 lg:grid-cols-2 lg:gap-10 lg:pb-36">
         <motion.div
-          variants={fadeUp}
-          className="flex justify-center mb-8 md:mb-10"
+          initial="hidden"
+          animate="show"
+          transition={{ staggerChildren: 0.08 }}
+          className="flex flex-col items-center text-center lg:items-start lg:text-left"
         >
-          <div className="w-24 h-[3px] bg-white/40 rounded-full" />
+          <motion.div variants={stage}>
+            <Pill tone="blue" size="sm" className="shadow-gloss">
+              Profil
+            </Pill>
+          </motion.div>
+
+          <motion.div variants={stage} className="mt-4 w-[min(100%,22rem)]">
+            <ChromeTitle depth="lg" align="center" className="lg:hidden">
+              {`ASTRO\n2026`}
+            </ChromeTitle>
+            <ChromeTitle depth="lg" align="left" className="hidden lg:block">
+              {`ASTRO\n2026`}
+            </ChromeTitle>
+          </motion.div>
+
+          <motion.p
+            variants={stage}
+            className="mt-4 max-w-md text-pretty text-base font-medium leading-relaxed text-astro-navy/70 sm:text-lg"
+          >
+            Where innovation meets the stars. Persembahan BEM STT-NF.
+          </motion.p>
+
+          <motion.div
+            variants={stage}
+            className="mt-6 flex flex-col items-center gap-3 sm:flex-row sm:items-center lg:items-start"
+          >
+            <CtaButton href="#about-event" size="lg">
+              Jelajahi
+            </CtaButton>
+            <Button asChild variant="ghost" size="lg">
+              <a href="#committee">Hubungi panitia</a>
+            </Button>
+          </motion.div>
         </motion.div>
 
-        {/* CTA - Solid Parallelogram Buttons */}
         <motion.div
-          variants={fadeUp}
-          className="flex flex-col sm:flex-row items-center justify-center gap-4"
+          initial={reduce ? false : { opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: reduce ? 0 : 0.28, duration: reduce ? 0 : 0.7, ease: EASE }}
+          className="relative z-10 flex items-center justify-center"
         >
-          <Button
-            asChild
-            size="lg"
-            className="skew-x-[-8deg] rounded-none border-2 border-sky-300 bg-sky-600 px-8 py-4 text-sm font-black uppercase tracking-wider text-white shadow-[0_8px_30px_rgba(2,132,199,0.4)] hover:-translate-y-0.5 hover:bg-sky-500 hover:shadow-[0_12px_40px_rgba(2,132,199,0.5)] active:scale-95"
-          >
-            <a href="#about-event">
-              <span className="flex items-center gap-2 skew-x-[8deg]">
-                <ArrowDown className="size-4" /> Explore Now
-              </span>
-            </a>
-          </Button>
-          <Button
-            asChild
-            size="lg"
-            className="skew-x-[-8deg] rounded-none border-2 border-slate-400 bg-slate-700 px-8 py-4 text-sm font-bold uppercase tracking-wider text-white shadow-[0_8px_30px_rgba(0,0,0,0.3)] hover:-translate-y-0.5 hover:bg-slate-600 hover:shadow-[0_12px_40px_rgba(0,0,0,0.35)] active:scale-95"
-          >
-            <a href="#contact">
-              <span className="block skew-x-[8deg]">Contact Us</span>
-            </a>
-          </Button>
+          <MascotCarousel />
         </motion.div>
-      </motion.div>
+      </div>
 
-      {/* Bottom gradient fade to sky-100 */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 z-20 pointer-events-none bg-gradient-to-b from-transparent to-sky-100" />
+      <GrassStrip className="h-32 md:h-40 lg:h-44" />
     </section>
   );
 }

@@ -92,10 +92,14 @@ export default function PlayerPhotoField({
           <Image src={value} alt={label} fill sizes="56px" className="object-cover" />
         </span>
       ) : (
-        <span className={cn(
-          "flex size-14 shrink-0 items-center justify-center rounded-md border border-dashed transition-colors",
-          isDragging ? "border-primary bg-primary/20 text-primary" : "border-border bg-muted/40 text-muted-foreground"
-        )}>
+        <span
+          className={cn(
+            "flex size-14 shrink-0 items-center justify-center rounded-md border border-dashed transition-colors",
+            isDragging
+              ? "border-primary bg-primary/20 text-primary"
+              : "border-border bg-muted/40 text-muted-foreground",
+          )}
+        >
           {uploading ? <Spinner className="size-5" /> : <ImageUp className="size-5" />}
         </span>
       )}
@@ -106,7 +110,7 @@ export default function PlayerPhotoField({
         size="sm"
         disabled={uploading}
         onClick={() => inputRef.current?.click()}
-        className="text-[11px] font-bold uppercase tracking-wider"
+        className="text-11 font-bold uppercase tracking-wider"
       >
         {uploading ? (
           <>
@@ -131,7 +135,7 @@ export default function PlayerPhotoField({
         </Button>
       )}
 
-      <span className="text-[11px] text-muted-foreground italic">
+      <span className="text-11 text-muted-foreground italic">
         {isDragging ? "Lepaskan file di sini" : "(bisa drag & drop file)"}
       </span>
     </div>
@@ -139,7 +143,8 @@ export default function PlayerPhotoField({
 
   if (compact) {
     return (
-      <div className="space-y-1">
+      <Field data-invalid={!!error}>
+        <FieldLabel required={required}>{label}</FieldLabel>
         <div
           onDragOver={handleDragOver}
           onDragEnter={handleDragOver}
@@ -147,15 +152,13 @@ export default function PlayerPhotoField({
           onDrop={handleDrop}
           className={cn(
             "rounded-lg border border-transparent p-1 transition-all",
-            isDragging && "border-dashed border-primary bg-primary/10"
+            isDragging && "border-dashed border-primary bg-primary/10",
           )}
         >
           {picker}
         </div>
-        {error ? (
-          <p className="text-xs font-medium text-destructive">{error}</p>
-        ) : null}
-      </div>
+        {error ? <FieldError>{error}</FieldError> : null}
+      </Field>
     );
   }
 
@@ -175,7 +178,7 @@ export default function PlayerPhotoField({
             : value
               ? "border-border/80 bg-muted/20 hover:border-primary/50 hover:bg-muted/40"
               : "border-border hover:border-primary/60 hover:bg-muted/30 bg-muted/10",
-          uploading && "opacity-60 pointer-events-none"
+          uploading && "opacity-60 pointer-events-none",
         )}
       >
         <input
@@ -194,7 +197,7 @@ export default function PlayerPhotoField({
             </span>
             <div className="flex-1 text-left min-w-0">
               <p className="text-xs font-bold text-foreground truncate">{label}</p>
-              <p className="text-[11px] text-muted-foreground truncate">
+              <p className="text-11 text-muted-foreground truncate">
                 Tarik & lepas foto baru di sini untuk mengganti
               </p>
             </div>
@@ -205,7 +208,7 @@ export default function PlayerPhotoField({
                 size="sm"
                 disabled={uploading}
                 onClick={() => inputRef.current?.click()}
-                className="text-[10px] font-bold uppercase tracking-wider"
+                className="text-10 font-bold uppercase tracking-wider"
               >
                 {uploading ? (
                   <>
@@ -236,7 +239,7 @@ export default function PlayerPhotoField({
                 "flex size-10 items-center justify-center rounded-full transition-colors",
                 isDragging
                   ? "bg-primary text-primary-foreground animate-bounce"
-                  : "bg-muted text-muted-foreground group-hover:text-primary group-hover:bg-primary/10"
+                  : "bg-muted text-muted-foreground group-hover:text-primary group-hover:bg-primary/10",
               )}
             >
               {uploading ? <Spinner className="size-5" /> : <UploadCloud className="size-5" />}
@@ -249,7 +252,7 @@ export default function PlayerPhotoField({
                     ? "Lepaskan foto di sini..."
                     : "Tarik & lepas foto pemain di sini, atau klik untuk memilih file"}
               </p>
-              <p className="text-[10px] text-muted-foreground mt-0.5">
+              <p className="text-10 text-muted-foreground mt-0.5">
                 PNG, JPG, WEBP (otomatis dioptimasi)
               </p>
             </div>

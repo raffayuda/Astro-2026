@@ -3,30 +3,23 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import Image from "next/image";
 import { motion, useReducedMotion, AnimatePresence } from "motion/react";
-import { Users, X, ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
+import { Users, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { cn } from "@/lib/utils";
 import { normalizeImageUrl } from "@/components/ImportCommittee";
 import SkeletonImage from "@/components/SkeletonImage";
-import {
-  useCommitteeMembers,
-  useCommitteeDivisions,
-} from "@/src/lib/hooks/use-queries";
-
-const MotionImage = motion.create(Image);
+import { SectionHeading } from "@/components/brand/SectionHeading";
+import { SectionShell } from "@/components/brand/SectionShell";
+import { useCommitteeMembers, useCommitteeDivisions } from "@/src/lib/hooks/use-queries";
 
 export default function CommitteeSection() {
   const reduce = useReducedMotion();
   const [activeDivision, setActiveDivision] = useState<string>("");
   const [hoveredId, setHoveredId] = useState<number | null>(null);
-  const [selectedMemberIndex, setSelectedMemberIndex] = useState<number | null>(
-    null,
-  );
-  const [loadedMemberId, setLoadedMemberId] = useState<number | string | null>(
-    null,
-  );
+  const [selectedMemberIndex, setSelectedMemberIndex] = useState<number | null>(null);
+  const [loadedMemberId, setLoadedMemberId] = useState<number | string | null>(null);
   const [isPaused, setIsPaused] = useState<boolean>(false);
   const [canScrollLeft, setCanScrollLeft] = useState<boolean>(false);
   const [canScrollRight, setCanScrollRight] = useState<boolean>(false);
@@ -78,19 +71,14 @@ export default function CommitteeSection() {
   }, [members, divList]);
 
   useEffect(() => {
-    if (divisions.length > 0 && !activeDivision)
-      setActiveDivision(divisions[0].slug);
+    if (divisions.length > 0 && !activeDivision) setActiveDivision(divisions[0].slug);
   }, [divisions, activeDivision]);
 
   const getRoleWeight = (role: string) => {
     if (!role) return 99;
     const r = role.toLowerCase();
     if (r.includes("sc") || r.includes("steering")) return 1;
-    if (
-      r.includes("po") ||
-      r.includes("project officer") ||
-      r.includes("ketua pelaksana")
-    )
+    if (r.includes("po") || r.includes("project officer") || r.includes("ketua pelaksana"))
       return 2;
     if (r.includes("wakil")) return 3;
     if (r.includes("sekretaris") || r.includes("sekre")) return 4;
@@ -106,8 +94,7 @@ export default function CommitteeSection() {
       .sort((a, b) => {
         const weightDiff = getRoleWeight(a.role) - getRoleWeight(b.role);
         if (weightDiff !== 0) return weightDiff;
-        if (a.sortOrder !== b.sortOrder)
-          return (a.sortOrder || 0) - (b.sortOrder || 0);
+        if (a.sortOrder !== b.sortOrder) return (a.sortOrder || 0) - (b.sortOrder || 0);
         return a.name.localeCompare(b.name);
       });
   }, [members, activeDivision]);
@@ -143,13 +130,7 @@ export default function CommitteeSection() {
 
   // Auto-scroll loop (pauses on hover or when modal is active)
   useEffect(() => {
-    if (
-      reduce ||
-      isPaused ||
-      selectedMemberIndex !== null ||
-      filteredMembers.length <= 3
-    )
-      return;
+    if (reduce || isPaused || selectedMemberIndex !== null || filteredMembers.length <= 3) return;
 
     const interval = setInterval(() => {
       const el = carouselRef.current;
@@ -205,11 +186,8 @@ export default function CommitteeSection() {
     setHoveredId((prev) => (prev === id ? null : id));
   }, []);
 
-  const viewerMember =
-    selectedMemberIndex !== null ? filteredMembers[selectedMemberIndex] : null;
-  const isMemberReady = viewerMember
-    ? loadedMemberId === viewerMember.id
-    : false;
+  const viewerMember = selectedMemberIndex !== null ? filteredMembers[selectedMemberIndex] : null;
+  const isMemberReady = viewerMember ? loadedMemberId === viewerMember.id : false;
 
   const handlePrevMember = () => {
     if (selectedMemberIndex === null || filteredMembers.length === 0) return;
@@ -243,66 +221,15 @@ export default function CommitteeSection() {
   }, [selectedMemberIndex, filteredMembers.length]);
 
   return (
-    <section
-      id="committee"
-      className="relative overflow-hidden bg-gradient-to-b from-sky-100 via-sky-50 to-white py-20 text-slate-900 md:py-28"
-    >
-      {/* ─── SKY BACKGROUND GLOWS ─── */}
-      <div className="pointer-events-none absolute top-1/2 left-1/2 z-0 size-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-300/20 blur-[140px]" />
-
-      {/* ─── FLOATING DECORATIVE CLOUDS & BLOBS ─── */}
-      <MotionImage
-        src="/assets/cloud.png"
-        alt=""
-        width={320}
-        height={220}
-        animate={reduce ? undefined : { x: [0, 20, 0] }}
-        transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-[8%] -left-12 w-64 md:w-80 h-auto opacity-60 pointer-events-none select-none z-0"
-      />
-      <MotionImage
-        src="/assets/cloud.png"
-        alt=""
-        width={280}
-        height={200}
-        animate={reduce ? undefined : { x: [0, -18, 0] }}
-        transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-[18%] -right-16 w-56 md:w-72 h-auto opacity-50 pointer-events-none select-none z-0"
-      />
-      <MotionImage
-        src="/assets/awan1.png"
-        alt=""
-        width={180}
-        height={140}
-        animate={reduce ? undefined : { x: [0, 15, 0] }}
-        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute bottom-[10%] left-[2%] w-24 md:w-40 h-auto opacity-75 pointer-events-none select-none z-0"
-      />
-      <MotionImage
-        src="/assets/awan2.png"
-        alt=""
-        width={200}
-        height={160}
-        animate={reduce ? undefined : { x: [0, -12, 0] }}
-        transition={{ duration: 11, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute bottom-[15%] right-[2%] w-28 md:w-48 h-auto opacity-70 pointer-events-none select-none z-0"
+    <SectionShell id="committee" band="none" space="sm">
+      <SectionHeading
+        eyebrow="Panitia"
+        pillTone="blue"
+        title="Panitia ASTRO 2026"
+        lead="Tim yang menggerakkan kompetisi, festival, dan grand final."
       />
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* ── Section Header ── */}
-        <div className="text-center mb-10">
-          <div className="flex justify-center mb-3">
-            <div className="accent-line" />
-          </div>
-          <h2 className="font-masterpiece text-4xl md:text-5xl lg:text-6xl text-slate-900 leading-tight mb-3">
-            Our <span className="text-astro-cyan">Committee</span>
-          </h2>
-          <p className="text-sm md:text-base text-slate-600 max-w-xl mx-auto leading-relaxed">
-            Tim panitia penggerak ASTRO 2026 yang bekerja keras untuk kesuksesan
-            acara ini.
-          </p>
-        </div>
-
+      <div className="mt-10">
         {/* ── Filter Pills ── */}
         <div className="mb-8 flex flex-wrap justify-center gap-2">
           <ToggleGroup
@@ -321,23 +248,21 @@ export default function CommitteeSection() {
               <ToggleGroupItem
                 key={div.id}
                 value={div.slug}
-                className="clip-angled gap-2 px-4 py-2 text-xs font-semibold tracking-wide data-[state=on]:bg-white data-[state=on]:text-slate-900 data-[state=on]:shadow-lg data-[state=on]:shadow-black/5 data-[state=on]:ring-1 data-[state=on]:ring-slate-200 data-[state=off]:bg-white/40 data-[state=off]:text-slate-600 data-[state=off]:hover:bg-white/70 data-[state=off]:hover:text-slate-800 transition-all"
+                className="rounded-lg gap-2 px-4 py-2 text-xs font-black tracking-wide transition-all data-[state=on]:bg-linear-to-b data-[state=on]:from-astro-blue data-[state=on]:to-astro-blue data-[state=on]:text-white data-[state=on]:shadow-lg data-[state=off]:bg-white/65 data-[state=off]:text-astro-blue data-[state=off]:hover:bg-white data-[state=off]:hover:text-astro-blue"
               >
                 <span
                   className={cn(
                     "size-1.5 rounded-full",
-                    activeDivision === div.slug
-                      ? "bg-astro-cyan"
-                      : "bg-slate-300",
+                    activeDivision === div.slug ? "bg-astro-cyan" : "bg-astro-cyan-2",
                   )}
                 />
                 {div.shortDisplay}
                 <Badge
                   variant="secondary"
                   className={cn(
-                    "clip-angled-sm text-[10px] font-bold",
+                    "rounded-md text-10 font-bold",
                     activeDivision === div.slug
-                      ? "bg-sky-50 text-astro-cyan"
+                      ? "bg-sky-bottom text-astro-cyan"
                       : "bg-white/40 text-muted-foreground",
                   )}
                 >
@@ -351,11 +276,11 @@ export default function CommitteeSection() {
         {/* ── Division Header & Controls ── */}
         <div className="flex items-center justify-between gap-4 mb-6 px-2 sm:px-4">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-black uppercase tracking-widest text-slate-700 bg-white/60 px-3 py-1 rounded-lg border border-slate-200 shadow-sm">
+            <span className="rounded-full bg-white px-4 py-1.5 text-xs font-bold text-astro-navy shadow-soft-sm">
               {currentDivision?.displayName || activeDivision}
             </span>
-            <span className="hidden sm:inline-block text-[11px] font-medium text-slate-500">
-              ({filteredMembers.length} Personel)
+            <span className="hidden text-xs font-medium text-ink sm:inline-block">
+              {filteredMembers.length} personel
             </span>
           </div>
 
@@ -368,7 +293,7 @@ export default function CommitteeSection() {
                 onClick={() => scroll("left")}
                 disabled={!canScrollLeft}
                 aria-label="Geser ke kiri"
-                className="size-8 rounded-full border-slate-300 bg-white/80 text-slate-700 shadow-sm hover:bg-astro-cyan hover:text-slate-950 hover:border-astro-cyan disabled:opacity-30 disabled:hover:bg-white/80 transition-all"
+                className="size-8 rounded-full border-astro-cyan-2 bg-white/80 text-ink shadow-sm hover:bg-astro-cyan hover:text-astro-navy hover:border-astro-cyan disabled:opacity-30 disabled:hover:bg-white/80 transition-all"
               >
                 <ChevronLeft className="size-4" />
               </Button>
@@ -378,7 +303,7 @@ export default function CommitteeSection() {
                 onClick={() => scroll("right")}
                 disabled={!canScrollRight}
                 aria-label="Geser ke kanan"
-                className="size-8 rounded-full border-slate-300 bg-white/80 text-slate-700 shadow-sm hover:bg-astro-cyan hover:text-slate-950 hover:border-astro-cyan disabled:opacity-30 disabled:hover:bg-white/80 transition-all"
+                className="size-8 rounded-full border-astro-cyan-2 bg-white/80 text-ink shadow-sm hover:bg-astro-cyan hover:text-astro-navy hover:border-astro-cyan disabled:opacity-30 disabled:hover:bg-white/80 transition-all"
               >
                 <ChevronRight className="size-4" />
               </Button>
@@ -424,7 +349,7 @@ export default function CommitteeSection() {
                   setSelectedMemberIndex(index);
                 }}
               >
-                <div className="relative w-full aspect-[3/4] rounded-2xl overflow-hidden bg-slate-100 shadow-md hover:shadow-xl transition-all duration-300 ring-1 ring-white/90 cursor-pointer">
+                <div className="relative w-full aspect-[3/4] rounded-2xl overflow-hidden bg-surface shadow-md hover:shadow-xl transition-all duration-300 ring-1 ring-white/90 cursor-pointer">
                   <Image
                     src={normalizeImageUrl(member.image) || "/assets/users.png"}
                     alt={member.name}
@@ -438,8 +363,8 @@ export default function CommitteeSection() {
                     <Badge
                       className={
                         member.isLeader === "1"
-                          ? "bg-amber-400 text-[10px] font-bold uppercase tracking-wider text-amber-950 shadow-sm max-w-[140px] truncate inline-block"
-                          : "bg-white/85 text-[10px] font-bold uppercase tracking-wider text-slate-700 ring-1 ring-white/90 backdrop-blur-sm max-w-[140px] truncate inline-block"
+                          ? "bg-amber-400 text-10 font-bold uppercase tracking-wider text-amber-950 shadow-sm max-w-[140px] truncate inline-block"
+                          : "bg-white/85 text-10 font-bold uppercase tracking-wider text-ink ring-1 ring-white/90 backdrop-blur-sm max-w-[140px] truncate inline-block"
                       }
                     >
                       {member.role || "Anggota"}
@@ -454,7 +379,7 @@ export default function CommitteeSection() {
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.25 }}
-                        className="absolute inset-0 z-10 flex flex-col justify-end bg-gradient-to-t from-slate-950/85 via-slate-900/40 to-transparent backdrop-blur-[2px]"
+                        className="absolute inset-0 z-10 flex flex-col justify-end bg-linear-to-t from-astro-navy/85 via-astro-navy/40 to-transparent backdrop-blur-[2px]"
                       >
                         <div className="p-4 md:p-5">
                           <h3 className="text-sm md:text-base font-bold text-white leading-tight drop-shadow-sm capitalize">
@@ -465,10 +390,8 @@ export default function CommitteeSection() {
                           </p>
 
                           {(member.studyProgram || member.batch) && (
-                            <p className="mt-1 text-[10px] font-semibold uppercase tracking-wider text-cyan-200/90 drop-shadow-sm">
-                              {[member.studyProgram, member.batch]
-                                .filter(Boolean)
-                                .join(" ")}
+                            <p className="mt-1 text-10 font-semibold uppercase tracking-wider text-astro-cyan-2/90 drop-shadow-sm">
+                              {[member.studyProgram, member.batch].filter(Boolean).join(" ")}
                             </p>
                           )}
 
@@ -481,7 +404,7 @@ export default function CommitteeSection() {
                           {(member.instagram || member.linkedin) && (
                             <div className="flex items-center gap-3 mt-2 pt-2 border-t border-white/20">
                               {member.instagram && (
-                                <span className="text-[10px] font-medium text-white/80 truncate">
+                                <span className="text-10 font-medium text-white/80 truncate">
                                   @{member.instagram}
                                 </span>
                               )}
@@ -499,11 +422,10 @@ export default function CommitteeSection() {
 
         {/* ── Summary & Interaction Hint ── */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-10">
-          <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/60 backdrop-blur-xl rounded-xl ring-1 ring-slate-200 shadow-sm">
+          <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/60 backdrop-blur-xl rounded-xl ring-1 ring-astro-cyan-2 shadow-sm">
             <Users className="w-4 h-4 text-astro-cyan" />
-            <span className="text-xs font-bold text-slate-700">
-              {filteredMembers.length} Anggota —{" "}
-              {currentDivision?.name || activeDivision}
+            <span className="text-xs font-bold text-ink">
+              {filteredMembers.length} Anggota — {currentDivision?.name || activeDivision}
             </span>
           </div>
         </div>
@@ -518,14 +440,14 @@ export default function CommitteeSection() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-xl"
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-astro-navy/80 p-4 backdrop-blur-xl"
             role="dialog"
             aria-modal="true"
             aria-label={viewerMember.name}
             onClick={() => setSelectedMemberIndex(null)}
           >
             {/* Sky Glow Backdrop */}
-            <div className="pointer-events-none absolute top-1/2 left-1/2 z-0 size-[550px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-400/10 blur-[140px]" />
+            <div className="pointer-events-none absolute top-1/2 left-1/2 z-0 size-[550px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-astro-sky/10 blur-[140px]" />
 
             {/* Centered Dark Navy Portrait Card */}
             <motion.div
@@ -534,19 +456,17 @@ export default function CommitteeSection() {
               exit={{ scale: 0.95, opacity: 0, y: 15 }}
               transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
               onClick={(e) => e.stopPropagation()}
-              className="relative z-10 flex flex-col w-full max-w-sm sm:max-w-md max-h-[92vh] overflow-hidden rounded-3xl border border-sky-400/30 bg-[#0d172a]/95 p-4 sm:p-5 text-white shadow-2xl backdrop-blur-2xl"
+              className="relative z-10 flex flex-col w-full max-w-sm sm:max-w-md max-h-[92vh] overflow-hidden rounded-3xl border border-sky-top/30 bg-astro-navy/95 p-4 sm:p-5 text-white shadow-2xl backdrop-blur-2xl"
             >
               {/* Header inside Card */}
               <div className="flex items-center justify-between pb-3">
                 <div className="flex items-center gap-2">
                   {isMemberReady ? (
-                    <Badge className="clip-angled-sm bg-astro-cyan text-[11px] font-black uppercase tracking-wider text-slate-950 shadow-sm">
-                      {currentDivision?.shortDisplay ||
-                        currentDivision?.name ||
-                        activeDivision}
+                    <Badge className="rounded-md bg-astro-cyan text-11 font-black uppercase tracking-wider text-astro-navy shadow-sm">
+                      {currentDivision?.shortDisplay || currentDivision?.name || activeDivision}
                     </Badge>
                   ) : (
-                    <div className="h-5 w-28 rounded bg-slate-800/80 shimmer clip-angled-sm" />
+                    <div className="h-5 w-28 rounded bg-astro-cyan-2/40 animate-pulse rounded-md" />
                   )}
                 </div>
                 <Button
@@ -554,19 +474,17 @@ export default function CommitteeSection() {
                   size="icon"
                   aria-label="Tutup"
                   onClick={() => setSelectedMemberIndex(null)}
-                  className="size-8 border border-white/15 bg-white/10 text-slate-200 hover:bg-white/20 hover:text-white rounded-full"
+                  className="size-8 border border-white/15 bg-white/10 text-astro-cyan-2 hover:bg-white/20 hover:text-white rounded-full"
                 >
                   <X className="size-4" />
                 </Button>
               </div>
 
               {/* Image Stage inside Portrait Card */}
-              <div className="relative w-full aspect-[3/4] max-h-[46vh] sm:max-h-[50vh] overflow-hidden rounded-2xl border border-white/10 bg-slate-950 shadow-inner">
+              <div className="relative w-full aspect-[3/4] max-h-[46vh] sm:max-h-[50vh] overflow-hidden rounded-2xl border border-white/10 bg-astro-navy shadow-inner">
                 <SkeletonImage
                   key={viewerMember.id}
-                  src={
-                    normalizeImageUrl(viewerMember.image) || "/assets/users.png"
-                  }
+                  src={normalizeImageUrl(viewerMember.image) || "/assets/users.png"}
                   alt={viewerMember.name}
                   imgKey={viewerMember.id}
                   className="h-full w-full"
@@ -581,7 +499,7 @@ export default function CommitteeSection() {
                   variant="ghost"
                   size="icon"
                   onClick={handlePrevMember}
-                  className="absolute top-1/2 left-2.5 z-30 -translate-y-1/2 size-9 rounded-full bg-white text-slate-950 shadow-lg hover:bg-astro-cyan hover:scale-105 transition-all"
+                  className="absolute top-1/2 left-2.5 z-30 -translate-y-1/2 size-9 rounded-full bg-white text-astro-navy shadow-lg hover:bg-astro-cyan hover:scale-105 transition-all"
                   aria-label="Anggota sebelumnya"
                 >
                   <ChevronLeft className="size-5" />
@@ -590,7 +508,7 @@ export default function CommitteeSection() {
                   variant="ghost"
                   size="icon"
                   onClick={handleNextMember}
-                  className="absolute top-1/2 right-2.5 z-30 -translate-y-1/2 size-9 rounded-full bg-white text-slate-950 shadow-lg hover:bg-astro-cyan hover:scale-105 transition-all"
+                  className="absolute top-1/2 right-2.5 z-30 -translate-y-1/2 size-9 rounded-full bg-white text-astro-navy shadow-lg hover:bg-astro-cyan hover:scale-105 transition-all"
                   aria-label="Anggota berikutnya"
                 >
                   <ChevronRight className="size-5" />
@@ -608,29 +526,26 @@ export default function CommitteeSection() {
                       {viewerMember.role}
                     </p>
                     {(viewerMember.studyProgram || viewerMember.batch) && (
-                      <p className="mt-1 text-[10px] font-bold uppercase tracking-wider text-cyan-200/90">
-                        {[viewerMember.studyProgram, viewerMember.batch]
-                          .filter(Boolean)
-                          .join(" ")}
+                      <p className="mt-1 text-10 font-bold uppercase tracking-wider text-astro-cyan-2/90">
+                        {[viewerMember.studyProgram, viewerMember.batch].filter(Boolean).join(" ")}
                       </p>
                     )}
                     {viewerMember.quote && (
-                      <p className="mt-2 px-2 text-xs text-slate-300 italic leading-relaxed">
+                      <p className="mt-2 px-2 text-xs text-astro-cyan-2 italic leading-relaxed">
                         "{viewerMember.quote}"
                       </p>
                     )}
-                    <p className="mt-2 text-[11px] font-semibold text-slate-400">
-                      {selectedMemberIndex! + 1} dari {filteredMembers.length}{" "}
-                      anggota
+                    <p className="mt-2 text-11 font-semibold text-ink">
+                      {selectedMemberIndex! + 1} dari {filteredMembers.length} anggota
                     </p>
                   </>
                 ) : (
                   <div className="flex flex-col items-center justify-center py-1">
-                    <div className="h-5 w-44 rounded bg-slate-800/80 shimmer mb-2" />
-                    <div className="h-4 w-28 rounded bg-slate-800/80 shimmer mb-2" />
-                    <div className="h-3 w-40 rounded bg-slate-800/80 shimmer mb-2" />
-                    <div className="h-4 w-60 rounded bg-slate-800/80 shimmer mb-2" />
-                    <div className="h-3 w-24 rounded bg-slate-800/80 shimmer" />
+                    <div className="h-5 w-44 rounded bg-astro-cyan-2/40 animate-pulse mb-2" />
+                    <div className="h-4 w-28 rounded bg-astro-cyan-2/40 animate-pulse mb-2" />
+                    <div className="h-3 w-40 rounded bg-astro-cyan-2/40 animate-pulse mb-2" />
+                    <div className="h-4 w-60 rounded bg-astro-cyan-2/40 animate-pulse mb-2" />
+                    <div className="h-3 w-24 rounded bg-astro-cyan-2/40 animate-pulse" />
                   </div>
                 )}
               </div>
@@ -638,6 +553,6 @@ export default function CommitteeSection() {
           </motion.div>
         )}
       </AnimatePresence>
-    </section>
+    </SectionShell>
   );
 }

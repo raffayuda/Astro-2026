@@ -1,13 +1,17 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { Printer, Trash2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { ResponsiveAlertDialog } from '@/components/responsive-alert-dialog';
-import { apiHelpers } from '@/src/lib/api';
-import { toast } from 'sonner';
-import PrintableInvoice, { PrintPortal, type PrintableInvoiceData } from '@/components/PrintableInvoice';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Printer, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ResponsiveAlertDialog } from "@/components/responsive-alert-dialog";
+import { apiHelpers } from "@/src/lib/api";
+import { toast } from "sonner";
+import PrintableInvoice, {
+  PrintPortal,
+  usePrintInvoice,
+  type PrintableInvoiceData,
+} from "@/components/PrintableInvoice";
 
 interface Props {
   registration: PrintableInvoiceData;
@@ -17,25 +21,18 @@ export default function RegistrationDetailActions({ registration }: Props) {
   const router = useRouter();
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
-  const [printing, setPrinting] = useState(false);
-
-  const handlePrint = () => {
-    setPrinting(true);
-    setTimeout(() => {
-      window.print();
-    }, 150);
-  };
+  const { target: printTarget, print } = usePrintInvoice<PrintableInvoiceData>();
 
   const handleDelete = async () => {
     setDeleteLoading(true);
     try {
       await apiHelpers.registrations.delete(registration.id);
-      toast.success('Pendaftaran berhasil dihapus');
-      router.push('/dashboard/registrations');
+      toast.success("Pendaftaran berhasil dihapus");
+      router.push("/dashboard/registrations");
       router.refresh();
     } catch (err) {
       console.error(err);
-      toast.error(err instanceof Error ? err.message : 'Gagal menghapus pendaftaran');
+      toast.error(err instanceof Error ? err.message : "Gagal menghapus pendaftaran");
     } finally {
       setDeleteLoading(false);
     }
@@ -47,17 +44,17 @@ export default function RegistrationDetailActions({ registration }: Props) {
         <Button
           variant="outline"
           size="sm"
-          onClick={handlePrint}
-          className="clip-angled text-xs font-bold uppercase gap-1.5 bg-white text-slate-800 hover:text-cyan-700 hover:border-cyan-400"
+          onClick={() => print(registration)}
+          className="rounded-lg text-xs font-bold uppercase gap-1.5 bg-white text-astro-navy hover:text-astro-navy hover:border-astro-sky"
         >
-          <Printer className="size-3.5 text-cyan-600" /> Cetak Invoice
+          <Printer className="size-3.5 text-astro-blue" /> Cetak Invoice
         </Button>
 
         <Button
           variant="outline"
           size="sm"
           onClick={() => setDeleteOpen(true)}
-          className="clip-angled text-xs font-bold uppercase gap-1.5 border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300"
+          className="rounded-lg text-xs font-bold uppercase gap-1.5 border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300"
         >
           <Trash2 className="size-3.5" /> Hapus
         </Button>
@@ -69,11 +66,12 @@ export default function RegistrationDetailActions({ registration }: Props) {
         title="Hapus Pendaftaran Ini?"
         description={
           <span>
-            Apakah Anda yakin ingin menghapus pendaftaran untuk{' '}
+            Apakah Anda yakin ingin menghapus pendaftaran untuk{" "}
             <strong>
-              {registration.type === 'team' ? registration.teamName : registration.fullName}
-            </strong>{' '}
-            (Ref: <code className="font-mono">{registration.paymentReference}</code>)? Seluruh data peserta dan berkas terkait akan dihapus secara permanen.
+              {registration.type === "team" ? registration.teamName : registration.fullName}
+            </strong>{" "}
+            (Ref: <code className="font-mono">{registration.paymentReference}</code>)? Seluruh data
+            peserta dan berkas terkait akan dihapus secara permanen.
           </span>
         }
         confirmText="Ya, Hapus Pendaftaran"
@@ -83,9 +81,9 @@ export default function RegistrationDetailActions({ registration }: Props) {
         onConfirm={handleDelete}
       />
 
-      {printing && (
+      {printTarget && (
         <PrintPortal>
-          <PrintableInvoice data={registration} />
+          <PrintableInvoice data={printTarget} />
         </PrintPortal>
       )}
     </>

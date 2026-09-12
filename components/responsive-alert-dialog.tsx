@@ -58,9 +58,7 @@ export function ResponsiveAlertDialog({
         <DrawerContent>
           <DrawerHeader className="text-left">
             {title && <DrawerTitle>{title}</DrawerTitle>}
-            {description && (
-              <DrawerDescription>{description}</DrawerDescription>
-            )}
+            {description && <DrawerDescription>{description}</DrawerDescription>}
           </DrawerHeader>
           <DrawerFooter className="flex-row justify-end gap-2 pt-2">
             <Button
@@ -88,14 +86,10 @@ export function ResponsiveAlertDialog({
 
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent className="clip-angled-lg p-8">
+      <AlertDialogContent className="rounded-xl p-8">
         <AlertDialogHeader>
-          {title && (
-            <AlertDialogTitle className="uppercase">{title}</AlertDialogTitle>
-          )}
-          {description && (
-            <AlertDialogDescription>{description}</AlertDialogDescription>
-          )}
+          {title && <AlertDialogTitle className="uppercase">{title}</AlertDialogTitle>}
+          {description && <AlertDialogDescription>{description}</AlertDialogDescription>}
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel disabled={loading}>{cancelText}</AlertDialogCancel>
@@ -103,7 +97,7 @@ export function ResponsiveAlertDialog({
             variant={destructive ? "destructive" : "default"}
             onClick={onConfirm}
             disabled={loading}
-            className={cn("clip-angled-sm")}
+            className={cn("rounded-md")}
           >
             {loading ? <Spinner data-icon="inline-start" /> : null}
             {loading ? "Memproses..." : confirmText}

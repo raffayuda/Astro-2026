@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
-import { Plus_Jakarta_Sans, Space_Grotesk, Geist } from "next/font/google";
+import { Alexandria, Lexend_Exa, Plus_Jakarta_Sans, Geist } from "next/font/google";
 import { Toaster } from "sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Providers } from "@/src/lib/providers";
@@ -9,21 +8,28 @@ import { cn } from "@/lib/utils";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
+// Heading / display face. Geometric, high-contrast at bold weights — matches the
+// component spec sheets. Previously loaded but only ever used as a fallback.
 const plusJakartaSans = Plus_Jakarta_Sans({
   variable: "--font-plus-jakarta-sans",
   subsets: ["latin"],
+  weight: ["500", "600", "700", "800"],
   display: "swap",
 });
 
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-space-grotesk",
+// Display title face — used by the chrome hero wordmarks.
+const alexandria = Alexandria({
+  variable: "--font-alexandria",
   subsets: ["latin"],
+  weight: ["400", "700"],
   display: "swap",
 });
 
-const masterpiece = localFont({
-  src: "../public/fonts/Masterpiece.ttf",
-  variable: "--font-masterpiece",
+// Secondary display face — used by section subtitles.
+const lexendExa = Lexend_Exa({
+  variable: "--font-lexend-exa",
+  subsets: ["latin"],
+  weight: ["400", "700"],
   display: "swap",
 });
 
@@ -65,14 +71,6 @@ export const metadata: Metadata = {
       "Ajang kompetisi dan kreativitas terbesar tahun ini persembahan BEM STT-NF. Bergabunglah dalam ASTRO 2026 — pengalaman kompetisi multi-kategori (Akademik, Olahraga, Esports) untuk mahasiswa STT-NF dan pelajar SMA/SMK sederajat.",
     url: "https://astro.nurulfikri.ac.id",
     siteName: "ASTRO 2026",
-    images: [
-      {
-        url: "https://i.ibb.co.com/QjnnBLmr/og-image-astro.png",
-        width: 1200,
-        height: 630,
-        alt: "ASTRO 2026 - Where Innovation Meets the Stars",
-      },
-    ],
     locale: "id_ID",
     type: "website",
   },
@@ -81,7 +79,6 @@ export const metadata: Metadata = {
     title: "ASTRO 2026 | Where Innovation Meets the Stars",
     description:
       "Ajang kompetisi persembahan BEM STT-NF untuk mahasiswa STT-NF dan pelajar SMA/SMK sederajat. Ikuti kategori Akademik, Olahraga, dan Esports di ASTRO 2026!",
-    images: ["https://i.ibb.co.com/QjnnBLmr/og-image-astro.png"],
     creator: "@Astro2026",
   },
   robots: {
@@ -126,7 +123,7 @@ const jsonLd = [
       "@type": "Organization",
       name: "BEM STT-NF",
       url: "https://nurulfikri.ac.id",
-      logo: "https://i.ibb.co.com/QjnnBLmr/og-image-astro.png",
+      logo: "https://astro.nurulfikri.ac.id/assets/logo-astro.png",
     },
   },
   {
@@ -134,11 +131,8 @@ const jsonLd = [
     "@type": "Organization",
     name: "ASTRO 2026",
     url: "https://astro.nurulfikri.ac.id",
-    logo: "https://i.ibb.co.com/QjnnBLmr/og-image-astro.png",
-    sameAs: [
-      "https://www.instagram.com/astro.sttnf",
-      "https://nurulfikri.ac.id",
-    ],
+    logo: "https://astro.nurulfikri.ac.id/assets/logo-astro.png",
+    sameAs: ["https://www.instagram.com/astro.sttnf", "https://nurulfikri.ac.id"],
     parentOrganization: {
       "@type": "CollegeOrUniversity",
       name: "Sekolah Tinggi Teknologi Terpadu Nurul Fikri",
@@ -153,24 +147,21 @@ const jsonLd = [
         "@type": "SiteNavigationElement",
         position: 1,
         name: "Beranda & Kompetisi",
-        description:
-          "Katalog cabang lomba Akademik, Olahraga, dan Esports ASTRO 2026.",
+        description: "Katalog cabang lomba Akademik, Olahraga, dan Esports ASTRO 2026.",
         url: "https://astro.nurulfikri.ac.id",
       },
       {
         "@type": "SiteNavigationElement",
         position: 2,
         name: "Profil & Sejarah Event",
-        description:
-          "Visi, misi, sejarah, serta struktur panitia pelaksana ASTRO 2026.",
+        description: "Visi, misi, sejarah, serta struktur panitia pelaksana ASTRO 2026.",
         url: "https://astro.nurulfikri.ac.id/profile",
       },
       {
         "@type": "SiteNavigationElement",
         position: 3,
         name: "Cek Status Pendaftaran",
-        description:
-          "Cek status verifikasi formulir dan tiket pendaftaran peserta lomba.",
+        description: "Cek status verifikasi formulir dan tiket pendaftaran peserta lomba.",
         url: "https://astro.nurulfikri.ac.id/check-registration",
       },
       {
@@ -184,8 +175,7 @@ const jsonLd = [
         "@type": "SiteNavigationElement",
         position: 5,
         name: "Media Center & Dokumentasi",
-        description:
-          "Dokumentasi visual, kanal media sosial, dan press kit ASTRO 2026.",
+        description: "Dokumentasi visual, kanal media sosial, dan press kit ASTRO 2026.",
         url: "https://astro.nurulfikri.ac.id/media",
       },
     ],
@@ -203,9 +193,9 @@ export default function RootLayout({
       className={cn(
         "h-full",
         "antialiased",
+        alexandria.variable,
+        lexendExa.variable,
         plusJakartaSans.variable,
-        spaceGrotesk.variable,
-        masterpiece.variable,
         "font-sans",
         geist.variable,
       )}

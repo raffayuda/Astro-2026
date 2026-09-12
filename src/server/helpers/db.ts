@@ -1,6 +1,6 @@
-import { db } from '@/src/db';
-import { asc, eq } from 'drizzle-orm';
-import type { SQL } from 'drizzle-orm';
+import { db } from "@/src/db";
+import { asc, eq } from "drizzle-orm";
+import type { SQL } from "drizzle-orm";
 
 /**
  * Minimal DB helpers for admin-curated content tables.
@@ -9,11 +9,18 @@ import type { SQL } from 'drizzle-orm';
  */
 
 export function listRows(table: any, orderBy?: SQL) {
-  return db.select().from(table).orderBy(orderBy ?? asc(table.id));
+  return db
+    .select()
+    .from(table)
+    .orderBy(orderBy ?? asc(table.id));
 }
 
 export function getRow(table: any, idCol: any, id: string | number) {
-  return db.select().from(table).where(eq(idCol, id)).then((rows: any[]) => rows[0] || null);
+  return db
+    .select()
+    .from(table)
+    .where(eq(idCol, id))
+    .then((rows: any[]) => rows[0] || null);
 }
 
 export function insertRow(table: any, values: Record<string, unknown>) {
@@ -23,7 +30,12 @@ export function insertRow(table: any, values: Record<string, unknown>) {
     .then((rows: any[]) => rows[0]);
 }
 
-export function updateRow(table: any, idCol: any, id: string | number, values: Record<string, unknown>) {
+export function updateRow(
+  table: any,
+  idCol: any,
+  id: string | number,
+  values: Record<string, unknown>,
+) {
   return (db.update(table) as any)
     .set(values)
     .where(eq(idCol, id))

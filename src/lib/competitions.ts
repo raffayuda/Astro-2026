@@ -1,4 +1,4 @@
-import type { CompetitionBatch } from '@/src/db/schema';
+import type { CompetitionBatch } from "@/src/db/schema";
 
 /**
  * Mendapatkan batch pendaftaran yang sedang aktif berdasarkan waktu saat ini.
@@ -34,12 +34,12 @@ export function getEffectiveCompetitionFee(
   isBatch: boolean;
   activeBatch: CompetitionBatch | null;
 } {
-  const isFree = competition.isFree === true || competition.isFree === '1';
+  const isFree = competition.isFree === true || competition.isFree === "1";
   if (isFree) {
     return { fee: 0, batchName: null, isBatch: false, activeBatch: null };
   }
 
-  const hasBatches = competition.hasBatches === true || competition.hasBatches === '1';
+  const hasBatches = competition.hasBatches === true || competition.hasBatches === "1";
   if (hasBatches && competition.batches && competition.batches.length > 0) {
     const activeBatch = getActiveBatch(competition.batches, now);
     if (activeBatch) {

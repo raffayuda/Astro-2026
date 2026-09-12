@@ -3,108 +3,83 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import Link from "next/link";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import {
+  CtaButton,
+  PageShell,
+  Pill,
+  SectionHeading,
+  SectionShell,
+  Surface,
+  WindowCard,
+  type PillProps,
+} from "@/components/brand";
 import FormStep from "./FormStep";
 import PaymentStep from "./PaymentStep";
-import { ArrowLeft, Trophy, Lock, RotateCcw, Sparkles } from "lucide-react";
-import Image from "next/image";
-import { Badge } from "@/components/ui/badge";
+import { ArrowLeft, Check, FileText, CreditCard, UserRound, UsersRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { cn } from "@/lib/utils";
 import { Spinner } from "@/components/ui/spinner";
 import { toast } from "sonner";
 import { useCompetition, useRegistration } from "@/src/lib/hooks/use-queries";
-import { toIsoString } from "@/lib/date";
+import { toPublicCompetition } from "@/lib/mappers";
+import type { RegistrationFormValues } from "@/src/lib/forms/registration";
 
-const MotionImage = motion.create(Image);
-
-import { getEffectiveCompetitionFee } from "@/src/lib/competitions";
-
-import type { CompetitionCustomField } from "@/types/astro";
-
-interface CompetitionData {
-  id: string;
-  title: string;
-  category: string;
-  tagline: string;
-  description: string;
-  fee: number;
-  batchName?: string | null;
-  hasBatches?: boolean;
-  batches?: any[];
-  maxSlots: number;
-  filledSlots: number;
-  scheduleDate: string;
-  location: string;
-  prizes: { label: string; value: string }[];
-  rulesSummary: string[];
-  rulebookUrl: string;
-  registrationUrl?: string;
-  contactPerson: { name: string; whatsapp: string };
-  type?: string;
-  maxTeamMembers?: number;
-  minTeamMembers?: number;
-  playerPhotoRequired?: boolean;
-  isFree?: boolean;
-  isActive?: boolean;
-  customFields?: CompetitionCustomField[];
-}
-
-const categoryConfig: Record<
-  string,
-  {
-    label: string;
-    color: string;
-    bg: string;
-    border: string;
-    accent: string;
-    iconBg: string;
-    iconBorder: string;
-  }
-> = {
-  akademik: {
-    label: "AKADEMIK",
-    color: "text-emerald-700",
-    bg: "bg-emerald-50",
-    border: "border-emerald-200",
-    accent: "bg-emerald-500",
-    iconBg: "bg-emerald-50 text-emerald-600",
-    iconBorder: "border-emerald-200",
-  },
-  olahraga: {
-    label: "OLAHRAGA",
-    color: "text-orange-700",
-    bg: "bg-orange-50",
-    border: "border-orange-200",
-    accent: "bg-orange-500",
-    iconBg: "bg-orange-50 text-orange-600",
-    iconBorder: "border-orange-200",
-  },
-  esports: {
-    label: "ESPORTS",
-    color: "text-cyan-700",
-    bg: "bg-cyan-50",
-    border: "border-cyan-200",
-    accent: "bg-cyan-500",
-    iconBg: "bg-cyan-50 text-cyan-600",
-    iconBorder: "border-cyan-200",
-  },
-  "kesenian-/-seni": {
-    label: "KESENIAN",
-    color: "text-violet-700",
-    bg: "bg-violet-50",
-    border: "border-violet-200",
-    accent: "bg-violet-500",
-    iconBg: "bg-violet-50 text-violet-600",
-    iconBorder: "border-violet-200",
-  },
+const CATEGORY_PILL: Record<string, { label: string; tone: NonNullable<PillProps["tone"]> }> = {
+  akademik: { label: "Akademik", tone: "blue" },
+  olahraga: { label: "Olahraga", tone: "orange" },
+  esports: { label: "Esports", tone: "navy" },
+  "kesenian-/-seni": { label: "Kesenian", tone: "pink" },
 };
 
-export default function RegistrationPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+const EASE = [0.16, 1, 0.3, 1] as const;
+
+const EMPTY_FORM: RegistrationFormValues = {
+  fullName: "",
+  teamName: "",
+  institution: "",
+  identityNumber: "",
+  leaderName: "",
+  leaderIdentity: "",
+  leaderGameId: "",
+  leaderPhotoUrl: "",
+  email: "",
+  whatsapp: "",
+  members: "",
+  memberDetails: [],
+  customFields: {},
+};
+
+type ExistingReg = {
+  id: string;
+  paymentReference?: string | null;
+  paymentLinkUrl?: string | null;
+  paymentExpiresAt?: string | null;
+  paymentCode?: string | null;
+  paymentCodeType?: string | null;
+  paymentStatus?: string;
+  fullName?: string | null;
+  teamName?: string | null;
+  institution?: string | null;
+  identityNumber?: string | null;
+  leaderName?: string | null;
+  leaderIdentity?: string | null;
+  leaderGameId?: string | null;
+  leaderPhotoUrl?: string | null;
+  email?: string | null;
+  whatsapp?: string | null;
+  members?: string | null;
+  memberDetails?:
+    | {
+        name?: string;
+        gameId?: string | null;
+        photoUrl?: string | null;
+      }[]
+    | null;
+  customFields?: Record<string, unknown> | null;
+};
+
+export default function RegistrationPage({ params }: { params: Promise<{ id: string }> }) {
   const reduce = useReducedMotion();
   const [resolvedId, setResolvedId] = useState<string | null>(null);
   const [regIdFromQuery, setRegIdFromQuery] = useState<string | null>(null);
@@ -115,33 +90,21 @@ export default function RegistrationPage({
   const [paymentExpiresAt, setPaymentExpiresAt] = useState<string | null>(null);
   const [initialPaymentCode, setInitialPaymentCode] = useState<string | null>(null);
   const [initialPaymentCodeType, setInitialPaymentCodeType] = useState<string | null>(null);
-  const [regType, setRegType] = useState<'team' | 'individual'>('individual');
-  const [formData, setFormData] = useState({
-    fullName: "",
-    teamName: "",
-    institution: "",
-    identityNumber: "",
-    leaderName: "",
-    leaderIdentity: "",
-    leaderPhotoUrl: "",
-    email: "",
-    whatsapp: "",
-    members: "",
-    memberDetails: [] as { name: string; photoUrl: string }[],
-    customFields: {} as Record<string, any>,
-  });
-
+  const [regType, setRegType] = useState<"team" | "individual">("individual");
+  const [formData, setFormData] = useState<RegistrationFormValues>(EMPTY_FORM);
   const [draftRestored, setDraftRestored] = useState(false);
 
   useEffect(() => {
     params.then((p) => {
       setResolvedId(p.id);
-      const qRegId = typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("regId") : null;
+      const qRegId =
+        typeof window !== "undefined"
+          ? new URLSearchParams(window.location.search).get("regId")
+          : null;
       if (qRegId) {
         setRegIdFromQuery(qRegId);
       } else if (typeof window !== "undefined") {
         try {
-          // Check if there is an active pending registration in localStorage
           const storedRegId = localStorage.getItem(`astro_active_reg_${p.id}`);
           if (storedRegId) {
             setRegIdFromQuery(storedRegId);
@@ -150,17 +113,21 @@ export default function RegistrationPage({
             return;
           }
 
-          // Otherwise restore draft form inputs if available
           const rawDraft = localStorage.getItem(`astro_reg_draft_${p.id}`);
           if (rawDraft) {
-            const draft = JSON.parse(rawDraft);
+            const draft = JSON.parse(rawDraft) as {
+              values?: RegistrationFormValues;
+              regType?: "team" | "individual";
+            };
             if (draft?.values) {
               setFormData((prev) => ({ ...prev, ...draft.values }));
               if (draft.regType) setRegType(draft.regType);
               setDraftRestored(true);
             }
           }
-        } catch {}
+        } catch {
+          /* ignore corrupt draft */
+        }
       }
     });
   }, [params]);
@@ -170,123 +137,68 @@ export default function RegistrationPage({
     try {
       localStorage.removeItem(`astro_reg_draft_${resolvedId}`);
       localStorage.removeItem(`astro_active_reg_${resolvedId}`);
-    } catch {}
-    setFormData({
-      fullName: "",
-      teamName: "",
-      institution: "",
-      identityNumber: "",
-      leaderName: "",
-      leaderIdentity: "",
-      leaderPhotoUrl: "",
-      email: "",
-      whatsapp: "",
-      members: "",
-      memberDetails: [],
-      customFields: {},
-    });
+    } catch {
+      /* ignore */
+    }
+    setFormData(EMPTY_FORM);
     setDraftRestored(false);
     toast.info("Draf formulir telah direset");
   };
 
   const { data: c, isLoading: compLoading, isError: compError } = useCompetition(resolvedId ?? "");
-  const { data: existingReg } = useRegistration(regIdFromQuery ?? "");
+  const { data: existingRegRaw } = useRegistration(regIdFromQuery ?? "");
+  const existingReg = existingRegRaw as ExistingReg | undefined;
 
-  // Sync the selected registration type with what the competition allows:
-  // team-only -> team, individual-only -> individual, both -> user picks.
   useEffect(() => {
-    if (c?.type === 'team') setRegType('team');
-    else if (c?.type === 'individual') setRegType('individual');
+    if (c?.type === "team") setRegType("team");
+    else if (c?.type === "individual") setRegType("individual");
   }, [c?.type]);
 
-  const competition: CompetitionData | null = useMemo(() => {
-    if (!c) return null;
-    const isFree = Boolean(c.isFree) || (c as any).isFree === '1' || (c as any).isFree === 'true';
-    const effective = getEffectiveCompetitionFee(c);
-    return {
-      id: c.id,
-      title: c.title,
-      category: c.category,
-      tagline: c.tagline || "",
-      description: c.description || "",
-      fee: effective.fee,
-      batchName: effective.batchName,
-      hasBatches: c.hasBatches === true || (c as any).hasBatches === '1',
-      batches: c.batches || [],
-      maxSlots: c.maxSlots,
-      filledSlots: c.filledSlots,
-      scheduleDate: toIsoString(c.scheduleDate),
-      location: c.location || "",
-      prizes: c.prizes?.length
-        ? c.prizes
-        : [
-            ...(c.prizesFirst
-              ? [{ label: "Juara 1", value: c.prizesFirst }]
-              : []),
-            ...(c.prizesSecond
-              ? [{ label: "Juara 2", value: c.prizesSecond }]
-              : []),
-            ...(c.prizesThird
-              ? [{ label: "Juara 3", value: c.prizesThird }]
-              : []),
-          ],
-      rulesSummary: c.rulesSummary || [],
-      rulebookUrl: c.rulebookUrl || "",
-      registrationUrl: "",
-      contactPerson: {
-        name: c.contactName || "",
-        whatsapp: c.contactWhatsapp || "",
-      },
-      type: c.type || "individual",
-      maxTeamMembers: c.maxTeamMembers || 1,
-      minTeamMembers: c.minTeamMembers || 1,
-      playerPhotoRequired: !!c.playerPhotoRequired,
-      isFree,
-      isActive: c.isActive !== undefined ? (c.isActive === true || (c.isActive as any) === '1') : true,
-      customFields: (c as any).customFields || [],
-    };
-  }, [c]);
+  const competition = useMemo(() => (c ? toPublicCompetition(c) : null), [c]);
 
   useEffect(() => {
     if (!existingReg) return;
-    const r = existingReg as any;
-    setRegistrationId(r.id);
-    setPaymentReference(r.paymentReference);
-    setPaymentLinkUrl(r.paymentLinkUrl ?? null);
-    setPaymentExpiresAt(r.paymentExpiresAt ?? null);
-    if (r.paymentCode) {
-      setInitialPaymentCode(r.paymentCode);
-      setInitialPaymentCodeType(r.paymentCodeType ?? 'QR_TEXT');
+    setRegistrationId(existingReg.id);
+    setPaymentReference(existingReg.paymentReference ?? null);
+    setPaymentLinkUrl(existingReg.paymentLinkUrl ?? null);
+    setPaymentExpiresAt(existingReg.paymentExpiresAt ?? null);
+    if (existingReg.paymentCode) {
+      setInitialPaymentCode(existingReg.paymentCode);
+      setInitialPaymentCodeType(existingReg.paymentCodeType ?? "QR_TEXT");
     }
     setFormData({
-      fullName: r.fullName || "",
-      teamName: r.teamName || "",
-      institution: r.institution || "",
-      identityNumber: r.identityNumber || "",
-      leaderName: r.leaderName || "",
-      leaderIdentity: r.leaderIdentity || "",
-      leaderPhotoUrl: r.leaderPhotoUrl || "",
-      email: r.email || "",
-      whatsapp: r.whatsapp || "",
-      members: r.members || "",
-      memberDetails: (r.memberDetails || []).map(
-        (m: { name?: string; photoUrl?: string | null }) => ({
-          name: m.name || "",
-          photoUrl: m.photoUrl || "",
-        }),
-      ),
-      customFields: r.customFields || {},
+      fullName: existingReg.fullName || "",
+      teamName: existingReg.teamName || "",
+      institution: existingReg.institution || "",
+      identityNumber: existingReg.identityNumber || "",
+      leaderName: existingReg.leaderName || "",
+      leaderIdentity: existingReg.leaderIdentity || "",
+      leaderGameId: existingReg.leaderGameId || "",
+      leaderPhotoUrl: existingReg.leaderPhotoUrl || "",
+      email: existingReg.email || "",
+      whatsapp: existingReg.whatsapp || "",
+      members: existingReg.members || "",
+      memberDetails: (existingReg.memberDetails || []).map((member) => ({
+        name: member.name || "",
+        gameId: member.gameId || "",
+        photoUrl: member.photoUrl || "",
+      })),
+      customFields: (existingReg.customFields ?? {}) as Record<string, string>,
     });
-    // If registration is already paid or pending payment, navigate straight to payment step (success or QRIS)
-    if (r.paymentStatus === 'paid') {
+    if (existingReg.paymentStatus === "paid") {
       setStep(2);
       if (resolvedId && typeof window !== "undefined") {
         try {
           localStorage.removeItem(`astro_active_reg_${resolvedId}`);
           localStorage.removeItem(`astro_reg_draft_${resolvedId}`);
-        } catch {}
+        } catch {
+          /* ignore */
+        }
       }
-    } else if (r.paymentStatus === 'pending' && (r.paymentLinkUrl || r.paymentCode || r.paymentReference)) {
+    } else if (
+      existingReg.paymentStatus === "pending" &&
+      (existingReg.paymentLinkUrl || existingReg.paymentCode || existingReg.paymentReference)
+    ) {
       setStep(2);
     } else {
       setStep(1);
@@ -294,79 +206,72 @@ export default function RegistrationPage({
   }, [existingReg, resolvedId]);
 
   const fetching = compLoading || !resolvedId;
-  const notFound = compError || (!fetching && !competition);
+  const missing = compError || (!fetching && !competition);
 
   if (fetching) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <Spinner className="size-6 text-primary" />
-      </div>
+      <PageShell>
+        <div className="flex min-h-[60svh] items-center justify-center">
+          <Spinner className="size-6 text-astro-navy" />
+        </div>
+      </PageShell>
     );
   }
 
-  if (notFound || !competition) {
+  if (missing || !competition) {
     return (
-      <>
-        <Navbar />
-        <div className="min-h-screen flex items-center justify-center bg-background">
-          <div className="space-y-4 text-center">
-            <h1 className="text-display text-foreground">404</h1>
-            <p className="text-muted-foreground">Lomba tidak ditemukan.</p>
-            <Button asChild className="clip-angled text-xs font-black uppercase tracking-wider">
-              <Link href="/#competitions">
-                <ArrowLeft data-icon="inline-start" /> Kembali ke Lomba
-              </Link>
-            </Button>
-          </div>
-        </div>
-        <Footer />
-      </>
+      <PageShell>
+        <SectionShell space="lg" className="pt-24">
+          <Surface tone="plain" radius="2xl" pad="xl" className="mx-auto max-w-md text-center">
+            <h1 className="font-heading text-2xl font-black text-astro-navy">
+              Lomba tidak ditemukan
+            </h1>
+            <p className="mt-2 text-sm text-ink/70">Cabang ini tidak ada atau sudah dihapus.</p>
+            <CtaButton href="/#competitions" size="default" className="mt-6" showChevron={false}>
+              Lihat lomba
+            </CtaButton>
+          </Surface>
+        </SectionShell>
+      </PageShell>
     );
   }
 
   if (competition.isActive === false) {
     return (
-      <>
-        <Navbar />
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-sky-100/60 via-background to-background px-4 py-20">
-          <div className="clip-angled border border-border bg-card/90 backdrop-blur-md p-8 sm:p-12 max-w-lg w-full text-center space-y-6 shadow-lg">
-            <div className="size-16 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto ring-8 ring-red-50">
-              <Lock className="size-8" />
-            </div>
-            <div className="space-y-2">
-              <Badge variant="outline" className="clip-angled-sm border-red-200 bg-red-50 text-[10px] font-bold uppercase tracking-wider text-red-600">
-                Pendaftaran Ditutup
-              </Badge>
-              <h1 className="text-2xl font-black uppercase tracking-tight text-foreground">
-                {competition.title}
-              </h1>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                Mohon maaf, pendaftaran untuk kompetisi ini sedang tidak dibuka atau telah berakhir.
-              </p>
-            </div>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
-              <Button asChild variant="outline" className="clip-angled text-xs font-bold uppercase tracking-wider flex-1">
-                <Link href={`/competitions/${competition.id}`}>
-                  Detail Lomba
-                </Link>
+      <PageShell>
+        <SectionShell space="lg" className="pt-24">
+          <WindowCard title="Pendaftaran" className="mx-auto max-w-lg">
+            <Pill tone="pink" size="sm">
+              Ditutup
+            </Pill>
+            <h1 className="mt-3 font-heading text-2xl font-black text-astro-navy">
+              {competition.title}
+            </h1>
+            <p className="mt-2 text-sm leading-relaxed text-ink/75">
+              Pendaftaran untuk lomba ini sedang tidak dibuka.
+            </p>
+            <div className="mt-6 flex flex-col gap-2 sm:flex-row">
+              <Button asChild variant="outline" className="flex-1 rounded-full">
+                <Link href={`/competitions/${competition.id}`}>Detail lomba</Link>
               </Button>
-              <Button asChild className="clip-angled text-xs font-bold uppercase tracking-wider flex-1">
-                <Link href="/#competitions">
-                  <ArrowLeft data-icon="inline-start" /> Lomba Lainnya
-                </Link>
-              </Button>
+              <CtaButton
+                href="/#competitions"
+                size="default"
+                className="flex-1"
+                showChevron={false}
+              >
+                Lomba lain
+              </CtaButton>
             </div>
-          </div>
-        </div>
-        <Footer />
-      </>
+          </WindowCard>
+        </SectionShell>
+      </PageShell>
     );
   }
 
-  const cat = categoryConfig[competition.category] || categoryConfig.akademik;
-  // 'both' lets the participant choose; otherwise follow the competition type.
-  const isTeam = competition.type === 'both' ? regType === 'team' : competition.type === "team";
-  const canChooseType = competition.type === 'both';
+  const category = CATEGORY_PILL[competition.category] ?? CATEGORY_PILL.akademik;
+  const isTeam = competition.type === "both" ? regType === "team" : competition.type === "team";
+  const canChooseType = competition.type === "both";
 
   const handleFormSubmit = (
     regId: string,
@@ -388,7 +293,9 @@ export default function RegistrationPage({
         localStorage.setItem(`astro_active_reg_${resolvedId}`, regId);
         const newUrl = `${window.location.pathname}?regId=${encodeURIComponent(regId)}`;
         window.history.replaceState(null, "", newUrl);
-      } catch {}
+      } catch {
+        /* ignore */
+      }
     }
   };
 
@@ -405,377 +312,262 @@ export default function RegistrationPage({
       try {
         localStorage.removeItem(`astro_active_reg_${resolvedId}`);
         window.history.replaceState(null, "", window.location.pathname);
-      } catch {}
+      } catch {
+        /* ignore */
+      }
     }
   };
 
-  const fadeUp = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] as const },
-    },
-  };
+  const feeLabel = competition.isFree
+    ? "Gratis"
+    : competition.fee > 0
+      ? `Rp ${competition.fee.toLocaleString("id-ID")}`
+      : "Gratis";
 
   const stepVariants = {
-    enter: { opacity: 0, y: 30 },
+    enter: { opacity: 0, y: reduce ? 0 : 16 },
     center: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.45, ease: [0.16, 1, 0.3, 1] as const },
+      transition: { duration: reduce ? 0 : 0.4, ease: EASE },
     },
     exit: {
       opacity: 0,
-      y: -30,
-      transition: { duration: 0.25, ease: "easeIn" as const },
+      y: reduce ? 0 : -12,
+      transition: { duration: reduce ? 0 : 0.2, ease: EASE },
     },
   };
 
   return (
-    <>
-      <Navbar />
+    <PageShell>
+      <SectionShell space="none" className="pt-24 pb-12 sm:pt-28 sm:pb-16">
+        <Link
+          href={`/competitions/${competition.id}`}
+          className="inline-flex min-h-10 items-center gap-2 rounded-lg text-sm font-semibold text-astro-navy focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-astro-blue"
+        >
+          <ArrowLeft className="size-4" aria-hidden />
+          Detail lomba
+        </Link>
 
-      <div className="min-h-screen flex flex-col justify-between bg-white">
-        <main className="flex-grow">
-          {/* ─── HEADER ─── */}
-          <section className="relative pt-36 pb-14 md:pt-40 md:pb-18 overflow-hidden bg-gradient-to-b from-sky-400 via-sky-300 to-sky-100">
-            {/* ─── SKY BACKGROUND ─── */}
-            <div className="absolute inset-0 -z-10 " />
+        <div className="mt-4 mb-6 flex flex-col gap-2 sm:mb-8">
+          <h1 className="font-heading text-3xl font-black tracking-tight text-astro-navy sm:text-4xl">
+            Pendaftaran lomba
+          </h1>
+          <p className="text-sm leading-relaxed text-ink/75 sm:text-base">
+            Lengkapi data peserta, lalu selesaikan pembayaran.
+          </p>
+        </div>
 
-            {/* ─── FLOATING BLOBS ─── */}
-            {[
-              {
-                src: "/assets/blob-round.png",
-                w: 80,
-                h: 80,
-                className:
-                  "absolute top-[6%] -left-[2%] w-12 h-12 md:w-28 md:h-28 object-contain pointer-events-none select-none z-0",
-                dur: 7,
-                delay: 0,
-              },
-              {
-                src: "/assets/blob-round.png",
-                w: 72,
-                h: 72,
-                className:
-                  "absolute top-[12%] -right-[2%] w-10 h-10 md:w-24 md:h-24 object-contain pointer-events-none select-none z-0",
-                dur: 9,
-                delay: 0.15,
-              },
-              {
-                src: "/assets/blob-round.png",
-                w: 64,
-                h: 64,
-                className:
-                  "absolute bottom-[18%] left-[4%] w-8 h-8 md:w-20 md:h-20 object-contain pointer-events-none select-none z-0",
-                dur: 6,
-                delay: 0.3,
-              },
-              {
-                src: "/assets/blob-round.png",
-                w: 96,
-                h: 96,
-                className:
-                  "absolute bottom-[8%] right-[3%] w-12 h-12 md:w-32 md:h-32 object-contain pointer-events-none select-none z-0",
-                dur: 10,
-                delay: 0.1,
-              },
-            ].map((b, i) => (
-              <MotionImage
-                key={`blob-${i}`}
-                src={b.src}
-                alt=""
-                width={b.w}
-                height={b.h}
-                animate={reduce ? undefined : { y: [0, -14, 0] }}
-                transition={{
-                  duration: b.dur,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                  delay: b.delay,
-                }}
-                className={b.className}
+        <div className="grid items-start gap-6 lg:grid-cols-[19rem_minmax(0,1fr)] lg:gap-8">
+          <aside className="min-w-0 lg:sticky lg:top-24" aria-label="Ringkasan pendaftaran">
+            <WindowCard title="Lomba pilihanmu" bodyClassName="gap-4 lg:gap-5">
+              <div className="flex flex-wrap gap-2">
+                <Pill tone={category.tone} size="sm">
+                  {category.label}
+                </Pill>
+                <Pill tone="glass" size="sm">
+                  {isTeam ? "Tim" : "Individu"}
+                </Pill>
+              </div>
+              <SectionHeading
+                title={competition.title}
+                align="start"
+                className="[&_h2]:text-xl [&_h2]:leading-snug"
               />
-            ))}
+              {competition.tagline && (
+                <p className="hidden text-sm leading-relaxed text-ink/70 lg:block">
+                  {competition.tagline}
+                </p>
+              )}
+              <Surface tone="tint" radius="xl" pad="sm">
+                <dl className="flex flex-col gap-1">
+                  <dt className="text-xs font-medium">Biaya pendaftaran</dt>
+                  <dd className="font-heading text-2xl font-extrabold">{feeLabel}</dd>
+                  {!competition.isFree && competition.fee > 0 && (
+                    <dd className="text-xs text-ink/65">
+                      {competition.batchName ? `${competition.batchName} / ` : ""}
+                      {isTeam ? "Per tim" : "Per peserta"}
+                    </dd>
+                  )}
+                </dl>
+              </Surface>
+              <p className="hidden text-xs leading-relaxed text-ink/65 lg:block">
+                Pastikan data sesuai identitas peserta. Kuota terkunci setelah pembayaran
+                terverifikasi.
+              </p>
+            </WindowCard>
+          </aside>
 
-            {/* ─── FLOATING CLOUDS ─── */}
-            <MotionImage
-              src="/assets/awan1.png"
-              alt=""
-              width={160}
-              height={120}
-              animate={reduce ? undefined : { x: [0, 15, 0] }}
-              transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute top-[10%] left-[2%] w-16 h-auto md:w-40 md:h-auto object-contain pointer-events-none select-none z-0 opacity-40"
-            />
-            <MotionImage
-              src="/assets/awan2.png"
-              alt=""
-              width={200}
-              height={140}
-              animate={reduce ? undefined : { x: [0, -12, 0] }}
-              transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute top-[30%] right-[3%] w-20 h-auto md:w-48 md:h-auto object-contain pointer-events-none select-none z-0 opacity-35"
-            />
+          <div className="flex min-w-0 flex-col gap-5">
+            <Surface tone="plain" radius="2xl" pad="sm">
+              <ol aria-label="Tahapan pendaftaran" className="grid grid-cols-2 gap-3">
+                {(
+                  [
+                    { number: 1, label: "Formulir", detail: "Data peserta", icon: FileText },
+                    {
+                      number: 2,
+                      label: "Pembayaran",
+                      detail: "Konfirmasi pendaftaran",
+                      icon: CreditCard,
+                    },
+                  ] as const
+                ).map(({ number, label, detail, icon: Icon }) => (
+                  <li
+                    key={number}
+                    aria-current={step === number ? "step" : undefined}
+                    className={cn(
+                      "flex min-w-0 items-center gap-3 rounded-xl p-2 sm:p-3",
+                      step === number && "bg-sky-bottom",
+                    )}
+                  >
+                    <span
+                      className={cn(
+                        "flex size-9 shrink-0 items-center justify-center rounded-full",
+                        step >= number
+                          ? "bg-astro-navy text-white"
+                          : "bg-sky-bottom text-astro-navy/60",
+                      )}
+                    >
+                      {step > number ? (
+                        <Check className="size-4" aria-hidden />
+                      ) : (
+                        <Icon className="size-4" aria-hidden />
+                      )}
+                    </span>
+                    <div className="min-w-0">
+                      <p className="text-xs font-bold text-astro-navy sm:text-sm">
+                        {number}. {label}
+                      </p>
+                      <p className="mt-0.5 hidden text-xs text-ink/65 sm:block">{detail}</p>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            </Surface>
 
-            <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-              {/* Back link */}
-              <motion.div
-                initial="hidden"
-                animate="visible"
-                variants={fadeUp}
-                className="mb-6"
+            {canChooseType && step === 1 && (
+              <Surface
+                tone="plain"
+                radius="2xl"
+                pad="md"
+                className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
               >
-                <Button asChild variant="link" className="mb-6 gap-2 text-xs font-bold uppercase tracking-wider text-muted-foreground hover:text-primary">
-                  <Link href={`/competitions/${competition.id}`}>
-                    <ArrowLeft data-icon="inline-start" /> Kembali ke Detail Lomba
-                  </Link>
-                </Button>
-              </motion.div>
-
-              {/* Category badge */}
-              <motion.div
-                initial="hidden"
-                animate="visible"
-                variants={fadeUp}
-                className="mb-4"
-              >
-                <Badge
+                <div>
+                  <p id="registration-format" className="text-sm font-bold text-astro-navy">
+                    Format pendaftaran
+                  </p>
+                  <p className="mt-1 text-xs text-ink/65">Pilih sesuai penampilanmu.</p>
+                </div>
+                <ToggleGroup
+                  type="single"
+                  value={regType}
                   variant="outline"
-                  className={`clip-angled-sm border px-3 py-1.5 text-[10px] font-bold tracking-[0.15em] uppercase ${cat.bg} ${cat.color} ${cat.border}`}
+                  size="lg"
+                  aria-labelledby="registration-format"
+                  onValueChange={(option) => {
+                    if ((option !== "team" && option !== "individual") || option === regType)
+                      return;
+                    setRegType(option);
+                    setFormData((prev) => ({
+                      ...prev,
+                      fullName: "",
+                      identityNumber: "",
+                      teamName: "",
+                      leaderName: "",
+                      leaderIdentity: "",
+                      leaderGameId: "",
+                      leaderPhotoUrl: "",
+                      members: "",
+                      memberDetails: [],
+                    }));
+                  }}
+                  className="w-full sm:w-auto"
                 >
-                  {cat.label}
-                </Badge>
-              </motion.div>
-
-              <motion.h1
-                initial="hidden"
-                animate="visible"
-                variants={fadeUp}
-                className="text-xl md:text-3xl font-black uppercase tracking-tight mb-2 bg-gradient-to-r from-sky-900 via-cyan-800 to-slate-800 bg-clip-text text-transparent"
-              >
-                Pendaftaran {competition.title}
-              </motion.h1>
-
-              <motion.div
-                initial="hidden"
-                animate="visible"
-                variants={fadeUp}
-                className="accent-line mb-4"
-              />
-
-              <motion.p
-                initial="hidden"
-                animate="visible"
-                variants={fadeUp}
-                className="text-sm text-slate-600 font-light flex items-center gap-1.5"
-              >
-                <Trophy className="w-4 h-4 text-astro-cyan" />
-                Biaya Pendaftaran:{" "}
-                <span className="font-bold text-slate-900">
-                  {competition.isFree ? "Gratis" : competition.fee > 0 ? `Rp ${competition.fee.toLocaleString("id-ID")}` : "Gratis"}
-                </span>
-                {competition.batchName && (
-                  <span className="ml-1.5 inline-flex items-center rounded-full bg-cyan-100 px-2 py-0.5 text-[10px] font-extrabold uppercase text-cyan-800">
-                    {competition.batchName}
-                  </span>
-                )}
-                <span className="text-slate-300 mx-1">|</span>
-                {isTeam ? "Kategori Tim" : "Kategori Individu"}
-              </motion.p>
-
-              {/* Pilihan Kategori (hanya untuk lomba yang menerima individu & tim) */}
-              {canChooseType && (
+                  <ToggleGroupItem value="individual" className="flex-1">
+                    <UserRound />
+                    Individu
+                  </ToggleGroupItem>
+                  <ToggleGroupItem value="team" className="flex-1">
+                    <UsersRound />
+                    Tim
+                  </ToggleGroupItem>
+                </ToggleGroup>
+              </Surface>
+            )}
+            <AnimatePresence mode="wait">
+              {step === 1 ? (
                 <motion.div
-                  initial="hidden"
-                  animate="visible"
-                  variants={fadeUp}
-                  className="mt-6 flex flex-wrap items-center gap-3"
+                  key="form-step"
+                  variants={stepVariants}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
                 >
-                  <span className="text-[10px] font-black uppercase tracking-wider text-slate-500">
-                    Pilih Kategori Pendaftaran:
-                  </span>
-                  <div className="flex overflow-hidden rounded-full border border-slate-300 bg-white/70 shadow-sm">
-                    {(['individual', 'team'] as const).map((t) => (
-                      <button
-                        key={t}
-                        type="button"
-                        onClick={() => {
-                          setRegType(t);
-                          setFormData((prev) => ({
-                            ...prev,
-                            fullName: "",
-                            identityNumber: "",
-                            teamName: "",
-                            leaderName: "",
-                            leaderIdentity: "",
-                            leaderPhotoUrl: "",
-                            members: "",
-                            memberDetails: [],
-                          }));
-                        }}
-                        className={`px-5 py-2 text-xs font-black uppercase tracking-wider transition-colors ${
-                          regType === t
-                            ? "bg-astro-cyan text-slate-950"
-                            : "text-slate-500 hover:bg-slate-100"
-                        }`}
-                      >
-                        {t === 'team' ? 'Tim' : 'Individu'}
-                      </button>
-                    ))}
-                  </div>
+                  {draftRestored && !registrationId && (
+                    <Surface
+                      tone="tint"
+                      radius="xl"
+                      pad="md"
+                      className="mb-5 flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between"
+                    >
+                      <p className="text-sm text-astro-navy">
+                        Draf formulir dipulihkan dari sesi sebelumnya.
+                      </p>
+                      <Button type="button" variant="ghost" size="sm" onClick={handleResetDraft}>
+                        Reset formulir
+                      </Button>
+                    </Surface>
+                  )}
+                  <FormStep
+                    key={`${regType}-${
+                      registrationId
+                        ? `reg-${registrationId}`
+                        : draftRestored
+                          ? "draft-restored"
+                          : "new"
+                    }`}
+                    competition={competition}
+                    isTeam={isTeam}
+                    regType={regType}
+                    formData={formData}
+                    setFormData={setFormData}
+                    onContinue={handleFormSubmit}
+                    existingRegId={
+                      existingReg && existingReg.paymentStatus === "paid" ? null : registrationId
+                    }
+                    existingRef={paymentReference}
+                    existingPaymentLinkUrl={paymentLinkUrl}
+                    existingPaymentExpiresAt={paymentExpiresAt}
+                    maxTeamMembers={competition.maxTeamMembers || 5}
+                    minTeamMembers={competition.minTeamMembers || 1}
+                    photoRequired={!!competition.playerPhotoRequired}
+                    customFields={competition.customFields || []}
+                  />
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="payment-step"
+                  variants={stepVariants}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                >
+                  <PaymentStep
+                    competition={competition}
+                    registrationId={registrationId || ""}
+                    paymentReference={paymentReference || ""}
+                    paymentLinkUrl={paymentLinkUrl}
+                    paymentExpiresAt={paymentExpiresAt}
+                    initialPaymentCode={initialPaymentCode}
+                    initialPaymentCodeType={initialPaymentCodeType}
+                    onBack={handleBackToForm}
+                  />
                 </motion.div>
               )}
-
-              {/* ─── STEP INDICATOR ─── */}
-              <motion.div
-                initial="hidden"
-                animate="visible"
-                variants={fadeUp}
-                className="mt-8 flex items-center gap-0"
-              >
-                {/* Step 1 */}
-                <div className="flex items-center">
-                  <motion.div
-                    animate={step === 1 ? { scale: 1.05 } : { scale: 1 }}
-                    className={`flex items-center justify-center w-10 h-10 ${
-                      step === 1
-                        ? "bg-astro-cyan text-slate-950"
-                        : "bg-slate-100 text-slate-500"
-                    } font-black text-sm transition-all duration-300`}
-                    style={{
-                      clipPath: "polygon(50% 0, 100% 50%, 50% 100%, 0 50%)",
-                    }}
-                  >
-                    1
-                  </motion.div>
-                  <span
-                    className={`ml-2 text-[10px] font-bold uppercase tracking-wider ${
-                      step === 1 ? "text-astro-cyan" : "text-slate-400"
-                    }`}
-                  >
-                    Form
-                  </span>
-                </div>
-
-                {/* Connector line */}
-                <div className="w-12 md:w-20 h-[2px] mx-3 relative">
-                  <div className="absolute inset-0 bg-slate-200" />
-                  <motion.div
-                    className="absolute inset-y-0 left-0 bg-astro-cyan"
-                    initial={{ width: "0%" }}
-                    animate={{ width: step === 2 ? "100%" : "0%" }}
-                    transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                  />
-                </div>
-
-                {/* Step 2 */}
-                <div className="flex items-center">
-                  <motion.div
-                    animate={step === 2 ? { scale: 1.05 } : { scale: 1 }}
-                    className={`flex items-center justify-center w-10 h-10 ${
-                      step === 2
-                        ? "bg-astro-cyan text-slate-950"
-                        : "bg-slate-100 text-slate-500"
-                    } font-black text-sm transition-all duration-300`}
-                    style={{
-                      clipPath: "polygon(50% 0, 100% 50%, 50% 100%, 0 50%)",
-                    }}
-                  >
-                    2
-                  </motion.div>
-                  <span
-                    className={`ml-2 text-[10px] font-bold uppercase tracking-wider ${
-                      step === 2 ? "text-astro-cyan" : "text-slate-400"
-                    }`}
-                  >
-                    Bayar
-                  </span>
-                </div>
-              </motion.div>
-            </div>
-          </section>
-
-          {/* ─── CONTENT ─── */}
-          <section className="relative bg-gradient-to-b from-sky-100 via-sky-50 to-white pb-20 md:pb-28 overflow-hidden">
-            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-              <AnimatePresence mode="wait">
-                {step === 1 ? (
-                  <motion.div
-                    key="form-step"
-                    variants={stepVariants}
-                    initial="enter"
-                    animate="center"
-                    exit="exit"
-                  >
-                    {draftRestored && !registrationId && (
-                      <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-cyan-200 bg-cyan-50/80 px-4 py-3 text-sm text-cyan-900 shadow-sm backdrop-blur-sm">
-                        <div className="flex items-center gap-2.5">
-                          <Sparkles className="size-4 text-cyan-600 shrink-0" />
-                          <span>
-                            <strong>Draf formulir dipulihkan.</strong> Data input terakhir Anda telah dimuat kembali otomatis.
-                          </span>
-                        </div>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={handleResetDraft}
-                          className="h-7 text-xs font-bold text-cyan-800 hover:bg-cyan-100 hover:text-cyan-900 gap-1.5"
-                        >
-                          <RotateCcw className="size-3" />
-                          Reset Formulir
-                        </Button>
-                      </div>
-                    )}
-                    <FormStep
-                      // Remount once an existing registration is hydrated or draft is restored
-                      // so the form picks up the prefilled values (incl. player photos).
-                      key={registrationId ? `reg-${registrationId}` : draftRestored ? "draft-restored" : "new"}
-                      competition={competition as any}
-                      isTeam={isTeam}
-                      regType={regType}
-                      formData={formData}
-                      setFormData={setFormData}
-                      onContinue={handleFormSubmit}
-                      existingRegId={existingReg && (existingReg as any).paymentStatus === 'paid' ? null : registrationId}
-                      existingRef={paymentReference}
-                      existingPaymentLinkUrl={paymentLinkUrl}
-                      existingPaymentExpiresAt={paymentExpiresAt}
-                      maxTeamMembers={competition.maxTeamMembers || 5}
-                      minTeamMembers={competition.minTeamMembers || 1}
-                      photoRequired={!!competition.playerPhotoRequired}
-                      customFields={competition.customFields || []}
-                    />
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    key="payment-step"
-                    variants={stepVariants}
-                    initial="enter"
-                    animate="center"
-                    exit="exit"
-                  >
-                    <PaymentStep
-                      competition={competition as any}
-                      registrationId={registrationId || ""}
-                      paymentReference={paymentReference || ""}
-                      paymentLinkUrl={paymentLinkUrl}
-                      paymentExpiresAt={paymentExpiresAt}
-                      initialPaymentCode={initialPaymentCode}
-                      initialPaymentCodeType={initialPaymentCodeType}
-                      onBack={handleBackToForm}
-                    />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          </section>
-        </main>
-
-        <Footer />
-      </div>
-    </>
+            </AnimatePresence>
+          </div>
+        </div>
+      </SectionShell>
+    </PageShell>
   );
 }

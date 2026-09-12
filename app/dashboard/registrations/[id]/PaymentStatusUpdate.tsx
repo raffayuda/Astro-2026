@@ -1,13 +1,20 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { Check } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Spinner } from '@/components/ui/spinner';
-import { toast } from 'sonner';
-import { apiHelpers } from '@/src/lib/api';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Check } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Spinner } from "@/components/ui/spinner";
+import { toast } from "sonner";
+import { apiHelpers } from "@/src/lib/api";
 
 interface Props {
   registrationId: string;
@@ -30,7 +37,7 @@ export default function PaymentStatusUpdate({ registrationId, currentStatus }: P
       setTimeout(() => setDone(false), 2000);
     } catch (err) {
       console.error(err);
-      toast.error(err instanceof Error ? err.message : 'Gagal memperbarui status');
+      toast.error(err instanceof Error ? err.message : "Gagal memperbarui status");
     } finally {
       setLoading(false);
     }
@@ -38,11 +45,11 @@ export default function PaymentStatusUpdate({ registrationId, currentStatus }: P
 
   return (
     <div className="space-y-3 border-t border-border pt-3">
-      <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+      <span className="text-10 font-bold uppercase tracking-wider text-muted-foreground">
         Update Status Pembayaran
       </span>
       <Select value={status} onValueChange={setStatus}>
-        <SelectTrigger className="clip-angled-sm h-10 w-full bg-background">
+        <SelectTrigger className="rounded-md h-10 w-full bg-background">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
@@ -58,14 +65,16 @@ export default function PaymentStatusUpdate({ registrationId, currentStatus }: P
       <Button
         onClick={handleUpdate}
         disabled={loading || status === currentStatus}
-        className="clip-angled-sm w-full text-xs font-bold uppercase tracking-wider"
+        className="rounded-md w-full text-xs font-bold uppercase tracking-wider"
       >
         {loading ? (
           <Spinner data-icon="inline-start" />
         ) : done ? (
-          <><Check data-icon="inline-start" /> Tersimpan</>
+          <>
+            <Check data-icon="inline-start" /> Tersimpan
+          </>
         ) : (
-          'Simpan Perubahan'
+          "Simpan Perubahan"
         )}
       </Button>
     </div>

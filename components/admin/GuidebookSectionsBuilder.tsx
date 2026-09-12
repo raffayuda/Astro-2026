@@ -19,7 +19,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
 import type { CompetitionGuidebookSection } from "@/src/db/schema";
 
 interface Props {
@@ -44,9 +43,7 @@ export default function GuidebookSectionsBuilder({ sections, onChange }: Props) 
   };
 
   const updateSection = (id: string, field: "title" | "content", val: string) => {
-    onChange(
-      sections.map((s) => (s.id === id ? { ...s, [field]: val } : s))
-    );
+    onChange(sections.map((s) => (s.id === id ? { ...s, [field]: val } : s)));
   };
 
   const removeSection = (id: string) => {
@@ -73,7 +70,7 @@ export default function GuidebookSectionsBuilder({ sections, onChange }: Props) 
     <div className="space-y-4 rounded-xl border border-border bg-muted/20 p-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <BookOpen className="size-4 text-cyan-600 dark:text-cyan-400" />
+          <BookOpen className="size-4 text-astro-blue" />
           <span className="text-xs font-bold uppercase tracking-wider text-foreground">
             Artikel / Bagian Guidebook ({sections.length})
           </span>
@@ -83,19 +80,21 @@ export default function GuidebookSectionsBuilder({ sections, onChange }: Props) 
           variant="outline"
           size="sm"
           onClick={addSection}
-          className="clip-angled-sm h-7 gap-1 border-cyan-500/40 text-xs font-bold uppercase tracking-wider text-cyan-700 hover:bg-cyan-500/10 dark:text-cyan-300"
+          className="rounded-md h-7 gap-1 border-astro-blue/40 text-xs font-bold uppercase tracking-wider text-astro-navy hover:bg-astro-blue/10"
         >
           <Plus className="size-3.5" /> Tambah Bagian
         </Button>
       </div>
 
-      <p className="text-[11px] text-muted-foreground">
-        Tambahkan bagian panduan interaktif (misal: Tahapan Babak, Kriteria Penilaian, Tata Tertib, Fasilitas). Bagian ini akan dirender sebagai Tab panduan resmi di halaman detail lomba.
+      <p className="text-11 text-muted-foreground">
+        Tambahkan bagian panduan interaktif (misal: Tahapan Babak, Kriteria Penilaian, Tata Tertib,
+        Fasilitas). Bagian ini akan dirender sebagai Tab panduan resmi di halaman detail lomba.
       </p>
 
       {sections.length === 0 ? (
         <div className="rounded-lg border border-dashed border-border py-6 text-center text-xs text-muted-foreground">
-          Belum ada bagian artikel guidebook. Klik &quot;Tambah Bagian&quot; di atas untuk membuat panduan modular.
+          Belum ada bagian artikel guidebook. Klik &quot;Tambah Bagian&quot; di atas untuk membuat
+          panduan modular.
         </div>
       ) : (
         <div className="space-y-3">
@@ -109,7 +108,7 @@ export default function GuidebookSectionsBuilder({ sections, onChange }: Props) 
                 {/* Header: Title, Ordering, Controls */}
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2 flex-1">
-                    <Badge variant="outline" className="text-[10px] font-mono shrink-0">
+                    <Badge variant="outline" className="text-10 font-mono shrink-0">
                       #{idx + 1}
                     </Badge>
                     <Input
@@ -149,7 +148,7 @@ export default function GuidebookSectionsBuilder({ sections, onChange }: Props) 
                       variant="outline"
                       size="sm"
                       onClick={() => togglePreview(sec.id)}
-                      className="h-7 text-[10px] font-bold uppercase gap-1"
+                      className="h-7 text-10 font-bold uppercase gap-1"
                     >
                       {isPreview ? (
                         <>
@@ -181,13 +180,13 @@ export default function GuidebookSectionsBuilder({ sections, onChange }: Props) 
                   <div className="space-y-1.5">
                     {/* Mini formatting toolbar */}
                     <div className="flex items-center gap-1 border-b border-border/60 pb-1.5 text-muted-foreground">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/80 mr-1">
+                      <span className="text-10 font-bold uppercase tracking-wider text-muted-foreground/80 mr-1">
                         Format:
                       </span>
                       <button
                         type="button"
                         onClick={() => insertFormat(sec.id, sec.content, "**Teks Tebal**")}
-                        className="rounded px-1.5 py-0.5 text-[10px] font-bold hover:bg-muted hover:text-foreground"
+                        className="rounded px-1.5 py-0.5 text-10 font-bold hover:bg-muted hover:text-foreground"
                         title="Teks Tebal"
                       >
                         <Bold className="size-3 inline mr-0.5" /> Bold
@@ -195,7 +194,7 @@ export default function GuidebookSectionsBuilder({ sections, onChange }: Props) 
                       <button
                         type="button"
                         onClick={() => insertFormat(sec.id, sec.content, "*Teks Miring*")}
-                        className="rounded px-1.5 py-0.5 text-[10px] font-bold hover:bg-muted hover:text-foreground"
+                        className="rounded px-1.5 py-0.5 text-10 font-bold hover:bg-muted hover:text-foreground"
                         title="Teks Miring"
                       >
                         <Italic className="size-3 inline mr-0.5" /> Italic
@@ -203,7 +202,7 @@ export default function GuidebookSectionsBuilder({ sections, onChange }: Props) 
                       <button
                         type="button"
                         onClick={() => insertFormat(sec.id, sec.content, "- Poin syarat...")}
-                        className="rounded px-1.5 py-0.5 text-[10px] font-bold hover:bg-muted hover:text-foreground"
+                        className="rounded px-1.5 py-0.5 text-10 font-bold hover:bg-muted hover:text-foreground"
                         title="List Poin"
                       >
                         <List className="size-3 inline mr-0.5" /> List
@@ -211,15 +210,21 @@ export default function GuidebookSectionsBuilder({ sections, onChange }: Props) 
                       <button
                         type="button"
                         onClick={() => insertFormat(sec.id, sec.content, "1. Langkah/Babak...")}
-                        className="rounded px-1.5 py-0.5 text-[10px] font-bold hover:bg-muted hover:text-foreground"
+                        className="rounded px-1.5 py-0.5 text-10 font-bold hover:bg-muted hover:text-foreground"
                         title="Penomoran"
                       >
                         <ListOrdered className="size-3 inline mr-0.5" /> 1,2,3
                       </button>
                       <button
                         type="button"
-                        onClick={() => insertFormat(sec.id, sec.content, "⚠️ Catatan Penting / Diskualifikasi: ...")}
-                        className="rounded px-1.5 py-0.5 text-[10px] font-bold text-amber-600 dark:text-amber-400 hover:bg-amber-500/10"
+                        onClick={() =>
+                          insertFormat(
+                            sec.id,
+                            sec.content,
+                            "⚠️ Catatan Penting / Diskualifikasi: ...",
+                          )
+                        }
+                        className="rounded px-1.5 py-0.5 text-10 font-bold text-amber-600 hover:bg-amber-500/10"
                         title="Peringatan / Diskualifikasi"
                       >
                         <AlertTriangle className="size-3 inline mr-0.5" /> Warning
@@ -236,11 +241,15 @@ export default function GuidebookSectionsBuilder({ sections, onChange }: Props) 
                   </div>
                 ) : (
                   <div className="rounded-md border border-border/60 bg-muted/30 p-3 text-xs leading-relaxed">
-                    <p className="font-bold text-cyan-600 dark:text-cyan-400 uppercase text-[11px] mb-2 border-b border-border/40 pb-1">
+                    <p className="font-bold text-astro-blue uppercase text-11 mb-2 border-b border-border/40 pb-1">
                       {sec.title || "Tanpa Judul"}
                     </p>
                     <div className="whitespace-pre-line text-foreground/90">
-                      {sec.content || <span className="italic text-muted-foreground">Belum ada konten ditulis.</span>}
+                      {sec.content || (
+                        <span className="italic text-muted-foreground">
+                          Belum ada konten ditulis.
+                        </span>
+                      )}
                     </div>
                   </div>
                 )}
