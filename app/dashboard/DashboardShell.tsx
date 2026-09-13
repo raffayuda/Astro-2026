@@ -19,11 +19,14 @@ import {
   User,
   Menu,
   X,
+  Sparkles,
 } from "lucide-react";
 import Image from "next/image";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { AiAssistantDrawer } from "@/components/dashboard/AiAssistantDrawer";
+import { AiChatProvider } from "@/components/dashboard/AiChatContext";
 import {
   Sidebar,
   SidebarContent,
@@ -222,6 +225,7 @@ export default function DashboardShell({ children, role, userName }: Props) {
 
   const navItems: NavItem[] = [
     { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
+    { href: "/dashboard/ai", label: "ASTRO Copilot", icon: Sparkles },
     ...(role === "admin"
       ? [
           { href: "/dashboard/registrations", label: "Pendaftaran", icon: ClipboardList },
@@ -245,60 +249,63 @@ export default function DashboardShell({ children, role, userName }: Props) {
   };
 
   return (
-    <SidebarProvider>
-      <Sidebar collapsible="offcanvas" className="border-r border-astro-cyan-2/55 bg-sky-bottom/95">
-        <DashboardSidebarHeader />
+    <AiChatProvider>
+      <SidebarProvider>
+        <Sidebar collapsible="offcanvas" className="border-r border-astro-cyan-2/55 bg-sky-bottom/95">
+          <DashboardSidebarHeader />
 
-        <SidebarContent>
-          <SidebarGroup className="px-3 py-2">
-            <SidebarGroupLabel className="mb-2 px-2 text-xs font-semibold uppercase tracking-wider text-sidebar-foreground/70">
-              Menu
-            </SidebarGroupLabel>
-            <SidebarGroupContent>
-              <DashboardNavMenu navItems={navItems} isActive={isActive} />
-            </SidebarGroupContent>
-          </SidebarGroup>
-        </SidebarContent>
+          <SidebarContent>
+            <SidebarGroup className="px-3 py-2">
+              <SidebarGroupLabel className="mb-2 px-2 text-xs font-semibold uppercase tracking-wider text-sidebar-foreground/70">
+                Menu
+              </SidebarGroupLabel>
+              <SidebarGroupContent>
+                <DashboardNavMenu navItems={navItems} isActive={isActive} />
+              </SidebarGroupContent>
+            </SidebarGroup>
+          </SidebarContent>
 
-        <DashboardSidebarFooter userName={userName} role={role} onLogout={handleLogout} />
-        <SidebarRail />
-      </Sidebar>
+          <DashboardSidebarFooter userName={userName} role={role} onLogout={handleLogout} />
+          <SidebarRail />
+        </Sidebar>
 
-      <SidebarInset>
-        <header className="flex h-16 items-center justify-between gap-3 border-b border-astro-cyan-2/55 bg-white/80 px-4 shadow-soft-sm backdrop-blur-xl sm:gap-4 lg:px-6">
-          <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
-            {/* Hamburger button on mobile */}
-            <DashboardSidebarTrigger className="md:hidden" />
-            {/* Desktop collapsible trigger */}
-            <SidebarTrigger className="hidden md:flex text-sidebar-foreground/70 hover:text-astro-navy hover:bg-sky-bottom" />
+        <SidebarInset>
+          <header className="flex h-16 items-center justify-between gap-3 border-b border-astro-cyan-2/55 bg-white/80 px-4 shadow-soft-sm backdrop-blur-xl sm:gap-4 lg:px-6">
+            <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+              {/* Hamburger button on mobile */}
+              <DashboardSidebarTrigger className="md:hidden" />
+              {/* Desktop collapsible trigger */}
+              <SidebarTrigger className="hidden md:flex text-sidebar-foreground/70 hover:text-astro-navy hover:bg-sky-bottom" />
 
-            {todayString ? (
-              <div className="flex items-center gap-2 rounded-full border border-astro-cyan-2/50 bg-sky-bottom/50 px-3 py-1.5 text-xs text-muted-foreground shadow-2xs sm:px-3.5">
-                <Calendar className="size-3.5 text-astro-blue shrink-0" />
-                <span className="truncate">
-                  Today is{" "}
-                  <strong className="font-bold text-astro-navy">{todayString}</strong>
-                </span>
-              </div>
-            ) : (
-              <div className="h-7 w-36 sm:w-48 rounded-full bg-sky-bottom/40 animate-pulse" />
-            )}
-          </div>
+              {todayString ? (
+                <div className="flex items-center gap-2 rounded-full border border-astro-cyan-2/50 bg-sky-bottom/50 px-3 py-1.5 text-xs text-muted-foreground shadow-2xs sm:px-3.5">
+                  <Calendar className="size-3.5 text-astro-blue shrink-0" />
+                  <span className="truncate">
+                    Today is{" "}
+                    <strong className="font-bold text-astro-navy">{todayString}</strong>
+                  </span>
+                </div>
+              ) : (
+                <div className="h-7 w-36 sm:w-48 rounded-full bg-sky-bottom/40 animate-pulse" />
+              )}
+            </div>
 
-          <div className="flex items-center gap-4 shrink-0">
-            <Link
-              href="/"
-              className="text-xs font-bold uppercase tracking-wider text-muted-foreground transition-colors hover:text-primary"
-            >
-              Lihat Website
-            </Link>
-          </div>
-        </header>
+            <div className="flex items-center gap-4 shrink-0">
+              <Link
+                href="/"
+                className="text-xs font-bold uppercase tracking-wider text-muted-foreground transition-colors hover:text-primary"
+              >
+                Lihat Website
+              </Link>
+            </div>
+          </header>
 
-        <main className="bg-linear-to-b from-sky-bottom via-white to-white flex-1 overflow-auto p-4 lg:p-8">
-          {children}
-        </main>
-      </SidebarInset>
-    </SidebarProvider>
+          <main className="bg-linear-to-b from-sky-bottom via-white to-white flex-1 overflow-auto p-4 lg:p-8">
+            {children}
+          </main>
+          <AiAssistantDrawer />
+        </SidebarInset>
+      </SidebarProvider>
+    </AiChatProvider>
   );
 }

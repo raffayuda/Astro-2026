@@ -126,3 +126,38 @@
 [00:44] - [app/dashboard/page.tsx] - [UPDATE] - Integrate server-side analytics calculations (conversion rate, potential revenue, ARPU, demographics, daily trends, and recent registrations) and enhance competition performance table
 [00:50] - [app/dashboard/page.tsx] - [FIX] - Consolidate 11 parallel database queries down to 4 streamlined queries and add force-dynamic to prevent connection pool exhaustion (max: 10)
 [00:50] - [components/OverviewCharts.tsx] - [FIX] - Remove redundant useRegistrationStats client hook to prevent 401 retry loops and allow synchronous render from initialData
+[23:45] - [src/db/migrations/0030_add_ai_settings.sql] - [ADD] - Create ai_settings table for storing 9router runtime configuration in PostgreSQL
+[23:45] - [src/db/schema/index.ts] - [UPDATE] - Export aiSettings table schema and TypeScript types
+[23:45] - [src/server/ai/config.ts] - [ADD] - Implement AI settings service with API key masking and DB persistence
+[23:45] - [src/server/ai/provider.ts] - [ADD] - Implement dynamic 9router OpenAI-compatible provider with connection testing
+[23:45] - [src/server/ai/tools.ts] - [ADD] - Implement read-only tools (searchRegistrations, getRegistrationDetail, getCompetitionsList, getCompetitionStats, getFinancialAnalytics)
+[23:45] - [app/api/dashboard/ai/settings/route.ts] - [ADD] - Implement GET and POST routes for AI settings management and ping test
+[23:45] - [app/api/dashboard/ai/chat/route.ts] - [ADD] - Implement streaming chat completion route with ASTRO system prompt and tool calling
+[23:45] - [components/dashboard/AiSettingsModal.tsx] - [ADD] - Build in-dashboard modal for 9router API key and model configuration
+[23:45] - [components/dashboard/AiAssistantDrawer.tsx] - [ADD] - Implement floating bottom-right AI launcher and drawer widget
+[23:45] - [app/dashboard/ai/page.tsx] - [ADD] - Build full-screen AI Assistant dashboard page with markdown parsing, quick prompts, and stream rendering
+[23:45] - [app/dashboard/DashboardShell.tsx] - [UPDATE] - Integrate AI Assistant nav item and embed AiAssistantDrawer
+[00:03] - [components/dashboard/AiSettingsModal.tsx] - [FIX] - Re-add ExternalLink to lucide-react imports and integrate with Gateway URL link to resolve Turbopack module factory client error
+[00:05] - [app/dashboard/ai/page.tsx] - [FIX] - Assign deterministic unique keys across all MarkdownRenderer AST nodes (tables, headers, lists, paragraphs, bold/code spans, and links) to eliminate React child key warnings
+[00:12] - [src/server/ai/tools.ts] - [UPDATE] - Implement 4 action proposal tools (proposeCreateCompetition, proposeUpdateCompetition, proposeUpdateRegistrationStatus, proposeSetWinners) for AI Copilot Phase 2
+[00:12] - [app/api/dashboard/ai/action/execute/route.ts] - [ADD] - Secure execution endpoint for AI-proposed actions with admin session check and Drizzle ORM mutations
+[00:12] - [app/api/dashboard/ai/chat/route.ts] - [UPDATE] - Update system prompt with Human-in-the-Loop action guidance and document extraction instructions
+[00:12] - [components/dashboard/AiActionCard.tsx] - [ADD] - Build interactive Action Proposal Card component with visual diff, status badges, and one-click database execution
+[00:12] - [app/dashboard/ai/page.tsx] - [UPDATE] - Integrate AiActionCard rendering in chat stream and add Phase 2 quick action prompts (Input Lomba Baru, Verifikasi Pembayaran, Tetapkan Juara)
+[00:12] - [components/dashboard/AiAssistantDrawer.tsx] - [UPDATE] - Support AiActionCard rendering in floating drawer chat feed
+[00:22] - [src/server/ai/tools.ts] - [UPDATE] - Implement Phase 3 tools: generateBroadcastDrafts for WhatsApp follow-ups, generateExecutiveReport for tactical briefing, and generateDataExport for on-demand CSV generation
+[00:22] - [app/api/dashboard/ai/chat/route.ts] - [UPDATE] - Instruct AI Copilot on Phase 3 reporting, CSV exports, and WhatsApp follow-up operations
+[00:22] - [components/dashboard/AiBroadcastCard.tsx] - [ADD] - Implement AiBroadcastCard (direct wa.me links, template copy, bulk number copy) and AiCsvExportCard (client-side Blob download)
+[00:22] - [app/dashboard/ai/page.tsx] - [UPDATE] - Add localStorage chat persistence, Chat Baru reset button, AiBroadcastCard and AiCsvExportCard rendering, and Phase 3 quick prompt chips
+[00:22] - [components/dashboard/AiAssistantDrawer.tsx] - [UPDATE] - Support AiBroadcastCard and AiCsvExportCard rendering in floating drawer assistant feed
+[00:26] - [src/server/ai/tools.ts] - [UPDATE] - Remove generateBroadcastDrafts WhatsApp follow-up tool per user requirement
+[00:26] - [app/api/dashboard/ai/chat/route.ts] - [UPDATE] - Remove WhatsApp broadcast instructions from system prompt
+[00:26] - [components/dashboard/AiCsvExportCard.tsx] - [ADD] - Create dedicated CSV export card component
+[00:26] - [components/dashboard/AiBroadcastCard.tsx] - [DELETE] - Remove unused WhatsApp broadcast component
+[00:26] - [app/dashboard/ai/page.tsx] - [UPDATE] - Remove WhatsApp imports and cards, resolve Turbopack icon cache error, and update quick prompt chips
+[00:30] - [components/dashboard/AiMarkdownRenderer.tsx] - [ADD] - Create dedicated shared Markdown renderer supporting headings, tables, bullet/numbered lists, bold, inline code, links, and blockquotes with compact mode support
+[00:30] - [components/dashboard/AiChatContext.tsx] - [ADD] - Create shared AI chat React context provider with localStorage persistence (astro_ai_chat_messages) so chat history is shared seamlessly between page and dialog
+[00:30] - [app/dashboard/DashboardShell.tsx] - [UPDATE] - Wrap DashboardShell with AiChatProvider so AI chat state is retained across all route transitions in the dashboard
+[00:30] - [components/dashboard/AiAssistantDrawer.tsx] - [UPDATE] - Connect to useAiChat and render responses with AiMarkdownRenderer compact to eliminate raw markdown asterisks and unformatted text
+[00:30] - [app/dashboard/ai/page.tsx] - [UPDATE] - Use shared useAiChat and AiMarkdownRenderer to maintain synchronized chat history with dialog across page navigation
+[00:30] - [data/committeeData.ts] - [UPDATE] - Clean up unused CommitteeMember import to achieve 0 linter warnings

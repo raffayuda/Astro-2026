@@ -1,4 +1,4 @@
-import { CommitteeDivision, CommitteeMember } from "@/types/committee";
+import { CommitteeDivision } from "@/types/committee";
 
 export const COMMITTEE_DIVISIONS: CommitteeDivision[] = [
   {

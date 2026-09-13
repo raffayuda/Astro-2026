@@ -499,3 +499,22 @@ export const committeeMembers = pgTable(
   },
   (table) => [index("committee_members_division_idx").on(table.division)],
 );
+
+/* ─── AI Settings (9router & LLM Runtime Config) ─── */
+export const aiSettings = pgTable("ai_settings", {
+  id: text("id").primaryKey().default("default"),
+  provider: text("provider").notNull().default("9router"),
+  apiKey: text("api_key"),
+  baseUrl: text("base_url").default("https://api.9router.com/v1"),
+  model: text("model").default("gemini-2.0-flash"),
+  temperature: text("temperature").default("0.7"),
+  maxTokens: integer("max_tokens").default(2048),
+  systemPrompt: text("system_prompt"),
+  isEnabled: boolean("is_enabled").default(true),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  updatedBy: text("updated_by"),
+});
+
+export type AiSettings = typeof aiSettings.$inferSelect;
+export type NewAiSettings = typeof aiSettings.$inferInsert;
+
