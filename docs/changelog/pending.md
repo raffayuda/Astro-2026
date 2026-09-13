@@ -161,3 +161,10 @@
 [00:30] - [components/dashboard/AiAssistantDrawer.tsx] - [UPDATE] - Connect to useAiChat and render responses with AiMarkdownRenderer compact to eliminate raw markdown asterisks and unformatted text
 [00:30] - [app/dashboard/ai/page.tsx] - [UPDATE] - Use shared useAiChat and AiMarkdownRenderer to maintain synchronized chat history with dialog across page navigation
 [00:30] - [data/committeeData.ts] - [UPDATE] - Clean up unused CommitteeMember import to achieve 0 linter warnings
+[00:50] - [src/server/ai/guardrails.ts] - [ADD] - Implement High-End AI Guardrails engine (Unicode NFKC, zero-width stripper, in-memory rate limiter 15 req/min, circuit breaker 3-strike 5-min lockout, heuristic classifier for jailbreak/DAN/arbitrary coding/cipher/prompt theft, fast zero-token refusal stream, output secret masker, and telemetry store)
+[00:50] - [src/server/ai/tools.ts] - [UPDATE] - Wrap participant query returns with untrusted_database_content tags and sanitize strings against indirect prompt injection
+[00:50] - [src/server/ai/config.ts] - [UPDATE] - Add telemetry typing to PublicAiConfig interface
+[00:50] - [app/api/dashboard/ai/chat/route.ts] - [UPDATE] - Integrate input normalization, rate limiter, circuit breaker, pre-execution threat heuristics, rolling 10-message context window, and hardened defensive system prompt
+[00:50] - [app/api/dashboard/ai/settings/route.ts] - [UPDATE] - Return live security telemetry stats in GET endpoint
+[00:50] - [app/api/dashboard/ai/action/execute/route.ts] - [UPDATE] - Add structured mutation audit logging for admin actions
+[00:50] - [components/dashboard/AiSettingsModal.tsx] - [UPDATE] - Add Keamanan & Telemetri tab displaying active guard status, rate limit metrics, and threat blocker counters

@@ -3,6 +3,7 @@ import { headers } from "next/headers";
 import { auth } from "@/src/server/auth";
 import { getPublicAiConfig, updateAiSettings } from "@/src/server/ai/config";
 import { testAiConnection } from "@/src/server/ai/provider";
+import { getSecurityTelemetry } from "@/src/server/ai/guardrails";
 
 export const dynamic = "force-dynamic";
 
@@ -21,7 +22,8 @@ export async function GET() {
     }
 
     const config = await getPublicAiConfig();
-    return NextResponse.json(config);
+    const telemetry = getSecurityTelemetry();
+    return NextResponse.json({ ...config, telemetry });
   } catch (error: unknown) {
     console.error("[ai-settings] GET error:", error);
     return NextResponse.json(

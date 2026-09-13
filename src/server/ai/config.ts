@@ -15,6 +15,13 @@ export interface PublicAiConfig {
   maskedApiKey: string;
   updatedAt: string;
   updatedBy: string | null;
+  telemetry?: {
+    totalRequestsChecked: number;
+    totalThreatsBlocked: number;
+    threatsByType: Record<string, number>;
+    circuitBreakerTrips: number;
+    activeGuards: string[];
+  };
 }
 
 export interface UpdateAiConfigInput {

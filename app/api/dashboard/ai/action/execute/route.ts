@@ -34,6 +34,10 @@ export async function POST(req: Request) {
       );
     }
 
+    console.info(
+      `[SECURITY AUDIT - MUTATION EXECUTED] Admin: ${session.user.email} (${session.user.id}) approved & executed action: ${actionType} at ${new Date().toISOString()}`,
+    );
+
     switch (actionType) {
       case "CREATE_COMPETITION": {
         const row = await createCompetition(payload);
