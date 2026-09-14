@@ -192,3 +192,5 @@
 [12:17] - [components/dashboard/AiChatContext.tsx] - [UPDATE] - Implement debounced (800ms) and capped (last 50 messages) localStorage persistence with immediate flush on stream completion to prevent synchronous disk I/O main thread blocking
 [12:17] - [app/dashboard/ai/page.tsx] - [UPDATE] - Integrate AiChatMessageItem, message windowing (25 messages pagination), user scroll detection, and direct scrollTop streaming without smooth scroll queue thrashing
 [12:17] - [components/dashboard/AiAssistantDrawer.tsx] - [UPDATE] - Integrate AiChatMessageItem (compact), drawer windowing (20 messages pagination), and direct scrollTop during streaming
+[12:35] - [components/GuidebookArticle.tsx] - [UPDATE] - Upgrade markdown layout engine with block-based parser supporting tight Q&A spacing (4px gap), multiline paragraphs, markdown tables, and strip colons inside bold tags
+[12:35] - [components/admin/GuidebookSectionsBuilder.tsx] - [UPDATE] - Replace plain whitespace preview with live GuidebookArticle component for 100% WYSIWYG parity between admin and public pages

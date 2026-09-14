@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
+import GuidebookArticle from "@/components/GuidebookArticle";
 import type { CompetitionGuidebookSection } from "@/src/db/schema";
 
 interface Props {
@@ -240,17 +241,22 @@ export default function GuidebookSectionsBuilder({ sections, onChange }: Props) 
                     />
                   </div>
                 ) : (
-                  <div className="rounded-md border border-border/60 bg-muted/30 p-3 text-xs leading-relaxed">
-                    <p className="font-bold text-astro-blue uppercase text-11 mb-2 border-b border-border/40 pb-1">
-                      {sec.title || "Tanpa Judul"}
-                    </p>
-                    <div className="whitespace-pre-line text-foreground/90">
-                      {sec.content || (
-                        <span className="italic text-muted-foreground">
-                          Belum ada konten ditulis.
-                        </span>
-                      )}
-                    </div>
+                  <div className="rounded-lg border border-border/60 bg-muted/20 p-4 text-xs">
+                    {sec.content ? (
+                      <GuidebookArticle
+                        sections={[
+                          {
+                            id: sec.id,
+                            title: sec.title || "Pratinjau Bagian",
+                            content: sec.content,
+                          },
+                        ]}
+                      />
+                    ) : (
+                      <span className="italic text-muted-foreground">
+                        Belum ada konten ditulis.
+                      </span>
+                    )}
                   </div>
                 )}
               </div>
