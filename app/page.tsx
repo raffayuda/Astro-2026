@@ -5,6 +5,7 @@ import type { InferSelectModel } from "drizzle-orm";
 import type { AstroData } from "@/types/astro";
 import astroData from "@/data/astro-data.json";
 import { toPublicCompetition } from "@/lib/mappers";
+import { getLatestRegistrationDeadline } from "@/src/lib/competitions";
 import HomeClient from "./HomeClient";
 
 type CompetitionRow = InferSelectModel<typeof competitions>;
@@ -26,14 +27,26 @@ export default async function Home() {
     // DB not available, use JSON
   }
 
-  const data: AstroData =
-    rows.length > 0
-      ? {
-          ...fallbackData,
-          competitions: rows.map(toPublicCompetition),
-          faqs: faqRows.map((f) => ({ q: f.question, a: f.answer })),
-        }
-      : fallbackData;
+  const publicCompetitions =
+    rows.length > 0 ? rows.map(toPublicCompetition) : fallbackData.competitions;
+
+  const latestDeadline = getLatestRegistrationDeadline(
+    publicCompetitions,
+    fallbackData.eventConfig.registrationDeadline,
+  );
+
+  const data: AstroData = {
+    ...fallbackData,
+    eventConfig: {
+      ...fallbackData.eventConfig,
+      registrationDeadline: latestDeadline,
+    },
+    competitions: publicCompetitions,
+    faqs:
+      faqRows.length > 0
+        ? faqRows.map((f) => ({ q: f.question, a: f.answer }))
+        : fallbackData.faqs,
+  };
 
   return <HomeClient data={data} />;
 }

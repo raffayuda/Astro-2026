@@ -48,7 +48,22 @@ export default function CountdownTimer({
     return () => clearInterval(timer);
   }, [deadline]);
 
+  const isExpired =
+    timeLeft !== null &&
+    timeLeft.days === 0 &&
+    timeLeft.hours === 0 &&
+    timeLeft.minutes === 0 &&
+    timeLeft.seconds === 0;
+
   if (variant === "inline") {
+    if (isExpired) {
+      return (
+        <p className={cn("text-sm font-semibold text-astro-navy/60", className)}>
+          Pendaftaran telah ditutup
+        </p>
+      );
+    }
+
     return (
       <p className={cn("text-sm font-semibold text-astro-navy/70", className)}>
         Pendaftaran ditutup dalam{" "}

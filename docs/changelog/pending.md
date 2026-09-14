@@ -194,3 +194,6 @@
 [12:17] - [components/dashboard/AiAssistantDrawer.tsx] - [UPDATE] - Integrate AiChatMessageItem (compact), drawer windowing (20 messages pagination), and direct scrollTop during streaming
 [12:35] - [components/GuidebookArticle.tsx] - [UPDATE] - Upgrade markdown layout engine with block-based parser supporting tight Q&A spacing (4px gap), multiline paragraphs, markdown tables, and strip colons inside bold tags
 [12:35] - [components/admin/GuidebookSectionsBuilder.tsx] - [UPDATE] - Replace plain whitespace preview with live GuidebookArticle component for 100% WYSIWYG parity between admin and public pages
+[23:30] - [src/lib/competitions.ts] - [ADD] - Implement getLatestRegistrationDeadline and parseDateToTimestamp to dynamically derive latest competition deadline from active batches and schedules
+[23:30] - [app/page.tsx] - [UPDATE] - Dynamically calculate and inject latest registration deadline into eventConfig for landing page countdown
+[23:30] - [components/CountdownTimer.tsx] - [UPDATE] - Add isExpired check displaying 'Pendaftaran telah ditutup' when deadline has passed
