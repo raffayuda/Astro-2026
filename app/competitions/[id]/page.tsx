@@ -64,7 +64,6 @@ function feeAmount(competition: { isFree?: boolean; fee: number }) {
 
 function chromeTitle(title: string) {
   const t = title.replace(/\s+/g, " ").trim();
-  if (/got\s*talent/i.test(t)) return "GOT\nTALENT";
   const words = t.split(" ").filter(Boolean);
   if (words.length <= 1) return t;
   if (words.length === 2) return `${words[0]}\n${words[1]}`;
