@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from "react";
 import {
   Sparkles,
   Bot,
-  User,
   Send,
   Trash2,
   StopCircle,
@@ -18,29 +17,19 @@ import {
   BarChart3,
   FileText,
   UploadCloud,
-  Paperclip,
   Settings,
   AlertTriangle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { AiSettingsModal } from "@/components/dashboard/AiSettingsModal";
-import { AiActionCard } from "@/components/dashboard/AiActionCard";
-import { AiCsvExportCard } from "@/components/dashboard/AiCsvExportCard";
-import { AiMarkdownRenderer } from "@/components/dashboard/AiMarkdownRenderer";
+import { AiChatMessageItem } from "@/components/dashboard/AiChatMessageItem";
 import {
   AiFileAttachmentBar,
   AiUploadTriggerButton,
   type AiFileAttachmentBarRef,
-  formatUserMessageDisplay,
 } from "@/components/dashboard/AiFileAttachmentBar";
-import {
-  useAiChat,
-  getMessageText,
-  getActionProposals,
-  getCsvExports,
-  cleanDisplayAssistantText,
-} from "@/components/dashboard/AiChatContext";
+import { useAiChat } from "@/components/dashboard/AiChatContext";
 import type { PublicAiConfig } from "@/src/server/ai/config";
 
 const QUICK_PROMPTS = [
@@ -88,7 +77,10 @@ export default function AiAssistantPage() {
   const [input, setInput] = useState("");
   const [isDragging, setIsDragging] = useState(false);
   const dragCounter = useRef(0);
+  const [visibleCount, setVisibleCount] = useState(25);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const isUserScrolledUpRef = useRef(false);
   const attachmentBarRef = useRef<AiFileAttachmentBarRef>(null);
 
   const {
@@ -101,6 +93,9 @@ export default function AiAssistantPage() {
     uploadAndAttachFile,
     isUploadingFile,
   } = useAiChat();
+
+  const hasEarlierMessages = messages.length > visibleCount;
+  const visibleMessages = hasEarlierMessages ? messages.slice(-visibleCount) : messages;
 
   const loadConfig = () => {
     setConfigLoading(true);
@@ -118,8 +113,23 @@ export default function AiAssistantPage() {
     loadConfig();
   }, []);
 
+  const handleScroll = () => {
+    const el = messagesContainerRef.current;
+    if (!el) return;
+    const isAtBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 120;
+    isUserScrolledUpRef.current = !isAtBottom;
+  };
+
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (isUserScrolledUpRef.current) return;
+    const el = messagesContainerRef.current;
+    if (!el) return;
+    if (isLoading) {
+      // Instant layout update during streaming without smooth scroll queue thrashing
+      el.scrollTop = el.scrollHeight;
+    } else {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
   }, [messages, isLoading]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -282,7 +292,11 @@ export default function AiAssistantPage() {
         )}
 
         {/* Messages Feed */}
-        <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4">
+        <div
+          ref={messagesContainerRef}
+          onScroll={handleScroll}
+          className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4"
+        >
           {messages.length === 0 ? (
             <div className="h-full flex flex-col items-center justify-center text-center p-6 max-w-md mx-auto">
               <div className="size-14 rounded-2xl bg-linear-to-b from-sky-50 to-astro-cyan-2/20 border border-astro-cyan-2/50 flex items-center justify-center mb-4 shadow-xs">
@@ -318,78 +332,32 @@ export default function AiAssistantPage() {
               </div>
             </div>
           ) : (
-            messages.map((message) => {
-              const isAssistant = message.role === "assistant";
-              const text = getMessageText(message);
-              const proposals = isAssistant ? getActionProposals(message) : [];
-              const csvExports = isAssistant ? getCsvExports(message) : [];
-              return (
-                <div
-                  key={message.id}
-                  className={`flex gap-3 ${isAssistant ? "justify-start" : "justify-end"}`}
-                >
-                  {isAssistant && (
-                    <div className="size-8 rounded-xl bg-linear-to-tr from-astro-navy to-astro-blue flex items-center justify-center text-white shrink-0 shadow-xs mt-1">
-                      <Bot className="size-4" />
-                    </div>
-                  )}
-
-                  <div
-                    className={`max-w-[85%] md:max-w-[78%] rounded-2xl p-4 text-xs shadow-xs leading-relaxed ${
-                      isAssistant
-                        ? "bg-slate-50/90 border border-slate-200 text-slate-800 rounded-tl-xs"
-                        : "bg-astro-navy text-white rounded-tr-xs"
-                    }`}
+            <>
+              {hasEarlierMessages && (
+                <div className="flex justify-center pb-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setVisibleCount((prev) => Math.min(messages.length, prev + 25))}
+                    className="text-[11px] h-7 px-3.5 rounded-full bg-white/95 border-astro-cyan-2/70 text-astro-navy hover:bg-sky-bottom shadow-2xs font-semibold cursor-pointer"
                   >
-                    {isAssistant ? (
-                      <div className="space-y-3">
-                        {(() => {
-                          const displayText = cleanDisplayAssistantText(text, proposals.length > 0);
-                          return displayText ? <AiMarkdownRenderer content={displayText} /> : null;
-                        })()}
-                        {proposals.map((prop, idx) => (
-                          <AiActionCard key={prop.actionId || `prop-${idx}`} proposal={prop} />
-                        ))}
-                        {csvExports.map((csv, idx) => (
-                          <AiCsvExportCard key={`csv-${idx}`} exportData={csv} />
-                        ))}
-                      </div>
-                    ) : (
-                      (() => {
-                        const formatted = formatUserMessageDisplay(text);
-                        return (
-                          <div>
-                            {formatted.attachedFiles.length > 0 && (
-                              <div className="flex flex-wrap gap-1.5 mb-2">
-                                {formatted.attachedFiles.map((af, i) => (
-                                  <div
-                                    key={i}
-                                    className="flex items-center gap-1.5 rounded-md bg-white/15 px-2 py-0.5 text-[11px] font-medium text-white/95"
-                                  >
-                                    <Paperclip className="size-3" />
-                                    <span className="max-w-[180px] truncate">{af.fileName}</span>
-                                    <span className="text-[9px] uppercase tracking-wider opacity-80">
-                                      ({af.fileType})
-                                    </span>
-                                  </div>
-                                ))}
-                              </div>
-                            )}
-                            <p className="whitespace-pre-wrap">{formatted.text}</p>
-                          </div>
-                        );
-                      })()
-                    )}
-                  </div>
-
-                  {!isAssistant && (
-                    <div className="size-8 rounded-xl bg-astro-cyan-2/40 border border-astro-cyan-2 flex items-center justify-center text-astro-navy shrink-0 shadow-xs mt-1">
-                      <User className="size-4" />
-                    </div>
-                  )}
+                    Tampilkan {Math.min(25, messages.length - visibleCount)} pesan sebelumnya ({messages.length - visibleCount} tersimpan)
+                  </Button>
                 </div>
-              );
-            })
+              )}
+
+              {visibleMessages.map((message, index) => {
+                const isLast = index === visibleMessages.length - 1;
+                return (
+                  <AiChatMessageItem
+                    key={message.id}
+                    message={message}
+                    isStreaming={isLoading && isLast && message.role === "assistant"}
+                  />
+                );
+              })}
+            </>
           )}
 
           {/* Streaming Indicator */}

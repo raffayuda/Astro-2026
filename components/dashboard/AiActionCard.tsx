@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, memo } from "react";
 import Link from "next/link";
 import {
   CheckCircle2,
@@ -31,7 +31,7 @@ export interface ActionProposalData {
   winnersList?: { rank: string; registrationId: string; name: string; institution?: string }[];
 }
 
-export function AiActionCard({ proposal }: { proposal: ActionProposalData }) {
+export const AiActionCard = memo(function AiActionCard({ proposal }: { proposal: ActionProposalData }) {
   const [status, setStatus] = useState<"pending" | "executing" | "success" | "cancelled" | "error">("pending");
   const [resultMessage, setResultMessage] = useState("");
   const [detailUrl, setDetailUrl] = useState<string | null>(null);
@@ -317,4 +317,4 @@ export function AiActionCard({ proposal }: { proposal: ActionProposalData }) {
       </div>
     </div>
   );
-}
+});

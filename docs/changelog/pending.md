@@ -185,3 +185,10 @@
 [09:50] - [app/api/dashboard/ai/chat/route.ts] - [UPDATE] - Instruct AI Copilot on full competition form schema and mandatory parsing of uploaded guidebook documents into guidebookSections
 [09:56] - [src/server/ai/tools.ts] - [ADD] - Implement getDashboardSchemaCatalog, getSponsorsList, getCommitteeList, and getFaqsList with DASHBOARD_SCHEMA_CATALOG dictionary covering 9 operational domains and strict isolation blocking auth tables
 [09:56] - [app/api/dashboard/ai/chat/route.ts] - [UPDATE] - Add Section 9 (Schema Intelligence & Boundaries) to system prompt instructing AI on schema inspection and absolute prohibition on auth tables or secrets
+[12:17] - [components/dashboard/AiChatMessageItem.tsx] - [ADD] - Create memoized AiChatMessageItem component with fast arePropsEqual comparator to prevent re-rendering completed messages on streaming tokens
+[12:17] - [components/dashboard/AiMarkdownRenderer.tsx] - [UPDATE] - Wrap AiMarkdownRenderer with React.memo to eliminate repeated markdown parsing on unchanged message bubbles
+[12:17] - [components/dashboard/AiActionCard.tsx] - [UPDATE] - Wrap AiActionCard with React.memo
+[12:17] - [components/dashboard/AiCsvExportCard.tsx] - [UPDATE] - Wrap AiCsvExportCard with React.memo
+[12:17] - [components/dashboard/AiChatContext.tsx] - [UPDATE] - Implement debounced (800ms) and capped (last 50 messages) localStorage persistence with immediate flush on stream completion to prevent synchronous disk I/O main thread blocking
+[12:17] - [app/dashboard/ai/page.tsx] - [UPDATE] - Integrate AiChatMessageItem, message windowing (25 messages pagination), user scroll detection, and direct scrollTop streaming without smooth scroll queue thrashing
+[12:17] - [components/dashboard/AiAssistantDrawer.tsx] - [UPDATE] - Integrate AiChatMessageItem (compact), drawer windowing (20 messages pagination), and direct scrollTop during streaming

@@ -13,7 +13,10 @@ interface AiMarkdownRendererProps {
  * Robust markdown renderer for ASTRO Copilot responses.
  * Supports headers, tables, bullet/numbered lists, bold, inline code, links, and blockquotes.
  */
-export function AiMarkdownRenderer({ content, compact = false }: AiMarkdownRendererProps) {
+export const AiMarkdownRenderer = React.memo(function AiMarkdownRenderer({
+  content,
+  compact = false,
+}: AiMarkdownRendererProps) {
   const lines = content.split("\n");
   const elements: React.ReactNode[] = [];
 
@@ -197,7 +200,7 @@ export function AiMarkdownRenderer({ content, compact = false }: AiMarkdownRende
   }
 
   return <div className="space-y-0.5 break-words">{elements}</div>;
-}
+});
 
 /**
  * Parses markdown inline tokens: [link](url), **bold**, `inline code`, and *italic*.

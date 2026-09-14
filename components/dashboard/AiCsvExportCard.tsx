@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import { FileSpreadsheet, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -12,7 +13,7 @@ export interface CsvExportData {
   summary: string;
 }
 
-export function AiCsvExportCard({ exportData }: { exportData: CsvExportData }) {
+export const AiCsvExportCard = memo(function AiCsvExportCard({ exportData }: { exportData: CsvExportData }) {
   const handleDownload = () => {
     try {
       const blob = new Blob([exportData.csvContent], { type: "text/csv;charset=utf-8;" });
@@ -57,4 +58,4 @@ export function AiCsvExportCard({ exportData }: { exportData: CsvExportData }) {
       </Button>
     </div>
   );
-}
+});

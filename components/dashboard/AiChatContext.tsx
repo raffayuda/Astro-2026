@@ -71,19 +71,52 @@ export function AiChatProvider({ children }: { children: React.ReactNode }) {
     }
   }, [setMessages]);
 
-  // 2. Persist messages to localStorage whenever they change
-  useEffect(() => {
-    if (!isInitializedRef.current || typeof window === "undefined") return;
+  // 2. Debounced persist messages to localStorage to avoid thread blocking during streaming
+  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const persistMessages = useCallback((msgs: UIMessage[]) => {
+    if (typeof window === "undefined") return;
     try {
-      if (messages.length > 0) {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
+      if (msgs.length > 0) {
+        // Sliding window: keep up to 50 most recent messages to prevent storage quota exhaustion and huge stringify overhead
+        const toSave = msgs.length > 50 ? msgs.slice(-50) : msgs;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
       } else {
         localStorage.removeItem(STORAGE_KEY);
       }
     } catch (err) {
       console.warn("Gagal menyimpan riwayat chat AI:", err);
     }
-  }, [messages]);
+  }, []);
+
+  useEffect(() => {
+    if (!isInitializedRef.current || typeof window === "undefined") return;
+
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+    }
+
+    // Debounce writes by 800ms during rapid stream chunks
+    saveTimeoutRef.current = setTimeout(() => {
+      persistMessages(messages);
+    }, 800);
+
+    return () => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+    };
+  }, [messages, persistMessages]);
+
+  // Flush immediately when stream is finished
+  useEffect(() => {
+    if (status === "ready" && isInitializedRef.current && messages.length > 0) {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+      persistMessages(messages);
+    }
+  }, [status, messages, persistMessages]);
 
   const uploadAndAttachFile = useCallback(async (file: File): Promise<boolean> => {
     setIsUploadingFile(true);
@@ -134,6 +167,9 @@ export function AiChatProvider({ children }: { children: React.ReactNode }) {
   );
 
   const clearChat = useCallback(() => {
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+    }
     setMessages([]);
     setAttachedFiles([]);
     if (typeof window !== "undefined") {

@@ -6,7 +6,6 @@ import Link from "next/link";
 import {
   Sparkles,
   Bot,
-  User,
   Send,
   X,
   Maximize2,
@@ -15,28 +14,22 @@ import {
   Loader2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { AiActionCard } from "@/components/dashboard/AiActionCard";
-import { AiCsvExportCard } from "@/components/dashboard/AiCsvExportCard";
-import { AiMarkdownRenderer } from "@/components/dashboard/AiMarkdownRenderer";
+import { AiChatMessageItem } from "@/components/dashboard/AiChatMessageItem";
 import {
   AiFileAttachmentBar,
   AiUploadTriggerButton,
   type AiFileAttachmentBarRef,
-  formatUserMessageDisplay,
 } from "@/components/dashboard/AiFileAttachmentBar";
-import {
-  useAiChat,
-  getMessageText,
-  getActionProposals,
-  getCsvExports,
-  cleanDisplayAssistantText,
-} from "@/components/dashboard/AiChatContext";
+import { useAiChat } from "@/components/dashboard/AiChatContext";
 
 export function AiAssistantDrawer() {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState("");
+  const [visibleCount, setVisibleCount] = useState(20);
   const pathname = usePathname();
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const isUserScrolledUpRef = useRef(false);
   const attachmentBarRef = useRef<AiFileAttachmentBarRef>(null);
 
   // If already on the dedicated /dashboard/ai page, hide the floating button to avoid redundancy
@@ -52,8 +45,23 @@ export function AiAssistantDrawer() {
     isUploadingFile,
   } = useAiChat();
 
+  const hasEarlierMessages = messages.length > visibleCount;
+  const visibleMessages = hasEarlierMessages ? messages.slice(-visibleCount) : messages;
+
+  const handleScroll = () => {
+    const el = messagesContainerRef.current;
+    if (!el) return;
+    const isAtBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 100;
+    isUserScrolledUpRef.current = !isAtBottom;
+  };
+
   useEffect(() => {
-    if (isOpen) {
+    if (!isOpen || isUserScrolledUpRef.current) return;
+    const el = messagesContainerRef.current;
+    if (!el) return;
+    if (isLoading) {
+      el.scrollTop = el.scrollHeight;
+    } else {
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages, isOpen, isLoading]);
@@ -132,7 +140,11 @@ export function AiAssistantDrawer() {
           </div>
 
           {/* Messages Container */}
-          <div className="flex-1 overflow-y-auto p-3.5 space-y-3 bg-slate-50/50">
+          <div
+            ref={messagesContainerRef}
+            onScroll={handleScroll}
+            className="flex-1 overflow-y-auto p-3.5 space-y-3 bg-slate-50/50"
+          >
             {messages.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center text-center p-4">
                 <div className="size-10 rounded-xl bg-astro-cyan-2/30 flex items-center justify-center mb-2.5">
@@ -164,73 +176,31 @@ export function AiAssistantDrawer() {
                 </div>
               </div>
             ) : (
-              messages.map((m) => {
-                const isAssistant = m.role === "assistant";
-                const text = getMessageText(m);
-                const proposals = isAssistant ? getActionProposals(m) : [];
-                const csvExports = isAssistant ? getCsvExports(m) : [];
-                return (
-                  <div
-                    key={m.id}
-                    className={`flex gap-2 ${isAssistant ? "justify-start" : "justify-end"}`}
-                  >
-                    {isAssistant && (
-                      <div className="size-6 rounded-md bg-astro-navy flex items-center justify-center text-white shrink-0 mt-0.5">
-                        <Bot className="size-3" />
-                      </div>
-                    )}
-                    <div
-                      className={`max-w-[85%] rounded-xl p-2.5 text-xs leading-relaxed shadow-2xs ${
-                        isAssistant
-                          ? "bg-white border border-slate-200 text-slate-800 rounded-tl-xs"
-                          : "bg-astro-navy text-white rounded-tr-xs"
-                      }`}
+              <>
+                {hasEarlierMessages && (
+                  <div className="flex justify-center pb-1">
+                    <button
+                      type="button"
+                      onClick={() => setVisibleCount((prev) => Math.min(messages.length, prev + 20))}
+                      className="text-[10px] px-2.5 py-1 rounded-full bg-white border border-slate-200 text-astro-navy hover:bg-sky-bottom shadow-2xs font-semibold cursor-pointer"
                     >
-                      {isAssistant ? (
-                        <>
-                        {(() => {
-                          const displayText = cleanDisplayAssistantText(text, proposals.length > 0);
-                          return displayText ? <AiMarkdownRenderer content={displayText} compact /> : null;
-                        })()}
-                        {proposals.map((prop, idx) => (
-                          <AiActionCard key={prop.actionId || `prop-${idx}`} proposal={prop} />
-                        ))}
-                        {csvExports.map((csv, idx) => (
-                          <AiCsvExportCard key={`csv-${idx}`} exportData={csv} />
-                        ))}
-                      </>
-                      ) : (
-                        (() => {
-                          const formatted = formatUserMessageDisplay(text);
-                          return (
-                            <div>
-                              {formatted.attachedFiles.length > 0 && (
-                                <div className="flex flex-wrap gap-1 mb-1.5">
-                                  {formatted.attachedFiles.map((af, i) => (
-                                    <div
-                                      key={i}
-                                      className="flex items-center gap-1 rounded bg-white/15 px-1.5 py-0.5 text-[10px] font-medium text-white/95"
-                                    >
-                                      <span className="max-w-[130px] truncate">{af.fileName}</span>
-                                      <span className="text-[8px] uppercase opacity-75">({af.fileType})</span>
-                                    </div>
-                                  ))}
-                                </div>
-                              )}
-                              <p className="whitespace-pre-wrap">{formatted.text}</p>
-                            </div>
-                          );
-                        })()
-                      )}
-                    </div>
-                    {!isAssistant && (
-                      <div className="size-6 rounded-md bg-astro-cyan-2 flex items-center justify-center text-astro-navy shrink-0 mt-0.5">
-                        <User className="size-3" />
-                      </div>
-                    )}
+                      Tampilkan {Math.min(20, messages.length - visibleCount)} pesan sebelumnya
+                    </button>
                   </div>
-                );
-              })
+                )}
+
+                {visibleMessages.map((m, index) => {
+                  const isLast = index === visibleMessages.length - 1;
+                  return (
+                    <AiChatMessageItem
+                      key={m.id}
+                      message={m}
+                      isStreaming={isLoading && isLast && m.role === "assistant"}
+                      compact
+                    />
+                  );
+                })}
+              </>
             )}
 
             {isLoading && (
