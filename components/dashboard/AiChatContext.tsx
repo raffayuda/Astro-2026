@@ -1,11 +1,10 @@
-"use client";
-
-import React, { createContext, useContext, useEffect, useRef, useCallback } from "react";
+import React, { createContext, useContext, useState, useEffect, useRef, useCallback } from "react";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, type UIMessage } from "ai";
 import { toast } from "sonner";
 import type { ActionProposalData } from "@/components/dashboard/AiActionCard";
 import type { CsvExportData } from "@/components/dashboard/AiCsvExportCard";
+import type { ParsedDocumentResult } from "@/src/server/ai/document-parser";
 
 const STORAGE_KEY = "astro_ai_chat_messages";
 
@@ -17,22 +16,34 @@ export interface AiChatContextValue {
   stop: () => void;
   clearChat: () => void;
   setMessages: (messages: UIMessage[] | ((prev: UIMessage[]) => UIMessage[])) => void;
+  attachedFiles: ParsedDocumentResult[];
+  uploadAndAttachFile: (file: File) => Promise<boolean>;
+  removeAttachedFile: (fileName: string) => void;
+  clearAttachedFiles: () => void;
+  isUploadingFile: boolean;
 }
 
 const AiChatContext = createContext<AiChatContextValue | null>(null);
 
 export function AiChatProvider({ children }: { children: React.ReactNode }) {
   const isInitializedRef = useRef(false);
+  const [attachedFiles, setAttachedFiles] = useState<ParsedDocumentResult[]>([]);
+  const attachedFilesRef = useRef<ParsedDocumentResult[]>([]);
+  attachedFilesRef.current = attachedFiles;
+  const [isUploadingFile, setIsUploadingFile] = useState(false);
 
   const {
     messages,
-    sendMessage,
+    sendMessage: rawSendMessage,
     status,
     stop,
     setMessages,
   } = useChat({
     transport: new DefaultChatTransport({
       api: "/api/dashboard/ai/chat",
+      body: () => ({
+        attachedFiles: attachedFilesRef.current,
+      }),
     }),
     onError: (err) => {
       console.error("AI Chat Error:", err);
@@ -74,8 +85,57 @@ export function AiChatProvider({ children }: { children: React.ReactNode }) {
     }
   }, [messages]);
 
+  const uploadAndAttachFile = useCallback(async (file: File): Promise<boolean> => {
+    setIsUploadingFile(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      const res = await fetch("/api/dashboard/ai/upload", {
+        method: "POST",
+        body: formData,
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        toast.error(data.error || "Gagal memproses berkas");
+        return false;
+      }
+      const doc: ParsedDocumentResult = data.data;
+      setAttachedFiles((prev) => {
+        const filtered = prev.filter((f) => f.fileName !== doc.fileName);
+        return [...filtered, doc];
+      });
+      toast.success(`Berkas "${file.name}" berhasil diunggah (${doc.charCount.toLocaleString()} karakter)`);
+      return true;
+    } catch (err: any) {
+      console.error("Upload error:", err);
+      toast.error(err.message || "Gagal mengunggah berkas");
+      return false;
+    } finally {
+      setIsUploadingFile(false);
+    }
+  }, []);
+
+  const removeAttachedFile = useCallback((fileName: string) => {
+    setAttachedFiles((prev) => prev.filter((f) => f.fileName !== fileName));
+  }, []);
+
+  const clearAttachedFiles = useCallback(() => {
+    setAttachedFiles([]);
+  }, []);
+
+  const sendMessage = useCallback(
+    async (message: { text: string }) => {
+      await rawSendMessage(message);
+      if (attachedFilesRef.current.length > 0) {
+        setAttachedFiles([]);
+      }
+    },
+    [rawSendMessage]
+  );
+
   const clearChat = useCallback(() => {
     setMessages([]);
+    setAttachedFiles([]);
     if (typeof window !== "undefined") {
       try {
         localStorage.removeItem(STORAGE_KEY);
@@ -96,6 +156,11 @@ export function AiChatProvider({ children }: { children: React.ReactNode }) {
         stop,
         clearChat,
         setMessages,
+        attachedFiles,
+        uploadAndAttachFile,
+        removeAttachedFile,
+        clearAttachedFiles,
+        isUploadingFile,
       }}
     >
       {children}

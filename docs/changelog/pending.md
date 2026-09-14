@@ -168,3 +168,11 @@
 [00:50] - [app/api/dashboard/ai/settings/route.ts] - [UPDATE] - Return live security telemetry stats in GET endpoint
 [00:50] - [app/api/dashboard/ai/action/execute/route.ts] - [UPDATE] - Add structured mutation audit logging for admin actions
 [00:50] - [components/dashboard/AiSettingsModal.tsx] - [UPDATE] - Add Keamanan & Telemetri tab displaying active guard status, rate limit metrics, and threat blocker counters
+[08:50] - [src/server/ai/document-parser.ts] - [ADD] - Implement document parser engine supporting Markdown (.md, .markdown), PDF, Word (.docx), Excel (.xlsx, .xls), CSV, plain text (.txt, .json), and images (PNG, JPG, WebP) up to 15MB with 35,000 char context window safety capping
+[08:50] - [app/api/dashboard/ai/upload/route.ts] - [ADD] - Secure multipart file upload endpoint for admin AI Copilot with file validation and structured text extraction
+[08:50] - [src/server/ai/guardrails.ts] - [UPDATE] - Expand input size limit up to 40,000 chars for uploaded file contexts, add operational file keywords to bypass arbitrary coding false-positives, and allow base64 images
+[08:50] - [app/api/dashboard/ai/chat/route.ts] - [UPDATE] - Inject uploaded_file_context into chat prompt and instruct AI on file-to-action proposal tools (proposeCreateCompetition, proposeUpdateRegistrationStatus, proposeSetWinners)
+[08:50] - [components/dashboard/AiChatContext.tsx] - [UPDATE] - Add attachedFiles state, uploadAndAttachFile, removeAttachedFile, clearAttachedFiles, and dynamic payload transport in useChat
+[08:50] - [components/dashboard/AiFileAttachmentBar.tsx] - [ADD] - Create AiFileAttachmentBar and AiUploadTriggerButton with file-type badges, compact mode, and formatUserMessageDisplay helper
+[08:50] - [app/dashboard/ai/page.tsx] - [UPDATE] - Integrate drag-and-drop overlay, file attachment bar, user message attachment badges, and Juknis GuideBook analysis quick prompt
+[08:50] - [components/dashboard/AiAssistantDrawer.tsx] - [UPDATE] - Support file attachment bar, upload button, and attachment chips in floating AI Copilot drawer

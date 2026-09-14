@@ -6,10 +6,8 @@ import {
   Bot,
   User,
   Send,
-  Settings,
   Trash2,
   StopCircle,
-  AlertTriangle,
   Loader2,
   Trophy,
   TrendingUp,
@@ -18,6 +16,11 @@ import {
   RotateCcw,
   FileSpreadsheet,
   BarChart3,
+  FileText,
+  UploadCloud,
+  Paperclip,
+  Settings,
+  AlertTriangle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -25,6 +28,12 @@ import { AiSettingsModal } from "@/components/dashboard/AiSettingsModal";
 import { AiActionCard } from "@/components/dashboard/AiActionCard";
 import { AiCsvExportCard } from "@/components/dashboard/AiCsvExportCard";
 import { AiMarkdownRenderer } from "@/components/dashboard/AiMarkdownRenderer";
+import {
+  AiFileAttachmentBar,
+  AiUploadTriggerButton,
+  type AiFileAttachmentBarRef,
+  formatUserMessageDisplay,
+} from "@/components/dashboard/AiFileAttachmentBar";
 import {
   useAiChat,
   getMessageText,
@@ -35,8 +44,13 @@ import type { PublicAiConfig } from "@/src/server/ai/config";
 
 const QUICK_PROMPTS = [
   {
+    icon: FileText,
+    label: "Analisis Juknis (.md / .pdf)",
+    prompt: "Lampirkan berkas Juknis/GuideBook lomba (misal: GuideBook Futsal / Cerdas Cermat format .md atau .pdf), lalu klik kirim untuk dibuatkan proposal lomba secara otomatis.",
+  },
+  {
     icon: PlusCircle,
-    label: "Input Lomba Baru",
+    label: "Input Lomba Manual",
     prompt: "Tolong buatkan proposal cabang lomba baru dari informasi berikut:\nNama: Desain Poster Digital\nKategori: kesenian\nBiaya: 35000\nKuota: 20 tim\nTanggal: 25 Oktober 2026\nLokasi: Lab Komputer STT-NF\nCP: Kak Citra (081298765432)\nHadiah: Juara 1 Rp 1.000.000 + E-Sertifikat",
   },
   {
@@ -71,7 +85,10 @@ export default function AiAssistantPage() {
   const [config, setConfig] = useState<PublicAiConfig | null>(null);
   const [configLoading, setConfigLoading] = useState(true);
   const [input, setInput] = useState("");
+  const [isDragging, setIsDragging] = useState(false);
+  const dragCounter = useRef(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const attachmentBarRef = useRef<AiFileAttachmentBarRef>(null);
 
   const {
     messages,
@@ -79,6 +96,9 @@ export default function AiAssistantPage() {
     isLoading,
     stop,
     clearChat,
+    attachedFiles,
+    uploadAndAttachFile,
+    isUploadingFile,
   } = useAiChat();
 
   const loadConfig = () => {
@@ -103,10 +123,56 @@ export default function AiAssistantPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim() || isLoading) return;
-    const text = input.trim();
+    if (isLoading || isUploadingFile) return;
+
+    let text = input.trim();
+    if (!text && attachedFiles.length > 0) {
+      text = "Tolong analisa berkas yang saya lampirkan dan berikan usulan langkah operasional (proposal cabang lomba / verifikasi data / penetapan pemenang).";
+    }
+
+    if (!text) return;
     setInput("");
     await sendMessage({ text });
+  };
+
+  const handleDragEnter = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dragCounter.current += 1;
+    if (e.dataTransfer.items && e.dataTransfer.items.length > 0) {
+      setIsDragging(true);
+    }
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dragCounter.current -= 1;
+    if (dragCounter.current <= 0) {
+      setIsDragging(false);
+      dragCounter.current = 0;
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = async (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+    dragCounter.current = 0;
+
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      for (let i = 0; i < e.dataTransfer.files.length; i++) {
+        const file = e.dataTransfer.files[i];
+        if (file) {
+          await uploadAndAttachFile(file);
+        }
+      }
+    }
   };
 
   const handleQuickPrompt = (promptText: string) => {
@@ -194,7 +260,26 @@ export default function AiAssistantPage() {
       )}
 
       {/* Main Chat Container */}
-      <div className="flex-1 flex flex-col min-h-0 rounded-2xl bg-white border border-astro-cyan-2/60 shadow-soft overflow-hidden">
+      <div
+        onDragEnter={handleDragEnter}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+        className="relative flex-1 flex flex-col min-h-0 rounded-2xl bg-white border border-astro-cyan-2/60 shadow-soft overflow-hidden"
+      >
+        {/* Drag & Drop Visual Overlay */}
+        {isDragging && (
+          <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-astro-navy/85 backdrop-blur-xs text-white p-6 border-2 border-dashed border-astro-cyan-2 m-2 rounded-2xl pointer-events-none animate-in fade-in-0 duration-150">
+            <div className="size-16 rounded-2xl bg-white/10 flex items-center justify-center mb-3">
+              <UploadCloud className="size-8 text-astro-cyan-2 animate-bounce" />
+            </div>
+            <p className="font-bold text-base font-title">Lepaskan Berkas di Sini</p>
+            <p className="text-xs text-white/80 mt-1 max-w-sm text-center">
+              ASTRO Copilot akan membaca seluruh isi berkas (.md, .pdf, .docx, .xlsx, .csv) untuk dianalisa
+            </p>
+          </div>
+        )}
+
         {/* Messages Feed */}
         <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4">
           {messages.length === 0 ? (
@@ -206,7 +291,7 @@ export default function AiAssistantPage() {
                 Halo, Panitia ASTRO 2026!
               </h3>
               <p className="text-xs text-muted-foreground mt-1 mb-6 leading-relaxed">
-                Tanyakan apa pun seputar data pendaftaran, sisa kuota lomba, status pembayaran tim, analisis keuangan, atau ekspor CSV.
+                Tanyakan apa pun seputar data pendaftaran, sisa kuota lomba, status pembayaran tim, analisis keuangan, atau unggah berkas Juknis/GuideBook.
               </p>
 
               {/* Quick Prompts */}
@@ -266,7 +351,30 @@ export default function AiAssistantPage() {
                         ))}
                       </div>
                     ) : (
-                      <p className="whitespace-pre-wrap">{text}</p>
+                      (() => {
+                        const formatted = formatUserMessageDisplay(text);
+                        return (
+                          <div>
+                            {formatted.attachedFiles.length > 0 && (
+                              <div className="flex flex-wrap gap-1.5 mb-2">
+                                {formatted.attachedFiles.map((af, i) => (
+                                  <div
+                                    key={i}
+                                    className="flex items-center gap-1.5 rounded-md bg-white/15 px-2 py-0.5 text-[11px] font-medium text-white/95"
+                                  >
+                                    <Paperclip className="size-3" />
+                                    <span className="max-w-[180px] truncate">{af.fileName}</span>
+                                    <span className="text-[9px] uppercase tracking-wider opacity-80">
+                                      ({af.fileType})
+                                    </span>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                            <p className="whitespace-pre-wrap">{formatted.text}</p>
+                          </div>
+                        );
+                      })()
                     )}
                   </div>
 
@@ -297,7 +405,10 @@ export default function AiAssistantPage() {
         </div>
 
         {/* Input Footer */}
-        <div className="p-3 md:p-4 border-t border-slate-100 bg-slate-50/50">
+        <div className="p-3 md:p-4 border-t border-slate-100 bg-slate-50/50 space-y-2">
+          {/* File Attachment Bar & Chips */}
+          <AiFileAttachmentBar ref={attachmentBarRef} />
+
           <form onSubmit={handleSubmit} className="flex items-center gap-2">
             {messages.length > 0 && (
               <Button
@@ -312,12 +423,21 @@ export default function AiAssistantPage() {
               </Button>
             )}
 
+            <AiUploadTriggerButton
+              onClick={() => attachmentBarRef.current?.triggerUpload()}
+              disabled={isLoading || isUploadingFile}
+            />
+
             <div className="relative flex-1">
               <input
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Tanyakan status pendaftaran, sisa slot lomba, atau data peserta..."
+                placeholder={
+                  attachedFiles.length > 0
+                    ? `Berkas terlampir (${attachedFiles.length}). Ketik instruksi atau langsung kirim...`
+                    : "Tanyakan data pendaftaran atau lampirkan berkas Juknis/GuideBook..."
+                }
                 disabled={isLoading}
                 className="w-full rounded-xl border border-astro-cyan-2/70 bg-white px-4 py-2.5 text-xs text-astro-navy shadow-xs placeholder:text-muted-foreground focus:outline-hidden focus:ring-2 focus:ring-astro-blue disabled:opacity-50"
               />
@@ -337,17 +457,21 @@ export default function AiAssistantPage() {
               <Button
                 type="submit"
                 size="icon"
-                disabled={!input.trim() || (!config?.hasApiKey && !configLoading)}
-                className="bg-astro-navy hover:bg-astro-blue text-white shrink-0 size-9 rounded-xl shadow-xs transition-all disabled:opacity-40"
+                disabled={
+                  (!input.trim() && attachedFiles.length === 0) ||
+                  (!config?.hasApiKey && !configLoading) ||
+                  isUploadingFile
+                }
+                className="bg-astro-navy hover:bg-astro-blue text-white shrink-0 size-9 rounded-xl shadow-xs transition-all disabled:opacity-40 cursor-pointer"
                 title="Kirim pesan"
               >
                 <Send className="size-4" />
               </Button>
             )}
           </form>
-          <div className="flex items-center justify-between text-[10px] text-muted-foreground px-2 pt-2">
-            <span>💡 Data yang disajikan berasal langsung dari database ASTRO 2026.</span>
-            <span>Aman & Terverifikasi</span>
+          <div className="flex items-center justify-between text-[10px] text-muted-foreground px-2 pt-1">
+            <span>📎 Mendukung Juknis (.md, .pdf, .docx), Excel (.xlsx, .csv), teks, dan gambar (maks 15MB).</span>
+            <span>Aman & Human-in-the-Loop</span>
           </div>
         </div>
       </div>

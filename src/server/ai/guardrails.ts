@@ -186,18 +186,21 @@ export function classifyThreat(normalizedText: string): ThreatCheckResult {
     return { isThreat: false };
   }
 
+  const lower = normalizedText.toLowerCase();
+  const hasUploadedFile = lower.includes("<uploaded_file_context") || lower.includes("[dokumen terlampir]");
+  const maxAllowedChars = hasUploadedFile ? 40000 : MAX_INPUT_CHARS;
+
   // 1. Check Payload Length
-  if (normalizedText.length > MAX_INPUT_CHARS) {
+  if (normalizedText.length > maxAllowedChars) {
     return {
       isThreat: true,
       threatType: "PAYLOAD_TOO_LARGE",
-      reason: "Input exceeds maximum character limit (2500 chars)",
-      refusalMessage:
-        "Pesan Anda melebihi batas maksimal 2.500 karakter. Mohon persingkat pertanyaan atau dokumen juknis yang ingin dianalisis.",
+      reason: `Input exceeds maximum character limit (${maxAllowedChars} chars)`,
+      refusalMessage: hasUploadedFile
+        ? "Total isi berkas yang dilampirkan melebihi batas maksimal 40.000 karakter. Mohon gunakan berkas yang lebih ringkas."
+        : "Pesan Anda melebihi batas maksimal 2.500 karakter. Mohon persingkat pertanyaan atau dokumen juknis yang ingin dianalisis.",
     };
   }
-
-  const lower = normalizedText.toLowerCase();
 
   // 2. Prompt Injection & Jailbreak Heuristics
   const jailbreakPatterns = [
@@ -242,12 +245,14 @@ export function classifyThreat(normalizedText: string): ThreatCheckResult {
   }
 
   // 4. Obfuscated Payloads & Ciphers (Base64, Hex, ROT13)
+  // Skip if it's an uploaded file context
   const isCipherRequest =
-    /\b(?:decode|dekode|pecahkan|terjemahkan|execute)\s+(?:this\s+|teks\s+)?(?:base64|hex|rot13|cipher|sandi|enkripsi)\b/i.test(
+    !hasUploadedFile &&
+    (/\b(?:decode|dekode|pecahkan|terjemahkan|execute)\s+(?:this\s+|teks\s+)?(?:base64|hex|rot13|cipher|sandi|enkripsi)\b/i.test(
       lower,
     ) ||
-    // Long Base64 string block (>= 40 alphanumeric characters with padding)
-    /\b[A-Za-z0-9+/]{40,}={0,2}\b/.test(normalizedText);
+      // Long Base64 string block (>= 40 alphanumeric characters with padding)
+      /\b[A-Za-z0-9+/]{40,}={0,2}\b/.test(normalizedText));
 
   if (isCipherRequest) {
     return {
@@ -260,8 +265,9 @@ export function classifyThreat(normalizedText: string): ThreatCheckResult {
   }
 
   // 5. Arbitrary Coding & General Out-of-Domain Software Engineering
-  // We exclude legitimate operational queries like "ekspor data pendaftar csv", "proposal lomba", "juknis"
+  // We exclude legitimate operational queries like "ekspor data pendaftar csv", "proposal lomba", "juknis", or uploaded files
   const isAstroOperationalQuery =
+    hasUploadedFile ||
     lower.includes("lomba") ||
     lower.includes("pendaftar") ||
     lower.includes("peserta") ||
@@ -271,7 +277,15 @@ export function classifyThreat(normalizedText: string): ThreatCheckResult {
     lower.includes("laporan eksekutif") ||
     lower.includes("ekspor csv") ||
     lower.includes("juara") ||
-    lower.includes("jadwal");
+    lower.includes("jadwal") ||
+    lower.includes("file") ||
+    lower.includes("berkas") ||
+    lower.includes("dokumen") ||
+    lower.includes("juknis") ||
+    lower.includes("guidebook") ||
+    lower.includes("excel") ||
+    lower.includes("sheet") ||
+    lower.includes("pdf");
 
   const arbitraryCodingPatterns = [
     // buatkan/bikin code/kode [language] (e.g. buatkan code python, bikin script js)

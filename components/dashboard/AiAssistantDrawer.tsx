@@ -19,6 +19,12 @@ import { AiActionCard } from "@/components/dashboard/AiActionCard";
 import { AiCsvExportCard } from "@/components/dashboard/AiCsvExportCard";
 import { AiMarkdownRenderer } from "@/components/dashboard/AiMarkdownRenderer";
 import {
+  AiFileAttachmentBar,
+  AiUploadTriggerButton,
+  type AiFileAttachmentBarRef,
+  formatUserMessageDisplay,
+} from "@/components/dashboard/AiFileAttachmentBar";
+import {
   useAiChat,
   getMessageText,
   getActionProposals,
@@ -30,6 +36,7 @@ export function AiAssistantDrawer() {
   const [input, setInput] = useState("");
   const pathname = usePathname();
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const attachmentBarRef = useRef<AiFileAttachmentBarRef>(null);
 
   // If already on the dedicated /dashboard/ai page, hide the floating button to avoid redundancy
   const isAiPage = pathname === "/dashboard/ai";
@@ -40,6 +47,8 @@ export function AiAssistantDrawer() {
     isLoading,
     stop,
     clearChat,
+    attachedFiles,
+    isUploadingFile,
   } = useAiChat();
 
   useEffect(() => {
@@ -50,8 +59,14 @@ export function AiAssistantDrawer() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim() || isLoading) return;
-    const text = input.trim();
+    if (isLoading || isUploadingFile) return;
+
+    let text = input.trim();
+    if (!text && attachedFiles.length > 0) {
+      text = "Tolong analisa berkas yang saya lampirkan dan berikan usulan langkah operasional.";
+    }
+
+    if (!text) return;
     setInput("");
     await sendMessage({ text });
   };
@@ -181,7 +196,27 @@ export function AiAssistantDrawer() {
                           ))}
                         </>
                       ) : (
-                        <p className="whitespace-pre-wrap">{text}</p>
+                        (() => {
+                          const formatted = formatUserMessageDisplay(text);
+                          return (
+                            <div>
+                              {formatted.attachedFiles.length > 0 && (
+                                <div className="flex flex-wrap gap-1 mb-1.5">
+                                  {formatted.attachedFiles.map((af, i) => (
+                                    <div
+                                      key={i}
+                                      className="flex items-center gap-1 rounded bg-white/15 px-1.5 py-0.5 text-[10px] font-medium text-white/95"
+                                    >
+                                      <span className="max-w-[130px] truncate">{af.fileName}</span>
+                                      <span className="text-[8px] uppercase opacity-75">({af.fileType})</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                              <p className="whitespace-pre-wrap">{formatted.text}</p>
+                            </div>
+                          );
+                        })()
                       )}
                     </div>
                     {!isAssistant && (
@@ -204,23 +239,35 @@ export function AiAssistantDrawer() {
           </div>
 
           {/* Widget Input Bar */}
-          <div className="p-2.5 bg-white border-t border-slate-100">
+          <div className="p-2.5 bg-white border-t border-slate-100 space-y-1.5">
+            {/* Attached file chips */}
+            <AiFileAttachmentBar ref={attachmentBarRef} compact />
+
             <form onSubmit={handleSubmit} className="flex items-center gap-1.5">
               {messages.length > 0 && (
                 <button
                   type="button"
                   onClick={clearChat}
-                  className="p-2 text-muted-foreground hover:text-destructive transition-colors cursor-pointer"
+                  className="p-1.5 text-muted-foreground hover:text-destructive transition-colors cursor-pointer rounded-lg"
                   title="Bersihkan chat"
                 >
                   <Trash2 className="size-3.5" />
                 </button>
               )}
+              <AiUploadTriggerButton
+                compact
+                onClick={() => attachmentBarRef.current?.triggerUpload()}
+                disabled={isLoading || isUploadingFile}
+              />
               <input
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Ketik pertanyaan..."
+                placeholder={
+                  attachedFiles.length > 0
+                    ? `Lampiran (${attachedFiles.length}). Kirim...`
+                    : "Ketik pertanyaan / lampirkan berkas..."
+                }
                 disabled={isLoading}
                 className="flex-1 text-xs px-3 py-2 rounded-lg border border-astro-cyan-2/60 focus:outline-hidden focus:ring-1 focus:ring-astro-blue"
               />
@@ -229,7 +276,7 @@ export function AiAssistantDrawer() {
                   type="button"
                   size="icon-sm"
                   onClick={() => stop()}
-                  className="size-8 bg-rose-500 hover:bg-rose-600 text-white rounded-lg"
+                  className="size-8 bg-rose-500 hover:bg-rose-600 text-white rounded-lg cursor-pointer"
                 >
                   <StopCircle className="size-3.5" />
                 </Button>
@@ -237,7 +284,7 @@ export function AiAssistantDrawer() {
                 <Button
                   type="submit"
                   size="icon-sm"
-                  disabled={!input.trim()}
+                  disabled={(!input.trim() && attachedFiles.length === 0) || isUploadingFile}
                   className="size-8 bg-astro-navy hover:bg-astro-blue text-white rounded-lg disabled:opacity-40 cursor-pointer"
                 >
                   <Send className="size-3.5" />
