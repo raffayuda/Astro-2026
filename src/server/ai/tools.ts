@@ -1,8 +1,16 @@
 import { tool, zodSchema } from "ai";
 import { z } from "zod";
 import { db } from "@/src/db";
-import { competitions, registrations } from "@/src/db/schema";
-import { eq, and, or, ilike, sql, desc, type SQL } from "drizzle-orm";
+import {
+  competitions,
+  registrations,
+  sponsors,
+  mediaPartners,
+  committeeMembers,
+  committeeDivisions,
+  faqs,
+} from "@/src/db/schema";
+import { eq, and, or, ilike, sql, desc, asc, type SQL } from "drizzle-orm";
 
 const searchRegistrationsSchema = z.object({
   query: z
@@ -47,15 +55,53 @@ type GetFinancialAnalyticsInput = z.infer<typeof getFinancialAnalyticsSchema>;
 
 /* ─── Phase 2: Action Proposal Schemas ─── */
 
+const proposeGuidebookSectionSchema = z.object({
+  id: z.string().optional(),
+  title: z.string().describe("Judul bab / artikel juknis (misal: 'Ketentuan Peserta', 'Sistem Pertandingan', 'Tata Tertib', 'Supporter & Atribut')"),
+  content: z.string().describe("Isi lengkap artikel bagian juknis dalam format teks/markdown rapi"),
+});
+
+const proposeBatchSchema = z.object({
+  id: z.string().optional(),
+  name: z.string().describe("Nama gelombang (misal: 'Early Bird', 'Gelombang 1', 'Reguler')"),
+  startDate: z.string().describe("Tanggal mulai pendaftaran (YYYY-MM-DD)"),
+  endDate: z.string().describe("Tanggal selesai pendaftaran (YYYY-MM-DD)"),
+  fee: z.number().describe("Biaya pendaftaran untuk gelombang ini dalam rupiah"),
+});
+
+const proposeCustomFieldSchema = z.object({
+  id: z.string().describe("ID unik field (contoh: 'link_karya', 'kartu_pelajar', 'id_game')"),
+  label: z.string().describe("Label input yang ditampilkan ke pendaftar"),
+  type: z.enum(["text", "textarea", "select", "image"]).describe("Tipe input"),
+  placeholder: z.string().optional(),
+  options: z.array(z.string()).optional(),
+  required: z.boolean().optional(),
+  description: z.string().optional(),
+});
+
 const proposeCreateCompetitionSchema = z.object({
+  id: z.string().optional().describe("ID slug kustom lomba (opsional, misal: 'futsal-eksternal')"),
   title: z.string().describe("Nama cabang lomba baru (contoh: 'Desain Poster Ilmiah')"),
   category: z
     .enum(["akademik", "olahraga", "esports", "kesenian"])
     .describe("Kategori lomba: akademik, olahraga, esports, atau kesenian"),
+  origin: z
+    .enum(["internal", "external"])
+    .optional()
+    .default("internal")
+    .describe("Target peserta: 'internal' (khusus mahasiswa STT-NF) atau 'external' (pelajar SMA/SMK/umum luar)"),
   tagline: z.string().optional().describe("Tagline atau moto singkat lomba"),
   description: z.string().describe("Deskripsi lengkap dan tujuan perlombaan"),
   fee: z.number().optional().default(0).describe("Biaya pendaftaran per tim/individu dalam rupiah (contoh: 50000)"),
   isFree: z.boolean().optional().default(false).describe("True jika lomba gratis, false jika berbayar"),
+  hasBatches: z.boolean().optional().default(false).describe("True jika lomba menggunakan gelombang pendaftaran"),
+  batches: z.array(proposeBatchSchema).optional().default([]).describe("Daftar gelombang pendaftaran"),
+  guidebookSections: z
+    .array(proposeGuidebookSectionSchema)
+    .optional()
+    .default([])
+    .describe("Daftar bab/artikel Petunjuk Teknis (GuideBook) lomba. WAJIB diisi jika ada dokumen/instruksi juknis"),
+  customFields: z.array(proposeCustomFieldSchema).optional().default([]).describe("Field formulir tambahan khusus pendaftar lomba"),
   maxSlots: z.number().optional().default(16).describe("Kuota maksimal peserta/tim (contoh: 16 atau 32)"),
   scheduleDate: z.string().optional().describe("Tanggal pelaksanaan lomba dalam format YYYY-MM-DD"),
   location: z.string().optional().describe("Lokasi atau venue perlombaan"),
@@ -64,7 +110,10 @@ const proposeCreateCompetitionSchema = z.object({
   type: z.enum(["individual", "team"]).optional().default("team").describe("Tipe peserta: 'individual' atau 'team'"),
   maxTeamMembers: z.number().optional().default(1).describe("Batas maksimal anggota tim (termasuk ketua)"),
   minTeamMembers: z.number().optional().default(1).describe("Batas minimal anggota tim"),
+  membersRequired: z.enum(["optional", "required"]).optional().default("optional").describe("Apakah anggota tim wajib diisi saat daftar"),
+  playerPhotoRequired: z.boolean().optional().default(false).describe("Apakah foto kartu pelajar / identitas pemain wajib diunggah"),
   rulesSummary: z.string().optional().describe("Ringkasan aturan atau poin penting teknis lomba"),
+  rulebookUrl: z.string().optional().describe("Link URL PDF / Google Drive buku panduan juknis"),
   prizesFirst: z.string().optional().describe("Rincian hadiah Juara 1 (contoh: 'Rp 1.500.000 + Sertifikat + Piala')"),
   prizesSecond: z.string().optional().describe("Rincian hadiah Juara 2"),
   prizesThird: z.string().optional().describe("Rincian hadiah Juara 3"),
@@ -72,16 +121,36 @@ const proposeCreateCompetitionSchema = z.object({
 type ProposeCreateCompetitionInput = z.infer<typeof proposeCreateCompetitionSchema>;
 
 const proposeUpdateCompetitionSchema = z.object({
-  competitionId: z.string().describe("ID lomba atau judul lomba yang ingin diubah (contoh: 'futsal', 'cerdas-cermat')"),
+  competitionId: z.string().describe("ID lomba atau judul lomba yang ingin diubah (contoh: 'futsal-eksternal', 'cerdas-cermat')"),
   title: z.string().optional().describe("Judul lomba baru"),
+  category: z.enum(["akademik", "olahraga", "esports", "kesenian"]).optional().describe("Kategori lomba baru"),
+  origin: z.enum(["internal", "external"]).optional().describe("Target peserta: 'internal' atau 'external'"),
+  tagline: z.string().optional().describe("Tagline lomba baru"),
+  description: z.string().optional().describe("Deskripsi lomba baru"),
   fee: z.number().optional().describe("Biaya pendaftaran baru (angka rupiah)"),
   isFree: z.boolean().optional().describe("Status gratis lomba"),
+  hasBatches: z.boolean().optional().describe("Status pendaftaran bergelombang"),
+  batches: z.array(proposeBatchSchema).optional().describe("Daftar gelombang pendaftaran baru"),
+  guidebookSections: z
+    .array(proposeGuidebookSectionSchema)
+    .optional()
+    .describe("Daftar bab/artikel Petunjuk Teknis (GuideBook) baru atau diperbarui"),
+  customFields: z.array(proposeCustomFieldSchema).optional().describe("Field isian pendaftaran khusus baru"),
   maxSlots: z.number().optional().describe("Kuota maksimal tim baru"),
   scheduleDate: z.string().optional().describe("Tanggal pelaksanaan baru (YYYY-MM-DD)"),
   location: z.string().optional().describe("Lokasi lomba baru"),
   contactName: z.string().optional().describe("Nama CP baru"),
   contactWhatsapp: z.string().optional().describe("Nomor WhatsApp CP baru"),
+  type: z.enum(["individual", "team"]).optional().describe("Tipe peserta: 'individual' atau 'team'"),
+  maxTeamMembers: z.number().optional().describe("Batas maksimal anggota tim"),
+  minTeamMembers: z.number().optional().describe("Batas minimal anggota tim"),
+  membersRequired: z.enum(["optional", "required"]).optional().describe("Apakah data anggota tim wajib diisi"),
+  playerPhotoRequired: z.boolean().optional().describe("Apakah foto pemain wajib diunggah"),
   rulesSummary: z.string().optional().describe("Ringkasan aturan baru"),
+  rulebookUrl: z.string().optional().describe("Link URL PDF / Google Drive buku panduan"),
+  prizesFirst: z.string().optional().describe("Hadiah Juara 1"),
+  prizesSecond: z.string().optional().describe("Hadiah Juara 2"),
+  prizesThird: z.string().optional().describe("Hadiah Juara 3"),
   isActive: z.boolean().optional().describe("Status aktif pendaftaran lomba"),
 });
 type ProposeUpdateCompetitionInput = z.infer<typeof proposeUpdateCompetitionSchema>;
@@ -125,6 +194,245 @@ const generateDataExportSchema = z.object({
     .describe("Filter status pembayaran pendaftar yang akan diekspor"),
 });
 type GenerateDataExportInput = z.infer<typeof generateDataExportSchema>;
+
+/* ─── Schema Intelligence & Inspection Schemas ─── */
+
+const getDashboardSchemaCatalogSchema = z.object({
+  feature: z
+    .enum([
+      "all",
+      "competitions",
+      "registrations",
+      "sponsors",
+      "media_partners",
+      "committee",
+      "faqs",
+      "certificates",
+      "journeys",
+      "gallery",
+    ])
+    .optional()
+    .default("all")
+    .describe(
+      "Fitur dashboard yang ingin diperiksa skema data dan field-nya: 'competitions' (lomba & juknis), 'registrations' (pendaftar & pembayaran), 'sponsors' (sponsor), 'media_partners' (media partner), 'committee' (struktur panitia), 'faqs' (tanya jawab), 'certificates' (template sertifikat), 'journeys' (timeline kilas balik), 'gallery' (dokumentasi), atau 'all' untuk semua fitur.",
+    ),
+});
+type GetDashboardSchemaCatalogInput = z.infer<typeof getDashboardSchemaCatalogSchema>;
+
+const getSponsorsListSchema = z.object({
+  tier: z.enum(["all", "platinum", "gold", "silver"]).optional().default("all").describe("Filter tier sponsor"),
+  onlyCurrent: z.boolean().optional().default(true).describe("True untuk hanya menampilkan sponsor/partner aktif ASTRO 2026"),
+});
+type GetSponsorsListInput = z.infer<typeof getSponsorsListSchema>;
+
+const getCommitteeListSchema = z.object({
+  divisionSlug: z.string().optional().describe("Slug divisi kepanitiaan (misal: 'acara', 'bph', 'kompetisi', 'humas'), atau kosongkan untuk semua divisi"),
+});
+type GetCommitteeListInput = z.infer<typeof getCommitteeListSchema>;
+
+const getFaqsListSchema = z.object({
+  search: z.string().optional().describe("Kata kunci pencarian pertanyaan atau topik FAQ"),
+});
+type GetFaqsListInput = z.infer<typeof getFaqsListSchema>;
+
+/**
+ * Curated, verified metadata catalog of all ASTRO 2026 dashboard features.
+ * Auth tables (users, sessions, accounts, verifications) are strictly omitted.
+ */
+const DASHBOARD_SCHEMA_CATALOG: Record<string, {
+  feature: string;
+  name: string;
+  dashboardUrl: string;
+  description: string;
+  allowedMutations?: string[];
+  fields: Array<{
+    field: string;
+    type: string;
+    required: boolean;
+    validValues?: string[];
+    default?: unknown;
+    description: string;
+  }>;
+}> = {
+  competitions: {
+    feature: "competitions",
+    name: "Cabang Lomba & Petunjuk Teknis (GuideBook)",
+    dashboardUrl: "/dashboard/competitions",
+    description: "Pengaturan cabang perlombaan ASTRO 2026, biaya pendaftaran, kuota, bab-bab juknis, dan formulir khusus pendaftar.",
+    allowedMutations: ["CREATE_COMPETITION (via proposeCreateCompetition)", "UPDATE_COMPETITION (via proposeUpdateCompetition)"],
+    fields: [
+      { field: "id", type: "string", required: true, description: "Slug unik lomba (contoh: 'futsal-eksternal', 'cerdas-cermat', 'agt')" },
+      { field: "title", type: "string", required: true, description: "Nama lengkap cabang lomba (contoh: 'Futsal Eksternal')" },
+      { field: "category", type: "enum", required: true, validValues: ["akademik", "olahraga", "esports", "kesenian"], description: "Kategori perlombaan" },
+      { field: "origin", type: "enum", required: false, validValues: ["internal", "external"], default: "internal", description: "Target peserta: 'internal' (khusus mahasiswa STT-NF) atau 'external' (pelajar SMA/SMK/umum)" },
+      { field: "tagline", type: "string", required: false, description: "Slogan atau moto singkat lomba" },
+      { field: "description", type: "string", required: true, description: "Paragraf deskripsi lengkap tujuan lomba" },
+      { field: "fee", type: "number", required: false, default: 0, description: "Biaya pendaftaran per tim/peserta dalam rupiah (contoh: 350000)" },
+      { field: "isFree", type: "boolean", required: false, default: false, description: "True jika lomba gratis, fee otomatis 0" },
+      { field: "hasBatches", type: "boolean", required: false, default: false, description: "True jika lomba menggunakan gelombang pendaftaran bertahap (Early bird, reguler, dll)" },
+      { field: "batches", type: "JSON Array", required: false, description: "Array objek gelombang: [{ id, name, startDate, endDate, fee }]" },
+      { field: "guidebookSections", type: "JSON Array", required: false, description: "Bab-bab artikel juknis resmi: [{ id, title, content }]. Content berformat Markdown rapi" },
+      { field: "customFields", type: "JSON Array", required: false, description: "Input formulir dinamis pendaftar: [{ id, label, type: 'text'|'textarea'|'select'|'image', placeholder, options, required, description }]" },
+      { field: "maxSlots", type: "number", required: false, default: 16, description: "Kuota maksimal peserta/tim" },
+      { field: "filledSlots", type: "number", required: false, default: 0, description: "Jumlah slot kuota yang sudah terisi pendaftar" },
+      { field: "scheduleDate", type: "Date string (YYYY-MM-DD)", required: false, description: "Tanggal pelaksanaan lomba" },
+      { field: "location", type: "string", required: false, description: "Tempat / venue perlombaan (contoh: 'GOR Futsal', 'Auditorium Kampus B')" },
+      { field: "type", type: "enum", required: false, validValues: ["individual", "team"], default: "team", description: "Tipe kepesertaan" },
+      { field: "maxTeamMembers", type: "number", required: false, default: 1, description: "Batas maksimal anggota tim (termasuk official/ketua)" },
+      { field: "minTeamMembers", type: "number", required: false, default: 1, description: "Batas minimal anggota tim" },
+      { field: "membersRequired", type: "enum", required: false, validValues: ["required", "optional"], default: "optional", description: "Kewajiban pengisian data seluruh anggota tim" },
+      { field: "playerPhotoRequired", type: "boolean", required: false, default: false, description: "Wajib unggah foto kartu pelajar / identitas akun in-game pemain" },
+      { field: "rulesSummary", type: "string[] / string", required: false, description: "Ringkasan tata tertib penting" },
+      { field: "rulebookUrl", type: "string URL", required: false, description: "Link berkas PDF / Google Drive buku panduan" },
+      { field: "prizesFirst", type: "string", required: false, description: "Hadiah Juara 1" },
+      { field: "prizesSecond", type: "string", required: false, description: "Hadiah Juara 2" },
+      { field: "prizesThird", type: "string", required: false, description: "Hadiah Juara 3" },
+      { field: "prizes", type: "JSON Array", required: false, description: "Daftar custom hadiah: [{ label, value }]" },
+      { field: "contactName", type: "string", required: false, description: "Nama Contact Person (PIC) panitia" },
+      { field: "contactWhatsapp", type: "string", required: false, description: "Nomor WhatsApp CP aktif" },
+      { field: "isActive", type: "boolean", required: false, default: true, description: "Status publikasi & pendaftaran aktif" },
+    ],
+  },
+  registrations: {
+    feature: "registrations",
+    name: "Data Pendaftar & Pembayaran",
+    dashboardUrl: "/dashboard/registrations",
+    description: "Data peserta/tim terdaftar, status verifikasi berkas, dan status pembayaran invoice.",
+    allowedMutations: ["UPDATE_REGISTRATION_STATUS (via proposeUpdateRegistrationStatus)", "SET_WINNERS (via proposeSetWinners)"],
+    fields: [
+      { field: "id", type: "UUID", required: true, description: "ID unik pendaftaran" },
+      { field: "competitionId", type: "string", required: true, description: "ID cabang lomba yang diikuti" },
+      { field: "type", type: "enum", required: true, validValues: ["individual", "team"], description: "Tipe pendaftaran" },
+      { field: "fullName", type: "string", required: false, description: "Nama lengkap (khusus tipe individu)" },
+      { field: "identityNumber", type: "string", required: false, description: "NIM / NISN peserta" },
+      { field: "teamName", type: "string", required: false, description: "Nama tim (khusus tipe tim)" },
+      { field: "leaderName", type: "string", required: false, description: "Nama ketua tim" },
+      { field: "leaderIdentity", type: "string", required: false, description: "NIM / NISN ketua tim" },
+      { field: "leaderGameId", type: "string", required: false, description: "ID game ketua (misal Mobile Legends)" },
+      { field: "leaderPhotoUrl", type: "string URL", required: false, description: "URL foto identitas ketua" },
+      { field: "members", type: "string", required: false, description: "Daftar nama anggota tim" },
+      { field: "memberDetails", type: "JSON Array", required: false, description: "Detail anggota tim: [{ name, gameId, photoUrl }]" },
+      { field: "institution", type: "string", required: true, description: "Asal sekolah, instansi, atau perguruan tinggi" },
+      { field: "email", type: "string", required: true, description: "Email aktif pendaftar" },
+      { field: "whatsapp", type: "string", required: true, description: "Nomor WhatsApp aktif pendaftar" },
+      { field: "customFields", type: "JSON Object", required: false, description: "Isian nilai custom fields pendaftar ({ fieldId: value })" },
+      { field: "paymentStatus", type: "enum", required: true, validValues: ["pending", "detecting", "paid", "failed"], description: "Status pembayaran" },
+      { field: "paymentMethod", type: "enum", required: false, validValues: ["qris", "transfer", "manual"], description: "Kanal pembayaran" },
+      { field: "paymentAmount", type: "number", required: true, description: "Nominal tagihan dalam rupiah" },
+      { field: "batchName", type: "string", required: false, description: "Nama gelombang pendaftaran yang berlaku" },
+      { field: "paymentReference", type: "string", required: false, description: "Nomor referensi invoice (contoh: ASTRO-2026-XXXX)" },
+      { field: "paymentCode", type: "string", required: false, description: "Payload string QRIS nasional atau kode bayar" },
+      { field: "isWinner", type: "enum", required: false, validValues: ["0", "1"], description: "Status pemenang juara" },
+      { field: "winnerRank", type: "enum", required: false, validValues: ["1", "2", "3"], description: "Peringkat juara (1, 2, atau 3)" },
+      { field: "certificateSent", type: "enum", required: false, validValues: ["0", "1"], description: "Status sertifikat digital dikirim" },
+      { field: "createdAt", type: "Date", required: true, description: "Waktu pendaftaran masuk" },
+    ],
+  },
+  sponsors: {
+    feature: "sponsors",
+    name: "Sponsor & Kemitraan",
+    dashboardUrl: "/dashboard/sponsor",
+    description: "Daftar sponsor pendukung acara ASTRO 2026 dan track record kemitraan.",
+    fields: [
+      { field: "id", type: "number", required: true, description: "ID sponsor" },
+      { field: "name", type: "string", required: true, description: "Nama brand atau perusahaan sponsor" },
+      { field: "tier", type: "enum", required: true, validValues: ["platinum", "gold", "silver"], description: "Tingkatan tier sponsorship" },
+      { field: "website", type: "string URL", required: false, description: "Tautan website resmi sponsor" },
+      { field: "logo", type: "string URL", required: false, description: "URL berkas logo sponsor" },
+      { field: "isCurrent", type: "boolean", required: true, description: "True = Sponsor aktif ASTRO 2026; False = Riwayat tahun lalu" },
+      { field: "sortOrder", type: "number", required: false, description: "Urutan tampilan logo" },
+    ],
+  },
+  media_partners: {
+    feature: "media_partners",
+    name: "Media Partner Publikasi",
+    dashboardUrl: "/dashboard/sponsor",
+    description: "Daftar media partner publikasi resmi ASTRO 2026.",
+    fields: [
+      { field: "id", type: "number", required: true, description: "ID media partner" },
+      { field: "name", type: "string", required: true, description: "Nama kanal media partner" },
+      { field: "website", type: "string URL", required: false, description: "Tautan website / media sosial partner" },
+      { field: "logo", type: "string URL", required: false, description: "URL berkas logo media partner" },
+      { field: "isCurrent", type: "boolean", required: true, description: "True = Media partner aktif ASTRO 2026" },
+      { field: "sortOrder", type: "number", required: false, description: "Urutan tampilan" },
+    ],
+  },
+  committee: {
+    feature: "committee",
+    name: "Struktur Kepanitiaan (BEM STT-NF)",
+    dashboardUrl: "/dashboard/committee",
+    description: "Susunan divisi, koordinator, staf panitia, dan foto resmi kepanitiaan ASTRO 2026.",
+    fields: [
+      { field: "id", type: "number", required: true, description: "ID anggota panitia" },
+      { field: "name", type: "string", required: true, description: "Nama lengkap panitia" },
+      { field: "role", type: "string", required: true, description: "Jabatan (contoh: 'Project Manager', 'Koordinator Divisi', 'Staf')" },
+      { field: "division", type: "string", required: true, description: "Slug divisi (contoh: 'bph', 'acara', 'kompetisi', 'humas', 'ddk')" },
+      { field: "divisionName", type: "string", required: true, description: "Nama lengkap divisi (contoh: 'Divisi Kompetisi')" },
+      { field: "image", type: "string URL", required: true, description: "URL foto profil resmi anggota panitia" },
+      { field: "isLeader", type: "enum", required: false, validValues: ["0", "1"], description: "'1' = Ketua/Koordinator Divisi; '0' = Staf" },
+      { field: "studyProgram", type: "string", required: false, description: "Program studi (Teknik Informatika, Sistem Informasi, Bisnis Digital)" },
+      { field: "batch", type: "string", required: false, description: "Tahun angkatan (contoh: '2023')" },
+      { field: "instagram", type: "string", required: false, description: "Username Instagram" },
+      { field: "linkedin", type: "string", required: false, description: "Profil LinkedIn" },
+      { field: "quote", type: "string", required: false, description: "Kutipan semangat panitia" },
+    ],
+  },
+  faqs: {
+    feature: "faqs",
+    name: "Frequently Asked Questions (FAQ)",
+    dashboardUrl: "/dashboard/faq",
+    description: "Daftar tanya jawab umum seputar teknis pendaftaran, jadwal, dan aturan perlombaan.",
+    fields: [
+      { field: "id", type: "number", required: true, description: "ID FAQ" },
+      { field: "question", type: "string", required: true, description: "Teks pertanyaan peserta" },
+      { field: "answer", type: "string", required: true, description: "Teks jawaban resmi panitia" },
+      { field: "sortOrder", type: "number", required: false, description: "Urutan urutan tampil" },
+    ],
+  },
+  certificates: {
+    feature: "certificates",
+    name: "Template Sertifikat Digital",
+    dashboardUrl: "/dashboard/certificates",
+    description: "Pengaturan template gambar dan koordinat teks overlay sertifikat elektronik pemenang dan peserta.",
+    fields: [
+      { field: "id", type: "number", required: true, description: "ID template" },
+      { field: "competitionId", type: "string", required: true, description: "ID lomba terkait" },
+      { field: "rank", type: "enum", required: true, validValues: ["1", "2", "3", "participant"], description: "Kategori penerima sertifikat" },
+      { field: "templateImageUrl", type: "string URL", required: true, description: "URL berkas gambar latar sertifikat (PNG/JPG)" },
+      { field: "textOverlays", type: "JSON Array", required: true, description: "Pengaturan posisi nama, nomor, institusi: [{ field, x, y, fontSize, fontFamily, color, align, maxWidth }]" },
+      { field: "is_active", type: "enum", required: false, validValues: ["0", "1"], description: "Status aktif template" },
+    ],
+  },
+  journeys: {
+    feature: "journeys",
+    name: "Kilas Balik & Milestone (Journey)",
+    dashboardUrl: "/dashboard/journey",
+    description: "Rekap perjalanan tahunan ASTRO dari tahun ke tahun.",
+    fields: [
+      { field: "id", type: "string", required: true, description: "ID/Slug journey (contoh: 'j-2023')" },
+      { field: "year", type: "string", required: true, description: "Tahun penyelenggaraan" },
+      { field: "theme", type: "string", required: true, description: "Tema utama perhelatan" },
+      { field: "participants", type: "number", required: false, description: "Total jumlah peserta" },
+      { field: "date", type: "string", required: false, description: "Rentang tanggal kegiatan" },
+      { field: "competitionsCount", type: "number", required: false, description: "Jumlah cabang lomba yang dibuka" },
+      { field: "achievement", type: "string", required: false, description: "Pencapaian utama" },
+      { field: "highlights", type: "string[]", required: false, description: "Poin-poin kilas balik utama" },
+    ],
+  },
+  gallery: {
+    feature: "gallery",
+    name: "Galeri Foto Dokumentasi",
+    dashboardUrl: "/dashboard/gallery",
+    description: "Dokumentasi momen kegiatan dan perlombaan.",
+    fields: [
+      { field: "id", type: "number", required: true, description: "ID foto" },
+      { field: "title", type: "string", required: true, description: "Judul foto" },
+      { field: "category", type: "string", required: true, description: "Kategori dokumentasi" },
+      { field: "imageUrl", type: "string URL", required: true, description: "URL file foto" },
+      { field: "year", type: "string", required: true, description: "Tahun kegiatan" },
+    ],
+  },
+};
 
 function generateSlug(title: string): string {
   const base = title
@@ -472,6 +780,160 @@ export const aiTools = {
     },
   }),
 
+  /**
+   * Tool: Inspect dashboard data schema, available form fields, constraints, and valid enums.
+   */
+  getDashboardSchemaCatalog: tool({
+    description:
+      "Mengecek kamus skema data, kolom/field formulir yang tersedia, tipe data, nilai enum yang valid, dan batasan constraint untuk semua fitur di Dashboard ASTRO 2026 (Competitions, Registrations, Sponsors, Committee, FAQs, Certificates, Journeys, Gallery). Catatan keamanan: Tabel autentikasi pengguna dan rahasia internal dilindungi dan diblokir dari inspeksi.",
+    inputSchema: zodSchema(getDashboardSchemaCatalogSchema),
+    execute: async (input: GetDashboardSchemaCatalogInput) => {
+      const { feature = "all" } = input;
+
+      const securityNotice =
+        "BATASAN KEAMANAN TERPASANG: Tabel autentikasi sistem ('users', 'sessions', 'accounts', 'verifications', 'user_invitations') dan kunci kredensial/token rahasia dilindungi oleh kebijakan tata kelola ASTRO Copilot dan DILARANG untuk diinspeksi atau diakses.";
+
+      if (feature === "all") {
+        return {
+          _securityNotice: securityNotice,
+          totalFeatures: Object.keys(DASHBOARD_SCHEMA_CATALOG).length,
+          catalog: DASHBOARD_SCHEMA_CATALOG,
+        };
+      }
+
+      const entry = DASHBOARD_SCHEMA_CATALOG[feature];
+      if (!entry) {
+        return {
+          _securityNotice: securityNotice,
+          error: `Fitur '${feature}' tidak dikenal. Pilihan yang tersedia: ${Object.keys(DASHBOARD_SCHEMA_CATALOG).join(", ")}.`,
+        };
+      }
+
+      return {
+        _securityNotice: securityNotice,
+        ...entry,
+      };
+    },
+  }),
+
+  /**
+   * Tool: Query sponsors and media partners list.
+   */
+  getSponsorsList: tool({
+    description: "Membaca daftar sponsor dan media partner resmi ASTRO 2026 yang terdaftar di database.",
+    inputSchema: zodSchema(getSponsorsListSchema),
+    execute: async (input: GetSponsorsListInput) => {
+      const { tier, onlyCurrent } = input;
+      const sponsorConditions: SQL[] = [];
+      if (onlyCurrent) sponsorConditions.push(eq(sponsors.isCurrent, true));
+      if (tier && tier !== "all") sponsorConditions.push(eq(sponsors.tier, tier));
+
+      const spList = await db
+        .select()
+        .from(sponsors)
+        .where(sponsorConditions.length > 0 ? and(...sponsorConditions) : undefined)
+        .orderBy(asc(sponsors.sortOrder));
+
+      const mpConditions: SQL[] = [];
+      if (onlyCurrent) mpConditions.push(eq(mediaPartners.isCurrent, true));
+
+      const mpList = await db
+        .select()
+        .from(mediaPartners)
+        .where(mpConditions.length > 0 ? and(...mpConditions) : undefined)
+        .orderBy(asc(mediaPartners.sortOrder));
+
+      return {
+        _securityNotice: "Data mitra sponsor & media partner publik.",
+        totalSponsors: spList.length,
+        totalMediaPartners: mpList.length,
+        sponsors: spList.map((s) => ({
+          id: s.id,
+          name: s.name,
+          tier: s.tier,
+          website: s.website,
+          isCurrent: s.isCurrent,
+        })),
+        mediaPartners: mpList.map((m) => ({
+          id: m.id,
+          name: m.name,
+          website: m.website,
+          isCurrent: m.isCurrent,
+        })),
+      };
+    },
+  }),
+
+  /**
+   * Tool: Query committee structure and divisions.
+   */
+  getCommitteeList: tool({
+    description: "Membaca susunan divisi dan daftar panitia BEM STT-NF untuk ASTRO 2026.",
+    inputSchema: zodSchema(getCommitteeListSchema),
+    execute: async (input: GetCommitteeListInput) => {
+      const { divisionSlug } = input;
+      const divs = await db.select().from(committeeDivisions).orderBy(asc(committeeDivisions.sortOrder));
+
+      const conditions: SQL[] = [];
+      if (divisionSlug && divisionSlug.trim() !== "") {
+        conditions.push(eq(committeeMembers.division, divisionSlug.trim()));
+      }
+
+      const members = await db
+        .select()
+        .from(committeeMembers)
+        .where(conditions.length > 0 ? and(...conditions) : undefined)
+        .orderBy(asc(committeeMembers.sortOrder));
+
+      return {
+        _securityNotice: "Data struktur panitia publik.",
+        totalDivisions: divs.length,
+        totalMembers: members.length,
+        divisions: divs.map((d) => ({ name: d.name, slug: d.slug })),
+        members: members.map((m) => ({
+          id: m.id,
+          name: m.name,
+          role: m.role,
+          division: m.divisionName,
+          isLeader: m.isLeader === "1",
+          studyProgram: m.studyProgram,
+          instagram: m.instagram,
+        })),
+      };
+    },
+  }),
+
+  /**
+   * Tool: Query FAQs list.
+   */
+  getFaqsList: tool({
+    description: "Membaca daftar tanya jawab (FAQ) resmi perlombaan dan pendaftaran ASTRO 2026.",
+    inputSchema: zodSchema(getFaqsListSchema),
+    execute: async (input: GetFaqsListInput) => {
+      const { search } = input;
+      const conditions: SQL[] = [];
+      if (search && search.trim() !== "") {
+        conditions.push(or(ilike(faqs.question, `%${search.trim()}%`), ilike(faqs.answer, `%${search.trim()}%`))!);
+      }
+
+      const rows = await db
+        .select()
+        .from(faqs)
+        .where(conditions.length > 0 ? and(...conditions) : undefined)
+        .orderBy(asc(faqs.sortOrder));
+
+      return {
+        _securityNotice: "Data FAQ resmi ASTRO 2026.",
+        totalFaqs: rows.length,
+        faqs: rows.map((f) => ({
+          id: f.id,
+          question: f.question,
+          answer: f.answer,
+        })),
+      };
+    },
+  }),
+
   /* ─── Phase 2 Action Proposal Tools (Human-in-the-Loop) ─── */
 
   /**
@@ -482,21 +944,40 @@ export const aiTools = {
       "Mengusulkan pembuatan cabang lomba baru berdasarkan teks juknis atau instruksi panitia. Menghasilkan kartu konfirmasi aksi (Action Proposal Card) yang harus disetujui admin sebelum disimpan ke database.",
     inputSchema: zodSchema(proposeCreateCompetitionSchema),
     execute: async (input: ProposeCreateCompetitionInput) => {
-      const id = generateSlug(input.title);
+      const id = input.id || generateSlug(input.title);
       const existing = await findCompetition(id);
       const finalId = existing ? `${id}-${Date.now().toString().slice(-4)}` : id;
 
       const isFree = input.isFree ?? (input.fee === 0);
       const fee = isFree ? 0 : (input.fee || 0);
 
+      const guidebookSections = (input.guidebookSections || []).map((s, idx) => ({
+        id: s.id || `sec-${idx + 1}-${Date.now()}`,
+        title: s.title,
+        content: s.content,
+      }));
+
+      const batches = (input.batches || []).map((b, idx) => ({
+        id: b.id || `batch-${idx + 1}-${Date.now()}`,
+        name: b.name,
+        startDate: b.startDate,
+        endDate: b.endDate,
+        fee: b.fee,
+      }));
+
       const payload = {
         id: finalId,
         title: input.title,
         category: input.category,
+        origin: input.origin || "internal",
         tagline: input.tagline || "",
         description: input.description,
         fee,
         isFree,
+        hasBatches: input.hasBatches || batches.length > 0,
+        batches,
+        guidebookSections,
+        customFields: input.customFields || [],
         maxSlots: input.maxSlots || 16,
         scheduleDate: input.scheduleDate || null,
         location: input.location || "Kampus STT Terpadu Nurul Fikri",
@@ -505,7 +986,10 @@ export const aiTools = {
         type: input.type || "team",
         maxTeamMembers: input.maxTeamMembers || (input.type === "individual" ? 1 : 5),
         minTeamMembers: input.minTeamMembers || 1,
+        membersRequired: input.membersRequired || "optional",
+        playerPhotoRequired: input.playerPhotoRequired || false,
         rulesSummary: input.rulesSummary || null,
+        rulebookUrl: input.rulebookUrl || null,
         prizesFirst: input.prizesFirst || null,
         prizesSecond: input.prizesSecond || null,
         prizesThird: input.prizesThird || null,
@@ -516,11 +1000,19 @@ export const aiTools = {
         { label: "ID / Slug", value: finalId },
         { label: "Nama Lomba", value: input.title },
         { label: "Kategori", value: input.category },
+        { label: "Target Peserta (Origin)", value: payload.origin === "external" ? "Eksternal (SMA/SMK/Umum)" : "Internal (STT-NF)" },
         { label: "Biaya Pendaftaran", value: isFree ? "Gratis" : `Rp ${fee.toLocaleString("id-ID")}` },
         { label: "Kuota Maksimal", value: `${payload.maxSlots} Tim / Peserta` },
         { label: "Jadwal Pelaksanaan", value: payload.scheduleDate || "Belum ditentukan (TBA)" },
         { label: "Lokasi", value: payload.location },
-        { label: "Tipe", value: payload.type === "individual" ? "Individu" : `Tim (Maks ${payload.maxTeamMembers} Orang)` },
+        { label: "Tipe", value: payload.type === "individual" ? "Individu" : `Tim (Min ${payload.minTeamMembers} - Maks ${payload.maxTeamMembers} Orang)` },
+        {
+          label: "Artikel / Bagian Guidebook",
+          value:
+            guidebookSections.length > 0
+              ? `${guidebookSections.length} Bagian (${guidebookSections.map((s) => s.title).join(", ")})`
+              : "0 Bagian (Belum ada)",
+        },
         { label: "Contact Person", value: payload.contactName ? `${payload.contactName} (${payload.contactWhatsapp || "-"})` : "Belum diisi" },
       ];
 
@@ -529,7 +1021,7 @@ export const aiTools = {
         actionId: `act-create-${Date.now()}`,
         actionType: "CREATE_COMPETITION" as const,
         title: `Tambah Lomba: ${input.title}`,
-        summary: `Proposal penambahan cabang lomba '${input.title}' (${input.category}). Silakan periksa detailnya dan tekan 'Setujui & Terapkan' untuk menyimpan ke database.`,
+        summary: `Proposal penambahan cabang lomba '${input.title}' (${input.category}) dengan ${guidebookSections.length} bagian artikel guidebook. Silakan periksa detailnya dan tekan 'Setujui & Terapkan' untuk menyimpan ke database.`,
         payload,
         preview,
       };
@@ -541,7 +1033,7 @@ export const aiTools = {
    */
   proposeUpdateCompetition: tool({
     description:
-      "Mengusulkan pembaruan data cabang lomba yang sudah ada (misal: ubah kuota, jadwal, biaya, lokasi, atau status aktif). Menghasilkan diff sebelum vs sesudah dalam kartu konfirmasi aksi.",
+      "Mengusulkan pembaruan data cabang lomba yang sudah ada (misal: tambah/ubah artikel guidebook juknis, ubah kuota, jadwal, biaya, lokasi, target asal peserta internal/eksternal, atau status aktif). Menghasilkan diff sebelum vs sesudah dalam kartu konfirmasi aksi.",
     inputSchema: zodSchema(proposeUpdateCompetitionSchema),
     execute: async (input: ProposeUpdateCompetitionInput) => {
       const comp = await findCompetition(input.competitionId);
@@ -559,6 +1051,36 @@ export const aiTools = {
         payload.title = input.title;
       }
 
+      if (input.category !== undefined && input.category !== comp.category) {
+        diff.push({ field: "category", label: "Kategori Lomba", oldVal: comp.category, newVal: input.category });
+        payload.category = input.category;
+      }
+
+      if (input.origin !== undefined && input.origin !== comp.origin) {
+        diff.push({
+          field: "origin",
+          label: "Target Peserta",
+          oldVal: comp.origin === "external" ? "Eksternal" : "Internal",
+          newVal: input.origin === "external" ? "Eksternal" : "Internal",
+        });
+        payload.origin = input.origin;
+      }
+
+      if (input.tagline !== undefined && input.tagline !== comp.tagline) {
+        diff.push({ field: "tagline", label: "Tagline", oldVal: comp.tagline || "-", newVal: input.tagline });
+        payload.tagline = input.tagline;
+      }
+
+      if (input.description !== undefined && input.description !== comp.description) {
+        diff.push({
+          field: "description",
+          label: "Deskripsi",
+          oldVal: comp.description ? `${comp.description.slice(0, 30)}...` : "-",
+          newVal: `${input.description.slice(0, 30)}...`,
+        });
+        payload.description = input.description;
+      }
+
       if (input.fee !== undefined && input.fee !== comp.fee) {
         diff.push({
           field: "fee",
@@ -567,6 +1089,70 @@ export const aiTools = {
           newVal: `Rp ${input.fee.toLocaleString("id-ID")}`,
         });
         payload.fee = input.fee;
+      }
+
+      if (input.isFree !== undefined && (input.isFree ? "1" : "0") !== comp.isFree) {
+        diff.push({
+          field: "isFree",
+          label: "Status Gratis",
+          oldVal: comp.isFree === "1" ? "Gratis" : "Berbayar",
+          newVal: input.isFree ? "Gratis" : "Berbayar",
+        });
+        payload.isFree = input.isFree;
+      }
+
+      if (input.hasBatches !== undefined && (input.hasBatches ? "1" : "0") !== comp.hasBatches) {
+        diff.push({
+          field: "hasBatches",
+          label: "Pendaftaran Bergelombang",
+          oldVal: comp.hasBatches === "1" ? "Aktif" : "Nonaktif",
+          newVal: input.hasBatches ? "Aktif" : "Nonaktif",
+        });
+        payload.hasBatches = input.hasBatches;
+      }
+
+      if (input.batches !== undefined) {
+        const oldBatchesCount = comp.batches ? (comp.batches as unknown[]).length : 0;
+        diff.push({
+          field: "batches",
+          label: "Daftar Gelombang",
+          oldVal: `${oldBatchesCount} Batch`,
+          newVal: `${input.batches.length} Batch`,
+        });
+        payload.batches = input.batches.map((b, idx) => ({
+          id: b.id || `batch-${idx + 1}-${Date.now()}`,
+          name: b.name,
+          startDate: b.startDate,
+          endDate: b.endDate,
+          fee: b.fee,
+        }));
+      }
+
+      if (input.guidebookSections !== undefined) {
+        const oldSec = Array.isArray(comp.guidebookSections) ? (comp.guidebookSections as unknown[]) : [];
+        const newSec = input.guidebookSections.map((s, idx) => ({
+          id: s.id || `sec-${idx + 1}-${Date.now()}`,
+          title: s.title,
+          content: s.content,
+        }));
+        diff.push({
+          field: "guidebookSections",
+          label: "Artikel / Bagian Guidebook",
+          oldVal: `${oldSec.length} Bagian`,
+          newVal: `${newSec.length} Bagian (${newSec.map((s) => s.title).slice(0, 3).join(", ")}${newSec.length > 3 ? "..." : ""})`,
+        });
+        payload.guidebookSections = newSec;
+      }
+
+      if (input.customFields !== undefined) {
+        const oldFieldsCount = comp.customFields ? (comp.customFields as unknown[]).length : 0;
+        diff.push({
+          field: "customFields",
+          label: "Field Formulir Khusus",
+          oldVal: `${oldFieldsCount} Field`,
+          newVal: `${input.customFields.length} Field`,
+        });
+        payload.customFields = input.customFields;
       }
 
       if (input.maxSlots !== undefined && input.maxSlots !== comp.maxSlots) {
@@ -602,17 +1188,14 @@ export const aiTools = {
         payload.location = input.location;
       }
 
-      if (input.isActive !== undefined) {
-        const oldBool = comp.isActive === "1";
-        if (input.isActive !== oldBool) {
-          diff.push({
-            field: "isActive",
-            label: "Status Aktif Lomba",
-            oldVal: oldBool ? "Aktif" : "Nonaktif",
-            newVal: input.isActive ? "Aktif" : "Nonaktif",
-          });
-          payload.isActive = input.isActive;
-        }
+      if (input.contactName !== undefined && input.contactName !== comp.contactName) {
+        diff.push({
+          field: "contactName",
+          label: "Nama CP",
+          oldVal: comp.contactName || "-",
+          newVal: input.contactName,
+        });
+        payload.contactName = input.contactName;
       }
 
       if (input.contactWhatsapp !== undefined && input.contactWhatsapp !== comp.contactWhatsapp) {
@@ -625,6 +1208,56 @@ export const aiTools = {
         payload.contactWhatsapp = input.contactWhatsapp;
       }
 
+      if (input.type !== undefined && input.type !== comp.type) {
+        diff.push({
+          field: "type",
+          label: "Tipe Peserta",
+          oldVal: comp.type || "-",
+          newVal: input.type,
+        });
+        payload.type = input.type;
+      }
+
+      if (input.maxTeamMembers !== undefined && input.maxTeamMembers !== comp.maxTeamMembers) {
+        diff.push({
+          field: "maxTeamMembers",
+          label: "Maksimal Anggota Tim",
+          oldVal: `${comp.maxTeamMembers} Orang`,
+          newVal: `${input.maxTeamMembers} Orang`,
+        });
+        payload.maxTeamMembers = input.maxTeamMembers;
+      }
+
+      if (input.minTeamMembers !== undefined && input.minTeamMembers !== comp.minTeamMembers) {
+        diff.push({
+          field: "minTeamMembers",
+          label: "Minimal Anggota Tim",
+          oldVal: `${comp.minTeamMembers} Orang`,
+          newVal: `${input.minTeamMembers} Orang`,
+        });
+        payload.minTeamMembers = input.minTeamMembers;
+      }
+
+      if (input.membersRequired !== undefined && input.membersRequired !== comp.membersRequired) {
+        diff.push({
+          field: "membersRequired",
+          label: "Wajib Anggota Tim",
+          oldVal: comp.membersRequired || "-",
+          newVal: input.membersRequired,
+        });
+        payload.membersRequired = input.membersRequired;
+      }
+
+      if (input.playerPhotoRequired !== undefined && (input.playerPhotoRequired ? "1" : "0") !== comp.playerPhotoRequired) {
+        diff.push({
+          field: "playerPhotoRequired",
+          label: "Wajib Foto Pemain",
+          oldVal: comp.playerPhotoRequired === "1" ? "Wajib" : "Tidak",
+          newVal: input.playerPhotoRequired ? "Wajib" : "Tidak",
+        });
+        payload.playerPhotoRequired = input.playerPhotoRequired;
+      }
+
       if (input.rulesSummary !== undefined) {
         const oldStr = Array.isArray(comp.rulesSummary) ? comp.rulesSummary.join("; ") : "";
         if (input.rulesSummary !== oldStr) {
@@ -635,6 +1268,59 @@ export const aiTools = {
             newVal: `${input.rulesSummary.slice(0, 30)}...`,
           });
           payload.rulesSummary = [input.rulesSummary];
+        }
+      }
+
+      if (input.rulebookUrl !== undefined && input.rulebookUrl !== comp.rulebookUrl) {
+        diff.push({
+          field: "rulebookUrl",
+          label: "Link Berkas Juknis",
+          oldVal: comp.rulebookUrl || "-",
+          newVal: input.rulebookUrl || "-",
+        });
+        payload.rulebookUrl = input.rulebookUrl;
+      }
+
+      if (input.prizesFirst !== undefined && input.prizesFirst !== comp.prizesFirst) {
+        diff.push({
+          field: "prizesFirst",
+          label: "Hadiah Juara 1",
+          oldVal: comp.prizesFirst || "-",
+          newVal: input.prizesFirst,
+        });
+        payload.prizesFirst = input.prizesFirst;
+      }
+
+      if (input.prizesSecond !== undefined && input.prizesSecond !== comp.prizesSecond) {
+        diff.push({
+          field: "prizesSecond",
+          label: "Hadiah Juara 2",
+          oldVal: comp.prizesSecond || "-",
+          newVal: input.prizesSecond,
+        });
+        payload.prizesSecond = input.prizesSecond;
+      }
+
+      if (input.prizesThird !== undefined && input.prizesThird !== comp.prizesThird) {
+        diff.push({
+          field: "prizesThird",
+          label: "Hadiah Juara 3",
+          oldVal: comp.prizesThird || "-",
+          newVal: input.prizesThird,
+        });
+        payload.prizesThird = input.prizesThird;
+      }
+
+      if (input.isActive !== undefined) {
+        const oldBool = comp.isActive === "1";
+        if (input.isActive !== oldBool) {
+          diff.push({
+            field: "isActive",
+            label: "Status Aktif Lomba",
+            oldVal: oldBool ? "Aktif" : "Nonaktif",
+            newVal: input.isActive ? "Aktif" : "Nonaktif",
+          });
+          payload.isActive = input.isActive;
         }
       }
 

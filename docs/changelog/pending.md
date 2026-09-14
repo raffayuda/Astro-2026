@@ -180,3 +180,8 @@
 [09:10] - [components/dashboard/AiAssistantDrawer.tsx] - [FIX] - Integrate cleanDisplayAssistantText in floating drawer message feed
 [09:10] - [src/server/modules/competitions/service.ts] - [FIX] - Add fallback defaults for filledSlots, maxSlots, origin, and type in createCompetition to guarantee safe database execution
 [09:35] - [src/server/modules/competitions/service.ts] - [FIX] - Implement idempotent upsert check in createCompetition and sanitize rulesSummary, membersRequired, batches, and prizes to prevent duplicate key and JSONB syntax errors
+[09:50] - [src/server/ai/tools.ts] - [UPDATE] - Support complete competition form fields (guidebookSections, origin, batches, customFields, rulebookUrl, membersRequired, playerPhotoRequired) in proposeCreateCompetition and proposeUpdateCompetition schemas
+[09:50] - [components/dashboard/AiActionCard.tsx] - [UPDATE] - Render visual preview and breakdown list of guidebookSections chapters inside action confirmation card
+[09:50] - [app/api/dashboard/ai/chat/route.ts] - [UPDATE] - Instruct AI Copilot on full competition form schema and mandatory parsing of uploaded guidebook documents into guidebookSections
+[09:56] - [src/server/ai/tools.ts] - [ADD] - Implement getDashboardSchemaCatalog, getSponsorsList, getCommitteeList, and getFaqsList with DASHBOARD_SCHEMA_CATALOG dictionary covering 9 operational domains and strict isolation blocking auth tables
+[09:56] - [app/api/dashboard/ai/chat/route.ts] - [UPDATE] - Add Section 9 (Schema Intelligence & Boundaries) to system prompt instructing AI on schema inspection and absolute prohibition on auth tables or secrets

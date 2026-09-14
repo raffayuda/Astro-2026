@@ -13,6 +13,7 @@ import {
   ArrowRight,
   ExternalLink,
   XCircle,
+  BookOpen,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -174,6 +175,38 @@ export function AiActionCard({ proposal }: { proposal: ActionProposalData }) {
                   ))}
                 </tbody>
               </table>
+            </div>
+          )}
+
+        {/* Content Type: GUIDEBOOK SECTIONS PREVIEW (If sections exist in proposal) */}
+        {Array.isArray(proposal.payload.guidebookSections) &&
+          (proposal.payload.guidebookSections as unknown[]).length > 0 && (
+            <div className="rounded-xl border border-sky-200 bg-sky-50/50 p-3 space-y-2">
+              <div className="flex items-center justify-between">
+                <div className="text-xs font-bold text-astro-navy flex items-center gap-1.5">
+                  <BookOpen className="size-3.5 text-astro-cyan-2" />
+                  <span>
+                    Artikel / Bagian Guidebook ({(proposal.payload.guidebookSections as unknown[]).length} Bab)
+                  </span>
+                </div>
+                <Badge variant="outline" className="text-[10px] bg-white text-astro-navy border-sky-200">
+                  Juknis Terstruktur
+                </Badge>
+              </div>
+              <div className="space-y-1.5 max-h-44 overflow-y-auto pr-1 divide-y divide-sky-100">
+                {(
+                  proposal.payload.guidebookSections as Array<{ title: string; content?: string }>
+                ).map((sec, idx) => (
+                  <div key={idx} className="pt-1.5 first:pt-0 text-[11px]">
+                    <p className="font-semibold text-astro-navy">
+                      {idx + 1}. {sec.title}
+                    </p>
+                    <p className="text-muted-foreground line-clamp-2 mt-0.5 text-[10px] leading-relaxed">
+                      {sec.content ? sec.content.slice(0, 140) : "(Konten kosong)"}
+                    </p>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
 
