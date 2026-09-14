@@ -179,3 +179,4 @@
 [09:10] - [app/dashboard/ai/page.tsx] - [FIX] - Use cleanDisplayAssistantText to strip raw JSON blocks from chat bubbles when AiActionCard is rendered
 [09:10] - [components/dashboard/AiAssistantDrawer.tsx] - [FIX] - Integrate cleanDisplayAssistantText in floating drawer message feed
 [09:10] - [src/server/modules/competitions/service.ts] - [FIX] - Add fallback defaults for filledSlots, maxSlots, origin, and type in createCompetition to guarantee safe database execution
+[09:35] - [src/server/modules/competitions/service.ts] - [FIX] - Implement idempotent upsert check in createCompetition and sanitize rulesSummary, membersRequired, batches, and prizes to prevent duplicate key and JSONB syntax errors

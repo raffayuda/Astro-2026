@@ -86,21 +86,62 @@ export async function getCompetition(id: string) {
   return row ? toApiCompetition(row) : null;
 }
 
+function safeJsonArray<T = unknown>(val: unknown): T[] {
+  if (Array.isArray(val)) return val as T[];
+  if (typeof val === "string") {
+    try {
+      const parsed = JSON.parse(val);
+      if (Array.isArray(parsed)) return parsed as T[];
+    } catch {
+      return [];
+    }
+  }
+  return [];
+}
+
 export async function createCompetition(input: CompetitionInput) {
+  const compId = input.id!;
+
+  // Normalize rules summary to clean string array
+  const rawRules = input.rulesSummary as unknown;
+  const rulesSummary = Array.isArray(rawRules)
+    ? (rawRules as string[])
+    : typeof rawRules === "string"
+    ? rawRules.split("\n").map((s) => s.trim()).filter(Boolean)
+    : [];
+
+  // Normalize membersRequired to 'optional' | 'required'
+  const rawMembersRequired = input.membersRequired as unknown;
+  const membersRequired =
+    rawMembersRequired === "required" || rawMembersRequired === "1" || rawMembersRequired === 1
+      ? "required"
+      : "optional";
+
+  // Check if competition already exists (Idempotent execution)
+  const existing = await getCompetition(compId);
+  if (existing) {
+    const updated = await updateCompetition(compId, {
+      ...input,
+      rulesSummary,
+      membersRequired,
+    });
+    if (updated) return updated;
+  }
+
   const isFree = !!input.isFree;
   const [row] = await db
     .insert(competitions)
     .values({
-      id: input.id!,
+      id: compId,
       title: input.title,
       category: input.category,
       tagline: input.tagline,
       description: input.description,
       fee: isFree ? 0 : (input.fee ?? 0),
       hasBatches: input.hasBatches ? "1" : "0",
-      batches: input.batches ?? [],
-      guidebookSections: input.guidebookSections ?? [],
-      customFields: input.customFields ?? [],
+      batches: safeJsonArray(input.batches),
+      guidebookSections: safeJsonArray(input.guidebookSections),
+      customFields: safeJsonArray(input.customFields),
       maxSlots: input.maxSlots ?? 16,
       filledSlots: input.filledSlots ?? 0,
       scheduleDate: input.scheduleDate ? new Date(input.scheduleDate) : null,
@@ -108,15 +149,15 @@ export async function createCompetition(input: CompetitionInput) {
       prizesFirst: input.prizesFirst,
       prizesSecond: input.prizesSecond,
       prizesThird: input.prizesThird,
-      prizes: input.prizes,
-      rulesSummary: input.rulesSummary,
+      prizes: safeJsonArray(input.prizes),
+      rulesSummary,
       rulebookUrl: input.rulebookUrl,
       contactName: input.contactName,
       contactWhatsapp: input.contactWhatsapp,
       type: input.type ?? "team",
       maxTeamMembers: input.maxTeamMembers ?? 5,
       minTeamMembers: input.minTeamMembers ?? 1,
-      membersRequired: input.membersRequired ?? 1,
+      membersRequired,
       playerPhotoRequired: input.playerPhotoRequired ? "1" : "0",
       isFree: isFree ? "1" : "0",
       origin: input.origin ?? "internal",
@@ -126,7 +167,7 @@ export async function createCompetition(input: CompetitionInput) {
       isActive: input.isActive ? "1" : "0",
     })
     .returning();
-  revalidateCompetitionPaths(input.id);
+  revalidateCompetitionPaths(compId);
   return toApiCompetition(row);
 }
 
@@ -150,13 +191,13 @@ export async function updateCompetition(id: string, input: Partial<CompetitionIn
     updates.hasBatches = input.hasBatches ? "1" : "0";
   }
   if (input.batches !== undefined) {
-    updates.batches = input.batches;
+    updates.batches = safeJsonArray(input.batches);
   }
   if (input.guidebookSections !== undefined) {
-    updates.guidebookSections = input.guidebookSections;
+    updates.guidebookSections = safeJsonArray(input.guidebookSections);
   }
   if (input.customFields !== undefined) {
-    updates.customFields = input.customFields;
+    updates.customFields = safeJsonArray(input.customFields);
   }
 
   if (input.maxSlots !== undefined) updates.maxSlots = input.maxSlots;
@@ -167,15 +208,30 @@ export async function updateCompetition(id: string, input: Partial<CompetitionIn
   if (input.prizesFirst !== undefined) updates.prizesFirst = input.prizesFirst;
   if (input.prizesSecond !== undefined) updates.prizesSecond = input.prizesSecond;
   if (input.prizesThird !== undefined) updates.prizesThird = input.prizesThird;
-  if (input.prizes !== undefined) updates.prizes = input.prizes;
-  if (input.rulesSummary !== undefined) updates.rulesSummary = input.rulesSummary;
+  if (input.prizes !== undefined) updates.prizes = safeJsonArray(input.prizes);
+  if (input.rulesSummary !== undefined) {
+    const rawRules = input.rulesSummary as unknown;
+    updates.rulesSummary = Array.isArray(rawRules)
+      ? (rawRules as string[])
+      : typeof rawRules === "string"
+      ? rawRules.split("\n").map((s) => s.trim()).filter(Boolean)
+      : [];
+  }
   if (input.rulebookUrl !== undefined) updates.rulebookUrl = input.rulebookUrl;
   if (input.contactName !== undefined) updates.contactName = input.contactName;
   if (input.contactWhatsapp !== undefined) updates.contactWhatsapp = input.contactWhatsapp;
   if (input.type !== undefined) updates.type = input.type;
   if (input.maxTeamMembers !== undefined) updates.maxTeamMembers = input.maxTeamMembers;
   if (input.minTeamMembers !== undefined) updates.minTeamMembers = input.minTeamMembers;
-  if (input.membersRequired !== undefined) updates.membersRequired = input.membersRequired;
+  if (input.membersRequired !== undefined) {
+    const rawMembersRequired = input.membersRequired as unknown;
+    updates.membersRequired =
+      rawMembersRequired === "required" ||
+      rawMembersRequired === "1" ||
+      rawMembersRequired === 1
+        ? "required"
+        : "optional";
+  }
   if (input.playerPhotoRequired !== undefined)
     updates.playerPhotoRequired = input.playerPhotoRequired ? "1" : "0";
   if (input.origin !== undefined) updates.origin = input.origin;
