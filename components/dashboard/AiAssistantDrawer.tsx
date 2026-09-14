@@ -29,6 +29,7 @@ import {
   getMessageText,
   getActionProposals,
   getCsvExports,
+  cleanDisplayAssistantText,
 } from "@/components/dashboard/AiChatContext";
 
 export function AiAssistantDrawer() {
@@ -187,14 +188,17 @@ export function AiAssistantDrawer() {
                     >
                       {isAssistant ? (
                         <>
-                          {text && <AiMarkdownRenderer content={text} compact />}
-                          {proposals.map((prop, idx) => (
-                            <AiActionCard key={prop.actionId || `prop-${idx}`} proposal={prop} />
-                          ))}
-                          {csvExports.map((csv, idx) => (
-                            <AiCsvExportCard key={`csv-${idx}`} exportData={csv} />
-                          ))}
-                        </>
+                        {(() => {
+                          const displayText = cleanDisplayAssistantText(text, proposals.length > 0);
+                          return displayText ? <AiMarkdownRenderer content={displayText} compact /> : null;
+                        })()}
+                        {proposals.map((prop, idx) => (
+                          <AiActionCard key={prop.actionId || `prop-${idx}`} proposal={prop} />
+                        ))}
+                        {csvExports.map((csv, idx) => (
+                          <AiCsvExportCard key={`csv-${idx}`} exportData={csv} />
+                        ))}
+                      </>
                       ) : (
                         (() => {
                           const formatted = formatUserMessageDisplay(text);

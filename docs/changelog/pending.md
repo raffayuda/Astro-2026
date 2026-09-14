@@ -174,5 +174,8 @@
 [08:50] - [app/api/dashboard/ai/chat/route.ts] - [UPDATE] - Inject uploaded_file_context into chat prompt and instruct AI on file-to-action proposal tools (proposeCreateCompetition, proposeUpdateRegistrationStatus, proposeSetWinners)
 [08:50] - [components/dashboard/AiChatContext.tsx] - [UPDATE] - Add attachedFiles state, uploadAndAttachFile, removeAttachedFile, clearAttachedFiles, and dynamic payload transport in useChat
 [08:50] - [components/dashboard/AiFileAttachmentBar.tsx] - [ADD] - Create AiFileAttachmentBar and AiUploadTriggerButton with file-type badges, compact mode, and formatUserMessageDisplay helper
-[08:50] - [app/dashboard/ai/page.tsx] - [UPDATE] - Integrate drag-and-drop overlay, file attachment bar, user message attachment badges, and Juknis GuideBook analysis quick prompt
 [08:50] - [components/dashboard/AiAssistantDrawer.tsx] - [UPDATE] - Support file attachment bar, upload button, and attachment chips in floating AI Copilot drawer
+[09:10] - [components/dashboard/AiChatContext.tsx] - [FIX] - Support AI SDK 5 part.output, tool-invocation wrappers, and raw JSON fallbacks in getActionProposals and getCsvExports so AiActionCard and 'Setujui & Terapkan' button render reliably
+[09:10] - [app/dashboard/ai/page.tsx] - [FIX] - Use cleanDisplayAssistantText to strip raw JSON blocks from chat bubbles when AiActionCard is rendered
+[09:10] - [components/dashboard/AiAssistantDrawer.tsx] - [FIX] - Integrate cleanDisplayAssistantText in floating drawer message feed
+[09:10] - [src/server/modules/competitions/service.ts] - [FIX] - Add fallback defaults for filledSlots, maxSlots, origin, and type in createCompetition to guarantee safe database execution

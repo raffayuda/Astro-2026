@@ -39,6 +39,7 @@ import {
   getMessageText,
   getActionProposals,
   getCsvExports,
+  cleanDisplayAssistantText,
 } from "@/components/dashboard/AiChatContext";
 import type { PublicAiConfig } from "@/src/server/ai/config";
 
@@ -342,7 +343,10 @@ export default function AiAssistantPage() {
                   >
                     {isAssistant ? (
                       <div className="space-y-3">
-                        {text && <AiMarkdownRenderer content={text} />}
+                        {(() => {
+                          const displayText = cleanDisplayAssistantText(text, proposals.length > 0);
+                          return displayText ? <AiMarkdownRenderer content={displayText} /> : null;
+                        })()}
                         {proposals.map((prop, idx) => (
                           <AiActionCard key={prop.actionId || `prop-${idx}`} proposal={prop} />
                         ))}
