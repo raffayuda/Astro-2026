@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useRef } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -17,7 +17,7 @@ import {
   Users,
 } from "lucide-react";
 import { toast } from "sonner";
-import { EmptyState, PageHeader, SearchField, SectionCard } from "@/components/dashboard";
+import { DataToolbar, EmptyState, PageHeader, PageShell, SectionCard } from "@/components/dashboard";
 import DeleteModal from "@/components/DeleteModal";
 import ImportCommittee, { normalizeImageUrl } from "@/components/ImportCommittee";
 import Pagination from "@/components/Pagination";
@@ -74,7 +74,7 @@ interface Division {
 
 const PAGE_SIZE = 10;
 
-/** Jabatan yang tersedia — diambil dari data panitia (Google Forms). */
+/** Jabatan yang tersedia - diambil dari data panitia (Google Forms). */
 const JABATAN_OPTIONS = ["SC", "PO", "PI", "Staff"];
 
 export default function CommitteePage() {
@@ -374,15 +374,8 @@ export default function CommitteePage() {
     });
   };
 
-  if (loading)
-    return (
-      <div className="flex justify-center py-20">
-        <Spinner className="size-6 text-primary" />
-      </div>
-    );
-
   return (
-    <div className="space-y-6">
+    <PageShell loading={loading}>
       <PageHeader
         title="Committee"
         description="Kelola anggota panitia dan divisi ASTRO 2026"
@@ -391,7 +384,6 @@ export default function CommitteePage() {
             <Button
               variant="outline"
               onClick={() => setShowImport(true)}
-              className="rounded-lg gap-2 text-xs font-bold uppercase tracking-wider"
             >
               <UploadCloud data-icon="inline-start" /> Import CSV
             </Button>
@@ -401,14 +393,12 @@ export default function CommitteePage() {
                 setReorderList([...divisions]);
                 setShowReorderModal(true);
               }}
-              className="rounded-lg gap-2 text-xs font-bold uppercase tracking-wider"
             >
               <ArrowUpDown data-icon="inline-start" /> Atur Urutan
             </Button>
             <Button
               variant="outline"
               onClick={() => setShowDivManager(true)}
-              className="rounded-lg gap-2 text-xs font-bold uppercase tracking-wider"
             >
               <Building2 data-icon="inline-start" /> Kelola Divisi
             </Button>
@@ -430,7 +420,6 @@ export default function CommitteePage() {
                 });
                 setShowAdd(true);
               }}
-              className="rounded-lg gap-2 text-xs font-bold uppercase tracking-wider"
             >
               <Plus data-icon="inline-start" /> Tambah
             </Button>
@@ -438,17 +427,14 @@ export default function CommitteePage() {
         }
       />
 
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-        <SearchField
-          className="flex-1"
-          value={search}
-          onValueChange={(value) => {
-            setSearch(value);
-            setPage(1);
-          }}
-          placeholder="Cari nama, jabatan, divisi, prodi..."
-        />
-        <div className="flex flex-wrap gap-2">
+      <DataToolbar
+        search={search}
+        onSearchChange={(value) => {
+          setSearch(value);
+          setPage(1);
+        }}
+        searchPlaceholder="Cari nama, jabatan, divisi, prodi..."
+      >
           <Select
             value={filterRole}
             onValueChange={(v) => {
@@ -504,13 +490,12 @@ export default function CommitteePage() {
                 setFilterDivision("");
                 setPage(1);
               }}
-              className="rounded-md gap-1 text-10 font-bold uppercase tracking-wider text-muted-foreground"
+              className="rounded-md gap-1 text-xs font-medium text-muted-foreground"
             >
               <X className="size-3" /> Reset
             </Button>
           )}
-        </div>
-      </div>
+      </DataToolbar>
 
       {filtered.length !== items.length && (
         <p className="text-11 text-muted-foreground">
@@ -535,7 +520,7 @@ export default function CommitteePage() {
             variant="destructive"
             size="sm"
             onClick={handleBulkDelete}
-            className="rounded-md ml-auto gap-1 text-10 font-bold uppercase tracking-wider"
+            className="rounded-md ml-auto gap-1 text-xs font-medium"
           >
             <Trash2 className="size-3.5" /> Hapus Terpilih
           </Button>
@@ -634,7 +619,7 @@ export default function CommitteePage() {
                   setDivEditingId(null);
                   setDivForm({ name: "", shortName: "", slug: "" });
                 }}
-                className="text-xs font-bold uppercase tracking-wider"
+               
               >
                 Batal
               </Button>
@@ -849,7 +834,7 @@ export default function CommitteePage() {
                           size="sm"
                           disabled={uploading}
                           onClick={() => fileInputRef.current?.click()}
-                          className="text-10 font-bold uppercase tracking-wider"
+                          className="text-xs font-medium"
                         >
                           {uploading ? (
                             <>
@@ -897,7 +882,7 @@ export default function CommitteePage() {
                               ? "Lepaskan file di sini..."
                               : "Tarik & lepas foto panitia di sini, atau klik untuk memilih"}
                         </p>
-                        <p className="text-10 text-muted-foreground mt-0.5">
+                        <p className="text-xs text-muted-foreground mt-0.5">
                           PNG, JPG, WEBP (maksimal 30 MB)
                         </p>
                       </div>
@@ -916,7 +901,7 @@ export default function CommitteePage() {
                   {form.image && (
                     <p
                       className={cn(
-                        "text-10 font-medium",
+                        "text-xs font-medium",
                         normalizeImageUrl(form.image) !== form.image ||
                           form.image.startsWith("https://lh3.googleusercontent.com/d/")
                           ? "text-emerald-600"
@@ -925,7 +910,7 @@ export default function CommitteePage() {
                     >
                       {form.image.startsWith("https://drive.google.com/") ||
                       form.image.startsWith("https://docs.google.com/")
-                        ? "✓ Link Google Drive terdeteksi — otomatis dikonversi ke gambar."
+                        ? "✓ Link Google Drive terdeteksi - otomatis dikonversi ke gambar."
                         : "Link langsung tersimpan."}
                     </p>
                   )}
@@ -937,14 +922,14 @@ export default function CommitteePage() {
             <Button
               onClick={handleSave}
               disabled={saving}
-              className="rounded-md gap-1 text-xs font-bold uppercase tracking-wider"
+              className="rounded-md gap-1 text-xs"
             >
               {saving ? <Spinner data-icon="inline-start" /> : <Check data-icon="inline-start" />}{" "}
               Simpan
             </Button>
             <Button
               variant="outline"
-              className="rounded-md gap-1 text-xs font-bold uppercase tracking-wider"
+              className="rounded-md gap-1 text-xs"
               onClick={() => {
                 setShowAdd(false);
                 setEditingId(null);
@@ -1000,28 +985,28 @@ export default function CommitteePage() {
                     />
                   </button>
                 ) : (
-                  <div className="flex size-10 items-center justify-center rounded-full bg-muted text-10 font-bold uppercase text-muted-foreground shrink-0">
+                  <div className="flex size-10 items-center justify-center rounded-full bg-muted text-xs font-medium text-muted-foreground shrink-0">
                     {item.name.charAt(0)}
                   </div>
                 )}
                 <div className="min-w-0 flex-1">
                   <span className="text-sm font-bold text-foreground truncate block">{item.name}</span>
                   <div className="mt-0.5 flex flex-wrap items-center gap-1.5 sm:gap-2">
-                    <span className="text-10 font-semibold text-muted-foreground">{item.role}</span>
+                    <span className="text-xs font-semibold text-muted-foreground">{item.role}</span>
                     {item.isLeader === "1" && (
                       <Badge
                         variant="outline"
-                        className="rounded-md border-amber-200 bg-amber-50 text-9 font-bold uppercase text-amber-700"
+                        className="rounded-md border-amber-200 bg-amber-50 text-xs font-medium text-amber-700"
                       >
                         Koordinator
                       </Badge>
                     )}
-                    <span className="text-10 text-muted-foreground/60">|</span>
-                    <span className="text-10 text-muted-foreground">
+                    <span className="text-xs text-muted-foreground/60">|</span>
+                    <span className="text-xs text-muted-foreground">
                       {item.divisionName || item.division}
                     </span>
                     {(item.studyProgram || item.batch) && (
-                      <span className="text-10 text-muted-foreground/60">
+                      <span className="text-xs text-muted-foreground/60">
                         · {[item.studyProgram, item.batch].filter(Boolean).join(" ")}
                       </span>
                     )}
@@ -1087,7 +1072,7 @@ export default function CommitteePage() {
       >
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle className="text-lg font-black uppercase tracking-tight">
+            <DialogTitle className="text-lg font-semibold tracking-tight">
               Urutkan Divisi
             </DialogTitle>
             <DialogDescription className="text-xs">
@@ -1112,7 +1097,7 @@ export default function CommitteePage() {
                   <GripVertical className="size-4 text-muted-foreground" />
                   <span className="text-sm font-bold">{div.name}</span>
                   {div.shortName && (
-                    <Badge variant="secondary" className="ml-auto text-10 uppercase">
+                    <Badge variant="secondary" className="ml-auto text-xs">
                       {div.shortName}
                     </Badge>
                   )}
@@ -1125,14 +1110,14 @@ export default function CommitteePage() {
             <Button
               variant="outline"
               onClick={() => setShowReorderModal(false)}
-              className="text-xs font-bold uppercase tracking-wider"
+             
             >
               Batal
             </Button>
             <Button
               onClick={handleReorderSave}
               disabled={divReorderMutation.isPending}
-              className="gap-2 text-xs font-bold uppercase tracking-wider"
+              className="gap-2 text-xs"
             >
               {divReorderMutation.isPending ? (
                 <Spinner data-icon="inline-start" />
@@ -1144,6 +1129,6 @@ export default function CommitteePage() {
           </div>
         </DialogContent>
       </Dialog>
-    </div>
+    </PageShell>
   );
 }

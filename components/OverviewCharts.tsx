@@ -189,7 +189,7 @@ export default function OverviewCharts({ initialData }: OverviewChartsProps) {
       {/* Analytics Section Header & Quick Tabs */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="flex items-center gap-2 text-lg font-black uppercase tracking-tight text-foreground">
+          <h2 className="flex items-center gap-2 text-lg font-semibold tracking-tight text-foreground">
             <TrendingUp className="size-5 text-astro-blue" />
             Analytics & Performa
           </h2>
@@ -250,10 +250,10 @@ export default function OverviewCharts({ initialData }: OverviewChartsProps) {
         <Card className="rounded-xl border-border bg-white shadow-soft-sm">
           <CardContent className="flex items-center justify-between p-4">
             <div className="space-y-1 min-w-0">
-              <p className="text-10 font-bold uppercase tracking-wider text-muted-foreground">
+              <p className="text-xs font-medium text-muted-foreground">
                 Tingkat Konversi
               </p>
-              <p className="text-xl font-black text-foreground">
+              <p className="text-xl font-semibold text-foreground">
                 {data.conversionRate.toFixed(1)}%
               </p>
               <p className="text-10 text-muted-foreground">
@@ -270,10 +270,10 @@ export default function OverviewCharts({ initialData }: OverviewChartsProps) {
         <Card className="rounded-xl border-border bg-white shadow-soft-sm">
           <CardContent className="flex items-center justify-between p-4">
             <div className="space-y-1 min-w-0">
-              <p className="text-10 font-bold uppercase tracking-wider text-muted-foreground">
+              <p className="text-xs font-medium text-muted-foreground">
                 Potensi Tertunda
               </p>
-              <p className="text-xl font-black text-amber-600 truncate">
+              <p className="text-xl font-semibold text-amber-600 truncate">
                 Rp {data.potentialRevenue.toLocaleString("id-ID")}
               </p>
               <p className="text-10 text-muted-foreground">
@@ -290,10 +290,10 @@ export default function OverviewCharts({ initialData }: OverviewChartsProps) {
         <Card className="rounded-xl border-border bg-white shadow-soft-sm">
           <CardContent className="flex items-center justify-between p-4">
             <div className="space-y-1 min-w-0">
-              <p className="text-10 font-bold uppercase tracking-wider text-muted-foreground">
+              <p className="text-xs font-medium text-muted-foreground">
                 Rata-Rata Transaksi
               </p>
-              <p className="text-xl font-black text-foreground truncate">
+              <p className="text-xl font-semibold text-foreground truncate">
                 Rp {data.arpu.toLocaleString("id-ID")}
               </p>
               <p className="text-10 text-muted-foreground">Nilai per pendaftaran lunas</p>
@@ -308,10 +308,10 @@ export default function OverviewCharts({ initialData }: OverviewChartsProps) {
         <Card className="rounded-xl border-border bg-white shadow-soft-sm">
           <CardContent className="flex items-center justify-between p-4">
             <div className="space-y-1 min-w-0">
-              <p className="text-10 font-bold uppercase tracking-wider text-muted-foreground">
+              <p className="text-xs font-medium text-muted-foreground">
                 Tipe Pendaftar
               </p>
-              <p className="text-xl font-black text-foreground truncate">
+              <p className="text-xl font-semibold text-foreground truncate">
                 {data.teamCount} <span className="text-xs font-normal text-muted-foreground">Tim</span>{" "}
                 / {data.individualCount}{" "}
                 <span className="text-xs font-normal text-muted-foreground">Individu</span>
@@ -338,7 +338,7 @@ export default function OverviewCharts({ initialData }: OverviewChartsProps) {
             <CardHeader className="border-b border-border pb-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle className="text-sm font-black uppercase tracking-tight flex items-center gap-2">
+                  <CardTitle className="text-sm font-semibold tracking-tight flex items-center gap-2">
                     <Calendar className="size-4 text-astro-blue" />
                     Tren Pendaftaran Harian
                   </CardTitle>
@@ -437,7 +437,7 @@ export default function OverviewCharts({ initialData }: OverviewChartsProps) {
             )}
           >
             <CardHeader className="border-b border-border pb-4">
-              <CardTitle className="text-sm font-black uppercase tracking-tight flex items-center gap-2">
+              <CardTitle className="text-sm font-semibold tracking-tight flex items-center gap-2">
                 <PieIcon className="size-4 text-emerald-600" />
                 Status Pembayaran
               </CardTitle>
@@ -479,10 +479,10 @@ export default function OverviewCharts({ initialData }: OverviewChartsProps) {
                     </ResponsiveContainer>
                     {/* Centered Total Count */}
                     <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center">
-                      <span className="text-2xl font-black text-foreground">
+                      <span className="text-2xl font-semibold text-foreground">
                         {data.totalRegistrations}
                       </span>
-                      <span className="text-10 font-bold uppercase tracking-wider text-muted-foreground">
+                      <span className="text-xs font-medium text-muted-foreground">
                         Total
                       </span>
                     </div>
@@ -534,7 +534,7 @@ export default function OverviewCharts({ initialData }: OverviewChartsProps) {
             <CardHeader className="border-b border-border pb-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle className="text-sm font-black uppercase tracking-tight flex items-center gap-2">
+                  <CardTitle className="text-sm font-semibold tracking-tight flex items-center gap-2">
                     <BarChart3 className="size-4 text-astro-blue" />
                     Performa Pendaftar Per Lomba
                   </CardTitle>
@@ -614,7 +614,7 @@ export default function OverviewCharts({ initialData }: OverviewChartsProps) {
             )}
           >
             <CardHeader className="border-b border-border pb-4">
-              <CardTitle className="text-sm font-black uppercase tracking-tight flex items-center gap-2">
+              <CardTitle className="text-sm font-semibold tracking-tight flex items-center gap-2">
                 <Trophy className="size-4 text-amber-500" />
                 Distribusi Kategori
               </CardTitle>
@@ -655,7 +655,7 @@ export default function OverviewCharts({ initialData }: OverviewChartsProps) {
                             />
                             {label}
                           </span>
-                          <span className="font-black text-foreground">
+                          <span className="font-semibold text-foreground">
                             {cat.count} ({cat.percentage}%)
                           </span>
                         </div>
@@ -688,7 +688,7 @@ export default function OverviewCharts({ initialData }: OverviewChartsProps) {
           <CardHeader className="border-b border-border pb-4">
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle className="text-sm font-black uppercase tracking-tight flex items-center gap-2">
+                <CardTitle className="text-sm font-semibold tracking-tight flex items-center gap-2">
                   <Clock className="size-4 text-astro-blue" />
                   Pendaftaran Terkini
                 </CardTitle>
@@ -729,7 +729,7 @@ export default function OverviewCharts({ initialData }: OverviewChartsProps) {
                         <p className="truncate text-sm font-bold text-foreground">{name}</p>
                         <Badge
                           variant="outline"
-                          className="text-10 font-bold uppercase tracking-wider py-0 px-1.5"
+                          className="text-xs font-medium py-0 px-1.5"
                         >
                           {reg.type === "team" ? "Tim" : "Individu"}
                         </Badge>
@@ -741,7 +741,7 @@ export default function OverviewCharts({ initialData }: OverviewChartsProps) {
 
                     <div className="flex items-center gap-4 shrink-0 text-right">
                       <div className="hidden sm:block">
-                        <p className="text-xs font-black text-foreground">
+                        <p className="text-xs font-semibold text-foreground">
                           Rp {reg.paymentAmount.toLocaleString("id-ID")}
                         </p>
                         <p className="text-10 text-muted-foreground">{formattedDate}</p>

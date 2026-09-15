@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -19,7 +19,7 @@ import {
   Users,
 } from "lucide-react";
 import { toast } from "sonner";
-import { EmptyState, PageHeader, SearchField } from "@/components/dashboard";
+import { DataToolbar, EmptyState, PageHeader, PageShell } from "@/components/dashboard";
 import Pagination from "@/components/Pagination";
 import { ResponsiveAlertDialog } from "@/components/responsive-alert-dialog";
 import { ResponsiveModal } from "@/components/responsive-modal";
@@ -93,7 +93,7 @@ function UserDetailModal({ user, onClose }: { user: User | null; onClose: () => 
       onOpenChange={(open) => !open && onClose()}
       title="Detail User & Pendaftaran"
       description={`Informasi akun dan riwayat pendaftaran ${user.name || user.email}`}
-      titleClassName="text-sm font-black uppercase tracking-tight text-foreground"
+      titleClassName="text-sm font-semibold tracking-tight text-foreground"
       contentClassName="max-w-2xl"
     >
       <div className="space-y-5">
@@ -105,7 +105,7 @@ function UserDetailModal({ user, onClose }: { user: User | null; onClose: () => 
                 {(user.name || user.email).charAt(0).toUpperCase()}
               </div>
               <div>
-                <h3 className="text-base font-bold text-foreground">{user.name || "—"}</h3>
+                <h3 className="text-base font-bold text-foreground">{user.name || "-"}</h3>
                 <div className="flex items-center gap-2 text-xs text-muted-foreground">
                   <Mail className="size-3.5" />
                   <span>{user.email}</span>
@@ -117,7 +117,7 @@ function UserDetailModal({ user, onClose }: { user: User | null; onClose: () => 
               <Badge
                 variant="outline"
                 className={cn(
-                  "rounded-md border text-10 font-bold uppercase tracking-wider",
+                  "rounded-md border text-xs font-medium",
                   user.role === "admin"
                     ? "border-astro-cyan-2 bg-sky-bottom text-astro-cyan"
                     : "border-astro-cyan-2 bg-muted text-muted-foreground",
@@ -129,7 +129,7 @@ function UserDetailModal({ user, onClose }: { user: User | null; onClose: () => 
               <Badge
                 variant="outline"
                 className={cn(
-                  "rounded-md border text-10 font-bold uppercase tracking-wider",
+                  "rounded-md border text-xs font-medium",
                   user.emailVerified
                     ? "border-emerald-200 bg-emerald-50 text-emerald-700"
                     : "border-amber-200 bg-amber-50 text-amber-700",
@@ -146,7 +146,7 @@ function UserDetailModal({ user, onClose }: { user: User | null; onClose: () => 
                         month: "short",
                         year: "numeric",
                       })
-                    : "—"}
+                    : "-"}
                 </span>
               </div>
             </div>
@@ -157,7 +157,7 @@ function UserDetailModal({ user, onClose }: { user: User | null; onClose: () => 
         <div className="flex items-center justify-between border-b border-border pb-2">
           <div className="flex items-center gap-2">
             <Trophy className="size-4 text-primary" />
-            <h4 className="text-xs font-black uppercase tracking-wider text-foreground">
+            <h4 className="text-xs font-medium text-foreground">
               Pendaftaran Lomba / Event ({registrations.length})
             </h4>
           </div>
@@ -189,7 +189,7 @@ function UserDetailModal({ user, onClose }: { user: User | null; onClose: () => 
                   <div className="space-y-2">
                     <div className="flex items-start justify-between gap-2">
                       <div>
-                        <span className="font-mono text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                        <span className="font-mono text-xs text-muted-foreground">
                           ID: #{reg.id}
                         </span>
                         <h5 className="text-sm font-bold text-foreground">
@@ -200,7 +200,7 @@ function UserDetailModal({ user, onClose }: { user: User | null; onClose: () => 
                       <Badge
                         variant="outline"
                         className={cn(
-                          "rounded-md border text-9 font-bold uppercase tracking-wider",
+                          "rounded-md border text-xs font-medium",
                           isPaid && "border-emerald-200 bg-emerald-50 text-emerald-700",
                           isPending && "border-amber-200 bg-amber-50 text-amber-700",
                           isFailed && "border-red-200 bg-red-50 text-red-700",
@@ -212,7 +212,7 @@ function UserDetailModal({ user, onClose }: { user: User | null; onClose: () => 
 
                     <div className="grid grid-cols-1 gap-2 pt-1 border-t border-border/50 text-xs sm:grid-cols-2">
                       <div>
-                        <span className="block text-10 font-bold uppercase text-muted-foreground">
+                        <span className="block text-xs font-medium text-muted-foreground">
                           {reg.teamName ? "Tim" : "Peserta"}
                         </span>
                         <span className="font-semibold text-foreground">
@@ -223,14 +223,14 @@ function UserDetailModal({ user, onClose }: { user: User | null; onClose: () => 
                       </div>
 
                       <div>
-                        <span className="block text-10 font-bold uppercase text-muted-foreground">
+                        <span className="block text-xs font-medium text-muted-foreground">
                           Institusi / Sekolah
                         </span>
-                        <span className="text-foreground">{reg.institution || "—"}</span>
+                        <span className="text-foreground">{reg.institution || "-"}</span>
                       </div>
 
                       <div>
-                        <span className="block text-10 font-bold uppercase text-muted-foreground">
+                        <span className="block text-xs font-medium text-muted-foreground">
                           Nominal & Referensi
                         </span>
                         <span className="font-mono text-foreground">
@@ -242,7 +242,7 @@ function UserDetailModal({ user, onClose }: { user: User | null; onClose: () => 
                       </div>
 
                       <div>
-                        <span className="block text-10 font-bold uppercase text-muted-foreground">
+                        <span className="block text-xs font-medium text-muted-foreground">
                           Tanggal Didaftarkan
                         </span>
                         <span className="text-muted-foreground">
@@ -254,7 +254,7 @@ function UserDetailModal({ user, onClose }: { user: User | null; onClose: () => 
                                 hour: "2-digit",
                                 minute: "2-digit",
                               })
-                            : "—"}
+                            : "-"}
                         </span>
                       </div>
                     </div>
@@ -472,17 +472,10 @@ export default function UsersPage() {
   };
 
   const loading = loadingUsers || loadingInvitations;
-
-  if (loading && users.length === 0 && invitations.length === 0) {
-    return (
-      <div className="flex items-center justify-center py-20">
-        <Spinner className="size-6 text-primary" />
-      </div>
-    );
-  }
+  const initialLoading = loading && users.length === 0 && invitations.length === 0;
 
   return (
-    <div className="space-y-6">
+    <PageShell loading={initialLoading}>
       <PageHeader
         title="User & Akses"
         description="Kelola akun terdaftar dan buat tautan undangan untuk admin / panitia baru."
@@ -500,13 +493,13 @@ export default function UsersPage() {
                 });
                 setInviteModalOpen(true);
               }}
-              className="rounded-lg text-xs font-bold uppercase tracking-wider"
+             
             >
               <UserPlus data-icon="inline-start" /> Undang User
             </Button>
             <Button
               onClick={() => setModal({ mode: "create" })}
-              className="rounded-lg text-xs font-bold uppercase tracking-wider"
+             
             >
               <Plus data-icon="inline-start" /> Tambah Manual
             </Button>
@@ -535,14 +528,13 @@ export default function UsersPage() {
       {/* ─── TAB 1: USERS ─── */}
       {tab === "users" && (
         <div className="space-y-4">
-          <SearchField
-            className="max-w-xs"
-            value={search}
-            onValueChange={(value) => {
+          <DataToolbar
+            search={search}
+            onSearchChange={(value) => {
               setSearch(value);
               setPage(1);
             }}
-            placeholder="Cari nama atau email..."
+            searchPlaceholder="Cari nama atau email..."
           />
 
           {/* User Items List */}
@@ -566,11 +558,11 @@ export default function UsersPage() {
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="text-sm font-bold text-foreground">{u.name || "—"}</span>
+                          <span className="text-sm font-bold text-foreground">{u.name || "-"}</span>
                           <Badge
                             variant="outline"
                             className={cn(
-                              "rounded-md border text-9 font-bold uppercase tracking-wider",
+                              "rounded-md border text-xs font-medium",
                               u.role === "admin"
                                 ? "border-astro-cyan-2 bg-sky-bottom text-astro-cyan"
                                 : "border-astro-cyan-2 bg-muted text-muted-foreground",
@@ -581,7 +573,7 @@ export default function UsersPage() {
                           <Badge
                             variant="outline"
                             className={cn(
-                              "rounded-md border text-9 font-bold uppercase tracking-wider",
+                              "rounded-md border text-xs font-medium",
                               u.emailVerified
                                 ? "border-emerald-200 bg-emerald-50 text-emerald-700"
                                 : "border-amber-200 bg-amber-50 text-amber-700",
@@ -602,7 +594,7 @@ export default function UsersPage() {
                               month: "short",
                               year: "numeric",
                             })
-                          : "—"}
+                          : "-"}
                       </span>
                       <div className="flex items-center gap-1">
                         <Button
@@ -654,14 +646,13 @@ export default function UsersPage() {
       {/* ─── TAB 2: INVITATIONS ─── */}
       {tab === "invitations" && (
         <div className="space-y-4">
-          <SearchField
-            className="max-w-xs"
-            value={inviteSearch}
-            onValueChange={(value) => {
+          <DataToolbar
+            search={inviteSearch}
+            onSearchChange={(value) => {
               setInviteSearch(value);
               setInvitePage(1);
             }}
-            placeholder="Cari email atau token..."
+            searchPlaceholder="Cari email atau token..."
           />
 
           {/* Invitation Items List */}
@@ -701,7 +692,7 @@ export default function UsersPage() {
                             <Badge
                               variant="outline"
                               className={cn(
-                                "rounded-md border text-9 font-bold uppercase tracking-wider",
+                                "rounded-md border text-xs font-medium",
                                 inv.role === "admin"
                                   ? "border-astro-cyan-2 bg-sky-bottom text-astro-cyan"
                                   : "border-astro-cyan-2 bg-muted text-muted-foreground",
@@ -712,7 +703,7 @@ export default function UsersPage() {
                             <Badge
                               variant="outline"
                               className={cn(
-                                "rounded-md border text-9 font-bold uppercase tracking-wider",
+                                "rounded-md border text-xs font-medium",
                                 isPending && "border-amber-200 bg-amber-50 text-amber-700",
                                 isAccepted && "border-emerald-200 bg-emerald-50 text-emerald-700",
                                 isExpired && "border-astro-cyan-2 bg-surface text-ink",
@@ -812,7 +803,7 @@ export default function UsersPage() {
             ? "Buat akun user secara manual (langsung terverifikasi tanpa OTP)."
             : `Edit akun ${modal?.user?.email}`
         }
-        titleClassName="text-sm font-black uppercase tracking-tight"
+        titleClassName="text-sm font-semibold tracking-tight"
         contentClassName="max-w-md"
       >
         <form
@@ -922,7 +913,7 @@ export default function UsersPage() {
         }}
         title="Buat Tautan Undangan User"
         description="Hasilkan tautan khusus bagi calon admin / panitia atau peserta untuk mendaftar dan menentukan password mandiri."
-        titleClassName="text-sm font-black uppercase tracking-tight"
+        titleClassName="text-sm font-semibold tracking-tight"
         contentClassName="max-w-md"
       >
         {createdInviteLink ? (
@@ -940,7 +931,7 @@ export default function UsersPage() {
             </div>
 
             <Field>
-              <FieldLabel className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+              <FieldLabel className="text-xs text-muted-foreground">
                 Tautan Pendaftaran
               </FieldLabel>
               <InputGroup className="rounded-lg">
@@ -1122,6 +1113,6 @@ export default function UsersPage() {
         loading={revoking}
         onConfirm={handleRevokeInvite}
       />
-    </div>
+    </PageShell>
   );
 }

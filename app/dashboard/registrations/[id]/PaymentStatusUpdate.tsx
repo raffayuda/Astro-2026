@@ -45,9 +45,7 @@ export default function PaymentStatusUpdate({ registrationId, currentStatus }: P
 
   return (
     <div className="space-y-3 border-t border-border pt-3">
-      <span className="text-10 font-bold uppercase tracking-wider text-muted-foreground">
-        Update Status Pembayaran
-      </span>
+      <p className="text-xs font-medium text-muted-foreground">Update status pembayaran</p>
       <Select value={status} onValueChange={setStatus}>
         <SelectTrigger className="rounded-md h-10 w-full bg-background">
           <SelectValue />
@@ -65,7 +63,7 @@ export default function PaymentStatusUpdate({ registrationId, currentStatus }: P
       <Button
         onClick={handleUpdate}
         disabled={loading || status === currentStatus}
-        className="rounded-md w-full text-xs font-bold uppercase tracking-wider"
+        className="w-full"
       >
         {loading ? (
           <Spinner data-icon="inline-start" />

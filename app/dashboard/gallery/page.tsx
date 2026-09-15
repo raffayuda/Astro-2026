@@ -1,11 +1,11 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import { Plus, Pencil, Check, Trash2, Tag, X, Image as ImageIcon } from "lucide-react";
 import { toast } from "sonner";
-import { EmptyState, ImageUploadField, PageHeader, SectionCard } from "@/components/dashboard";
+import { EmptyState, ImageUploadField, PageHeader, PageShell, SectionCard } from "@/components/dashboard";
 import DeleteModal from "@/components/DeleteModal";
 import Pagination from "@/components/Pagination";
 import { Badge } from "@/components/ui/badge";
@@ -210,15 +210,8 @@ export default function GalleryPage() {
 
   const paginated = items.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
-  if (loading)
-    return (
-      <div className="flex justify-center py-20">
-        <Spinner className="size-6 text-primary" />
-      </div>
-    );
-
   return (
-    <div className="space-y-6">
+    <PageShell loading={loading}>
       <PageHeader
         title="Galeri Foto"
         description={`${items.length} foto`}
@@ -230,7 +223,7 @@ export default function GalleryPage() {
                 setShowCatManager(!showCatManager);
                 setShowAdd(false);
               }}
-              className="rounded-lg text-xs font-bold uppercase tracking-wider"
+             
             >
               <Tag data-icon="inline-start" /> Kelola Kategori
             </Button>
@@ -248,7 +241,7 @@ export default function GalleryPage() {
                   sortOrder: 0,
                 });
               }}
-              className="rounded-lg text-xs font-bold uppercase tracking-wider"
+             
             >
               <Plus data-icon="inline-start" /> Tambah Foto
             </Button>
@@ -314,7 +307,7 @@ export default function GalleryPage() {
                   setCatEditingId(null);
                   setCatForm({ name: "", slug: "" });
                 }}
-                className="text-xs font-bold uppercase tracking-wider"
+               
               >
                 Batal
               </Button>
@@ -328,7 +321,7 @@ export default function GalleryPage() {
                 className="gap-2 border border-border px-3 py-1.5 text-xs font-bold"
               >
                 <span>{cat.name}</span>
-                <span className="text-10 text-muted-foreground">({cat.slug})</span>
+                <span className="text-xs text-muted-foreground">({cat.slug})</span>
                 <Button
                   variant="ghost"
                   size="icon-xs"
@@ -413,14 +406,14 @@ export default function GalleryPage() {
             <Button
               onClick={handleSave}
               disabled={saving}
-              className="rounded-md gap-1 text-xs font-bold uppercase tracking-wider"
+              className="rounded-md gap-1 text-xs"
             >
               {saving ? <Spinner data-icon="inline-start" /> : <Check data-icon="inline-start" />}{" "}
               Simpan
             </Button>
             <Button
               variant="outline"
-              className="rounded-md gap-1 text-xs font-bold uppercase tracking-wider"
+              className="rounded-md gap-1 text-xs"
               onClick={() => {
                 setShowAdd(false);
                 setEditingId(null);
@@ -467,11 +460,11 @@ export default function GalleryPage() {
                 <div>
                   <span className="text-sm font-bold text-foreground">{item.title}</span>
                   <div className="mt-0.5 flex gap-2">
-                    <span className="text-10 font-semibold uppercase text-muted-foreground">
+                    <span className="text-xs text-muted-foreground text-muted-foreground">
                       {item.category}
                     </span>
-                    <span className="text-10 text-muted-foreground/60">|</span>
-                    <span className="text-10 text-muted-foreground">{item.year}</span>
+                    <span className="text-xs text-muted-foreground/60">|</span>
+                    <span className="text-xs text-muted-foreground">{item.year}</span>
                   </div>
                 </div>
               </div>
@@ -521,6 +514,6 @@ export default function GalleryPage() {
         loading={false}
       />
       <ImagePreviewModal url={previewImage} onClose={() => setPreviewImage(null)} />
-    </div>
+    </PageShell>
   );
 }

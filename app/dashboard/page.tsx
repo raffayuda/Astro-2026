@@ -11,7 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { PageHeader, SectionCard, StatTile } from "@/components/dashboard";
+import { PageHeader, PageShell, SectionCard, StatTile } from "@/components/dashboard";
 import OverviewCharts, { type OverviewAnalyticsData } from "@/components/OverviewCharts";
 
 const CATEGORY_BADGES: Record<string, { label: string; className: string }> = {
@@ -216,14 +216,13 @@ export default async function DashboardOverview() {
   ];
 
   return (
-    <div className="flex flex-col gap-8">
+    <PageShell className="space-y-6">
       <PageHeader
-        title="Overview & Analytics"
-        description="Ringkasan metrik analitik pendaftaran, transaksi, dan performa kompetisi ASTRO 2026."
+        title="Overview"
+        description="Ringkasan pendaftaran, pembayaran, dan performa kompetisi ASTRO 2026."
       />
 
-      {/* Primary KPI Stats Grid */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {stats.map((stat) => (
           <StatTile
             key={stat.label}
@@ -235,88 +234,82 @@ export default async function DashboardOverview() {
         ))}
       </div>
 
-      {/* Comprehensive Analytics Dashboard (Trends, Charts, Category, Insights) */}
       <OverviewCharts initialData={analyticsData} />
 
-      {/* Per Competition Performance Table */}
       <SectionCard
-        title="Rincian Performa Per Lomba"
-        description="Data pendaftar, konversi pembayaran, dan revenue per cabang kompetisi."
+        title="Performa Per Lomba"
+        description="Pendaftar, konversi pembayaran, dan revenue per kompetisi."
         bodyClassName="px-0"
       >
-        <Table>
-          <TableHeader>
-            <TableRow className="bg-muted/50 text-10 font-bold uppercase tracking-wider text-muted-foreground">
-              <TableHead className="px-5">Lomba</TableHead>
-              <TableHead className="px-5">Kategori</TableHead>
-              <TableHead className="px-5 text-right">Total Pendaftar</TableHead>
-              <TableHead className="px-5 text-right">Terverifikasi</TableHead>
-              <TableHead className="px-5 text-right">Menunggu</TableHead>
-              <TableHead className="px-5 text-right">Revenue</TableHead>
-              <TableHead className="px-5 text-right">Konversi</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody className="divide-y divide-border">
-            {perCompetition.length === 0 ? (
+        <div className="overflow-x-auto">
+          <Table>
+            <TableHeader>
               <TableRow>
-                <TableCell
-                  colSpan={7}
-                  className="px-5 py-8 text-center text-sm text-muted-foreground"
-                >
-                  Belum ada data kompetisi.
-                </TableCell>
+                <TableHead className="px-4">Lomba</TableHead>
+                <TableHead className="px-4">Kategori</TableHead>
+                <TableHead className="px-4 text-right">Total</TableHead>
+                <TableHead className="px-4 text-right">Lunas</TableHead>
+                <TableHead className="px-4 text-right">Menunggu</TableHead>
+                <TableHead className="px-4 text-right">Revenue</TableHead>
+                <TableHead className="px-4 text-right">Konversi</TableHead>
               </TableRow>
-            ) : (
-              perCompetition.map((row) => {
-                const catCfg = CATEGORY_BADGES[row.category] || {
-                  label: row.category,
-                  className: "border-border bg-muted text-foreground",
-                };
-                const compConv =
-                  row.totalCount > 0
-                    ? Math.round((row.paidCount / row.totalCount) * 100)
-                    : 0;
+            </TableHeader>
+            <TableBody>
+              {perCompetition.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={7} className="px-4 py-8 text-center text-sm text-muted-foreground">
+                    Belum ada data kompetisi.
+                  </TableCell>
+                </TableRow>
+              ) : (
+                perCompetition.map((row) => {
+                  const catCfg = CATEGORY_BADGES[row.category] || {
+                    label: row.category,
+                    className: "border-border bg-muted text-foreground",
+                  };
+                  const compConv =
+                    row.totalCount > 0
+                      ? Math.round((row.paidCount / row.totalCount) * 100)
+                      : 0;
 
-                return (
-                  <TableRow key={row.id} className="hover:bg-muted/40 transition-colors">
-                    <TableCell className="px-5 font-bold text-foreground">
-                      {row.name}
-                    </TableCell>
-                    <TableCell className="px-5">
-                      <span
-                        className={`inline-flex rounded-md border px-2 py-0.5 text-10 font-bold uppercase tracking-wider ${catCfg.className}`}
-                      >
-                        {catCfg.label}
-                      </span>
-                    </TableCell>
-                    <TableCell className="px-5 text-right font-black text-foreground">
-                      {row.totalCount}
-                    </TableCell>
-                    <TableCell className="px-5 text-right font-bold text-emerald-600">
-                      {row.paidCount}
-                    </TableCell>
-                    <TableCell className="px-5 text-right font-medium text-amber-600">
-                      {row.pendingCount}
-                    </TableCell>
-                    <TableCell className="px-5 text-right font-black text-foreground">
-                      Rp {row.revenue.toLocaleString("id-ID")}
-                    </TableCell>
-                    <TableCell className="px-5 text-right">
-                      <Badge
-                        variant={compConv >= 50 ? "default" : "outline"}
-                        className="text-10 font-bold"
-                      >
-                        {compConv}%
-                      </Badge>
-                    </TableCell>
-                  </TableRow>
-                );
-              })
-            )}
-          </TableBody>
-        </Table>
+                  return (
+                    <TableRow key={row.id}>
+                      <TableCell className="px-4 font-medium">{row.name}</TableCell>
+                      <TableCell className="px-4">
+                        <Badge
+                          variant="outline"
+                          className={`normal-case tracking-normal font-medium shadow-none ${catCfg.className}`}
+                        >
+                          {catCfg.label}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="px-4 text-right tabular-nums">{row.totalCount}</TableCell>
+                      <TableCell className="px-4 text-right tabular-nums text-emerald-600">
+                        {row.paidCount}
+                      </TableCell>
+                      <TableCell className="px-4 text-right tabular-nums text-amber-600">
+                        {row.pendingCount}
+                      </TableCell>
+                      <TableCell className="px-4 text-right tabular-nums font-medium">
+                        Rp {row.revenue.toLocaleString("id-ID")}
+                      </TableCell>
+                      <TableCell className="px-4 text-right">
+                        <Badge
+                          variant="outline"
+                          className="normal-case tracking-normal font-medium shadow-none tabular-nums"
+                        >
+                          {compConv}%
+                        </Badge>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
+              )}
+            </TableBody>
+          </Table>
+        </div>
       </SectionCard>
-    </div>
+    </PageShell>
   );
 }
 

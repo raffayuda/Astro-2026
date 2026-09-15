@@ -5,10 +5,10 @@ import { Download, FileSpreadsheet } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Field, FieldLabel } from "@/components/ui/field";
+import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Spinner } from "@/components/ui/spinner";
-import { PageHeader, SectionCard } from "@/components/dashboard";
-import { cn } from "@/lib/utils";
+import { PageHeader, PageShell, SectionCard } from "@/components/dashboard";
 import { ky } from "@/src/lib/eden";
 
 export default function ExportPage() {
@@ -37,44 +37,43 @@ export default function ExportPage() {
   };
 
   return (
-    <div className="max-w-2xl space-y-6">
-      <PageHeader title="Export Data" description="Download data pendaftaran dalam format CSV." />
+    <PageShell narrow>
+      <PageHeader
+        title="Export Data"
+        description="Download data pendaftaran dalam format CSV."
+      />
 
       <SectionCard
-        icon={<FileSpreadsheet className="size-4 text-primary" />}
+        icon={<FileSpreadsheet className="size-4 text-muted-foreground" />}
         title="Export Pendaftaran"
-        description="Semua data pendaftaran termasuk status pembayaran akan diexport."
-        bodyClassName="space-y-6 pt-2"
+        description="Semua data termasuk status pembayaran akan diexport."
+        bodyClassName="space-y-6"
       >
         <Field>
-          <FieldLabel className="text-10 font-bold uppercase tracking-[0.15em] text-muted-foreground">
-            Format File
-          </FieldLabel>
-          <RadioGroup value={format} onValueChange={setFormat} className="flex gap-3">
-            <label
-              className={cn(
-                "flex cursor-pointer items-center gap-2 rounded-lg border px-4 py-3 transition-colors",
-                format === "csv"
-                  ? "border-primary bg-primary/10"
-                  : "border-border hover:border-primary/50",
-              )}
+          <FieldLabel>Format File</FieldLabel>
+          <RadioGroup
+            value={format}
+            onValueChange={setFormat}
+            className="mt-2 grid gap-2 sm:grid-cols-2"
+          >
+            <Label
+              htmlFor="format-csv"
+              className="flex cursor-pointer items-center gap-3 rounded-lg border border-border bg-background px-4 py-3 has-[[data-state=checked]]:border-primary has-[[data-state=checked]]:bg-primary/5"
             >
-              <RadioGroupItem value="csv" />
-              <span className="text-sm font-medium text-foreground">CSV</span>
-            </label>
-            <label className="flex items-center gap-2 rounded-lg border border-border px-4 py-3 opacity-50">
-              <RadioGroupItem value="xlsx" disabled />
-              <span className="text-sm font-medium text-muted-foreground">XLSX (coming soon)</span>
-            </label>
+              <RadioGroupItem value="csv" id="format-csv" />
+              <span className="text-sm font-medium">CSV</span>
+            </Label>
+            <Label
+              htmlFor="format-xlsx"
+              className="flex cursor-not-allowed items-center gap-3 rounded-lg border border-border px-4 py-3 opacity-50"
+            >
+              <RadioGroupItem value="xlsx" id="format-xlsx" disabled />
+              <span className="text-sm font-medium text-muted-foreground">XLSX (segera)</span>
+            </Label>
           </RadioGroup>
         </Field>
 
-        <Button
-          onClick={handleExport}
-          disabled={loading}
-          size="lg"
-          className="rounded-lg text-sm font-black uppercase tracking-wider active:scale-[0.98]"
-        >
+        <Button onClick={handleExport} disabled={loading} className="w-full sm:w-auto">
           {loading ? (
             <>
               <Spinner data-icon="inline-start" /> Mengexport...
@@ -86,6 +85,6 @@ export default function ExportPage() {
           )}
         </Button>
       </SectionCard>
-    </div>
+    </PageShell>
   );
 }

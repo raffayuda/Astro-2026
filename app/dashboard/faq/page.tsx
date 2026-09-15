@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Plus, Pencil, Trash2, Check, X, ChevronUp, ChevronDown, HelpCircle } from "lucide-react";
-import { EmptyState, PageHeader, SectionCard } from "@/components/dashboard";
+import { EmptyState, FormActions, PageHeader, PageShell, SectionCard } from "@/components/dashboard";
 import DeleteModal from "@/components/DeleteModal";
 import Pagination from "@/components/Pagination";
 import { Button } from "@/components/ui/button";
@@ -105,7 +105,8 @@ export default function FAQPage() {
     });
   };
 
-  const handleAdd = async () => {
+  const handleAdd = async (e: React.FormEvent) => {
+    e.preventDefault();
     if (!addForm.question || !addForm.answer) return;
     setSaving(true);
     try {
@@ -125,7 +126,6 @@ export default function FAQPage() {
     const currentOrder = faqs[idx].sortOrder;
     const swapOrder = faqs[swapIdx].sortOrder;
 
-    // Swap sort orders
     await Promise.all([
       saveMutation.mutateAsync({ id: faqs[idx].id, body: { ...faqs[idx], sortOrder: swapOrder } }),
       saveMutation.mutateAsync({
@@ -137,175 +137,140 @@ export default function FAQPage() {
     invalidate();
   };
 
-  if (loading) {
-    return (
-      <div className="flex justify-center py-20">
-        <Spinner className="size-6 text-primary" />
-      </div>
-    );
-  }
-
   const faqPaginated = faqs.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   return (
-    <div className="space-y-6">
+    <PageShell loading={loading}>
       <PageHeader
         title="FAQ"
         description={`${faqs.length} pertanyaan`}
         actions={
-          <Button
-            onClick={() => setShowAdd(!showAdd)}
-            className="rounded-lg text-xs font-bold uppercase tracking-wider"
-          >
+          <Button onClick={() => setShowAdd(!showAdd)}>
             <Plus data-icon="inline-start" /> Tambah FAQ
           </Button>
         }
       />
 
-      {showAdd && (
-        <SectionCard title="Tambah FAQ Baru">
-          <FieldGroup className="gap-3">
-            <Field>
-              <FieldLabel htmlFor="faq-question" required>
-                Pertanyaan
-              </FieldLabel>
-              <Input
-                id="faq-question"
-                value={addForm.question}
-                onChange={(e) => setAddForm({ ...addForm, question: e.target.value })}
-              />
-            </Field>
-            <Field>
-              <FieldLabel htmlFor="faq-answer" required>
-                Jawaban
-              </FieldLabel>
-              <Textarea
-                id="faq-answer"
-                value={addForm.answer}
-                onChange={(e) => setAddForm({ ...addForm, answer: e.target.value })}
-                rows={4}
-              />
-            </Field>
-            <div className="flex gap-2">
-              <Button
-                onClick={handleAdd}
-                disabled={saving}
-                className="rounded-md text-xs font-bold uppercase tracking-wider"
-              >
-                {saving ? <Spinner data-icon="inline-start" /> : null}
-                {saving ? "Menyimpan..." : "Simpan"}
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => setShowAdd(false)}
-                className="rounded-md text-xs font-bold uppercase tracking-wider"
-              >
-                Batal
-              </Button>
-            </div>
-          </FieldGroup>
+      {showAdd ? (
+        <SectionCard title="Tambah FAQ">
+          <form onSubmit={handleAdd} className="space-y-4">
+            <FieldGroup className="gap-3">
+              <Field>
+                <FieldLabel htmlFor="faq-question" required>
+                  Pertanyaan
+                </FieldLabel>
+                <Input
+                  id="faq-question"
+                  value={addForm.question}
+                  onChange={(e) => setAddForm({ ...addForm, question: e.target.value })}
+                />
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="faq-answer" required>
+                  Jawaban
+                </FieldLabel>
+                <Textarea
+                  id="faq-answer"
+                  value={addForm.answer}
+                  onChange={(e) => setAddForm({ ...addForm, answer: e.target.value })}
+                  rows={4}
+                />
+              </Field>
+            </FieldGroup>
+            <FormActions onCancel={() => setShowAdd(false)} saving={saving} />
+          </form>
         </SectionCard>
-      )}
+      ) : null}
 
       {faqs.length === 0 ? (
-        <EmptyState
-          icon={<HelpCircle />}
-          title="Belum ada FAQ."
-          description="Tambah pertanyaan yang sering ditanyakan peserta."
-        />
+        <SectionCard>
+          <EmptyState
+            icon={<HelpCircle />}
+            title="Belum ada FAQ"
+            description="Tambah pertanyaan yang sering ditanyakan peserta."
+          />
+        </SectionCard>
       ) : (
         <SectionCard bodyClassName="divide-y divide-border px-0">
-          {faqPaginated.map((faq, idx) => (
-            <div key={faq.id} className="p-5">
-              {editingId === faq.id ? (
-                <div className="flex flex-col gap-3">
-                  <FieldGroup className="gap-3">
-                    <Input
-                      value={editForm.question}
-                      onChange={(e) => setEditForm({ ...editForm, question: e.target.value })}
-                      className="font-medium"
-                    />
-                    <Textarea
-                      value={editForm.answer}
-                      onChange={(e) => setEditForm({ ...editForm, answer: e.target.value })}
-                      rows={3}
-                    />
-                  </FieldGroup>
-                  <div className="flex gap-2">
-                    <Button
-                      size="sm"
-                      variant="default"
-                      className="gap-1 bg-emerald-500 text-white text-10 font-bold uppercase tracking-wider hover:bg-emerald-400"
-                      onClick={() => handleSave(faq.id)}
-                      disabled={saving}
-                    >
-                      {saving ? <Spinner className="size-3" /> : <Check className="size-3" />}{" "}
-                      Simpan
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="gap-1 text-10 font-bold uppercase tracking-wider"
-                      onClick={() => setEditingId(null)}
-                    >
-                      <X className="size-3" /> Batal
-                    </Button>
+          {faqPaginated.map((faq, idx) => {
+            const absoluteIdx = (page - 1) * PAGE_SIZE + idx;
+            return (
+              <div key={faq.id} className="p-4 sm:p-5">
+                {editingId === faq.id ? (
+                  <div className="flex flex-col gap-3">
+                    <FieldGroup className="gap-3">
+                      <Input
+                        value={editForm.question}
+                        onChange={(e) => setEditForm({ ...editForm, question: e.target.value })}
+                      />
+                      <Textarea
+                        value={editForm.answer}
+                        onChange={(e) => setEditForm({ ...editForm, answer: e.target.value })}
+                        rows={3}
+                      />
+                    </FieldGroup>
+                    <div className="flex gap-2">
+                      <Button size="sm" onClick={() => handleSave(faq.id)} disabled={saving}>
+                        {saving ? <Spinner className="size-3" /> : <Check className="size-3" />}
+                        Simpan
+                      </Button>
+                      <Button size="sm" variant="outline" onClick={() => setEditingId(null)}>
+                        <X className="size-3" /> Batal
+                      </Button>
+                    </div>
                   </div>
-                </div>
-              ) : (
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex flex-1 items-start gap-3">
-                    {/* Move buttons */}
-                    <div className="flex flex-col gap-0.5 pt-0.5">
+                ) : (
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex min-w-0 flex-1 items-start gap-2">
+                      <div className="flex flex-col gap-0.5 pt-0.5">
+                        <Button
+                          variant="ghost"
+                          size="icon-xs"
+                          onClick={() => handleMove(faq.id, "up")}
+                          disabled={absoluteIdx === 0}
+                          aria-label="Naik"
+                        >
+                          <ChevronUp />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon-xs"
+                          onClick={() => handleMove(faq.id, "down")}
+                          disabled={absoluteIdx === faqs.length - 1}
+                          aria-label="Turun"
+                        >
+                          <ChevronDown />
+                        </Button>
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <h3 className="mb-1 text-sm font-medium">{faq.question}</h3>
+                        <p className="text-sm leading-relaxed text-muted-foreground">{faq.answer}</p>
+                      </div>
+                    </div>
+                    <div className="flex shrink-0 gap-1">
                       <Button
                         variant="ghost"
-                        size="icon-xs"
-                        onClick={() => handleMove(faq.id, "up")}
-                        disabled={idx === 0}
-                        aria-label="Naik"
+                        size="icon-sm"
+                        onClick={() => handleEdit(faq)}
+                        aria-label="Edit"
                       >
-                        <ChevronUp />
+                        <Pencil />
                       </Button>
                       <Button
                         variant="ghost"
-                        size="icon-xs"
-                        onClick={() => handleMove(faq.id, "down")}
-                        disabled={idx === faqs.length - 1}
-                        aria-label="Turun"
+                        size="icon-sm"
+                        onClick={() => handleDelete(faq.id)}
+                        aria-label="Hapus"
+                        className="text-muted-foreground hover:text-destructive"
                       >
-                        <ChevronDown />
+                        <Trash2 />
                       </Button>
                     </div>
-                    <div className="flex-1">
-                      <h3 className="mb-1 text-sm font-bold text-foreground">{faq.question}</h3>
-                      <p className="text-sm leading-relaxed text-muted-foreground">{faq.answer}</p>
-                    </div>
                   </div>
-                  <div className="flex flex-shrink-0 gap-1">
-                    <Button
-                      variant="ghost"
-                      size="icon-sm"
-                      onClick={() => handleEdit(faq)}
-                      title="Edit"
-                      aria-label="Edit"
-                    >
-                      <Pencil />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon-sm"
-                      onClick={() => handleDelete(faq.id)}
-                      title="Hapus"
-                      aria-label="Hapus"
-                      className="text-muted-foreground hover:text-destructive"
-                    >
-                      <Trash2 />
-                    </Button>
-                  </div>
-                </div>
-              )}
-            </div>
-          ))}
+                )}
+              </div>
+            );
+          })}
         </SectionCard>
       )}
 
@@ -316,7 +281,6 @@ export default function FAQPage() {
         onPageChange={setPage}
       />
 
-      {/* Delete Modal */}
       <DeleteModal
         open={!!deleteModal}
         title={deleteModal?.title || ""}
@@ -325,6 +289,6 @@ export default function FAQPage() {
         onCancel={() => setDeleteModal(null)}
         loading={deleteLoading}
       />
-    </div>
+    </PageShell>
   );
 }

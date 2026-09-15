@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
-import { PageHeader, SectionCard } from "@/components/dashboard";
+import { PageHeader, PageShell, SectionCard } from "@/components/dashboard";
 
 export default function ProfilePage() {
   const [user, setUser] = useState<{ email?: string | null } | null>(null);
@@ -65,35 +65,22 @@ export default function ProfilePage() {
     setSaving(false);
   };
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center py-20">
-        <Spinner className="size-6 text-primary" />
-      </div>
-    );
-  }
-
   return (
-    <div className="max-w-3xl space-y-6">
+    <PageShell narrow loading={loading}>
       <PageHeader title="Profil" description="Kelola akun dan password Anda" />
 
-      {message && (
-        <Alert
-          variant={messageType === "success" ? "default" : "destructive"}
-          className="rounded-lg border-border"
-        >
-          <AlertDescription className="text-xs font-medium">
-            {messageType === "success" ? <Check className="mr-1 inline size-3.5" /> : null}
+      {message ? (
+        <Alert variant={messageType === "success" ? "default" : "destructive"}>
+          <AlertDescription className="flex items-center gap-1.5 text-sm">
+            {messageType === "success" ? <Check className="size-3.5 shrink-0" /> : null}
             {message}
           </AlertDescription>
         </Alert>
-      )}
+      ) : null}
 
       <SectionCard title="Email">
-        <span className="text-10 font-bold uppercase tracking-wider text-muted-foreground">
-          Email Saat Ini
-        </span>
-        <p className="mt-0.5 text-sm font-medium text-foreground">{user?.email || "—"}</p>
+        <p className="text-xs font-medium text-muted-foreground">Email saat ini</p>
+        <p className="mt-1 text-sm font-medium">{user?.email || "-"}</p>
       </SectionCard>
 
       <SectionCard title="Ubah Password">
@@ -142,16 +129,12 @@ export default function ProfilePage() {
             </div>
           </FieldGroup>
 
-          <Button
-            type="submit"
-            disabled={saving}
-            className="rounded-lg text-xs font-black uppercase tracking-wider"
-          >
+          <Button type="submit" disabled={saving}>
             {saving ? <Spinner data-icon="inline-start" /> : <Save data-icon="inline-start" />}
-            {saving ? "Menyimpan..." : "Simpan Password Baru"}
+            {saving ? "Menyimpan..." : "Simpan Password"}
           </Button>
         </form>
       </SectionCard>
-    </div>
+    </PageShell>
   );
 }

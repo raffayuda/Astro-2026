@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -44,7 +44,7 @@ import {
 import { Spinner } from "@/components/ui/spinner";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { EmptyState, ImageUploadField, PageHeader, SectionCard } from "@/components/dashboard";
+import { EmptyState, ImageUploadField, PageHeader, PageShell, SectionCard } from "@/components/dashboard";
 import { useMediaPartners, useSponsors, queryKeys } from "@/src/lib/hooks/use-queries";
 import { apiHelpers } from "@/src/lib/api";
 import { cn } from "@/lib/utils";
@@ -117,16 +117,8 @@ export default function SponsorPage() {
     qc.invalidateQueries({ queryKey: queryKeys.mediaPartners.all });
   };
 
-  if (loading) {
-    return (
-      <div className="flex justify-center py-20">
-        <Spinner className="size-6 text-primary" />
-      </div>
-    );
-  }
-
   return (
-    <div className="space-y-6">
+    <PageShell loading={loading}>
       <PageHeader
         title="Sponsor & Media Partner"
         description="Kelola brand pendukung ASTRO 2026 dan portofolio periode lalu."
@@ -161,7 +153,7 @@ export default function SponsorPage() {
           onMutated={invalidate}
         />
       )}
-    </div>
+    </PageShell>
   );
 }
 
@@ -277,7 +269,7 @@ function PartnerManager({
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-1.5">
-          <span className="mr-1 text-xs font-bold uppercase tracking-wider text-muted-foreground">
+          <span className="mr-1 text-xs text-muted-foreground">
             Filter
           </span>
           <Button
@@ -287,7 +279,7 @@ function PartnerManager({
               setFilter("all");
               setPage(1);
             }}
-            className="h-7 text-xs font-bold uppercase tracking-wider"
+            className="h-7 text-xs"
           >
             Semua ({items.length})
           </Button>
@@ -299,7 +291,7 @@ function PartnerManager({
               setPage(1);
             }}
             className={cn(
-              "h-7 text-xs font-bold uppercase tracking-wider",
+              "h-7 text-xs",
               filter === "current" ? accent.filter : accent.filterIdle,
             )}
           >
@@ -312,7 +304,7 @@ function PartnerManager({
               setFilter("previous");
               setPage(1);
             }}
-            className="h-7 text-xs font-bold uppercase tracking-wider"
+            className="h-7 text-xs"
           >
             Periode Lalu ({items.length - currentCount})
           </Button>
@@ -321,7 +313,7 @@ function PartnerManager({
           <Button
             variant="outline"
             onClick={() => setReorderList([...items])}
-            className="rounded-lg text-xs font-bold uppercase tracking-wider"
+           
           >
             <ArrowUpDown data-icon="inline-start" /> Atur Urutan
           </Button>
@@ -335,7 +327,7 @@ function PartnerManager({
               setEditingId(null);
               setShowForm(true);
             }}
-            className="rounded-lg text-xs font-bold uppercase tracking-wider"
+           
           >
             <Plus data-icon="inline-start" /> Tambah {label}
           </Button>
@@ -407,7 +399,7 @@ function PartnerManager({
                 <div className="space-y-0.5">
                   <Label
                     htmlFor={`is-current-${label}`}
-                    className="flex cursor-pointer items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-foreground"
+                    className="flex cursor-pointer items-center gap-1.5 text-xs text-foreground"
                   >
                     <Sparkles className={cn("size-3.5", accent.icon)} />
                     {label} ASTRO 2026
@@ -430,7 +422,7 @@ function PartnerManager({
             <Button
               onClick={handleSave}
               disabled={saveMutation.isPending}
-              className="rounded-md gap-1 text-xs font-bold uppercase tracking-wider"
+              className="rounded-md gap-1 text-xs"
             >
               {saveMutation.isPending ? (
                 <Spinner data-icon="inline-start" />
@@ -442,7 +434,7 @@ function PartnerManager({
             <Button
               variant="outline"
               onClick={closeForm}
-              className="rounded-md gap-1 text-xs font-bold uppercase tracking-wider"
+              className="rounded-md gap-1 text-xs"
             >
               Batal
             </Button>
@@ -485,9 +477,9 @@ function PartnerManager({
                     {item.name || "(tanpa nama)"}
                   </span>
                   {item.isCurrent ? (
-                    <Badge className={cn("text-10 font-bold", accent.badge)}>ASTRO 2026</Badge>
+                    <Badge className={cn("text-xs font-bold", accent.badge)}>ASTRO 2026</Badge>
                   ) : (
-                    <Badge variant="outline" className="text-10 font-medium text-muted-foreground">
+                    <Badge variant="outline" className="text-xs font-medium text-muted-foreground">
                       Periode Lalu
                     </Badge>
                   )}
@@ -561,7 +553,7 @@ function PartnerManager({
       >
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle className="text-lg font-black uppercase tracking-tight">
+            <DialogTitle className="text-lg font-semibold tracking-tight">
               Urutkan {label}
             </DialogTitle>
             <DialogDescription className="text-xs">
@@ -603,14 +595,14 @@ function PartnerManager({
             <Button
               variant="outline"
               onClick={() => setReorderList(null)}
-              className="text-xs font-bold uppercase tracking-wider"
+             
             >
               Batal
             </Button>
             <Button
               onClick={() => reorderMutation.mutate((reorderList ?? []).map((item) => item.id))}
               disabled={reorderMutation.isPending}
-              className="gap-2 text-xs font-bold uppercase tracking-wider"
+              className="gap-2 text-xs"
             >
               {reorderMutation.isPending ? (
                 <Spinner data-icon="inline-start" />

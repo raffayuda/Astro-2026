@@ -45,7 +45,7 @@ export default function RegistrationDetailActions({ registration }: Props) {
           variant="outline"
           size="sm"
           onClick={() => print(registration)}
-          className="rounded-lg text-xs font-bold uppercase gap-1.5 bg-white text-astro-navy hover:text-astro-navy hover:border-astro-sky"
+          className="gap-1.5"
         >
           <Printer className="size-3.5 text-astro-blue" /> Cetak Invoice
         </Button>
@@ -54,7 +54,7 @@ export default function RegistrationDetailActions({ registration }: Props) {
           variant="outline"
           size="sm"
           onClick={() => setDeleteOpen(true)}
-          className="rounded-lg text-xs font-bold uppercase gap-1.5 border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300"
+          className="gap-1.5 border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300"
         >
           <Trash2 className="size-3.5" /> Hapus
         </Button>

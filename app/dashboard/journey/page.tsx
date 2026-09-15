@@ -1,10 +1,10 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Plus, Pencil, X, Check, Trash2, ImagePlus, Link2, Loader2, Route } from "lucide-react";
 import { toast } from "sonner";
-import { EmptyState, PageHeader, SectionCard } from "@/components/dashboard";
+import { EmptyState, PageHeader, PageShell, SectionCard } from "@/components/dashboard";
 import DeleteModal from "@/components/DeleteModal";
 import Pagination from "@/components/Pagination";
 import { Badge } from "@/components/ui/badge";
@@ -159,15 +159,8 @@ export default function JourneyPage() {
 
   const paginated = items.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
-  if (loading)
-    return (
-      <div className="flex justify-center py-20">
-        <Spinner className="size-6 text-primary" />
-      </div>
-    );
-
   return (
-    <div className="space-y-6">
+    <PageShell loading={loading}>
       <PageHeader
         title="Journey"
         description={`${items.length} perjalanan`}
@@ -188,7 +181,7 @@ export default function JourneyPage() {
                 sortOrder: 0,
               });
             }}
-            className="rounded-lg text-xs font-bold uppercase tracking-wider"
+           
           >
             <Plus data-icon="inline-start" /> Tambah Journey
           </Button>
@@ -275,14 +268,14 @@ export default function JourneyPage() {
             <Button
               onClick={handleSave}
               disabled={saving}
-              className="rounded-md gap-1 text-xs font-bold uppercase tracking-wider"
+              className="rounded-md gap-1 text-xs"
             >
               {saving ? <Spinner data-icon="inline-start" /> : <Check data-icon="inline-start" />}{" "}
               Simpan
             </Button>
             <Button
               variant="outline"
-              className="rounded-md gap-1 text-xs font-bold uppercase tracking-wider"
+              className="rounded-md gap-1 text-xs"
               onClick={() => {
                 setShowAdd(false);
                 setEditingId(null);
@@ -315,7 +308,7 @@ export default function JourneyPage() {
               <div className="flex items-center gap-3">
                 <Badge
                   variant="secondary"
-                  className="rounded-md bg-muted px-2.5 py-1 text-xs font-black text-foreground"
+                  className="rounded-md bg-muted px-2.5 py-1 text-xs font-semibold text-foreground"
                 >
                   {item.year || item.id}
                 </Badge>
@@ -368,7 +361,7 @@ export default function JourneyPage() {
         onCancel={() => setDeleteModal(null)}
         loading={false}
       />
-    </div>
+    </PageShell>
   );
 }
 
@@ -472,7 +465,7 @@ function JourneyPhotoManager({ journey }: { journey: Journey }) {
             size="sm"
             variant="outline"
             disabled={uploading}
-            className="rounded-md gap-1 text-10 font-bold uppercase tracking-wider"
+            className="rounded-md gap-1 text-xs font-medium"
           >
             <span>
               {uploading ? (
@@ -494,7 +487,7 @@ function JourneyPhotoManager({ journey }: { journey: Journey }) {
       </div>
       <button
         onClick={handleAddByUrl}
-        className="rounded-md mt-2 inline-flex items-center gap-1.5 border border-border bg-muted px-3 py-1.5 text-10 font-bold uppercase tracking-wider text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+        className="rounded-md mt-2 inline-flex items-center gap-1.5 border border-border bg-muted px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
       >
         <Link2 className="size-3" /> Tambah dari URL
       </button>

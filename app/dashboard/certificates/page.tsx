@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -17,7 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Spinner } from "@/components/ui/spinner";
-import { EmptyState, PageHeader, SectionCard } from "@/components/dashboard";
+import { EmptyState, PageHeader, PageShell, SectionCard } from "@/components/dashboard";
 import Pagination from "@/components/Pagination";
 import {
   useCompetitions,
@@ -129,15 +129,8 @@ export default function SertifikatPage() {
 
   const paginated = registrations.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
-  if (loading)
-    return (
-      <div className="flex justify-center py-20">
-        <Spinner className="size-6 text-primary" />
-      </div>
-    );
-
   return (
-    <div className="space-y-6">
+    <PageShell loading={loading}>
       <PageHeader title="Sertifikat" description="Kelola pemenang dan kirim sertifikat" />
 
       {competitions.length === 0 ? (
@@ -151,7 +144,7 @@ export default function SertifikatPage() {
           <div className="max-w-md">
             <Field>
               <FieldLabel
-                className="text-10 font-bold uppercase tracking-wider text-muted-foreground"
+                className="text-xs font-medium text-muted-foreground"
                 required
               >
                 Lomba
@@ -191,7 +184,7 @@ export default function SertifikatPage() {
               <Button
                 onClick={handleGenerateAll}
                 disabled={generateAllMut.isPending}
-                className="rounded-md gap-1.5 text-10 font-black uppercase tracking-wider"
+               
               >
                 {generateAllMut.isPending ? (
                   <Spinner data-icon="inline-start" />
@@ -209,7 +202,7 @@ export default function SertifikatPage() {
 
           <div className="flex items-center justify-between">
             <p className="text-sm text-muted-foreground">{registrations.length} peserta (lunas)</p>
-            <span className="text-10 font-bold uppercase text-muted-foreground">
+            <span className="text-xs font-medium text-muted-foreground">
               {competitions.find((c) => c.id === selectedComp)?.certificateType === "all"
                 ? "Semua peserta dapat sertifikat"
                 : "Hanya juara (1/2/3)"}
@@ -255,7 +248,7 @@ export default function SertifikatPage() {
                           }
                           size="icon-sm"
                           className={cn(
-                            "text-10 font-black",
+                            "text-xs font-medium",
                             reg.isWinner === "1" &&
                               reg.winnerRank === rank &&
                               "border-amber-400 bg-amber-400 text-amber-950 shadow-sm hover:bg-amber-400",
@@ -279,7 +272,7 @@ export default function SertifikatPage() {
                           onClick={() => sendCertificate(reg)}
                           disabled={sending || reg.certificateSent === "1"}
                           className={cn(
-                            "rounded-md text-10 font-bold uppercase tracking-wider",
+                            "rounded-md text-xs font-medium",
                             reg.certificateSent === "1" &&
                               "border border-emerald-200 bg-emerald-50 text-emerald-600 hover:bg-emerald-50",
                           )}
@@ -309,6 +302,6 @@ export default function SertifikatPage() {
           />
         </>
       )}
-    </div>
+    </PageShell>
   );
 }
