@@ -208,7 +208,7 @@ export default function RootLayout({
             dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
           />
         ))}
-        <script defer src="http://192.168.123.6:5555/script.js" data-website-id="79d7fe00-8561-4699-a3e9-ef3a6929cada"></script>
+        <script defer src="https://umami.oktaa.my.id/script.js" data-website-id="79d7fe00-8561-4699-a3e9-ef3a6929cada"></script>
       </head>
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <TooltipProvider>
