@@ -2,7 +2,7 @@
 
 import React, { memo, useMemo } from "react";
 import type { UIMessage } from "ai";
-import { Bot, User, Paperclip } from "lucide-react";
+import { Bot, User, Paperclip, CheckCircle2, Loader2 } from "lucide-react";
 import { AiMarkdownRenderer } from "@/components/dashboard/AiMarkdownRenderer";
 import { AiActionCard } from "@/components/dashboard/AiActionCard";
 import { AiCsvExportCard } from "@/components/dashboard/AiCsvExportCard";
@@ -18,6 +18,77 @@ export interface AiChatMessageItemProps {
   message: UIMessage;
   isStreaming?: boolean;
   compact?: boolean;
+}
+
+interface ToolBadgeInfo {
+  id: string;
+  name: string;
+  label: string;
+  state: "running" | "completed";
+}
+
+const TOOL_LABELS: Record<string, string> = {
+  searchRegistrations: "Mencari data pendaftar",
+  getRegistrationDetail: "Mengambil rincian pendaftar",
+  getCompetitionDetail: "Membaca detail lengkap cabang lomba",
+  getCompetitionsList: "Membaca daftar cabang lomba",
+  getCompetitionStats: "Menganalisis statistik lomba & kuota",
+  getFinancialAnalytics: "Menghitung analitik keuangan & konversi",
+  getDashboardSchemaCatalog: "Memeriksa kamus skema data",
+  getSponsorsList: "Membaca data sponsor & partner",
+  getCommitteeList: "Membaca struktur panitia BEM",
+  getFaqsList: "Membaca data FAQ",
+  proposeCreateCompetition: "Menyusun formulir lomba baru",
+  proposeUpdateCompetition: "Menyusun perubahan data lomba",
+  proposeUpdateRegistrationStatus: "Menyiapkan verifikasi pendaftaran",
+  proposeSetWinners: "Menyiapkan penetapan pemenang",
+  generateExecutiveReport: "Menyusun laporan audit eksekutif",
+  generateDataExport: "Membuat berkas ekspor CSV",
+};
+
+export function getToolBadges(message: UIMessage): ToolBadgeInfo[] {
+  if (!Array.isArray(message.parts)) return [];
+
+  const badges: ToolBadgeInfo[] = [];
+
+  for (let i = 0; i < message.parts.length; i++) {
+    const part: any = message.parts[i];
+    if (!part) continue;
+
+    const invocation = part.toolInvocation;
+    if (invocation) {
+      const toolName = invocation.toolName || invocation.name || "Aksi Sistem";
+      const isCompleted =
+        invocation.state === "result" ||
+        invocation.result !== undefined ||
+        invocation.output !== undefined;
+      badges.push({
+        id: invocation.toolCallId || `tool-${i}`,
+        name: toolName,
+        label: TOOL_LABELS[toolName] || toolName,
+        state: isCompleted ? "completed" : "running",
+      });
+      continue;
+    }
+
+    if (
+      part.type === "tool-invocation" ||
+      part.type === "tool-call" ||
+      part.type === "tool-result"
+    ) {
+      const toolName = part.toolName || part.name || "Aksi Sistem";
+      const isCompleted =
+        part.type === "tool-result" || part.result !== undefined || part.output !== undefined;
+      badges.push({
+        id: part.toolCallId || part.id || `tool-${i}`,
+        name: toolName,
+        label: TOOL_LABELS[toolName] || toolName,
+        state: isCompleted ? "completed" : "running",
+      });
+    }
+  }
+
+  return badges;
 }
 
 function arePropsEqual(
@@ -63,6 +134,11 @@ export const AiChatMessageItem = memo(function AiChatMessageItem({
     [isAssistant, message]
   );
 
+  const toolBadges = useMemo(
+    () => (isAssistant ? getToolBadges(message) : []),
+    [isAssistant, message]
+  );
+
   const displayText = useMemo(
     () => (isAssistant ? cleanDisplayAssistantText(text, proposals.length > 0) : text),
     [isAssistant, text, proposals.length]
@@ -100,6 +176,29 @@ export const AiChatMessageItem = memo(function AiChatMessageItem({
       >
         {isAssistant ? (
           <div className={compact ? "space-y-2" : "space-y-3"}>
+            {toolBadges.length > 0 && (
+              <div className={`flex flex-wrap ${compact ? "gap-1" : "gap-1.5"} mb-1`}>
+                {toolBadges.map((badge) => (
+                  <div
+                    key={badge.id}
+                    className={`inline-flex items-center gap-1.5 rounded-md border px-2 py-0.5 ${
+                      compact ? "text-[10px]" : "text-[11px]"
+                    } font-medium transition-all ${
+                      badge.state === "running"
+                        ? "border-astro-blue/40 bg-astro-blue/10 text-astro-blue animate-pulse"
+                        : "border-slate-200 bg-white text-slate-700 shadow-2xs"
+                    }`}
+                  >
+                    {badge.state === "running" ? (
+                      <Loader2 className={`${compact ? "size-2.5" : "size-3"} animate-spin text-astro-blue`} />
+                    ) : (
+                      <CheckCircle2 className={`${compact ? "size-2.5" : "size-3"} text-emerald-600`} />
+                    )}
+                    <span>{badge.label}</span>
+                  </div>
+                ))}
+              </div>
+            )}
             {displayText ? <AiMarkdownRenderer content={displayText} compact={compact} /> : null}
             {proposals.map((prop, idx) => (
               <AiActionCard key={prop.actionId || `prop-${idx}`} proposal={prop} />

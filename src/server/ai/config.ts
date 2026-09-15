@@ -68,8 +68,8 @@ export async function getRawAiSettings(): Promise<AiSettings> {
       provider: "9router",
       baseUrl: "https://api.9router.com/v1",
       model: "gemini-2.0-flash",
-      temperature: "0.7",
-      maxTokens: 2048,
+      temperature: "0.2",
+      maxTokens: 8192,
       isEnabled: true,
     })
     .returning();
@@ -89,8 +89,8 @@ export async function getPublicAiConfig(): Promise<PublicAiConfig> {
     provider: settings.provider,
     baseUrl: settings.baseUrl || "https://api.9router.com/v1",
     model: settings.model || "gemini-2.0-flash",
-    temperature: settings.temperature || "0.7",
-    maxTokens: settings.maxTokens || 2048,
+    temperature: settings.temperature || "0.2",
+    maxTokens: settings.maxTokens || 8192,
     systemPrompt: settings.systemPrompt,
     isEnabled: settings.isEnabled ?? true,
     hasApiKey: Boolean(rawKey && rawKey.trim().length > 0),

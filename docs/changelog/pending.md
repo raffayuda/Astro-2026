@@ -197,3 +197,11 @@
 [23:30] - [src/lib/competitions.ts] - [ADD] - Implement getLatestRegistrationDeadline and parseDateToTimestamp to dynamically derive latest competition deadline from active batches and schedules
 [23:30] - [app/page.tsx] - [UPDATE] - Dynamically calculate and inject latest registration deadline into eventConfig for landing page countdown
 [23:30] - [components/CountdownTimer.tsx] - [UPDATE] - Add isExpired check displaying 'Pendaftaran telah ditutup' when deadline has passed
+[23:45] - [src/server/ai/provider.ts] - [UPDATE] - Lower default model temperature to 0.2 and expand maxTokens fallback to 8192 for deterministic, un-truncated responses
+[23:45] - [src/server/ai/config.ts] - [UPDATE] - Set default DB fallback temperature to 0.2 and maxTokens to 8192
+[23:45] - [src/server/ai/guardrails.ts] - [UPDATE] - Increase MAX_INPUT_CHARS from 2,500 to 15,000 chars and expand operational allowlist keywords (matikan status, juknis, aturan lomba)
+[23:45] - [app/api/dashboard/ai/chat/route.ts] - [UPDATE] - Expand rolling context to 25 messages, implement Sticky Document Context to prevent document amnesia, set maxOutputTokens to 8192, and stepCountIs(10)
+[23:45] - [src/server/ai/tools.ts] - [ADD] - Implement getCompetitionDetail tool (all 30 fields), smart fuzzy competition query resolver (ml/mlbb, cc, agt, futsal, badminton), and enrich getCompetitionsList metadata
+[23:45] - [components/dashboard/AiChatMessageItem.tsx] - [UPDATE] - Add Live Tool Execution Badges with animated Loader2 spinner for pending tools and CheckCircle2 for completed tools
+[23:45] - [app/dashboard/ai/page.tsx] - [UPDATE] - Add helper status line indicating 15,000 character limit and document support
+

@@ -39,8 +39,8 @@ export async function getAiModel(): Promise<ResolvedAiModel> {
   return {
     model: routerProvider.chat(modelName),
     modelName,
-    temperature: parseFloat(settings.temperature || "0.7") || 0.7,
-    maxTokens: settings.maxTokens || 2048,
+    temperature: parseFloat(settings.temperature || "0.2") || 0.2,
+    maxTokens: settings.maxTokens || 8192,
     systemPromptCustom: settings.systemPrompt,
     baseURL,
   };

@@ -39,6 +39,15 @@ const getRegistrationDetailSchema = z.object({
 });
 type GetRegistrationDetailInput = z.infer<typeof getRegistrationDetailSchema>;
 
+const getCompetitionDetailSchema = z.object({
+  competitionId: z
+    .string()
+    .describe(
+      "ID cabang lomba, slug, atau nama lomba / alias populer (contoh: 'futsal-eksternal', 'MLBB', 'Cerdas Cermat', 'AGT', 'Badminton')",
+    ),
+});
+type GetCompetitionDetailInput = z.infer<typeof getCompetitionDetailSchema>;
+
 const getCompetitionsListSchema = z.object({
   category: z.string().optional().describe("Filter kategori: akademik, olahraga, esports, kesenian"),
   isActiveOnly: z.boolean().default(false).describe("Hanya tampilkan lomba yang aktif"),
@@ -442,15 +451,92 @@ function generateSlug(title: string): string {
   return base || `lomba-${Date.now()}`;
 }
 
-async function findCompetition(identifier: string) {
+export function findCompetitionByFuzzyQuery<T extends { id: string; title: string }>(
+  query: string | undefined | null,
+  competitionsList: T[],
+): T | null {
+  if (!query || typeof query !== "string") return null;
+  const q = query.trim().toLowerCase();
+  if (!q || q === "all" || q === "semua") return null;
+
+  // 1. Exact ID match
+  const directId = competitionsList.find((c) => c.id.toLowerCase() === q);
+  if (directId) return directId;
+
+  // 2. Exact title match
+  const directTitle = competitionsList.find((c) => c.title.toLowerCase() === q);
+  if (directTitle) return directTitle;
+
+  // 3. Known Aliases
+  if (q === "ml" || q === "mlbb" || q.includes("mobile legend")) {
+    const ml = competitionsList.find(
+      (c) =>
+        c.id.includes("mobile-legend") ||
+        c.title.toLowerCase().includes("mobile legend") ||
+        c.title.toLowerCase().includes("mlbb"),
+    );
+    if (ml) return ml;
+  }
+
+  if (q === "cc" || q.includes("cerdas cermat") || q.includes("cerdas-cermat")) {
+    const cc = competitionsList.find(
+      (c) =>
+        c.id.includes("cerdas-cermat") ||
+        c.title.toLowerCase().includes("cerdas cermat"),
+    );
+    if (cc) return cc;
+  }
+
+  if (q === "agt" || q.includes("talent") || q.includes("got talent") || q.includes("astro got talent")) {
+    const agt = competitionsList.find(
+      (c) =>
+        c.id.includes("got-talent") ||
+        c.title.toLowerCase().includes("talent"),
+    );
+    if (agt) return agt;
+  }
+
+  if (q.includes("badminton") || q.includes("bulutangkis") || q.includes("bulu tangkis") || q.includes("bultang")) {
+    const bad = competitionsList.find(
+      (c) =>
+        c.id.includes("badminton") ||
+        c.title.toLowerCase().includes("badminton"),
+    );
+    if (bad) return bad;
+  }
+
+  if (q.includes("futsal")) {
+    if (q.includes("eksternal") || q.includes("luar") || q.includes("external") || q.includes("sma") || q.includes("smk")) {
+      const fe = competitionsList.find(
+        (c) => c.id.includes("futsal-eksternal") || c.title.toLowerCase().includes("eksternal"),
+      );
+      if (fe) return fe;
+    }
+    if (q.includes("internal") || q.includes("dalam") || q.includes("mahasiswa")) {
+      const fi = competitionsList.find(
+        (c) => c.id.includes("futsal-internal") || c.title.toLowerCase().includes("internal"),
+      );
+      if (fi) return fi;
+    }
+    const f = competitionsList.find(
+      (c) => c.id.includes("futsal") || c.title.toLowerCase().includes("futsal"),
+    );
+    if (f) return f;
+  }
+
+  // 4. Substring search on ID or title
+  const subMatch = competitionsList.find(
+    (c) => c.id.toLowerCase().includes(q) || c.title.toLowerCase().includes(q),
+  );
+  if (subMatch) return subMatch;
+
+  return null;
+}
+
+export async function findCompetition(identifier: string) {
   const trimmed = identifier.trim();
-  const [exact] = await db.select().from(competitions).where(eq(competitions.id, trimmed));
-  if (exact) return exact;
-  const [byTitle] = await db
-    .select()
-    .from(competitions)
-    .where(ilike(competitions.title, `%${trimmed}%`));
-  return byTitle || null;
+  const all = await db.select().from(competitions);
+  return findCompetitionByFuzzyQuery(trimmed, all);
 }
 
 async function findRegistration(identifier: string) {
@@ -499,7 +585,8 @@ export const aiTools = {
       const conditions: SQL[] = [];
 
       if (competitionId && competitionId !== "all") {
-        conditions.push(eq(registrations.competitionId, competitionId));
+        const matched = findCompetitionByFuzzyQuery(competitionId, allComps);
+        conditions.push(eq(registrations.competitionId, matched ? matched.id : competitionId));
       }
 
       if (status && status !== "all") {
@@ -615,6 +702,86 @@ export const aiTools = {
   }),
 
   /**
+   * Tool: Get comprehensive 100% detail of a specific competition (all 30 fields, including guidebook sections).
+   */
+  getCompetitionDetail: tool({
+    description:
+      "Mendapatkan informasi 100% lengkap dan mendalam mengenai satu cabang lomba tertentu (seluruh 30 field: seluruh bab artikel guidebook/juknis 'guidebookSections', berkas khusus 'customFields', gelombang 'batches', nominal hadiah 'prizes', rules, kuota, biaya, jadwal, kontak CP, dsb). Mendukung ID, slug, atau nama lomba / alias (misal: 'futsal-eksternal', 'MLBB', 'Cerdas Cermat', 'AGT', 'Badminton').",
+    inputSchema: zodSchema(getCompetitionDetailSchema),
+    execute: async (input: GetCompetitionDetailInput) => {
+      const comp = await findCompetition(input.competitionId);
+      if (!comp) {
+        return {
+          error: `Cabang lomba '${input.competitionId}' tidak ditemukan di database. Pastikan nama atau ID cabang lomba sudah benar.`,
+        };
+      }
+
+      const filled = comp.filledSlots || 0;
+      const max = comp.maxSlots || 0;
+
+      return {
+        _securityNotice:
+          "Data cabang lomba ini bersumber langsung dari database PostgreSQL ASTRO 2026.",
+        id: comp.id,
+        title: comp.title,
+        category: comp.category,
+        origin: comp.origin,
+        targetPeserta:
+          comp.origin === "external"
+            ? "Eksternal (SMA/SMK/Umum luar kampus)"
+            : "Internal (Khusus mahasiswa STT Terpadu Nurul Fikri)",
+        tagline: comp.tagline || "",
+        description: comp.description || "",
+        fee: comp.fee,
+        isFree: comp.isFree === "1",
+        hasBatches: comp.hasBatches === "1",
+        batches: comp.batches || [],
+        guidebookSectionsCount: (comp.guidebookSections || []).length,
+        guidebookSections: comp.guidebookSections || [],
+        customFieldsCount: (comp.customFields || []).length,
+        customFields: comp.customFields || [],
+        slots: {
+          maxSlots: max,
+          filledSlots: filled,
+          remainingSlots: Math.max(0, max - filled),
+          percentageFilled: max > 0 ? Math.round((filled / max) * 100) : 0,
+        },
+        scheduleDate: comp.scheduleDate ? comp.scheduleDate.toISOString().split("T")[0] : null,
+        location: comp.location || "Kampus STT Terpadu Nurul Fikri",
+        type: comp.type || "team",
+        teamComposition: {
+          type: comp.type,
+          minTeamMembers: comp.minTeamMembers || 1,
+          maxTeamMembers: comp.maxTeamMembers || 1,
+          membersRequired: comp.membersRequired || "optional",
+          playerPhotoRequired: comp.playerPhotoRequired === "1",
+        },
+        prizes: {
+          first: comp.prizesFirst || "-",
+          second: comp.prizesSecond || "-",
+          third: comp.prizesThird || "-",
+          customPrizesList: comp.prizes || [],
+        },
+        rulesSummary: comp.rulesSummary || [],
+        rulebookUrl: comp.rulebookUrl || null,
+        contactPerson: {
+          name: comp.contactName || "-",
+          whatsapp: comp.contactWhatsapp || "-",
+        },
+        certificates: {
+          enabled: comp.certificateEnabled === "1",
+          type: comp.certificateType || "winner",
+          templateUrl: comp.certificateTemplate || null,
+        },
+        isActive: comp.isActive === "1",
+        createdAt: comp.createdAt.toISOString(),
+        dashboardEditUrl: `/dashboard/competitions`,
+        publicDetailUrl: `/competitions/${comp.id}`,
+      };
+    },
+  }),
+
+  /**
    * Tool: List all competitions, categories, slots, and rules.
    */
   getCompetitionsList: tool({
@@ -643,9 +810,14 @@ export const aiTools = {
           id: c.id,
           title: c.title,
           category: c.category,
+          origin: c.origin,
+          tagline: c.tagline || "",
           fee: c.fee,
+          isFree: c.isFree === "1",
           hasBatches: c.hasBatches === "1",
           batches: c.batches,
+          guidebookSectionsCount: (c.guidebookSections || []).length,
+          customFieldsCount: (c.customFields || []).length,
           maxSlots: c.maxSlots,
           filledSlots: c.filledSlots,
           remainingSlots: Math.max(0, c.maxSlots - c.filledSlots),
@@ -689,7 +861,9 @@ export const aiTools = {
         .groupBy(competitions.id, competitions.title, competitions.category, competitions.maxSlots, competitions.filledSlots, competitions.fee);
 
       if (competitionId && competitionId !== "all") {
-        query.where(eq(competitions.id, competitionId));
+        const allComps = await db.select().from(competitions);
+        const matched = findCompetitionByFuzzyQuery(competitionId, allComps);
+        query.where(eq(competitions.id, matched ? matched.id : competitionId));
       }
 
       const rows = await query;

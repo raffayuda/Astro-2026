@@ -441,9 +441,9 @@ export default function AiAssistantPage() {
               </Button>
             )}
           </form>
-          <div className="flex items-center justify-between text-[10px] text-muted-foreground px-2 pt-1">
-            <span>📎 Mendukung Juknis (.md, .pdf, .docx), Excel (.xlsx, .csv), teks, dan gambar (maks 15MB).</span>
-            <span>Aman & Human-in-the-Loop</span>
+          <div className="flex items-center justify-between text-[11px] text-muted-foreground px-2 pt-1.5">
+            <span>📎 Juknis (.md, .pdf, .docx), Excel (.xlsx, .csv), teks hingga 15.000 karakter.</span>
+            <span className="font-medium text-emerald-600 dark:text-emerald-400">🛡️ Aman &amp; Human-in-the-Loop</span>
           </div>
         </div>
       </div>

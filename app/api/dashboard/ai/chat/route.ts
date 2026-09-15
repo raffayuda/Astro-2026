@@ -28,6 +28,7 @@ Tugas utamamu adalah membantu divisi Kompetisi, Kesekretariatan/Pendaftaran, Ben
 8. Menyusun laporan audit eksekutif berkala dan rekomendasi taktis untuk rapat panitia (via generateExecutiveReport).
 9. Menyediakan ekspor dataset pendaftaran ke format CSV siap unduh langsung di chat (via generateDataExport).
 10. Memeriksa kamus data, kolom/field formulir, dan batasan fitur dashboard (via getDashboardSchemaCatalog).
+11. Mengambil 100% detail lengkap satu cabang lomba (termasuk seluruh 30 field: semua bab juknis 'guidebookSections', berkas khusus 'customFields', gelombang 'batches', nominal hadiah 'prizes', dsb) via 'getCompetitionDetail'.
 
 PEDOMAN KEAMANAN & BATASAN OPERASIONAL KETAT (HIGH-END GOVERNANCE):
 1. LARANGAN MUTLAK KODING & SOFTWARE ENGINEERING (ZERO ARBITRARY CODING):
@@ -103,6 +104,10 @@ PEDOMAN KEAMANAN & BATASAN OPERASIONAL KETAT (HIGH-END GOVERNANCE):
    • 'playerPhotoRequired': true jika wajib upload kartu pelajar/identitas pemain.
    • 'prizesFirst', 'prizesSecond', 'prizesThird': Rincian hadiah juara (Piala, Uang Pembinaan, Medali, Sertifikat).
    • 'contactName' & 'contactWhatsapp': Nama dan nomor WhatsApp CP resmi panitia.
+   • 'isFree': true jika gratis, false jika berbayar.
+   • INSPEKSI & PEMBARUAN PENUH CABANG LOMBA:
+     - Gunakan tool 'getCompetitionDetail' untuk melihat seluruh 30 informasi mendalam suatu lomba (termasuk bab-bab juknis 'guidebookSections', berkas syarat 'customFields', gelombang 'batches', nominal hadiah 'prizes') sebelum mengubahnya atau saat admin bertanya tentang rincian juknis/syarat lomba tersebut.
+     - Seluruh bagian lomba dapat diubah via 'proposeUpdateCompetition', termasuk menambah/mengedit bab juknis baru, memperbarui aturan, mengubah nominal biaya/hadiah, memperpanjang tanggal, atau menyesuaikan kuota.
 
 9. INSPEKSI SKEMA DATA DASHBOARD & BATASAN KEAMANAN (SCHEMA INTELLIGENCE & BOUNDARIES):
    - Kamu memiliki kemampuan untuk memeriksa kamus skema data seluruh fitur dashboard melalui tool 'getDashboardSchemaCatalog' (Cabang Lomba, Pendaftaran, Sponsor, Media Partner, Panitia, FAQ, Sertifikat, Journey, Galeri).
@@ -199,8 +204,45 @@ export async function POST(req: Request) {
       );
     }
 
-    // ─── Layer 4: Rolling Context Window (Last 10 Messages) ───
-    const recentMessages = messages.slice(-10);
+    // ─── Layer 4: Rolling Context Window (Last 25 Messages) & Sticky Document Context ───
+    const recentMessages = messages.slice(-25);
+
+    // Sticky Document Context: If earlier messages in this session had an uploaded document,
+    // ensure the active context doesn't lose it across conversational follow-ups.
+    const fileContextRegex = /<uploaded_file_context[\s\S]*?<\/uploaded_file_context>/g;
+    let stickyFileContext = "";
+    for (let i = messages.length - 1; i >= 0; i--) {
+      const msgContent =
+        typeof messages[i].content === "string"
+          ? messages[i].content
+          : JSON.stringify(messages[i].parts || "");
+      const matches = msgContent.match(fileContextRegex);
+      if (matches && matches.length > 0) {
+        stickyFileContext = matches.join("\n\n");
+        break;
+      }
+    }
+
+    if (stickyFileContext) {
+      const recentCombined = recentMessages
+        .map((m: any) =>
+          typeof m.content === "string" ? m.content : JSON.stringify(m.parts || ""),
+        )
+        .join(" ");
+
+      if (!recentCombined.includes(stickyFileContext.slice(0, 80))) {
+        // Prepend to the first message of recentMessages so the LLM retains document memory
+        const firstMsg = recentMessages[0];
+        if (firstMsg) {
+          const banner = `[KONTEKS DOKUMEN YANG DIUNGGAH DI SESI INI]:\n${stickyFileContext}\n\n`;
+          if (typeof firstMsg.content === "string") {
+            firstMsg.content = banner + firstMsg.content;
+          } else if (Array.isArray(firstMsg.parts)) {
+            firstMsg.parts.unshift({ type: "text", text: banner });
+          }
+        }
+      }
+    }
 
     // Resolve dynamic 9router model configured in PostgreSQL
     const resolvedAi = await getAiModel();
@@ -216,8 +258,9 @@ export async function POST(req: Request) {
       system: systemPrompt,
       messages: modelMessages,
       tools: aiTools,
-      stopWhen: stepCountIs(5),
+      stopWhen: stepCountIs(10),
       temperature: resolvedAi.temperature,
+      maxOutputTokens: resolvedAi.maxTokens || 8192,
     });
 
     return result.toUIMessageStreamResponse();

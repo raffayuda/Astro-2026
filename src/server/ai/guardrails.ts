@@ -8,7 +8,7 @@ import { createUIMessageStream, createUIMessageStreamResponse } from "ai";
  * for ASTRO 2026 Admin Copilot.
  */
 
-export const MAX_INPUT_CHARS = 2500;
+export const MAX_INPUT_CHARS = 15000;
 export const MAX_REQUESTS_PER_MINUTE = 15;
 export const CIRCUIT_BREAKER_STRIKES_LIMIT = 3;
 export const CIRCUIT_BREAKER_COOLDOWN_MS = 5 * 60 * 1000; // 5 minutes
@@ -46,7 +46,7 @@ const telemetryStats: SecurityTelemetryStats = {
   activeGuards: [
     "Unicode NFKC & Homoglyph Normalizer",
     "Zero-Width & Invisible Char Stripper",
-    "Payload Length Limiter (Max 2500 chars)",
+    "Payload Length Limiter (Max 15000 chars)",
     "Rate Limiter (15 req/min)",
     "Circuit Breaker (3-Strike 5-min Lockout)",
     "Heuristic Threat Classifier (Jailbreak, DAN, Prompt Theft)",
@@ -198,17 +198,17 @@ export function classifyThreat(normalizedText: string): ThreatCheckResult {
       reason: `Input exceeds maximum character limit (${maxAllowedChars} chars)`,
       refusalMessage: hasUploadedFile
         ? "Total isi berkas yang dilampirkan melebihi batas maksimal 40.000 karakter. Mohon gunakan berkas yang lebih ringkas."
-        : "Pesan Anda melebihi batas maksimal 2.500 karakter. Mohon persingkat pertanyaan atau dokumen juknis yang ingin dianalisis.",
+        : `Pesan Anda melebihi batas maksimal ${MAX_INPUT_CHARS.toLocaleString("id-ID")} karakter. Mohon persingkat teks yang ingin dianalisis atau gunakan fitur unggah berkas (.md / .docx / .pdf).`,
     };
   }
 
   // 2. Prompt Injection & Jailbreak Heuristics
   const jailbreakPatterns = [
-    /\b(?:ignore|disregard|forget|abaikan|lupakan)\s+(?:all\s+|semua\s+)?(?:previous|prior|awal|sebelumnya)\s+(?:instructions|prompts|rules|directives|instruksi|aturan|perintah)\b/i,
+    /\b(?:ignore|disregard|forget|abaikan|lupakan)\s+(?:all\s+|semua\s+)?(?:previous|prior|awal|sebelumnya)\s+(?:instructions|prompts|rules|directives|instruksi|aturan\s+sistem|perintah\s+sistem)\b/i,
     /\b(?:system\s+override|developer\s+mode|dan\s+mode|jailbreak|unrestricted\s+mode|god\s+mode|bypass\s+safety|bypass\s+filter|mode\s+pengembang)\b/i,
     /\b(?:you\s+are\s+now|sekarang\s+kamu\s+adalah)\s+(?:an?\s+)?(?:unrestricted|bebas\s+aturan|dan|tanpa\s+batasan|evil|hacker)\b/i,
     /\b(?:pretend|berpura-pura|simulasikan|imagine)\s+(?:you\s+have\s+no\s+rules|kamu\s+tidak\s+punya\s+aturan|bebas\s+dari\s+etika|tanpa\s+pedoman)\b/i,
-    /\b(?:bypass|matikan|nonaktifkan)\s+(?:filter|keamanan|guardrail|sensor|aturan)\b/i,
+    /\b(?:bypass|matikan|nonaktifkan)\s+(?:filter\s+keamanan|guardrail|sensor\s+ai|sensor\s+sistem|keamanan\s+sistem|safety\s+filter)\b/i,
     /\b(?:root\s+access|sudo\s+mode|override\s+directive)\b/i,
   ];
 
@@ -226,7 +226,7 @@ export function classifyThreat(normalizedText: string): ThreatCheckResult {
 
   // 3. System Prompt Exfiltration & Canary Theft
   const exfiltrationPatterns = [
-    /\b(?:tampilkan|output|print|show|tuliskan|sebutkan|bocorkan|reveal)\s+(?:seluruh\s+|semua\s+)?(?:system\s+prompt|instruksi\s+sistem|prompt\s+awal|initial\s+instructions|aturan\s+internal|system\s+message)\b/i,
+    /\b(?:tampilkan|output|print|show|tuliskan|sebutkan|bocorkan|reveal)\s+(?:seluruh\s+|semua\s+)?(?:system\s+prompt|instruksi\s+sistem|prompt\s+awal|initial\s+instructions|system\s+message)\b/i,
     /\b(?:repeat|ulangi)\s+(?:the\s+words?\s+above|kata-kata\s+di\s+atas|kalimat\s+sebelumnya)\s+(?:verbatim|persis|kata\s+demi\s+kata)\b/i,
     /\b(?:what\s+(?:are|were)\s+your\s+(?:system\s+)?instructions|apa\s+saja\s+instruksi\s+(?:sistem\s+)?kamu)\b/i,
     /\b(?:print\s+rules|output\s+rules|show\s+prompt|dump\s+prompt)\b/i,
@@ -269,6 +269,7 @@ export function classifyThreat(normalizedText: string): ThreatCheckResult {
   const isAstroOperationalQuery =
     hasUploadedFile ||
     lower.includes("lomba") ||
+    lower.includes("kompetisi") ||
     lower.includes("pendaftar") ||
     lower.includes("peserta") ||
     lower.includes("kuota") ||
@@ -285,7 +286,19 @@ export function classifyThreat(normalizedText: string): ThreatCheckResult {
     lower.includes("guidebook") ||
     lower.includes("excel") ||
     lower.includes("sheet") ||
-    lower.includes("pdf");
+    lower.includes("pdf") ||
+    lower.includes("aturan") ||
+    lower.includes("tata tertib") ||
+    lower.includes("syarat") ||
+    lower.includes("ketentuan") ||
+    lower.includes("panitia") ||
+    lower.includes("sponsor") ||
+    lower.includes("faq") ||
+    lower.includes("hadiah") ||
+    lower.includes("batch") ||
+    lower.includes("gelombang") ||
+    lower.includes("sertifikat") ||
+    lower.includes("custom field");
 
   const arbitraryCodingPatterns = [
     // buatkan/bikin code/kode [language] (e.g. buatkan code python, bikin script js)
