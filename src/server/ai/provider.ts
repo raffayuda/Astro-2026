@@ -1,5 +1,5 @@
 import { createOpenAI } from "@ai-sdk/openai";
-import { getRawAiSettings } from "./config";
+import { getRawAiSettings, sanitizeBaseUrl } from "./config";
 
 export interface ResolvedAiModel {
   model: ReturnType<ReturnType<typeof createOpenAI>["chat"]>;
@@ -16,7 +16,8 @@ export interface ResolvedAiModel {
 export async function getAiModel(): Promise<ResolvedAiModel> {
   const settings = await getRawAiSettings();
   const apiKey = (settings.apiKey || process.env.NINEROUTER_API_KEY || "").trim();
-  const baseURL = (settings.baseUrl || process.env.NINEROUTER_BASE_URL || "https://api.9router.com/v1").trim();
+  const rawBaseURL = settings.baseUrl || process.env.NINEROUTER_BASE_URL || "https://api.9router.com/v1";
+  const baseURL = sanitizeBaseUrl(rawBaseURL);
   const modelName = (settings.model || process.env.NINEROUTER_MODEL || "gemini-2.0-flash").trim();
 
   if (!apiKey) {
@@ -52,7 +53,8 @@ export async function getAiModel(): Promise<ResolvedAiModel> {
 export async function testAiConnection(customKey?: string, customUrl?: string, customModel?: string) {
   const settings = await getRawAiSettings();
   const apiKey = (customKey || settings.apiKey || process.env.NINEROUTER_API_KEY || "").trim();
-  const baseURL = (customUrl || settings.baseUrl || process.env.NINEROUTER_BASE_URL || "https://api.9router.com/v1").trim();
+  const rawBaseURL = customUrl || settings.baseUrl || process.env.NINEROUTER_BASE_URL || "https://api.9router.com/v1";
+  const baseURL = sanitizeBaseUrl(rawBaseURL);
   const modelName = (customModel || settings.model || process.env.NINEROUTER_MODEL || "gemini-2.0-flash").trim();
 
   if (!apiKey) {

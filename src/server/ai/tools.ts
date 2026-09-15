@@ -164,6 +164,22 @@ const proposeUpdateCompetitionSchema = z.object({
 });
 type ProposeUpdateCompetitionInput = z.infer<typeof proposeUpdateCompetitionSchema>;
 
+const proposeBatchAddCustomFieldSchema = z.object({
+  competitionIds: z
+    .array(z.string())
+    .optional()
+    .describe("Daftar ID atau nama cabang lomba (contoh: ['futsal-eksternal', 'agt']), atau kosongkan / isi ['all'] untuk semua lomba"),
+  field: z.object({
+    id: z.string().describe("ID unik field (contoh: 'instagram_proof_url', 'kartu_pelajar', 'id_game')"),
+    label: z.string().describe("Label input yang ditampilkan ke pendaftar (contoh: 'Screenshot Bukti Follow Instagram @astrosttnf')"),
+    type: z.enum(["text", "textarea", "select", "image"]).describe("Tipe input (misal: 'image' untuk unggah foto/screenshot, 'text' untuk teks biasa)"),
+    placeholder: z.string().optional().describe("Teks placeholder di form"),
+    required: z.boolean().optional().default(true).describe("Apakah field ini wajib diisi oleh pendaftar"),
+    description: z.string().optional().describe("Keterangan petunjuk pengisian field"),
+  }).describe("Definisi field formulir pendaftaran kustom yang akan ditambahkan"),
+});
+type ProposeBatchAddCustomFieldInput = z.infer<typeof proposeBatchAddCustomFieldSchema>;
+
 const proposeUpdateRegistrationStatusSchema = z.object({
   registrationId: z.string().describe("ID pendaftaran, kode invoice (ASTRO-...), atau nama peserta/tim"),
   paymentStatus: z.enum(["paid", "pending", "failed"]).describe("Status pembayaran baru"),
@@ -817,7 +833,10 @@ export const aiTools = {
           hasBatches: c.hasBatches === "1",
           batches: c.batches,
           guidebookSectionsCount: (c.guidebookSections || []).length,
+          guidebookSections: c.guidebookSections || [],
           customFieldsCount: (c.customFields || []).length,
+          customFields: c.customFields || [],
+          rulesSummary: c.rulesSummary || [],
           maxSlots: c.maxSlots,
           filledSlots: c.filledSlots,
           remainingSlots: Math.max(0, c.maxSlots - c.filledSlots),
@@ -1514,6 +1533,101 @@ export const aiTools = {
         summary: `Proposal pembaruan ${diff.length} bagian pada kompetisi '${comp.title}'. Tinjau rincian perubahan sebelum menerapkan ke database.`,
         payload,
         diff,
+      };
+    },
+  }),
+
+  /**
+   * Action Tool: Propose adding a custom form field to multiple or all competitions in one call.
+   */
+  proposeBatchAddCustomField: tool({
+    description:
+      "Mengusulkan penambahan field formulir pendaftaran kustom (misal: 'instagram_proof_url' untuk Screenshot Bukti Follow Instagram) ke beberapa atau seluruh cabang lomba sekaligus. Menghasilkan kartu proposal konfirmasi aksi (AiActionCard) untuk setiap lomba yang belum memiliki field tersebut.",
+    inputSchema: zodSchema(proposeBatchAddCustomFieldSchema),
+    execute: async (input: ProposeBatchAddCustomFieldInput) => {
+      const allComps = await db.select().from(competitions);
+      const targetComps =
+        !input.competitionIds || input.competitionIds.length === 0 || input.competitionIds.includes("all")
+          ? allComps
+            : allComps.filter((c) =>
+              input.competitionIds!.some(
+                (target) =>
+                  c.id.toLowerCase() === target.toLowerCase() ||
+                  c.title.toLowerCase().includes(target.toLowerCase()) ||
+                  (target.toLowerCase() === "agt" && c.id.includes("agt")) ||
+                  (target.toLowerCase() === "cc" && c.id.includes("cerdas")) ||
+                  (target.toLowerCase() === "mlbb" && c.id.includes("mobile")),
+              ),
+            );
+
+      if (targetComps.length === 0) {
+        return {
+          error: "Tidak ada cabang lomba yang cocok dengan target yang dipilih.",
+        };
+      }
+
+      const proposals: any[] = [];
+      const skipped: string[] = [];
+
+      for (const comp of targetComps) {
+        const existingFields = Array.isArray(comp.customFields)
+          ? (comp.customFields as any[])
+          : [];
+
+        // Check if field id already exists
+        const alreadyHas = existingFields.some(
+          (f) => f.id && f.id.toLowerCase() === input.field.id.toLowerCase(),
+        );
+
+        if (alreadyHas) {
+          skipped.push(comp.title);
+          continue;
+        }
+
+        const newFields = [
+          ...existingFields,
+          {
+            id: input.field.id,
+            label: input.field.label,
+            type: input.field.type,
+            placeholder: input.field.placeholder || "",
+            required: input.field.required ?? true,
+            description: input.field.description || "",
+          },
+        ];
+
+        proposals.push({
+          type: "ACTION_PROPOSAL" as const,
+          actionId: `act-add-field-${comp.id}-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+          actionType: "UPDATE_COMPETITION" as const,
+          competitionId: comp.id,
+          competitionName: comp.title,
+          title: `Tambah Field Form: ${comp.title}`,
+          summary: `Menambahkan field '${input.field.label}' (${input.field.type}) ke formulir pendaftaran ${comp.title}.`,
+          payload: {
+            id: comp.id,
+            customFields: newFields,
+          },
+          diff: [
+            {
+              field: "customFields",
+              label: "Field Formulir Pendaftaran",
+              oldVal: `${existingFields.length} Field`,
+              newVal: `${newFields.length} Field (+ ${input.field.label})`,
+            },
+          ],
+        });
+      }
+
+      return {
+        totalTargeted: targetComps.length,
+        totalProposalsGenerated: proposals.length,
+        alreadyHadField: skipped,
+        proposals,
+        message:
+          proposals.length > 0
+            ? `Berhasil menyusun ${proposals.length} proposal penambahan field '${input.field.label}'. Admin dapat meninjau dan menekan 'Setujui & Terapkan' pada setiap kartu.`
+            : `Seluruh ${skipped.length} lomba yang dipilih sudah memiliki field '${input.field.id}'. Tidak ada perubahan diperlukan.`,
       };
     },
   }),

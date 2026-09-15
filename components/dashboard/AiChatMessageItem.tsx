@@ -40,6 +40,7 @@ const TOOL_LABELS: Record<string, string> = {
   getFaqsList: "Membaca data FAQ",
   proposeCreateCompetition: "Menyusun formulir lomba baru",
   proposeUpdateCompetition: "Menyusun perubahan data lomba",
+  proposeBatchAddCustomField: "Menyiapkan penambahan field lomba masal",
   proposeUpdateRegistrationStatus: "Menyiapkan verifikasi pendaftaran",
   proposeSetWinners: "Menyiapkan penetapan pemenang",
   generateExecutiveReport: "Menyusun laporan audit eksekutif",
@@ -106,10 +107,25 @@ function arePropsEqual(
   // If not streaming and reference is identical, skip
   if (prevProps.message === nextProps.message) return true;
 
-  // Fast structural comparison
-  const prevPartsLen = prevProps.message.parts?.length || 0;
-  const nextPartsLen = nextProps.message.parts?.length || 0;
-  if (prevPartsLen !== nextPartsLen) return false;
+  // Compare proposals
+  const prevProposals = getActionProposals(prevProps.message);
+  const nextProposals = getActionProposals(nextProps.message);
+  if (prevProposals.length !== nextProposals.length) return false;
+  for (let i = 0; i < prevProposals.length; i++) {
+    if (prevProposals[i].actionId !== nextProposals[i].actionId) return false;
+  }
+
+  // Compare tool badges
+  const prevBadges = getToolBadges(prevProps.message);
+  const nextBadges = getToolBadges(nextProps.message);
+  if (prevBadges.length !== nextBadges.length) return false;
+  for (let i = 0; i < prevBadges.length; i++) {
+    if (prevBadges[i].state !== nextBadges[i].state) return false;
+  }
+
+  const prevExports = getCsvExports(prevProps.message);
+  const nextExports = getCsvExports(nextProps.message);
+  if (prevExports.length !== nextExports.length) return false;
 
   const prevText = getMessageText(prevProps.message);
   const nextText = getMessageText(nextProps.message);

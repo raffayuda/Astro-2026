@@ -36,6 +36,21 @@ export interface UpdateAiConfigInput {
 }
 
 /**
+ * Sanitize Base URL by stripping trailing slashes and redundant endpoint paths like /chat/completions
+ */
+export function sanitizeBaseUrl(url: string | null | undefined): string {
+  if (!url || typeof url !== "string") return "https://api.9router.com/v1";
+  let cleaned = url.trim().replace(/\/+$/, "");
+  if (cleaned.endsWith("/chat/completions")) {
+    cleaned = cleaned.replace(/\/chat\/completions$/, "");
+  }
+  if (cleaned.endsWith("/chat")) {
+    cleaned = cleaned.replace(/\/chat$/, "");
+  }
+  return cleaned.replace(/\/+$/, "") || "https://api.9router.com/v1";
+}
+
+/**
  * Mask API key for secure visual display on frontend.
  * Example: '9r-abc123456789xyz' -> '9r-***xyz'
  */
@@ -112,7 +127,7 @@ export async function updateAiSettings(
   };
 
   if (input.provider !== undefined) updateData.provider = input.provider;
-  if (input.baseUrl !== undefined) updateData.baseUrl = input.baseUrl.trim();
+  if (input.baseUrl !== undefined) updateData.baseUrl = sanitizeBaseUrl(input.baseUrl);
   if (input.model !== undefined) updateData.model = input.model.trim();
   if (input.temperature !== undefined) updateData.temperature = input.temperature;
   if (input.maxTokens !== undefined) updateData.maxTokens = input.maxTokens;

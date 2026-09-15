@@ -206,3 +206,17 @@
 [23:45] - [app/dashboard/ai/page.tsx] - [UPDATE] - Add helper status line indicating 15,000 character limit and document support
 [00:15] - [next.config.ts] - [UPDATE] - Whitelist Umami domain (https://umami.oktaa.my.id) and local testing origin in CSP script-src and connect-src directives
 [00:15] - [app/layout.tsx] - [UPDATE] - Replace plain script tag with Next.js next/script Script component for Umami analytics tracking
+[00:25] - [src/server/ai/tools.ts] - [UPDATE] - Enrich getCompetitionsList tool to return full customFields, guidebookSections, and rulesSummary for instant single-query multi-competition inspection
+[00:25] - [app/api/dashboard/ai/chat/route.ts] - [UPDATE] - Expand stepCountIs from 10 to 30, increase maxDuration to 180s, and add multi-competition proposal guidelines to system prompt to prevent abrupt termination
+[00:28] - [src/server/ai/config.ts] - [ADD] - Implement sanitizeBaseUrl to automatically strip trailing /chat/completions or /chat endpoint paths from gateway URL
+[00:28] - [src/server/ai/provider.ts] - [UPDATE] - Apply sanitizeBaseUrl in getAiModel and testAiConnection to prevent 404 URL duplication errors
+[00:36] - [app/api/dashboard/ai/chat/route.ts] - [FIX] - Implement sanitizeMessagesForModel and resilient fallback to fix AI_MissingToolResultsError when resuming from interrupted streams
+[00:41] - [src/server/ai/tools.ts] - [ADD] - Implement proposeBatchAddCustomField tool allowing instant one-call generation of form field addition proposals across all competitions
+[00:41] - [app/api/dashboard/ai/chat/route.ts] - [UPDATE] - Enforce mandatory tool execution in system prompt over text promises so AiActionCards reliably render
+[00:41] - [components/dashboard/AiChatContext.tsx] - [UPDATE] - Support nested and array proposal structures in getActionProposals
+[00:47] - [components/dashboard/AiChatMessageItem.tsx] - [FIX] - Update arePropsEqual comparator to detect proposal changes and prevent stale memoization from hiding action cards
+[00:51] - [components/dashboard/AiChatMessageItem.tsx] - [UPDATE] - Add proposeBatchAddCustomField label to TOOL_LABELS map
+[00:52] - [src/server/ai/tools.ts] - [UPDATE] - Implement fuzzy aliases (agt, cc, mlbb, futsal) in targetComps filter for proposeBatchAddCustomField
+[00:53] - [app/api/dashboard/ai/chat/route.ts] - [FIX] - Implement legacy msg.toolInvocations fallback handling in sanitizeMessagesForModel
+[00:53] - [components/dashboard/AiChatContext.tsx] - [FIX] - Enhance cleanDisplayAssistantText regex to strip trailing JSON arrays
+[00:53] - [components/dashboard/AiChatMessageItem.tsx] - [FIX] - Strengthen arePropsEqual by checking deep actionIds in getActionProposals and adding getCsvExports comparator

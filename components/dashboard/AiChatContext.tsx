@@ -236,8 +236,8 @@ export function cleanDisplayAssistantText(text: string, hasProposals: boolean): 
   if (!text) return "";
   if (!hasProposals) return text;
   return text
-    .replace(/```(?:json)?\s*\{[\s\S]*?"type"\s*:\s*"ACTION_PROPOSAL"[\s\S]*?\}\s*```/gi, "")
-    .replace(/\{[\s\S]*?"type"\s*:\s*"ACTION_PROPOSAL"[\s\S]*?\}/gi, "")
+    .replace(/```(?:json)?\s*\[?[\s\S]*?\{[\s\S]*?"type"\s*:\s*"ACTION_PROPOSAL"[\s\S]*?\}[\s\S]*?\]?\s*```/gi, "")
+    .replace(/\[?\{[\s\S]*?"type"\s*:\s*"ACTION_PROPOSAL"[\s\S]*?\}\]?/gi, "")
     .trim();
 }
 
@@ -249,9 +249,24 @@ export function getActionProposals(message: UIMessage): ActionProposalData[] {
   const seenActionIds = new Set<string>();
 
   const addProposal = (obj: any) => {
-    if (!obj || typeof obj !== "object") return;
+    if (!obj) return;
+    if (Array.isArray(obj)) {
+      for (const item of obj) addProposal(item);
+      return;
+    }
+    if (typeof obj !== "object") return;
+
+    // Check nested proposals
+    if (Array.isArray(obj.proposals)) {
+      for (const item of obj.proposals) addProposal(item);
+    }
+    if (obj.data && typeof obj.data === "object") addProposal(obj.data);
+    if (obj.result && typeof obj.result === "object") addProposal(obj.result);
+    if (obj.output && typeof obj.output === "object") addProposal(obj.output);
+
+    // Direct Action Proposal
     if (obj.type === "ACTION_PROPOSAL" && obj.actionType) {
-      const id = obj.actionId || `${obj.actionType}-${obj.title || Date.now()}`;
+      const id = obj.actionId || `${obj.actionType}-${obj.title || obj.competitionId || Date.now()}-${proposals.length}`;
       if (!seenActionIds.has(id)) {
         seenActionIds.add(id);
         proposals.push(obj as ActionProposalData);
@@ -260,10 +275,15 @@ export function getActionProposals(message: UIMessage): ActionProposalData[] {
   };
 
   const tryParseJson = (val: unknown): any => {
+    if (!val) return val;
+    if (typeof val === "object") return val;
     if (typeof val !== "string") return val;
     try {
       const trimmed = val.trim();
-      if (trimmed.startsWith("{") && trimmed.endsWith("}")) {
+      if (
+        (trimmed.startsWith("{") && trimmed.endsWith("}")) ||
+        (trimmed.startsWith("[") && trimmed.endsWith("]"))
+      ) {
         return JSON.parse(trimmed);
       }
     } catch {
@@ -275,6 +295,7 @@ export function getActionProposals(message: UIMessage): ActionProposalData[] {
   // 1. Inspect parts array (AI SDK 4 / 5 uses part.output)
   if (message.parts && Array.isArray(message.parts)) {
     for (const part of message.parts as any[]) {
+      if (!part) continue;
       // Direct output in AI SDK 4/5
       addProposal(tryParseJson(part.output));
       // Legacy result in AI SDK 3
@@ -287,9 +308,10 @@ export function getActionProposals(message: UIMessage): ActionProposalData[] {
       // In case part itself is the proposal object
       addProposal(part);
 
-      // Fallback: If tool was called (proposeCreateCompetition) with input, synthesize proposal if output is pending
+      // Fallback: If tool was called with input
       const toolName =
         part.toolName ||
+        part.toolInvocation?.toolName ||
         (typeof part.type === "string" && part.type.startsWith("tool-")
           ? part.type.replace(/^tool-/, "")
           : "");
@@ -354,10 +376,16 @@ export function getActionProposals(message: UIMessage): ActionProposalData[] {
     const text = getMessageText(message);
     if (text.includes("ACTION_PROPOSAL")) {
       try {
-        const match = text.match(/\{[\s\S]*?"type"\s*:\s*"ACTION_PROPOSAL"[\s\S]*?\}/);
-        if (match) {
-          const parsed = JSON.parse(match[0]);
-          addProposal(parsed);
+        const matches = text.match(/\{[\s\S]*?"type"\s*:\s*"ACTION_PROPOSAL"[\s\S]*?\}/g);
+        if (matches) {
+          for (const m of matches) {
+            try {
+              const parsed = JSON.parse(m);
+              addProposal(parsed);
+            } catch {
+              // ignore
+            }
+          }
         }
       } catch {
         // ignore
