@@ -12,13 +12,12 @@ import {
   ListOrdered,
   AlertTriangle,
   Eye,
-  Edit3,
-  BookOpen,
+  Pencil,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
 import GuidebookArticle from "@/components/GuidebookArticle";
 import type { CompetitionGuidebookSection } from "@/src/db/schema";
 
@@ -35,12 +34,14 @@ export default function GuidebookSectionsBuilder({ sections, onChange }: Props) 
   };
 
   const addSection = () => {
-    const newSection: CompetitionGuidebookSection = {
-      id: crypto.randomUUID(),
-      title: `Bagian ${sections.length + 1}`,
-      content: "",
-    };
-    onChange([...sections, newSection]);
+    onChange([
+      ...sections,
+      {
+        id: crypto.randomUUID(),
+        title: `Bagian ${sections.length + 1}`,
+        content: "",
+      },
+    ]);
   };
 
   const updateSection = (id: string, field: "title" | "content", val: string) => {
@@ -61,76 +62,56 @@ export default function GuidebookSectionsBuilder({ sections, onChange }: Props) 
     onChange(next);
   };
 
-  // Helper to insert formatting tags at cursor position
   const insertFormat = (id: string, currentText: string, prefix: string, suffix = "") => {
     const newText = currentText ? `${currentText}\n${prefix}${suffix}` : `${prefix}${suffix}`;
     updateSection(id, "content", newText);
   };
 
   return (
-    <div className="space-y-4 rounded-xl border border-border bg-muted/20 p-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <BookOpen className="size-4 text-astro-blue" />
-          <span className="text-xs font-bold uppercase tracking-wider text-foreground">
-            Artikel / Bagian Guidebook ({sections.length})
-          </span>
-        </div>
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          onClick={addSection}
-          className="rounded-md h-7 gap-1 border-astro-blue/40 text-xs font-bold uppercase tracking-wider text-astro-navy hover:bg-astro-blue/10"
-        >
-          <Plus className="size-3.5" /> Tambah Bagian
+    <div className="space-y-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <p className="text-sm text-muted-foreground">
+          {sections.length} bagian · ditampilkan sebagai tab panduan di halaman lomba
+        </p>
+        <Button type="button" variant="outline" size="sm" onClick={addSection}>
+          <Plus data-icon="inline-start" /> Tambah bagian
         </Button>
       </div>
 
-      <p className="text-11 text-muted-foreground">
-        Tambahkan bagian panduan interaktif (misal: Tahapan Babak, Kriteria Penilaian, Tata Tertib,
-        Fasilitas). Bagian ini akan dirender sebagai Tab panduan resmi di halaman detail lomba.
-      </p>
-
       {sections.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-border py-6 text-center text-xs text-muted-foreground">
-          Belum ada bagian artikel guidebook. Klik &quot;Tambah Bagian&quot; di atas untuk membuat
-          panduan modular.
+        <div className="rounded-lg border border-dashed border-border px-4 py-8 text-center text-sm text-muted-foreground">
+          Belum ada bagian guidebook.
         </div>
       ) : (
         <div className="space-y-3">
           {sections.map((sec, idx) => {
             const isPreview = !!activePreview[sec.id];
             return (
-              <div
-                key={sec.id || idx}
-                className="rounded-lg border border-border bg-card p-3.5 shadow-xs space-y-3"
-              >
-                {/* Header: Title, Ordering, Controls */}
-                <div className="flex items-center justify-between gap-2">
-                  <div className="flex items-center gap-2 flex-1">
-                    <Badge variant="outline" className="text-10 font-mono shrink-0">
-                      #{idx + 1}
-                    </Badge>
-                    <Input
-                      value={sec.title}
-                      onChange={(e) => updateSection(sec.id, "title", e.target.value)}
-                      placeholder="Judul Bagian (misal: Kriteria Penilaian)"
-                      className="h-8 text-xs font-bold flex-1"
-                    />
+              <div key={sec.id || idx} className="space-y-3 rounded-lg border border-border p-4">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex min-w-0 flex-1 items-center gap-2">
+                    <span className="shrink-0 text-xs tabular-nums text-muted-foreground">
+                      {idx + 1}
+                    </span>
+                    <Field className="min-w-0 flex-1 gap-0">
+                      <FieldLabel className="sr-only">Judul bagian</FieldLabel>
+                      <Input
+                        value={sec.title}
+                        onChange={(e) => updateSection(sec.id, "title", e.target.value)}
+                        placeholder="Judul bagian"
+                      />
+                    </Field>
                   </div>
-
-                  <div className="flex items-center gap-1 shrink-0">
-                    {/* Move Controls */}
+                  <div className="flex shrink-0 items-center gap-0.5">
                     <Button
                       type="button"
                       variant="ghost"
                       size="icon-xs"
                       disabled={idx === 0}
                       onClick={() => moveSection(idx, "up")}
-                      title="Pindah ke atas"
+                      aria-label="Pindah ke atas"
                     >
-                      <ChevronUp className="size-3.5" />
+                      <ChevronUp />
                     </Button>
                     <Button
                       type="button"
@@ -138,124 +119,106 @@ export default function GuidebookSectionsBuilder({ sections, onChange }: Props) 
                       size="icon-xs"
                       disabled={idx === sections.length - 1}
                       onClick={() => moveSection(idx, "down")}
-                      title="Pindah ke bawah"
+                      aria-label="Pindah ke bawah"
                     >
-                      <ChevronDown className="size-3.5" />
+                      <ChevronDown />
                     </Button>
-
-                    {/* Preview Switcher */}
                     <Button
                       type="button"
                       variant="outline"
                       size="sm"
                       onClick={() => togglePreview(sec.id)}
-                      className="h-7 text-10 font-bold uppercase gap-1"
                     >
                       {isPreview ? (
                         <>
-                          <Edit3 className="size-3" /> Tulis
+                          <Pencil data-icon="inline-start" /> Edit
                         </>
                       ) : (
                         <>
-                          <Eye className="size-3" /> Pratinjau
+                          <Eye data-icon="inline-start" /> Pratinjau
                         </>
                       )}
                     </Button>
-
-                    {/* Delete */}
                     <Button
                       type="button"
                       variant="ghost"
                       size="icon-xs"
                       onClick={() => removeSection(sec.id)}
                       className="text-muted-foreground hover:text-destructive"
-                      title="Hapus Bagian"
+                      aria-label="Hapus bagian"
                     >
-                      <Trash2 className="size-3.5" />
+                      <Trash2 />
                     </Button>
                   </div>
                 </div>
 
-                {/* Content Editor / Live Preview */}
                 {!isPreview ? (
-                  <div className="space-y-1.5">
-                    {/* Mini formatting toolbar */}
-                    <div className="flex items-center gap-1 border-b border-border/60 pb-1.5 text-muted-foreground">
-                      <span className="text-10 font-bold uppercase tracking-wider text-muted-foreground/80 mr-1">
-                        Format:
-                      </span>
-                      <button
+                  <div className="space-y-2">
+                    <div className="flex flex-wrap gap-1">
+                      <Button
                         type="button"
-                        onClick={() => insertFormat(sec.id, sec.content, "**Teks Tebal**")}
-                        className="rounded px-1.5 py-0.5 text-10 font-bold hover:bg-muted hover:text-foreground"
-                        title="Teks Tebal"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => insertFormat(sec.id, sec.content, "**Teks tebal**")}
                       >
-                        <Bold className="size-3 inline mr-0.5" /> Bold
-                      </button>
-                      <button
+                        <Bold data-icon="inline-start" /> Tebal
+                      </Button>
+                      <Button
                         type="button"
-                        onClick={() => insertFormat(sec.id, sec.content, "*Teks Miring*")}
-                        className="rounded px-1.5 py-0.5 text-10 font-bold hover:bg-muted hover:text-foreground"
-                        title="Teks Miring"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => insertFormat(sec.id, sec.content, "*Teks miring*")}
                       >
-                        <Italic className="size-3 inline mr-0.5" /> Italic
-                      </button>
-                      <button
+                        <Italic data-icon="inline-start" /> Miring
+                      </Button>
+                      <Button
                         type="button"
-                        onClick={() => insertFormat(sec.id, sec.content, "- Poin syarat...")}
-                        className="rounded px-1.5 py-0.5 text-10 font-bold hover:bg-muted hover:text-foreground"
-                        title="List Poin"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => insertFormat(sec.id, sec.content, "- Poin...")}
                       >
-                        <List className="size-3 inline mr-0.5" /> List
-                      </button>
-                      <button
+                        <List data-icon="inline-start" /> List
+                      </Button>
+                      <Button
                         type="button"
-                        onClick={() => insertFormat(sec.id, sec.content, "1. Langkah/Babak...")}
-                        className="rounded px-1.5 py-0.5 text-10 font-bold hover:bg-muted hover:text-foreground"
-                        title="Penomoran"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => insertFormat(sec.id, sec.content, "1. Langkah...")}
                       >
-                        <ListOrdered className="size-3 inline mr-0.5" /> 1,2,3
-                      </button>
-                      <button
+                        <ListOrdered data-icon="inline-start" /> Nomor
+                      </Button>
+                      <Button
                         type="button"
+                        variant="ghost"
+                        size="sm"
                         onClick={() =>
-                          insertFormat(
-                            sec.id,
-                            sec.content,
-                            "⚠️ Catatan Penting / Diskualifikasi: ...",
-                          )
+                          insertFormat(sec.id, sec.content, "Catatan penting: ...")
                         }
-                        className="rounded px-1.5 py-0.5 text-10 font-bold text-amber-600 hover:bg-amber-500/10"
-                        title="Peringatan / Diskualifikasi"
                       >
-                        <AlertTriangle className="size-3 inline mr-0.5" /> Warning
-                      </button>
+                        <AlertTriangle data-icon="inline-start" /> Catatan
+                      </Button>
                     </div>
-
                     <Textarea
                       value={sec.content}
                       onChange={(e) => updateSection(sec.id, "content", e.target.value)}
-                      placeholder="Tuliskan detail ketentuan untuk bagian ini..."
-                      rows={4}
-                      className="text-xs leading-relaxed font-mono"
+                      placeholder="Isi ketentuan untuk bagian ini..."
+                      rows={5}
                     />
                   </div>
                 ) : (
-                  <div className="rounded-lg border border-border/60 bg-muted/20 p-4 text-xs">
+                  <div className="rounded-lg border border-border bg-muted/30 p-4 text-sm">
                     {sec.content ? (
                       <GuidebookArticle
                         sections={[
                           {
                             id: sec.id,
-                            title: sec.title || "Pratinjau Bagian",
+                            title: sec.title || "Pratinjau",
                             content: sec.content,
                           },
                         ]}
                       />
                     ) : (
-                      <span className="italic text-muted-foreground">
-                        Belum ada konten ditulis.
-                      </span>
+                      <span className="text-muted-foreground">Belum ada konten.</span>
                     )}
                   </div>
                 )}
