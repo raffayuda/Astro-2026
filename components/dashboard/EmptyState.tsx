@@ -28,10 +28,10 @@ function EmptyState({
   className?: string;
 }) {
   return (
-    <Empty className={cn("border border-dashed border-border bg-background p-8", className)}>
+    <Empty className={cn("border-0 bg-transparent py-12", className)}>
       <EmptyHeader>
         {icon ? <EmptyMedia variant="icon">{icon}</EmptyMedia> : null}
-        <EmptyTitle className="text-sm">{title}</EmptyTitle>
+        <EmptyTitle>{title}</EmptyTitle>
         {description ? <EmptyDescription>{description}</EmptyDescription> : null}
       </EmptyHeader>
       {children ? <EmptyContent>{children}</EmptyContent> : null}

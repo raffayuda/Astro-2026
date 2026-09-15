@@ -3,9 +3,7 @@ import type * as React from "react";
 import { cn } from "@/lib/utils";
 
 /**
- * Label-over-value pair used across admin detail views. Keeps the label
- * micro-caps treatment and the value weight consistent instead of repeating
- * the same two spans at every field.
+ * Label-over-value pair for admin detail views.
  */
 function DetailItem({
   label,
@@ -19,8 +17,8 @@ function DetailItem({
   className?: string;
 }) {
   return (
-    <div className={cn("space-y-0.5", className)}>
-      <span className="flex items-center gap-1 text-10 font-bold uppercase tracking-wider text-muted-foreground">
+    <div className={cn("space-y-1", className)}>
+      <span className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
         {icon}
         {label}
       </span>

@@ -4,14 +4,14 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
-const statToneVariants = cva("rounded-lg border p-3", {
+const statToneVariants = cva("flex size-9 shrink-0 items-center justify-center rounded-lg border", {
   variants: {
     tone: {
-      blue: "border-astro-cyan-2 bg-sky-bottom text-astro-blue",
-      emerald: "border-emerald-200 bg-emerald-50 text-emerald-600",
-      green: "border-green-200 bg-green-50 text-green-600",
-      amber: "border-amber-200 bg-amber-50 text-amber-600",
-      rose: "border-rose-200 bg-rose-50 text-rose-600",
+      blue: "border-sky-200 bg-sky-50 text-sky-700",
+      emerald: "border-emerald-200 bg-emerald-50 text-emerald-700",
+      green: "border-green-200 bg-green-50 text-green-700",
+      amber: "border-amber-200 bg-amber-50 text-amber-700",
+      rose: "border-rose-200 bg-rose-50 text-rose-700",
       neutral: "border-border bg-muted text-muted-foreground",
     },
   },
@@ -19,9 +19,7 @@ const statToneVariants = cva("rounded-lg border p-3", {
 });
 
 /**
- * Metric tile for admin overviews. Marketing pages use `StatCard` from
- * `@/components/brand`; this is its product-chrome counterpart so the
- * dashboard never reaches into the brand kit.
+ * Metric tile for admin overviews. Product chrome only - not brand StatCard.
  */
 function StatTile({
   label,
@@ -37,16 +35,16 @@ function StatTile({
   className?: string;
 }) {
   return (
-    <Card className={cn("bg-white", className)}>
-      <CardContent className="flex items-start gap-4">
+    <Card size="sm" className={cn("shadow-none", className)}>
+      <CardContent className="flex items-start gap-3">
         {icon ? (
-          <div className={cn(statToneVariants({ tone }), "[&_svg]:size-5")}>{icon}</div>
+          <div className={cn(statToneVariants({ tone }), "[&_svg]:size-4")}>{icon}</div>
         ) : null}
-        <div className="min-w-0">
-          <p className="text-10 font-black uppercase tracking-[0.15em] text-astro-blue/70">
-            {label}
+        <div className="min-w-0 space-y-0.5">
+          <p className="text-xs font-medium text-muted-foreground">{label}</p>
+          <p className="truncate text-xl font-semibold tracking-tight text-foreground tabular-nums">
+            {value}
           </p>
-          <p className="mt-1 truncate text-2xl font-black text-astro-navy">{value}</p>
         </div>
       </CardContent>
     </Card>

@@ -11,9 +11,7 @@ import {
 import { cn } from "@/lib/utils";
 
 /**
- * Panel wrapper for dashboard sections: inline forms, list containers, detail
- * blocks. Replaces the hand-rolled `<Card><CardContent><h2 class="text-sm
- * font-black uppercase">` stack that was copied across every admin route.
+ * Panel wrapper for dashboard sections: forms, lists, detail blocks.
  */
 function SectionCard({
   title,
@@ -35,18 +33,16 @@ function SectionCard({
   const hasHeader = Boolean(title || description || actions);
 
   return (
-    <Card className={cn("border border-border", className)}>
+    <Card className={cn("shadow-none", className)}>
       {hasHeader ? (
-        <CardHeader>
+        <CardHeader className={cn(bodyClassName?.includes("px-0") && "border-b")}>
           {title ? (
-            <CardTitle className="flex items-center gap-2 text-sm font-black uppercase tracking-tight text-foreground">
+            <CardTitle className="flex items-center gap-2 text-base font-semibold tracking-tight">
               {icon}
               {title}
             </CardTitle>
           ) : null}
-          {description ? (
-            <CardDescription className="text-xs">{description}</CardDescription>
-          ) : null}
+          {description ? <CardDescription>{description}</CardDescription> : null}
           {actions ? <CardAction>{actions}</CardAction> : null}
         </CardHeader>
       ) : null}

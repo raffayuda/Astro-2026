@@ -5,18 +5,17 @@ import { Slot } from "radix-ui";
 import { cn } from "@/lib/utils";
 
 const badgeVariants = cva(
-  "group/badge inline-flex w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-full border-2 border-transparent px-2.5 py-0.5 text-11 font-bold uppercase tracking-wide whitespace-nowrap transition-all focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 aria-invalid:border-destructive aria-invalid:ring-destructive/20 [&>svg]:pointer-events-none [&>svg]:size-3!",
+  "inline-flex w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-md border border-transparent px-2 py-0.5 text-xs font-medium whitespace-nowrap transition-colors focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 aria-invalid:border-destructive aria-invalid:ring-destructive/20 [&>svg]:pointer-events-none [&>svg]:size-3",
   {
     variants: {
       variant: {
-        default: "border-white bg-astro-blue text-white shadow-sticker-sm [a]:hover:brightness-110",
-        secondary:
-          "border-astro-navy bg-astro-gold text-astro-navy shadow-sticker-sm [a]:hover:brightness-105",
+        default: "bg-primary text-primary-foreground [a]:hover:bg-primary/90",
+        secondary: "bg-secondary text-secondary-foreground [a]:hover:bg-secondary/90",
         destructive:
-          "border-red-400 bg-red-50 text-red-700 focus-visible:ring-destructive/20 [a]:hover:bg-red-100",
-        outline: "border-astro-navy bg-white text-astro-navy [a]:hover:bg-sky-bottom",
-        ghost: "hover:bg-white/70 hover:text-astro-blue",
-        link: "text-astro-blue underline-offset-4 hover:underline",
+          "bg-destructive/10 text-destructive [a]:hover:bg-destructive/15 focus-visible:ring-destructive/20",
+        outline: "border-border text-foreground [a]:hover:bg-muted",
+        ghost: "text-foreground [a]:hover:bg-muted",
+        link: "text-primary underline-offset-4 [a]:hover:underline",
       },
     },
     defaultVariants: {

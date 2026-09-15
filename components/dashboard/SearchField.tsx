@@ -23,9 +23,9 @@ function SearchField({
   "aria-label"?: string;
 }) {
   return (
-    <InputGroup className={cn("h-10 rounded-lg", className)}>
+    <InputGroup className={cn("bg-background", className)}>
       <InputGroupAddon align="inline-start">
-        <Search className="size-3.5 text-muted-foreground" />
+        <Search className="size-4 text-muted-foreground" aria-hidden />
       </InputGroupAddon>
       <InputGroupInput
         type="search"
@@ -33,7 +33,6 @@ function SearchField({
         onChange={(event) => onValueChange(event.target.value)}
         placeholder={placeholder}
         aria-label={ariaLabel ?? placeholder}
-        className="text-xs font-medium"
       />
     </InputGroup>
   );
