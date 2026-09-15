@@ -235,9 +235,45 @@ export function getMessageText(message: UIMessage): string {
 export function cleanDisplayAssistantText(text: string, hasProposals: boolean): string {
   if (!text) return "";
   if (!hasProposals) return text;
-  return text
-    .replace(/```(?:json)?\s*\[?[\s\S]*?\{[\s\S]*?"type"\s*:\s*"ACTION_PROPOSAL"[\s\S]*?\}[\s\S]*?\]?\s*```/gi, "")
-    .replace(/\[?\{[\s\S]*?"type"\s*:\s*"ACTION_PROPOSAL"[\s\S]*?\}\]?/gi, "")
+
+  let cleaned = text;
+
+  // Safe O(N) string parsing instead of regex to prevent Catastrophic Backtracking
+  // which freezes the browser tab during incomplete streaming text
+  let iterations = 0;
+  while (cleaned.includes('"ACTION_PROPOSAL"') && iterations < 10) {
+    iterations++;
+    const keywordIndex = cleaned.indexOf('"ACTION_PROPOSAL"');
+    
+    // Find the opening brace of the JSON object containing the proposal
+    const startIdx = cleaned.lastIndexOf('{', keywordIndex);
+    if (startIdx === -1) break; // Fallback to prevent infinite loop
+
+    // Find the matching closing brace
+    let openBraces = 0;
+    let endIdx = -1;
+    for (let i = startIdx; i < cleaned.length; i++) {
+      if (cleaned[i] === '{') openBraces++;
+      if (cleaned[i] === '}') openBraces--;
+      if (openBraces === 0) {
+        endIdx = i;
+        break;
+      }
+    }
+
+    if (endIdx !== -1) {
+      cleaned = cleaned.substring(0, startIdx) + cleaned.substring(endIdx + 1);
+    } else {
+      // Incomplete stream (missing closing brace)
+      cleaned = cleaned.substring(0, startIdx);
+      break;
+    }
+  }
+
+  // Cleanup leftover syntax formatting
+  return cleaned
+    .replace(/```(?:json)?\s*```/gi, "")
+    .replace(/\[\s*\]/g, "")
     .trim();
 }
 

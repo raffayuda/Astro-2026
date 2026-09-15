@@ -220,3 +220,4 @@
 [00:53] - [app/api/dashboard/ai/chat/route.ts] - [FIX] - Implement legacy msg.toolInvocations fallback handling in sanitizeMessagesForModel
 [00:53] - [components/dashboard/AiChatContext.tsx] - [FIX] - Enhance cleanDisplayAssistantText regex to strip trailing JSON arrays
 [00:53] - [components/dashboard/AiChatMessageItem.tsx] - [FIX] - Strengthen arePropsEqual by checking deep actionIds in getActionProposals and adding getCsvExports comparator
+[01:00] - [components/dashboard/AiChatContext.tsx] - [FIX] - Replace catastrophic backtracking regex in cleanDisplayAssistantText with a safe O(N) string parser to prevent severe browser thread freezing during streaming
