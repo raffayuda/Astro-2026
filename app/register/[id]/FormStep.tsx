@@ -19,7 +19,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import type { Competition, CompetitionCustomField } from "@/types/astro";
 import { useRegistrationApi } from "@/src/lib/hooks/use-registration";
-import { buildRegistrationSchema, type RegistrationFormValues } from "@/src/lib/forms/registration";
+import { buildRegistrationSchema, customFieldOtherKey, isLainnyaOption, type RegistrationFormValues } from "@/src/lib/forms/registration";
 import PlayerPhotoField from "./PlayerPhotoField";
 import CustomFieldUpload from "./CustomFieldUpload";
 
@@ -497,6 +497,7 @@ export default function FormStep({
                           | { message?: string }
                           | undefined;
                         const value = (subField.state.value as string) ?? "";
+                        const otherKey = customFieldOtherKey(field.id);
                         return (
                           <Field data-invalid={!!err}>
                             <FieldLabel required={field.required}>{field.label}</FieldLabel>
@@ -513,12 +514,52 @@ export default function FormStep({
                                     label={meta.label}
                                     size="mini"
                                     selected={value === opt}
-                                    onSelect={() => subField.handleChange(opt as never)}
+                                    onSelect={() => {
+                                      subField.handleChange(opt as never);
+                                      if (!isLainnyaOption(opt)) {
+                                        form.setFieldValue(
+                                          `customFields.${otherKey}` as never,
+                                          "" as never,
+                                        );
+                                      }
+                                    }}
                                   />
                                 );
                               })}
                             </div>
                             {err ? <FieldError>{err.message}</FieldError> : null}
+
+                            {isLainnyaOption(value) ? (
+                              <form.Field
+                                name={`customFields.${otherKey}` as never}
+                                children={(otherField) => {
+                                  const otherErr = otherField.state.meta.errors?.[0] as
+                                    | { message?: string }
+                                    | undefined;
+                                  const otherId = `field-custom-${otherKey}`;
+                                  return (
+                                    <Field data-invalid={!!otherErr} className="mt-3">
+                                      <FieldLabel htmlFor={otherId} required>
+                                        Sebutkan bakat / kategori lainnya
+                                      </FieldLabel>
+                                      <Input
+                                        id={otherId}
+                                        value={(otherField.state.value as string) ?? ""}
+                                        onBlur={otherField.handleBlur}
+                                        onChange={(e) =>
+                                          otherField.handleChange(e.target.value as never)
+                                        }
+                                        placeholder="Contoh: Beatbox, Lukis digital, ..."
+                                        aria-invalid={!!otherErr}
+                                      />
+                                      {otherErr ? (
+                                        <FieldError>{otherErr.message}</FieldError>
+                                      ) : null}
+                                    </Field>
+                                  );
+                                }}
+                              />
+                            ) : null}
                           </Field>
                         );
                       }}
@@ -536,6 +577,8 @@ export default function FormStep({
                           | { message?: string }
                           | undefined;
                         const fieldId = `field-custom-${field.id}`;
+                        const value = (subField.state.value as string) ?? "";
+                        const otherKey = customFieldOtherKey(field.id);
                         return (
                           <Field data-invalid={!!err}>
                             <FieldLabel htmlFor={fieldId} required={field.required}>
@@ -548,9 +591,18 @@ export default function FormStep({
                             )}
                             <select
                               id={fieldId}
-                              value={(subField.state.value as string) ?? ""}
+                              value={value}
                               onBlur={subField.handleBlur}
-                              onChange={(e) => subField.handleChange(e.target.value as never)}
+                              onChange={(e) => {
+                                const next = e.target.value;
+                                subField.handleChange(next as never);
+                                if (!isLainnyaOption(next)) {
+                                  form.setFieldValue(
+                                    `customFields.${otherKey}` as never,
+                                    "" as never,
+                                  );
+                                }
+                              }}
                               aria-invalid={!!err}
                               className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring md:text-sm"
                             >
@@ -562,6 +614,38 @@ export default function FormStep({
                               ))}
                             </select>
                             {err ? <FieldError>{err.message}</FieldError> : null}
+
+                            {isLainnyaOption(value) ? (
+                              <form.Field
+                                name={`customFields.${otherKey}` as never}
+                                children={(otherField) => {
+                                  const otherErr = otherField.state.meta.errors?.[0] as
+                                    | { message?: string }
+                                    | undefined;
+                                  const otherId = `field-custom-${otherKey}`;
+                                  return (
+                                    <Field data-invalid={!!otherErr} className="mt-3">
+                                      <FieldLabel htmlFor={otherId} required>
+                                        Sebutkan lainnya
+                                      </FieldLabel>
+                                      <Input
+                                        id={otherId}
+                                        value={(otherField.state.value as string) ?? ""}
+                                        onBlur={otherField.handleBlur}
+                                        onChange={(e) =>
+                                          otherField.handleChange(e.target.value as never)
+                                        }
+                                        placeholder="Tulis jawabanmu"
+                                        aria-invalid={!!otherErr}
+                                      />
+                                      {otherErr ? (
+                                        <FieldError>{otherErr.message}</FieldError>
+                                      ) : null}
+                                    </Field>
+                                  );
+                                }}
+                              />
+                            ) : null}
                           </Field>
                         );
                       }}

@@ -1,6 +1,15 @@
 import { z } from "zod";
 import type { CompetitionCustomField } from "@/types/astro";
 
+/** Companion key for free-text when a select option is "Lainnya". */
+export function customFieldOtherKey(fieldId: string) {
+  return `${fieldId}__other`;
+}
+
+export function isLainnyaOption(value: string | null | undefined) {
+  return /^lainnya$/i.test(String(value ?? "").trim());
+}
+
 /**
  * One player on a team roster: name, in-game account ID, and photo (formal or
  * casual, both fine). `gameId` and `photoUrl` only matter for competitions that
@@ -105,24 +114,35 @@ export function buildRegistrationSchema(opts: {
     // 2. Custom fields validation
     if (opts.customFields && opts.customFields.length > 0) {
       opts.customFields.forEach((field) => {
-        if (!field.required) return;
         const val = values.customFields?.[field.id];
-        if (field.type === "image") {
-          if (!val || typeof val !== "string" || !val.trim()) {
-            ctx.addIssue({
-              code: "custom",
-              path: ["customFields", field.id],
-              message: `${field.label} wajib diunggah`,
-            });
-          }
-        } else {
-          if (!val || !val.toString().trim()) {
+        if (field.required) {
+          if (field.type === "image") {
+            if (!val || typeof val !== "string" || !val.trim()) {
+              ctx.addIssue({
+                code: "custom",
+                path: ["customFields", field.id],
+                message: `${field.label} wajib diunggah`,
+              });
+            }
+          } else if (!val || !val.toString().trim()) {
             ctx.addIssue({
               code: "custom",
               path: ["customFields", field.id],
               message: `${field.label} wajib diisi`,
             });
           }
+        }
+
+        if (
+          field.type === "select" &&
+          isLainnyaOption(val) &&
+          !(values.customFields?.[customFieldOtherKey(field.id)] ?? "").trim()
+        ) {
+          ctx.addIssue({
+            code: "custom",
+            path: ["customFields", customFieldOtherKey(field.id)],
+            message: "Jelaskan opsi lainnya",
+          });
         }
       });
     }
@@ -166,4 +186,12 @@ export function toRegistrationBody(
 export function toSelfServiceBody(values: RegistrationFormValues) {
   const { competitionId: _c, type: _t, ...rest } = toRegistrationBody(values, "", "individual");
   return rest;
+}
+
+/** Pretty value for admin / invoice: "Lainnya: Beatbox". */
+export function formatCustomFieldDisplay(fieldId: string, values: Record<string, string>) {
+  const value = values[fieldId] ?? "";
+  const other = values[customFieldOtherKey(fieldId)]?.trim();
+  if (isLainnyaOption(value) && other) return `Lainnya: ${other}`;
+  return value || "-";
 }

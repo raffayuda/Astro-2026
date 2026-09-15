@@ -6,7 +6,6 @@ import {
   ArrowLeft,
   Building2,
   CalendarDays,
-  CheckCircle2,
   Coins,
   ExternalLink,
   FileText,
@@ -15,38 +14,17 @@ import {
   Phone,
   Tag,
   User,
-  XCircle,
-  type LucideIcon,
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { DetailItem, SectionCard } from "@/components/dashboard";
+import { DetailItem, PageHeader, PageShell, SectionCard, StatusBadge } from "@/components/dashboard";
 import { asStringRecord } from "@/lib/flags";
 import { isSafeUrl, safeHref } from "@/lib/urls";
 import { cn } from "@/lib/utils";
 import PaymentStatusUpdate from "./PaymentStatusUpdate";
 import RegistrationDetailActions from "./RegistrationDetailActions";
-
-const statusConfig: Record<string, { label: string; color: string; icon: LucideIcon }> = {
-  pending: {
-    label: "Pending",
-    color: "bg-amber-50 text-amber-700 border-amber-200",
-    icon: XCircle,
-  },
-  detecting: {
-    label: "Detecting",
-    color: "bg-sky-bottom text-astro-navy border-astro-cyan-2",
-    icon: XCircle,
-  },
-  paid: {
-    label: "Lunas",
-    color: "bg-emerald-50 text-emerald-700 border-emerald-200",
-    icon: CheckCircle2,
-  },
-  failed: { label: "Gagal", color: "bg-red-50 text-red-700 border-red-200", icon: XCircle },
-};
 
 export const dynamic = "force-dynamic";
 
@@ -95,45 +73,35 @@ export default async function RegistrationDetailPage({
     notFound();
   }
 
-  const status = statusConfig[reg.paymentStatus] ?? statusConfig.pending;
-  const StatusIcon = status.icon;
   const customFields = asStringRecord(reg.customFields);
   const customFieldDefs = Array.isArray(reg.competitionCustomFields)
     ? (reg.competitionCustomFields as { id: string; label?: string }[])
     : [];
 
   return (
-    <div className="max-w-7xl space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div className="space-y-2">
-          <Button
-            asChild
-            variant="ghost"
-            size="sm"
-            className="h-7 gap-1 px-2 text-xs font-bold uppercase tracking-wider text-muted-foreground"
-          >
-            <Link href="/dashboard/registrations">
-              <ArrowLeft className="size-3.5" /> Kembali
-            </Link>
-          </Button>
-          <h1 className="text-2xl font-black uppercase tracking-tight text-foreground">
-            Detail Pendaftaran
-          </h1>
-        </div>
+    <PageShell>
+      <Button
+        asChild
+        variant="ghost"
+        size="sm"
+        className="-mb-2 h-7 gap-1 px-2 text-xs text-muted-foreground"
+      >
+        <Link href="/dashboard/registrations">
+          <ArrowLeft className="size-3.5" /> Kembali
+        </Link>
+      </Button>
 
-        <div className="flex flex-wrap items-center gap-3">
-          <Badge
-            variant="outline"
-            className={cn(
-              "gap-1.5 rounded-md border text-10 font-bold uppercase tracking-wider",
-              status.color,
-            )}
-          >
-            <StatusIcon className="size-3.5" />
-            {status.label}
-          </Badge>
-
-          <RegistrationDetailActions
+      <PageHeader
+        title="Detail Pendaftaran"
+        description={
+          reg.type === "team"
+            ? reg.teamName || reg.leaderName || reg.email
+            : reg.fullName || reg.email
+        }
+        actions={
+          <>
+            <StatusBadge status={reg.paymentStatus} />
+            <RegistrationDetailActions
             registration={{
               id: reg.id,
               paymentReference: reg.paymentReference || reg.id.slice(0, 8),
@@ -144,7 +112,7 @@ export default async function RegistrationDetailPage({
               fullName: reg.fullName,
               teamName: reg.teamName,
               leaderName: reg.leaderName,
-              institution: reg.institution || "—",
+              institution: reg.institution || "-",
               email: reg.email,
               whatsapp: reg.whatsapp,
               members: reg.members,
@@ -154,9 +122,10 @@ export default async function RegistrationDetailPage({
               competitionCategory: reg.competitionCategory,
               createdAt: reg.createdAt,
             }}
-          />
-        </div>
-      </div>
+            />
+          </>
+        }
+      />
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
@@ -209,7 +178,7 @@ export default async function RegistrationDetailPage({
                                 />
                               </a>
                             ) : (
-                              <div className="flex size-20 items-center justify-center rounded-md border border-dashed border-border text-10 text-muted-foreground">
+                              <div className="flex size-20 items-center justify-center rounded-md border border-dashed border-border text-xs text-muted-foreground">
                                 Tanpa foto
                               </div>
                             )}
@@ -217,7 +186,7 @@ export default async function RegistrationDetailPage({
                               {m.name}
                             </p>
                             {m.gameId && (
-                              <p className="text-10 leading-tight text-muted-foreground">
+                              <p className="text-xs leading-tight text-muted-foreground">
                                 ID: <code className="font-mono">{m.gameId}</code>
                               </p>
                             )}
@@ -254,15 +223,22 @@ export default async function RegistrationDetailPage({
               title="Berkas & Data Khusus Lomba"
             >
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                {Object.entries(customFields).map(([key, val]) => {
+                {Object.entries(customFields)
+                  .filter(([key]) => !key.endsWith("__other"))
+                  .map(([key, val]) => {
                   const label = customFieldDefs.find((f) => f.id === key)?.label || key;
+                  const other = customFields[`${key}__other`];
+                  const display =
+                    /^lainnya$/i.test(String(val).trim()) && other?.trim()
+                      ? `Lainnya: ${other.trim()}`
+                      : val;
                   // Only a safe http(s) target is treated as a viewable file.
                   const isImg = isSafeUrl(val);
 
                   if (!isImg) {
                     return (
                       <DetailItem key={key} label={label}>
-                        <span className="whitespace-pre-line">{val || "-"}</span>
+                        <span className="whitespace-pre-line">{display || "-"}</span>
                       </DetailItem>
                     );
                   }
@@ -317,12 +293,12 @@ export default async function RegistrationDetailPage({
             <div className="space-y-4">
               <p className="text-sm font-bold text-foreground">{reg.competitionName}</p>
               <div className="flex flex-wrap gap-1.5">
-                <Badge variant="outline" className="text-9 font-bold uppercase tracking-wider">
+                <Badge variant="outline" className="text-xs font-medium">
                   {reg.competitionCategory}
                 </Badge>
                 <Badge
                   variant="outline"
-                  className="gap-1 border-astro-cyan-2 bg-sky-bottom text-9 font-bold uppercase tracking-wider text-astro-navy"
+                  className="gap-1 border-astro-cyan-2 bg-sky-bottom text-xs font-medium text-astro-navy"
                 >
                   <Globe className="size-2.5" />
                   {reg.competitionOrigin === "external" ? "Eksternal" : "Internal"}
@@ -330,7 +306,7 @@ export default async function RegistrationDetailPage({
                 <Badge
                   variant="outline"
                   className={cn(
-                    "text-9 font-bold uppercase tracking-wider",
+                    "text-xs font-medium",
                     reg.competitionIsFree === "1"
                       ? "border-emerald-200 bg-emerald-50 text-emerald-700"
                       : "border-amber-200 bg-amber-50 text-amber-700",
@@ -357,15 +333,15 @@ export default async function RegistrationDetailPage({
             bodyClassName="space-y-4"
           >
             <DetailItem label="Referensi">
-              <code className="font-mono text-xs font-bold">{reg.paymentReference || "—"}</code>
+              <code className="font-mono text-xs font-bold">{reg.paymentReference || "-"}</code>
             </DetailItem>
             <DetailItem label="Jumlah">
-              <span className="text-lg font-black text-primary">
+              <span className="text-lg font-semibold text-primary">
                 Rp {reg.paymentAmount.toLocaleString("id-ID")}
               </span>
             </DetailItem>
             <DetailItem label="Metode">
-              <span className="capitalize">{reg.paymentMethod || "—"}</span>
+              <span className="capitalize">{reg.paymentMethod || "-"}</span>
             </DetailItem>
             <DetailItem label="Didaftarkan" icon={<CalendarDays className="size-3" />}>
               {reg.createdAt
@@ -376,13 +352,13 @@ export default async function RegistrationDetailPage({
                     hour: "2-digit",
                     minute: "2-digit",
                   })
-                : "—"}
+                : "-"}
             </DetailItem>
 
             <PaymentStatusUpdate registrationId={reg.id} currentStatus={reg.paymentStatus} />
           </SectionCard>
         </div>
       </div>
-    </div>
+    </PageShell>
   );
 }
