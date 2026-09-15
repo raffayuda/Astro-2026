@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Alexandria, Lexend_Exa, Plus_Jakarta_Sans, Geist } from "next/font/google";
 import { Toaster } from "sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -208,7 +209,11 @@ export default function RootLayout({
             dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
           />
         ))}
-        <script defer src="https://umami.oktaa.my.id/script.js" data-website-id="79d7fe00-8561-4699-a3e9-ef3a6929cada"></script>
+        <Script
+          src="https://umami.oktaa.my.id/script.js"
+          data-website-id="79d7fe00-8561-4699-a3e9-ef3a6929cada"
+          strategy="afterInteractive"
+        />
       </head>
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <TooltipProvider>

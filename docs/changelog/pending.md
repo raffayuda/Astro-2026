@@ -204,4 +204,5 @@
 [23:45] - [src/server/ai/tools.ts] - [ADD] - Implement getCompetitionDetail tool (all 30 fields), smart fuzzy competition query resolver (ml/mlbb, cc, agt, futsal, badminton), and enrich getCompetitionsList metadata
 [23:45] - [components/dashboard/AiChatMessageItem.tsx] - [UPDATE] - Add Live Tool Execution Badges with animated Loader2 spinner for pending tools and CheckCircle2 for completed tools
 [23:45] - [app/dashboard/ai/page.tsx] - [UPDATE] - Add helper status line indicating 15,000 character limit and document support
-
+[00:15] - [next.config.ts] - [UPDATE] - Whitelist Umami domain (https://umami.oktaa.my.id) and local testing origin in CSP script-src and connect-src directives
+[00:15] - [app/layout.tsx] - [UPDATE] - Replace plain script tag with Next.js next/script Script component for Umami analytics tracking
